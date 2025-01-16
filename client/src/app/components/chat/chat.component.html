@@ -25,7 +25,7 @@
 
     <form id="chat-form">
         <mat-form-field id="chat-input-container">
-            <mat-label>{{ disableMessagingField ? 'Désactivé' : 'Message' }}</mat-label>
+            <mat-label>{{ disableMessagingField ? displayText.DISABLED_LABEL : displayText.MESSAGE_LABEL }}</mat-label>
             <input
                 id="chat-input"
                 matInput

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { DisplayAuthenticationText } from '@app/constants/display-texts';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { ChatService } from '@app/services/chat/chat.service';
 
@@ -8,6 +9,8 @@ import { ChatService } from '@app/services/chat/chat.service';
     styleUrls: ['./chat-page.component.scss'],
 })
 export class ChatPageComponent {
+    displayText = DisplayAuthenticationText;
+
     constructor(
         private readonly authenticationService: AuthenticationService,
         private readonly chatService: ChatService,

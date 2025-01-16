@@ -1,20 +1,20 @@
 <div id="main-container" (keyup.enter)="signup()">
     <mat-card id="main-card">
-        <h1>Nouveau compte</h1>
+        <h1>{{ displayText.SIGNUP_ACTION }}</h1>
         <div id="form">
             <mat-form-field id="username">
-                <mat-label>Nom d'utilisateur</mat-label>
+                <mat-label>{{ displayText.USERNAME }}</mat-label>
                 <input matInput placeholder="" id="username-input" [(ngModel)]="username" autofocus cdkFocusInitial />
             </mat-form-field>
             <mat-form-field id="Password">
-                <mat-label>Mot de passe</mat-label>
+                <mat-label>{{ displayText.PASSWORD }}</mat-label>
                 <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="password" />
                 <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
                     <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
                 </button>
             </mat-form-field>
         </div>
-        <button mat-raised-button color="primary" (click)="signup()">S'inscrire</button>
-        <button mat-raised-button routerLink="/login">Retour à la page de connexion</button>
+        <button mat-raised-button color="primary" (click)="signup()">{{ displayText.SIGNUP_ACTION }}</button>
+        <button mat-raised-button routerLink="/login">{{ displayText.RETURN_TO_LOGIN }}</button>
     </mat-card>
 </div>

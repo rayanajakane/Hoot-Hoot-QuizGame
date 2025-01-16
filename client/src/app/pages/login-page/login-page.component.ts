@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DisplayAuthenticationText } from '@app/constants/display-texts';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 
 @Component({
@@ -10,6 +11,8 @@ export class LoginPageComponent implements OnInit {
     hide = true;
     username: string = '';
     password: string = '';
+
+    displayText = DisplayAuthenticationText;
 
     constructor(private readonly authenticationService: AuthenticationService) {}
 
