@@ -1,15 +1,15 @@
 export enum DisplayAuthenticationText {
-    USERNAME = "Nom d'utilisateur",
-    PASSWORD = 'Mot de passe',
-    LOGIN_TITLE = 'Connexion',
-    SIGNUP_TITLE = 'Nouveau compte',
-    LOGIN_ACTION = 'Se connecter',
-    SIGNUP_ACTION = "S'inscrire",
-    RETURN_TO_LOGIN = 'Retourner à la page de connexion',
-    LOGOUT = 'Se déconnecter',
+    Username = "Nom d'utilisateur",
+    Password = 'Mot de passe',
+    LoginTitle = 'Connexion',
+    SignupTitle = 'Nouveau compte',
+    LoginAction = 'Se connecter',
+    SignupAction = "S'inscrire",
+    ReturnToLogin = 'Retourner à la page de connexion',
+    Logout = 'Se déconnecter',
 }
 
 export enum DisplayChatText {
-    MESSAGE_LABEL = 'Message',
-    DISABLED_LABEL = 'Désactivé',
+    MessageLabel = 'Message',
+    DisabledLabel = 'Désactivé',
 }
