@@ -2,6 +2,9 @@ package com.example.polyquiz
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
@@ -57,9 +60,13 @@ fun SignupPage() {
                 Text(DisplayAuthenticationText.SIGNUP_ACTION.value)
             }
 
-            Button(
+            ElevatedButton(
                 onClick = { },
-//                colors = ButtonColors(Color.White, )
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceBright,
+                    contentColor = MaterialTheme.colorScheme.onSurface
+
+                )
             ) {
                 Text(DisplayAuthenticationText.RETURN_TO_LOGIN.value)
             }
