@@ -6,8 +6,9 @@ export class ChatService {
     messages: Message[] = [];
     constructor() {}
 
-    addMessage(message: Message) {
+    addMessage(message: Message): Message {
         this.messages.push(message);
+        return message;
     }
 
     getMessages(roomCode: string): Message[] {
