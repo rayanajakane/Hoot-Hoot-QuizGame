@@ -38,7 +38,6 @@ export class ChatComponent implements AfterViewChecked, OnInit, OnDestroy {
     }
 
     sendMessage(messageText: string): void {
-        // TODO: Check if the server should be the one to assign the date
         if (messageText) {
             const newMessage: Message = {
                 text: messageText,
