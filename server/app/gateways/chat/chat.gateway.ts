@@ -12,8 +12,10 @@ export class ChatGateway {
 
     @SubscribeMessage(ChatEvents.PrototypeMessage)
     handlePrototypeMessage(@ConnectedSocket() socket: Socket, @MessageBody() data: Message) {
-        this.chatService.addMessage(data);
-        this.sendPrototypeMessageToClients(data);
+        if (this.chatService.isValidMessage(data)) {
+            this.chatService.addMessage(data);
+            this.sendPrototypeMessageToClients(data);
+        }
     }
 
     sendPrototypeMessageToClients(data: Message) {

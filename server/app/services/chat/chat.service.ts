@@ -5,6 +5,10 @@ import { Injectable } from '@nestjs/common';
 export class ChatService {
     messages: Message[] = [];
 
+    isValidMessage(message: Message): boolean {
+        return message.text.replace(/\s/g, '').trim() !== '';
+    }
+
     addMessage(message: Message): Message {
         message.date = new Date();
         this.messages.push(message);
