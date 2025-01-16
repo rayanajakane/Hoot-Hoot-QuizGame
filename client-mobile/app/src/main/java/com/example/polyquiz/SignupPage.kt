@@ -3,7 +3,6 @@ package com.example.polyquiz
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ElevatedCard
@@ -17,6 +16,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.polyquiz.constants.DisplayAuthenticationText
+
 @Composable
 fun SignupPage() {
     Box(
