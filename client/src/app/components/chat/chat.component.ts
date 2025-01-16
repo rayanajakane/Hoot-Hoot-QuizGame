@@ -1,10 +1,12 @@
 import { AfterViewChecked, ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
-import { Message } from '@app/interfaces/message';
+import { Message } from '@common/interfaces/message';
 
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { ChatService } from '@app/services/chat/chat.service';
-import { MatchRoomService } from '@app/services/match-room/match-room.service';
-import { HOST_USERNAME } from '@common/constants/match-constants';
+import { ChatEvents } from '@common/events/chat.events';
+
+import { DisplayChatText } from '@app/constants/display-texts';
 
 @Component({
     selector: 'app-chat',
@@ -16,50 +18,37 @@ export class ChatComponent implements AfterViewChecked, OnInit, OnDestroy {
 
     @Input() disableMessagingField: boolean;
 
+    displayText = DisplayChatText;
+
     constructor(
-        readonly matchRoomService: MatchRoomService,
+        readonly authenticationService: AuthenticationService,
         readonly chatService: ChatService,
         private cdr: ChangeDetectorRef,
     ) {}
 
     ngOnInit(): void {
-        this.chatService.displayOldMessages();
+        this.authenticationService.connectToSocket();
         this.chatService.handleReceivedMessages();
     }
 
     ngAfterViewChecked() {
-        const playerUsername = this.matchRoomService.getUsername();
-        const player = this.matchRoomService.getPlayerByUsername(playerUsername);
-        if (player) {
-            this.disableMessagingField = !player.isChatActive;
-        }
-
         this.scrollToBottom();
         this.cdr.detectChanges();
     }
 
     ngOnDestroy() {
-        this.chatService.socketHandler.socket.removeListener('newMessage');
-        this.chatService.socketHandler.socket.removeListener('fetchOldMessages');
+        this.chatService.socketHandler.socket.removeListener(ChatEvents.NewMessage);
+        this.authenticationService.disconnectSocket();
     }
 
     sendMessage(messageText: string): void {
-        const playerUsername = this.matchRoomService.getUsername();
-        const isPlayerHost = playerUsername === HOST_USERNAME;
-        const player = this.matchRoomService.getPlayerByUsername(playerUsername);
-
-        if (player || isPlayerHost) {
-            const isChatActiveForPlayer = player?.isChatActive;
-            if (messageText) {
-                const newMessage: Message = {
-                    text: messageText,
-                    author: this.matchRoomService.getUsername(),
-                    date: new Date(),
-                };
-                if (isChatActiveForPlayer || isPlayerHost) {
-                    this.chatService.sendMessage(this.matchRoomService.getRoomCode(), newMessage);
-                }
-            }
+        if (messageText) {
+            const newMessage: Message = {
+                text: messageText,
+                author: this.authenticationService.userDisplayName,
+                date: new Date(),
+            };
+            this.chatService.sendPrototypeMessage(newMessage);
         }
     }
 
