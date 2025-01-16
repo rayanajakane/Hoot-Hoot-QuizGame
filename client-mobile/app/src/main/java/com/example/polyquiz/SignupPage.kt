@@ -3,7 +3,10 @@ package com.example.polyquiz
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -22,53 +25,60 @@ fun SignupPage() {
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
+        ElevatedCard(
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
+            )
         ) {
-            Text(
-                text = DisplayAuthenticationText.SIGNUP_TITLE.value,
-                fontSize = 35.sp,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-            var email by remember { mutableStateOf("") }
-            var password by remember { mutableStateOf("") }
-
-            TextField(
-                value = email,
-                onValueChange = { email = it },
-                label = { Text(DisplayAuthenticationText.USERNAME.value) },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            TextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text(DisplayAuthenticationText.PASSWORD.value) },
-                modifier = Modifier.fillMaxWidth(),
-                visualTransformation = PasswordVisualTransformation()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                onClick = {  },
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth(0.5f)
+                    .padding(60.dp)
             ) {
-                Text(DisplayAuthenticationText.SIGNUP_ACTION.value)
-            }
-
-            ElevatedButton(
-                onClick = { },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceBright,
-                    contentColor = MaterialTheme.colorScheme.onSurface
-
+                Text(
+                    text = DisplayAuthenticationText.SIGNUP_TITLE.value,
+                    fontSize = 35.sp,
+                    modifier = Modifier.padding(bottom = 16.dp)
                 )
-            ) {
-                Text(DisplayAuthenticationText.RETURN_TO_LOGIN.value)
+                var email by remember { mutableStateOf("") }
+                var password by remember { mutableStateOf("") }
+
+                TextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text(DisplayAuthenticationText.USERNAME.value) },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                TextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text(DisplayAuthenticationText.PASSWORD.value) },
+                    modifier = Modifier.fillMaxWidth(),
+                    visualTransformation = PasswordVisualTransformation()
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(
+                    onClick = {  },
+                ) {
+                    Text(DisplayAuthenticationText.SIGNUP_ACTION.value)
+                }
+
+                ElevatedButton(
+                    onClick = { },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceBright,
+                        contentColor = MaterialTheme.colorScheme.onSurface
+
+                    )
+                ) {
+                    Text(DisplayAuthenticationText.RETURN_TO_LOGIN.value)
+                }
             }
         }
     }
