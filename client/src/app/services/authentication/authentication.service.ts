@@ -26,14 +26,20 @@ export class AuthenticationService {
         // TODO: Firebase Authentication + NotificationService
 
         // If user can login:
-        this.socketHandler.connect();
         this.router.navigateByUrl('/chat');
+    }
+
+    connectToSocket() {
+        this.socketHandler.connect();
+    }
+
+    disconnectSocket() {
+        this.socketHandler.disconnect();
     }
 
     logout() {
         // TODO: Firebase Authentication
         this.socketHandler.socket.removeListener(ChatEvents.NewMessage);
-        this.socketHandler.disconnect();
         this.router.navigateByUrl('/login');
     }
 }
