@@ -19,9 +19,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PolyQuizTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    ChatPage( modifier = Modifier.padding(innerPadding) )
-                }
+                ChatPage( modifier = Modifier.fillMaxSize() )
             }
         }
     }

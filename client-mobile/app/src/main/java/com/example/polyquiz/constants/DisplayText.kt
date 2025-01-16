@@ -1,6 +1,6 @@
 package com.example.polyquiz.constants
 
-enum class DisplayEnum (val value: String) {
+enum class DisplayAuthenticationText (val value: String) {
     USERNAME("Nom d'utilisateur"),
     PASSWORD("Mot de passe"),
     LOGIN_TITLE("Connexion"),
@@ -14,5 +14,4 @@ enum class DisplayEnum (val value: String) {
 enum class DisplayChatText (val value: String) {
     MESSAGE_LABEL("Message"),
     DISABLED_LABLE("Désactivé")
-
 }
