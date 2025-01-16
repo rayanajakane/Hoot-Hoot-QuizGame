@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.polyquiz.ui.theme.PolyQuizTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,7 +20,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PolyQuizTheme {
-                ChatPage( modifier = Modifier.fillMaxSize() )
+//                ChatPage( modifier = Modifier.fillMaxSize() )
+                  SignupPage()
             }
         }
     }
@@ -29,6 +31,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     PolyQuizTheme {
-        ChatPage( modifier = Modifier.fillMaxSize() )
+//        ChatPage( modifier = Modifier.fillMaxSize() )
+        SignupPage()
+
     }
 }
