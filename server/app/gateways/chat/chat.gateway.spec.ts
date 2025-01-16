@@ -3,18 +3,18 @@
 import { ChatService } from '@app/services/chat/chat.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { SinonStubbedInstance, createStubInstance } from 'sinon';
-import { Server, Socket } from 'socket.io';
+import { Server } from 'socket.io';
 import { ChatGateway } from './chat.gateway';
 
 describe('MatchGateway', () => {
     let gateway: ChatGateway;
     let chatSpy: SinonStubbedInstance<ChatService>;
-    let socket: SinonStubbedInstance<Socket>;
+    // let socket: SinonStubbedInstance<Socket>;
     let server: SinonStubbedInstance<Server>;
 
     beforeEach(async () => {
         chatSpy = createStubInstance(ChatService);
-        socket = createStubInstance<Socket>(Socket);
+        // socket = createStubInstance<Socket>(Socket);
         server = createStubInstance<Server>(Server);
 
         const module: TestingModule = await Test.createTestingModule({

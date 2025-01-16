@@ -4,14 +4,13 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class ChatService {
     messages: Message[] = [];
-    constructor() {}
 
     addMessage(message: Message): Message {
         this.messages.push(message);
         return message;
     }
 
-    getMessages(roomCode: string): Message[] {
+    getMessages(): Message[] {
         // TODO
         return [];
     }

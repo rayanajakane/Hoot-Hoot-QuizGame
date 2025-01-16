@@ -11,8 +11,6 @@ describe('ChatService', () => {
         service = module.get<ChatService>(ChatService);
     });
 
-    const INDEX_NOT_FOUND = -1;
-
     it('should be defined', () => {
         expect(service).toBeDefined();
     });

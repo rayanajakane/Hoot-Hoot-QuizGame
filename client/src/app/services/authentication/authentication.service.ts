@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { ChatEvents } from '@common/events/chat.events';
-import { SocketHandlerService } from '../socket-handler/socket-handler.service';
 
 @Injectable({
     providedIn: 'root',

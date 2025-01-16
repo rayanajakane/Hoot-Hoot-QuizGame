@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 
 @Component({
@@ -6,7 +6,7 @@ import { AuthenticationService } from '@app/services/authentication/authenticati
     templateUrl: './login-page.component.html',
     styleUrls: ['./login-page.component.scss'],
 })
-export class LoginPageComponent {
+export class LoginPageComponent implements OnInit {
     hide = true;
     username: string = '';
     password: string = '';
@@ -19,11 +19,11 @@ export class LoginPageComponent {
 
     autofocus() {
         // REFERENCE: https://stackoverflow.com/questions/59893531/accessibilty-focus-is-lost-when-route-changed-in-angular
-        let blurElement: HTMLElement = document.getElementById('username-input') as HTMLElement;
+        const blurElement: HTMLElement = document.getElementById('username-input') as HTMLElement;
         blurElement.blur();
 
-        setTimeout(function () {
-            let focusElement: HTMLElement = document.getElementById('username-input') as HTMLElement;
+        setTimeout(() => {
+            const focusElement: HTMLElement = document.getElementById('username-input') as HTMLElement;
             focusElement.focus();
         }, 0);
     }

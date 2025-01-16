@@ -1,7 +1,7 @@
 // import { MatchRoomService } from '@app/services/match-room/match-room.service';
 
 // import { MOCK_MESSAGE, MOCK_MESSAGES, MOCK_ROOM_CODE, MOCK_USERNAME } from '@app/constants/chat-mocks';
-import SpyObj = jasmine.SpyObj;
+// import SpyObj = jasmine.SpyObj;
 
 xdescribe('ChatService', () => {
     it('should create', () => {
