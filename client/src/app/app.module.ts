@@ -11,6 +11,9 @@ import { AppComponent } from '@app/pages/app/app.component';
 import { ChatComponent } from './components/chat/chat.component';
 import { tooltipOptions } from './constants/tooltip-options';
 import { ClickStopPropagationDirective } from './directives/click-stop-propagation.directive';
+import { ChatPageComponent } from './pages/chat-page/chat-page.component';
+import { LoginPageComponent } from './pages/login-page/login-page.component';
+import { SignupPageComponent } from './pages/signup-page/signup-page.component';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -18,7 +21,7 @@ import { ClickStopPropagationDirective } from './directives/click-stop-propagati
  * Otherwise Angular Cli will not know in which module to put new component
  */
 @NgModule({
-    declarations: [AppComponent, ClickStopPropagationDirective, ChatComponent],
+    declarations: [AppComponent, ClickStopPropagationDirective, ChatComponent, ChatPageComponent, LoginPageComponent, SignupPageComponent],
     imports: [
         AppMaterialModule,
         AppRoutingModule,

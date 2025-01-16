@@ -1,7 +1,8 @@
-import { AfterViewChecked, ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, ElementRef, Input, ViewChild } from '@angular/core';
 
 import { Message } from '@common/interfaces/message';
 
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { ChatService } from '@app/services/chat/chat.service';
 
 @Component({
@@ -9,37 +10,30 @@ import { ChatService } from '@app/services/chat/chat.service';
     templateUrl: './chat.component.html',
     styleUrls: ['./chat.component.scss'],
 })
-export class ChatComponent implements AfterViewChecked, OnInit, OnDestroy {
+export class ChatComponent implements AfterViewChecked {
     @ViewChild('messagesContainer', { static: true }) messagesContainer: ElementRef;
 
     @Input() disableMessagingField: boolean;
 
     constructor(
+        readonly authenticationService: AuthenticationService,
         readonly chatService: ChatService,
         private cdr: ChangeDetectorRef,
     ) {}
 
-    ngOnInit(): void {
-        // this.chatService.displayOldMessages();
-        this.chatService.handleReceivedMessages();
-    }
+    ngOnInit(): void {}
 
     ngAfterViewChecked() {
         this.scrollToBottom();
         this.cdr.detectChanges();
     }
 
-    ngOnDestroy() {
-        this.chatService.socketHandler.socket.removeListener('newMessage');
-        this.chatService.socketHandler.socket.removeListener('fetchOldMessages');
-    }
-
     sendMessage(messageText: string): void {
-        const playerUsername = 'TODO';
+        // TODO: Check if the server should be the one to assign the date
         if (messageText) {
             const newMessage: Message = {
                 text: messageText,
-                author: playerUsername,
+                author: this.authenticationService.userDisplayName,
                 date: new Date(),
             };
             this.chatService.sendPrototypeMessage(newMessage);

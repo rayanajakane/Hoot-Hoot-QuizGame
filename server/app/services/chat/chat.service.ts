@@ -7,7 +7,7 @@ export class ChatService {
     constructor() {}
 
     addMessage(message: Message) {
-        // TODO
+        this.messages.push(message);
     }
 
     getMessages(roomCode: string): Message[] {

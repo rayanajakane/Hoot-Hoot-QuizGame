@@ -1,12 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ChatComponent } from '@app/components/chat/chat.component';
+import { ChatPageComponent } from '@app/pages/chat-page/chat-page.component';
+import { LoginPageComponent } from '@app/pages/login-page/login-page.component';
+import { SignupPageComponent } from '@app/pages/signup-page/signup-page.component';
 
-// TODO: Make ChatComponent in its own page
-// Create login / signup pages
 const routes: Routes = [
-    { path: '', redirectTo: '/home', pathMatch: 'full' },
-    { path: 'home', component: ChatComponent },
+    { path: '', redirectTo: '/login', pathMatch: 'full' },
+    { path: 'login', component: LoginPageComponent },
+    { path: 'signup', component: SignupPageComponent },
+    { path: 'chat', component: ChatPageComponent },
 ];
 
 @NgModule({
