@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -33,18 +34,15 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.polyquiz.constants.DisplayChatText
+import com.example.vanillaprototype.chat.ChatService
+import androidx.compose.runtime.livedata.observeAsState
 import java.text.SimpleDateFormat
-import java.time.Instant
-import java.util.Date
 import java.util.Locale
 
 @Composable
 fun ChatComponent() {
     val username = "TODO"
-    val messages = listOf(
-        Message("Coucou!", "TODO", Date.from(Instant.now())),
-        Message("Allo!", "Autre utilisateur", Date.from(Instant.now()))
-    )
+    val messages by ChatService.messages.observeAsState()
     var newMessageText by remember{ mutableStateOf(TextFieldValue("")) }
 
     Card(
@@ -55,18 +53,27 @@ fun ChatComponent() {
         modifier = Modifier.size(width = 300.dp, height = 1000.dp).fillMaxHeight()
     ) {
         Column(
-            verticalArrangement = Arrangement.SpaceAround
+            verticalArrangement = Arrangement.SpaceAround,
         ) {
             Text(text = username, fontSize = 30.sp, modifier = Modifier.padding(20.dp, 20.dp, 20.dp, 0.dp))
-            LazyColumn(
+
+            // REFERENCE: https://youtu.be/P3xQdINdrWY
+            // To handle the situation where there would be no message to display.
+            messages?.let {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    modifier = Modifier.weight(1f).padding(20.dp, 20.dp, 20.dp, 0.dp)
+                ) {
+                    itemsIndexed(it) { _: Int, message: Message ->
+                        MessageContainer(message, username)
+                    }
+                }
+            } ?: LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 modifier = Modifier.weight(1f).padding(20.dp, 20.dp, 20.dp, 0.dp)
             ) {
-                itemsIndexed(messages) { _: Int, message: Message ->
-                    MessageContainer(message, username)
-                }
+
             }
-            // TODO: Add button icon
             TextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = newMessageText,
@@ -75,13 +82,13 @@ fun ChatComponent() {
                 singleLine = true,
                 shape = RoundedCornerShape(0.dp),
                 keyboardActions = KeyboardActions(onDone = {
-                    // TODO: Send message
+                    ChatService.sendMessage(newMessageText.text, username)
                     newMessageText = newMessageText.copy("")
                 }),
                 trailingIcon = {
                     val image = Icons.AutoMirrored.Filled.Send;
                     IconButton(onClick = {
-                        // TODO: Send message
+                        ChatService.sendMessage(newMessageText.text, username)
                         newMessageText = newMessageText.copy("")
                     }) {
                         Icon(imageVector = image, "send")
@@ -126,7 +133,6 @@ fun MessageContainer(message: Message, username: String) {
                 shape = containerCorner,
                 modifier = Modifier.width(containerWidth)
             ) {
-                // TODO: Change background color based on author (if same as current user or not)
                 Text(text = message.text, modifier = Modifier.padding(10.dp))
             }
         }
