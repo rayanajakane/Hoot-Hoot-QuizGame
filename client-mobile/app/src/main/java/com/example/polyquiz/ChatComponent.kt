@@ -75,7 +75,7 @@ fun ChatComponent() {
 
             }
             TextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(0.dp, 10.dp, 0.dp, 50.dp),
                 value = newMessageText,
                 onValueChange = { newText -> newMessageText = newText },
                 label = { Text(text = DisplayChatText.MESSAGE_LABEL.value) },

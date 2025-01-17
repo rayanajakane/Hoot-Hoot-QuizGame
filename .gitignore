@@ -11,3 +11,4 @@ coverage/
 #Node Modules
 /node_modules
 client-mobile/.idea/inspectionProfiles/Project_Default.xml
+client-mobile/.idea/deploymentTargetSelector.xml
