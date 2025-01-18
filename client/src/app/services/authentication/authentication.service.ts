@@ -14,7 +14,7 @@ export class AuthenticationService {
 
     get userDisplayName(): string {
         // TODO
-        return 'TODO';
+        return 'todo';
     }
 
     signup(username: string, password: string) {

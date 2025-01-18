@@ -40,8 +40,9 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.runtime.livedata)
     val coreVersion = "1.13.1"
-    val nav_version = "2.8.4"
+    val navVersion = "2.8.4"
     implementation("androidx.core:core-ktx:$coreVersion")
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -51,7 +52,9 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
-    implementation("androidx.navigation:navigation-compose:$nav_version")
+    implementation("androidx.navigation:navigation-compose:$navVersion")
+    implementation (libs.socket.io.client)
+    implementation("com.google.code.gson:gson:2.10.1")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

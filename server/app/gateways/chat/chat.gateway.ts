@@ -11,14 +11,14 @@ export class ChatGateway {
     constructor(private readonly chatService: ChatService) {}
 
     @SubscribeMessage(ChatEvents.PrototypeMessage)
-    handlePrototypeMessage(@ConnectedSocket() socket: Socket, @MessageBody() data: Message) {
-        if (this.chatService.isValidMessage(data)) {
-            this.chatService.addMessage(data);
-            this.sendPrototypeMessageToClients(data);
+    handlePrototypeMessage(@ConnectedSocket() socket: Socket, @MessageBody() message: Message) {
+        if (this.chatService.isValidMessage(message)) {
+            const updatedMessage = this.chatService.addMessage(message);
+            this.sendPrototypeMessageToClients(updatedMessage);
         }
     }
 
-    sendPrototypeMessageToClients(data: Message) {
-        this.server.emit(ChatEvents.SentPrototypeMessage, data);
+    sendPrototypeMessageToClients(message: Message) {
+        this.server.emit(ChatEvents.SentPrototypeMessage, message);
     }
 }
