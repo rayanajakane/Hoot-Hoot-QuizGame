@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import com.example.polyquiz.constants.DisplayChatText
 import com.example.vanillaprototype.chat.ChatService
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.text.font.FontWeight
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -44,7 +45,7 @@ fun ChatComponent() {
     val username = "TODO"
     val messages by ChatService.messages.observeAsState()
     var newMessageText by remember{ mutableStateOf(TextFieldValue("")) }
-
+    
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
@@ -55,14 +56,14 @@ fun ChatComponent() {
         Column(
             verticalArrangement = Arrangement.SpaceAround,
         ) {
-            Text(text = username, fontSize = 30.sp, modifier = Modifier.padding(20.dp, 20.dp, 20.dp, 0.dp))
+            Text(text = username, fontSize = 30.sp, fontWeight = FontWeight(800), modifier = Modifier.padding(20.dp, 20.dp, 20.dp, 0.dp))
 
             // REFERENCE: https://youtu.be/P3xQdINdrWY
             // To handle the situation where there would be no message to display.
             messages?.let {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
-                    modifier = Modifier.weight(1f).padding(20.dp, 20.dp, 20.dp, 0.dp)
+                    modifier = Modifier.weight(1f).padding(20.dp, 20.dp, 20.dp, 0.dp),
                 ) {
                     itemsIndexed(it) { _: Int, message: Message ->
                         MessageContainer(message, username)
@@ -75,7 +76,7 @@ fun ChatComponent() {
 
             }
             TextField(
-                modifier = Modifier.fillMaxWidth().padding(0.dp, 10.dp, 0.dp, 50.dp),
+                modifier = Modifier.fillMaxWidth().padding(0.dp, 10.dp, 0.dp, 70.dp),
                 value = newMessageText,
                 onValueChange = { newText -> newMessageText = newText },
                 label = { Text(text = DisplayChatText.MESSAGE_LABEL.value) },
@@ -105,6 +106,7 @@ fun MessageContainer(message: Message, username: String) {
     val containerAlignment: Alignment.Horizontal
     val containerCorner: RoundedCornerShape
     val containerColor: Color
+
     if (message.author != username) {
         containerColor = MaterialTheme.colorScheme.surfaceBright
         containerAlignment = Alignment.Start
@@ -123,7 +125,7 @@ fun MessageContainer(message: Message, username: String) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.width(containerWidth)
             ) {
-                Text(text = message.author)
+                Text(text = message.author, fontWeight = FontWeight(600))
                 Text(text = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(message.date).toString())
             }
             Card(
