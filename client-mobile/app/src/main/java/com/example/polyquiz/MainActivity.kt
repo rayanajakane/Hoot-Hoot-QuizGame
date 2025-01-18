@@ -13,15 +13,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.polyquiz.ui.theme.PolyQuizTheme
+import com.example.vanillaprototype.chat.ChatService
+import com.example.vanillaprototype.socket.SocketHandler
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        // TODO: Check if we want to make a separate activity for the chat
+        SocketHandler.setSocket()
+        SocketHandler.connect() // TODO: Find most appropriate place to disconnect (probably after logout)
+        ChatService.handleReceivedMessage() // TODO: Find a more appropriate place to do this (probably after login/signup; it should be guarded by auth)
         setContent {
             PolyQuizTheme {
-//                ChatPage( modifier = Modifier.fillMaxSize() )
-                  SignupPage()
+                ChatPage( modifier = Modifier.fillMaxSize() )
             }
         }
     }
@@ -31,8 +36,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     PolyQuizTheme {
-//        ChatPage( modifier = Modifier.fillMaxSize() )
         SignupPage()
-
     }
 }

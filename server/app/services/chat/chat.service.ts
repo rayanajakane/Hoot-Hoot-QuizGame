@@ -3,7 +3,11 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class ChatService {
-    messages: Message[] = [];
+    private messages: Message[] = [];
+
+    getMessages(): Message[] {
+        return this.messages;
+    }
 
     isValidMessage(message: Message): boolean {
         return message.text.replace(/\s/g, '').trim() !== '';
@@ -13,10 +17,5 @@ export class ChatService {
         message.date = new Date();
         this.messages.push(message);
         return message;
-    }
-
-    getMessages(): Message[] {
-        // TODO
-        return [];
     }
 }
