@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.example.polyquiz.constants.DisplayAuthenticationText
 
 @Composable
-fun ChatPage(modifier: Modifier) {
+fun ChatPage(modifier: Modifier, navigateToLogin: () -> Unit) {
     Row (
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxSize()
@@ -22,7 +22,7 @@ fun ChatPage(modifier: Modifier) {
         ChatComponent()
         ElevatedButton(
             onClick = {
-
+                navigateToLogin()
             },
             modifier = Modifier.padding(20.dp),
             colors = ButtonDefaults.buttonColors(

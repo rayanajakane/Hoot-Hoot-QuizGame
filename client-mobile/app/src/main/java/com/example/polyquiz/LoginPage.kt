@@ -17,7 +17,11 @@ import androidx.compose.ui.unit.sp
 import com.example.polyquiz.constants.DisplayAuthenticationText
 
 @Composable
-fun LoginPage() {
+fun LoginPage(
+    modifier: Modifier,
+    navigateToSignup: () -> Unit,
+    navigateToChat: () -> Unit,
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -63,13 +67,13 @@ fun LoginPage() {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
-                    onClick = { },
+                    onClick = { navigateToChat() },
                 ) {
                     Text(DisplayAuthenticationText.LOGIN_TITLE.value)
                 }
 
                 ElevatedButton(
-                    onClick = { },
+                    onClick = { navigateToSignup() },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.surfaceBright,
                         contentColor = MaterialTheme.colorScheme.onSurface
