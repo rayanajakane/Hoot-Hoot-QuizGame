@@ -32,6 +32,6 @@ export class SignupPageComponent implements OnInit {
     }
 
     signup() {
-        this.authenticationService.signup(this.username, this.password);
+        this.authenticationService.signUp(this.username, this.password);
     }
 }

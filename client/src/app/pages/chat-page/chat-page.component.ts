@@ -17,7 +17,7 @@ export class ChatPageComponent {
     ) {}
 
     logout() {
-        this.authenticationService.logout();
+        this.authenticationService.signOut();
         this.chatService.clearMessages();
     }
 }

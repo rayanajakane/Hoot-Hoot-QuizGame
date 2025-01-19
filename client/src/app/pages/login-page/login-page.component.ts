@@ -33,6 +33,6 @@ export class LoginPageComponent implements OnInit {
 
     // TODO: Maybe disable the login (and sign up) buttons when Firebase is loading?
     login() {
-        this.authenticationService.login(this.username, this.password);
+        this.authenticationService.signIn(this.username, this.password);
     }
 }
