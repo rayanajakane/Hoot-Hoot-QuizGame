@@ -1,4 +1,4 @@
-package com.example.polyquiz
+package com.example.polyquiz.chat.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,10 +34,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.polyquiz.constants.DisplayChatText
-import com.example.vanillaprototype.chat.ChatService
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.text.font.FontWeight
-import com.example.polyquiz.auth.AuthViewModel
+import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.chat.domain.ChatService
+import com.example.polyquiz.chat.domain.Message
 import java.text.SimpleDateFormat
 import java.util.Locale
 

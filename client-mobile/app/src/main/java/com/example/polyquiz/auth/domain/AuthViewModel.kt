@@ -1,4 +1,4 @@
-package com.example.polyquiz.auth
+package com.example.polyquiz.auth.domain
 
 import android.util.Log
 import androidx.lifecycle.LiveData

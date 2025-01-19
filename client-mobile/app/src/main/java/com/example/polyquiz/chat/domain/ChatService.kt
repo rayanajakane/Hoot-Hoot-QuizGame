@@ -1,8 +1,7 @@
-package com.example.vanillaprototype.chat
+package com.example.polyquiz.chat.domain
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.polyquiz.Message
 import com.example.polyquiz.constants.ChatEvents
 import com.example.vanillaprototype.socket.SocketHandler
 import com.google.gson.Gson

@@ -1,4 +1,4 @@
-package com.example.polyquiz
+package com.example.polyquiz.auth.presentation
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -25,8 +25,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.polyquiz.auth.AuthState
-import com.example.polyquiz.auth.AuthViewModel
+import com.example.polyquiz.auth.domain.AuthState
+import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.DisplayAuthenticationText
 
 @Composable

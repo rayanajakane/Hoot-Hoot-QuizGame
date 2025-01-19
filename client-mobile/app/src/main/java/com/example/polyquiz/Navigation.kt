@@ -5,7 +5,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.polyquiz.auth.AuthViewModel
+import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.auth.presentation.LoginPage
+import com.example.polyquiz.auth.presentation.SignupPage
+import com.example.polyquiz.chat.presentation.ChatPage
 import com.example.polyquiz.constants.Route
 
 // References: https://youtu.be/AIC_OFQ1r3k  and  https://youtu.be/lv1raAvwcgI

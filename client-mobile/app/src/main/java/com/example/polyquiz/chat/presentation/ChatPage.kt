@@ -1,4 +1,4 @@
-package com.example.polyquiz
+package com.example.polyquiz.chat.presentation
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -15,8 +15,8 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.polyquiz.auth.AuthState
-import com.example.polyquiz.auth.AuthViewModel
+import com.example.polyquiz.auth.domain.AuthState
+import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.DisplayAuthenticationText
 
 @Composable
