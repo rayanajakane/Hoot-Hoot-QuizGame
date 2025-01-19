@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
     implementation("androidx.navigation:navigation-compose:$navVersion")
+    implementation("androidx.compose.material:material-icons-extended-android:1.7.5")
     implementation (libs.socket.io.client)
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
