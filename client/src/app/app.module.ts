@@ -16,6 +16,7 @@ import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { SignupPageComponent } from './pages/signup-page/signup-page.component';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
+import { TranslocoRootModule } from './transloco-root.module';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -33,6 +34,7 @@ import { getAuth, provideAuth } from '@angular/fire/auth';
         HttpClientModule,
         DragDropModule,
         ReactiveFormsModule,
+        TranslocoRootModule,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [

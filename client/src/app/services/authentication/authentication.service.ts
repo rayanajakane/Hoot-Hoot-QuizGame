@@ -5,7 +5,7 @@ import { ChatEvents } from '@common/events/chat.events';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { User } from 'firebase/auth';
 import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
-import { AuthErrorText, AuthFeedbackText } from 'src/assets/translations/auth/fr';
+import { AuthErrorText, AuthFeedbackText } from 'src/assets/i18n/auth/fr';
 import { FirebaseError } from '@angular/fire/app';
 
 @Injectable({
