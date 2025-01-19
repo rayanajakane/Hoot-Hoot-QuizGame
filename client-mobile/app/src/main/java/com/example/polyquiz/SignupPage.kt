@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.polyquiz.auth.AuthViewModel
 import com.example.polyquiz.constants.DisplayAuthenticationText
 
 @Composable
@@ -22,7 +23,11 @@ fun SignupPage(
     modifier: Modifier,
     navigateToChat: () -> Unit,
     navigateToLogin: () -> Unit,
+    authViewModel: AuthViewModel
 ) {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -45,8 +50,6 @@ fun SignupPage(
                     fontSize = 35.sp,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
-                var email by remember { mutableStateOf("") }
-                var password by remember { mutableStateOf("") }
 
                 TextField(
                     value = email,

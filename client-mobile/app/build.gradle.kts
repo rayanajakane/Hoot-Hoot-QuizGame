@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     kotlin("plugin.serialization") version "2.1.0"
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -42,6 +43,8 @@ android {
 
 dependencies {
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.auth)
     val coreVersion = "1.13.1"
     val navVersion = "2.8.4"
     implementation("androidx.core:core-ktx:$coreVersion")

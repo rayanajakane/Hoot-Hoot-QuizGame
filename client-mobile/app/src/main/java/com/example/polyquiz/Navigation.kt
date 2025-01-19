@@ -5,11 +5,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.polyquiz.auth.AuthViewModel
 import com.example.polyquiz.constants.Route
 
 // References: https://youtu.be/AIC_OFQ1r3k  and  https://youtu.be/lv1raAvwcgI
 @Composable
-fun Navigation(modifier: Modifier) {
+fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
@@ -34,7 +35,8 @@ fun Navigation(modifier: Modifier) {
                 },
                 navigateToChat = {
                     navController.navigate(Route.Chat)
-                }
+                },
+                authViewModel = authViewModel
             )
         }
         composable<Route.Chat> {
