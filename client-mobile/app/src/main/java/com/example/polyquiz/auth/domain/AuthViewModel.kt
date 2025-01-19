@@ -4,7 +4,13 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.polyquiz.constants.AuthErrorText
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 
@@ -16,7 +22,6 @@ class AuthViewModel : ViewModel() {
 
     private val TAG = "EmailAuthActivity"
     // TODO (Move this value into translator)
-    private val emptyEmailPassword: String = "Email or password can't be empty"
 
     init {
         checkAuthStatus()
@@ -36,7 +41,7 @@ class AuthViewModel : ViewModel() {
 
     fun signIn(username: String, password: String) {
         if (username.isEmpty() || password.isEmpty()) {
-            _authState.value = AuthState.Error(emptyEmailPassword)
+            _authState.value = AuthState.Error(AuthErrorText.EMPTY_USERNAME_PASSWORD.value)
             return
         }
         _authState.value = AuthState.Loading
@@ -47,16 +52,14 @@ class AuthViewModel : ViewModel() {
                     _authState.value = AuthState.Authenticated
                     Log.d(TAG, "signInWithEmail:success")
                 } else {
-                    _authState.value =
-                        AuthState.Error(task.exception?.message ?: "Something went wrong")
-                    Log.w(TAG, "signInWithEmail:failure", task.exception)
+                    handleAuthError(task)
                 }
             }
     }
 
     fun signUp(username: String, password: String) {
         if (username.isEmpty() || password.isEmpty()) {
-            _authState.value = AuthState.Error(emptyEmailPassword)
+            _authState.value = AuthState.Error(AuthErrorText.EMPTY_USERNAME_PASSWORD.value)
             return
         }
         _authState.value = AuthState.Loading
@@ -74,9 +77,7 @@ class AuthViewModel : ViewModel() {
                         Log.d(TAG, "createUserWithEmail:success")
                     }
                 } else {
-                    _authState.value =
-                        AuthState.Error(task.exception?.message ?: "Something went wrong")
-                    Log.w(TAG, "createUserWithEmail:failure", task.exception)
+                    handleAuthError(task)
                 }
             }
     }
@@ -84,6 +85,22 @@ class AuthViewModel : ViewModel() {
     fun signOut() {
         auth.signOut()
         _authState.value = AuthState.Unauthenticated
+    }
+
+    private fun handleAuthError(task: Task<AuthResult>) {
+        val errorMessage = try {
+            throw task.exception!!
+        } catch(e: FirebaseAuthUserCollisionException) {
+            AuthErrorText.USER_ALREADY_EXISTS.value
+        } catch(e: FirebaseAuthWeakPasswordException) {
+            AuthErrorText.PASSWORD_TOO_SHORT.value
+        } catch(e: FirebaseAuthInvalidCredentialsException) {
+           AuthErrorText.INVALID_USERNAME_PASSWORD.value
+        } catch (e: Exception) {
+            e.message ?: AuthErrorText.OTHER_ERROR.value;
+        }
+        _authState.value = AuthState.Error(errorMessage)
+        Log.w(TAG, "createUserWithEmail:failure", task.exception)
     }
 
 }
