@@ -71,7 +71,7 @@ fun SignupPage(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
-                    onClick = {  navigateToChat() },
+                    onClick = {  authViewModel.signUp(email, password) },
                 ) {
                     Text(DisplayAuthenticationText.SIGNUP_ACTION.value)
                 }
