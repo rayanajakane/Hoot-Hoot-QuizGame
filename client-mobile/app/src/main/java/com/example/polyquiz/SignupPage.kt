@@ -30,7 +30,7 @@ fun SignupPage(
     navigateToLogin: () -> Unit,
     authViewModel: AuthViewModel
 ) {
-    var email by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val context = LocalContext.current
     val successSignUpMessage = "Connected successfully!"
@@ -68,8 +68,8 @@ fun SignupPage(
                 )
 
                 TextField(
-                    value = email,
-                    onValueChange = { email = it },
+                    value = username,
+                    onValueChange = { username = it },
                     singleLine = true,
                     label = { Text(DisplayAuthenticationText.USERNAME.value) },
                     modifier = Modifier.fillMaxWidth()
@@ -82,7 +82,7 @@ fun SignupPage(
                     onValueChange = { password = it },
                     singleLine = true,
                     keyboardActions = KeyboardActions(onDone = {
-                        authViewModel.signIn(email, password)
+                        authViewModel.signUp(username, password)
                     }),
                     label = { Text(DisplayAuthenticationText.PASSWORD.value) },
                     modifier = Modifier.fillMaxWidth(),
@@ -92,7 +92,7 @@ fun SignupPage(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
-                    onClick = {  authViewModel.signUp(email, password) },
+                    onClick = {  authViewModel.signUp(username, password) },
                     enabled = authState.value != AuthState.Loading
                 ) {
                     Text(DisplayAuthenticationText.SIGNUP_ACTION.value)

@@ -37,15 +37,16 @@ import com.example.polyquiz.constants.DisplayChatText
 import com.example.vanillaprototype.chat.ChatService
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.text.font.FontWeight
+import com.example.polyquiz.auth.AuthViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
-fun ChatComponent() {
-    val username = "TODO"
+fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
+    val username by remember { mutableStateOf(authViewModel.getUsername() )}
     val messages by ChatService.messages.observeAsState()
     var newMessageText by remember{ mutableStateOf(TextFieldValue("")) }
-    
+
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer

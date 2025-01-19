@@ -36,7 +36,7 @@ fun ChatPage(modifier: Modifier, navigateToLogin: () -> Unit, authViewModel: Aut
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxSize()
     ){
-        ChatComponent()
+        ChatComponent(modifier = modifier, authViewModel = authViewModel)
         ElevatedButton(
             onClick = {
                 authViewModel.signOut()
