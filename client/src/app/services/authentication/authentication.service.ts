@@ -5,7 +5,8 @@ import { ChatEvents } from '@common/events/chat.events';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { User } from 'firebase/auth';
 import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
-import { AuthFeedbackText } from 'src/assets/translations/auth/fr';
+import { AuthErrorText, AuthFeedbackText } from 'src/assets/translations/auth/fr';
+import { FirebaseError } from '@angular/fire/app';
 
 @Injectable({
     providedIn: 'root',
@@ -43,7 +44,7 @@ export class AuthenticationService {
                 this.notificationService.displaySuccessMessage(AuthFeedbackText.SignUp);
             })
             .catch((error) => {
-                const errorMessage = error.message;
+                const errorMessage = this.handleAuthErrorMessage(error);
                 this.notificationService.displayErrorMessage(errorMessage);
             });
     }
@@ -55,7 +56,7 @@ export class AuthenticationService {
                 this.notificationService.displaySuccessMessage(AuthFeedbackText.SignIn);
             })
             .catch((error) => {
-                const errorMessage = error.message;
+                const errorMessage = this.handleAuthErrorMessage(error);
                 this.notificationService.displayErrorMessage(errorMessage);
             });
     }
@@ -77,5 +78,22 @@ export class AuthenticationService {
                 this.notificationService.displayErrorMessage(error.message);
             });
         this.socketHandler.socket.removeListener(ChatEvents.NewMessage);
+    }
+
+    private handleAuthErrorMessage(error: FirebaseError): string {
+        switch (error.code) {
+            case 'auth/email-already-in-use': {
+                return AuthErrorText.UserAlreadyExists;
+            }
+            case 'auth/weak-password': {
+                return AuthErrorText.PasswordTooShort;
+            }
+            case 'auth/invalid-credential': {
+                return AuthErrorText.InvalidUsernamePassword;
+            }
+            default: {
+                return AuthErrorText.OtherError;
+            }
+        }
     }
 }

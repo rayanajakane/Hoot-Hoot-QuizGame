@@ -12,7 +12,7 @@ export const enum AuthErrorText {
     UserAlreadyExists = 'User already exists',
     PasswordTooShort = 'Password is too short (minimum: 6 characters).',
     InvalidUsernamePassword = 'The username and/or the password are invalid.',
-    OtherError = 'Error',
+    OtherError = 'An unknown error occured',
 }
 
 export const enum AuthFeedbackText {

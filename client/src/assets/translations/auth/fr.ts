@@ -14,7 +14,7 @@ export const enum AuthErrorText {
     UserAlreadyExists = 'Cet utilisateur existe déjà.',
     PasswordTooShort = 'Le mot de passe est trop court (minimum: 6 caractères).',
     InvalidUsernamePassword = "Le nom d'utilisateur et/ou le mot de passe sont invalides.",
-    OtherError = 'Erreur',
+    OtherError = 'Une erreur inconnue est survenue',
 }
 
 export const enum AuthFeedbackText {
