@@ -23,3 +23,9 @@ enum class AuthErrorText (val value: String) {
     INVALID_USERNAME_PASSWORD("Le nom d'utilisateur et/ou le mot de passe sont invalides."),
     OTHER_ERROR("Erreur")
 }
+
+enum class AuthFeedbackText (val value: String) {
+    SIGN_IN("Connexion réussie !"),
+    SIGN_UP("Inscription réussie !"),
+    SIGN_OUT("Déconnexion réussie !")
+}

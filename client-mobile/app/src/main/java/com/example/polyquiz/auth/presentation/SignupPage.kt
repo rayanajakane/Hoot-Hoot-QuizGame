@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.DisplayAuthenticationText
 
 @Composable
@@ -42,10 +43,12 @@ fun SignupPage(
 
     val context = LocalContext.current
     val authState = authViewModel.authState.observeAsState()
-    val successSignUpMessage = "Connected successfully!"
     LaunchedEffect(authState.value) {
         when(authState.value) {
-            is AuthState.Authenticated -> navigateToChat()
+            is AuthState.Authenticated -> {
+                Toast.makeText(context, AuthFeedbackText.SIGN_IN.value, Toast.LENGTH_SHORT).show()
+                navigateToChat()
+            }
             is AuthState.Error -> Toast.makeText(context, (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
             else -> Unit
         }

@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.DisplayAuthenticationText
 
 @Composable
@@ -25,12 +26,14 @@ fun ChatPage(modifier: Modifier, navigateToLogin: () -> Unit, authViewModel: Aut
     val context = LocalContext.current
     LaunchedEffect(authState.value) {
         when(authState.value) {
-            is AuthState.Unauthenticated -> navigateToLogin()
+            is AuthState.Unauthenticated -> {
+                Toast.makeText(context, AuthFeedbackText.SIGN_OUT.value, Toast.LENGTH_SHORT).show()
+                navigateToLogin()
+            }
             is AuthState.Error -> Toast.makeText(context, (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
             else -> Unit
         }
     }
-
 
     Row (
         horizontalArrangement = Arrangement.SpaceBetween,

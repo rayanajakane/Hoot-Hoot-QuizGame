@@ -21,7 +21,6 @@ class AuthViewModel : ViewModel() {
     private var user: FirebaseUser? = null
 
     private val TAG = "EmailAuthActivity"
-    // TODO (Move this value into translator)
 
     init {
         checkAuthStatus()
@@ -58,6 +57,7 @@ class AuthViewModel : ViewModel() {
     }
 
     fun signUp(username: String, password: String) {
+        // TODO: Replace spaces? (or simply forbid them?)
         if (username.isEmpty() || password.isEmpty()) {
             _authState.value = AuthState.Error(AuthErrorText.EMPTY_USERNAME_PASSWORD.value)
             return
