@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DisplayAuthenticationText } from '@app/constants/display-texts';
+import { DisplayAuthenticationText } from 'src/assets/translations/display/display-texts-fr';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 
 @Component({

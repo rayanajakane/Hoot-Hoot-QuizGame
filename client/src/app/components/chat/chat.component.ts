@@ -6,7 +6,7 @@ import { AuthenticationService } from '@app/services/authentication/authenticati
 import { ChatService } from '@app/services/chat/chat.service';
 import { ChatEvents } from '@common/events/chat.events';
 
-import { DisplayChatText } from '@app/constants/display-texts';
+import { DisplayChatText } from 'src/assets/translations/display/display-texts-fr';
 
 @Component({
     selector: 'app-chat',
