@@ -26,7 +26,9 @@ class MainActivity : ComponentActivity() {
         ChatService.handleReceivedMessage() // TODO: Find a more appropriate place to do this (probably after login/signup; it should be guarded by auth)
         setContent {
             PolyQuizTheme {
-                ChatPage( modifier = Modifier.fillMaxSize() )
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    Navigation(modifier = Modifier.padding(innerPadding))
+                }
             }
         }
     }
@@ -36,6 +38,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     PolyQuizTheme {
-        SignupPage()
+        // Can be used to preview composable
     }
 }
