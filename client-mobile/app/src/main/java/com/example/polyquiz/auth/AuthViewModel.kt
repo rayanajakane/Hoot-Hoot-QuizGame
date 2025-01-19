@@ -1,7 +1,6 @@
 package com.example.polyquiz.auth
 
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -36,8 +35,8 @@ class AuthViewModel : ViewModel() {
             _authState.value = AuthState.Error(emptyEmailPassword)
             return
         }
-
-        auth.signInWithEmailAndPassword(email, password)
+        _authState.value = AuthState.Loading
+        auth.signInWithEmailAndPassword("$email@polyQuiz.com", password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     _authState.value = AuthState.Authenticated
@@ -51,7 +50,12 @@ class AuthViewModel : ViewModel() {
     }
 
     fun signUp(email: String, password: String) {
-        auth.createUserWithEmailAndPassword(email, password)
+        if (email.isEmpty() || password.isEmpty()) {
+            _authState.value = AuthState.Error(emptyEmailPassword)
+            return
+        }
+        _authState.value = AuthState.Loading
+        auth.createUserWithEmailAndPassword("$email@polyQuiz.com", password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     _authState.value = AuthState.Authenticated

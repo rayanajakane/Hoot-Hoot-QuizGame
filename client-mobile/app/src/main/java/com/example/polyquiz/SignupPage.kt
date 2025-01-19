@@ -93,6 +93,7 @@ fun SignupPage(
 
                 Button(
                     onClick = {  authViewModel.signUp(email, password) },
+                    enabled = authState.value != AuthState.Loading
                 ) {
                     Text(DisplayAuthenticationText.SIGNUP_ACTION.value)
                 }
