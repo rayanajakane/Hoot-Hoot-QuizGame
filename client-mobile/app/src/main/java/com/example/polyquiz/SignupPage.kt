@@ -2,6 +2,7 @@ package com.example.polyquiz
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
@@ -69,6 +70,7 @@ fun SignupPage(
                 TextField(
                     value = email,
                     onValueChange = { email = it },
+                    singleLine = true,
                     label = { Text(DisplayAuthenticationText.USERNAME.value) },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -78,6 +80,10 @@ fun SignupPage(
                 TextField(
                     value = password,
                     onValueChange = { password = it },
+                    singleLine = true,
+                    keyboardActions = KeyboardActions(onDone = {
+                        authViewModel.signIn(email, password)
+                    }),
                     label = { Text(DisplayAuthenticationText.PASSWORD.value) },
                     modifier = Modifier.fillMaxWidth(),
                     visualTransformation = PasswordVisualTransformation()

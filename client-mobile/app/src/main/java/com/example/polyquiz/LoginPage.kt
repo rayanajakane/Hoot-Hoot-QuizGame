@@ -1,6 +1,7 @@
 package com.example.polyquiz
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
@@ -20,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import com.example.polyquiz.auth.AuthState
 import com.example.polyquiz.auth.AuthViewModel
 import com.example.polyquiz.constants.DisplayAuthenticationText
+import com.example.vanillaprototype.chat.ChatService
 
 @Composable
 fun LoginPage(
@@ -69,6 +71,7 @@ fun LoginPage(
                 TextField(
                     value = email,
                     onValueChange = { email = it },
+                    singleLine = true,
                     label = { Text(DisplayAuthenticationText.USERNAME.value) },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -78,8 +81,12 @@ fun LoginPage(
                 TextField(
                     value = password,
                     onValueChange = { password = it },
+                    singleLine = true,
                     label = { Text(DisplayAuthenticationText.PASSWORD.value) },
                     modifier = Modifier.fillMaxWidth(),
+                    keyboardActions = KeyboardActions(onDone = {
+                        authViewModel.signIn(email, password)
+                    }),
                     visualTransformation = PasswordVisualTransformation()
                 )
 
