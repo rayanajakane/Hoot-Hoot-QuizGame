@@ -24,7 +24,8 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                 },
                 navigateToSignup = {
                     navController.navigate(Route.Signup)
-                }
+                },
+                authViewModel = authViewModel
             )
         }
         composable<Route.Signup> {
@@ -43,7 +44,8 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
             ChatPage(modifier,
                 navigateToLogin = {
                     navController.navigate(Route.Login)
-                })
+                },
+                authViewModel = authViewModel)
         }
     }
 }

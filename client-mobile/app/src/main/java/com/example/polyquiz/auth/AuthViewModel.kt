@@ -31,7 +31,7 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    private fun signIn(email: String, password: String) {
+    fun signIn(email: String, password: String) {
         if (email.isEmpty() || password.isEmpty()) {
             _authState.value = AuthState.Error(emptyEmailPassword)
             return
@@ -40,12 +40,12 @@ class AuthViewModel : ViewModel() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Log.d(TAG, "signInWithEmail:success")
                     _authState.value = AuthState.Authenticated
+                    Log.d(TAG, "signInWithEmail:success")
                 } else {
-                    Log.w(TAG, "signInWithEmail:failure", task.exception)
                     _authState.value =
                         AuthState.Error(task.exception?.message ?: "Something went wrong")
+                    Log.w(TAG, "signInWithEmail:failure", task.exception)
                 }
             }
     }
@@ -57,14 +57,14 @@ class AuthViewModel : ViewModel() {
                     _authState.value = AuthState.Authenticated
                     Log.d(TAG, "createUserWithEmail:success")
                 } else {
-                    Log.w(TAG, "createUserWithEmail:failure", task.exception)
                     _authState.value =
                         AuthState.Error(task.exception?.message ?: "Something went wrong")
+                    Log.w(TAG, "createUserWithEmail:failure", task.exception)
                 }
             }
     }
 
-    private fun signOut() {
+    fun signOut() {
         auth.signOut()
         _authState.value = AuthState.Unauthenticated
     }
