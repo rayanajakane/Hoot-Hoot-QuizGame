@@ -1,15 +1,17 @@
 {
-    "error" : {
-        "empty-username-password": "Username and/or password are empty",
-        "user-already-exists": "User already exists",
-        "password-too-short": "Password is too short (minimum: 6 characters).",
-        "invalid-username-password": "The username and/or the password are invalid.",
-        "other-error": "An unknown error occurred"
-    },
-    "dialog-feedback" : {
-        "sign-in" : "Signed in successfully !",
-        "sign-up" : "Signed up successfully !",
-        "sign-out" : "Signed out successfully !"
+    "auth" : {
+        "error" : {
+            "empty-username-password": "Username and/or password are empty",
+            "user-already-exists": "User already exists",
+            "password-too-short": "Password is too short (minimum: 6 characters).",
+            "invalid-username-password": "The username and/or the password are invalid.",
+            "other-error": "An unknown error occurred"
+        },
+        "dialog-feedback" : {
+            "sign-in" : "Signed in successfully !",
+            "sign-up" : "Signed up successfully !",
+            "sign-out" : "Signed out successfully !"
+        }
     },
     "page" : {
         "username" : "Username",
@@ -19,6 +21,6 @@
         "login-action" : "Sign in",
         "signup-action" : "Sign up",
         "return-to-login" : "Return to login",
-        "logout" : "Log out"
+        "logout-action" : "Log out"
     }
 }

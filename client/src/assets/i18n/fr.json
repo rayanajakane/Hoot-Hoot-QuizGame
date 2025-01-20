@@ -1,15 +1,17 @@
 {
-    "error" : {
-        "empty-username-password": "Le nom d'utilisateur et/ou le mot de passe sont vides",
-        "user-already-exists": "Cet utilisateur existe déjà.",
-        "password-too-short": "Le mot de passe est trop court (minimum: 6 caractères).",
-        "invalid-username-password": "Le nom d'utilisateur et/ou le mot de passe sont invalides.",
-        "other-error": "Une erreur inconnue est survenue"
-    },
-    "dialog-feedback" : {
-        "sign-in" : "Connexion réussie !",
-        "sign-up" : "Inscription réussie !",
-        "sign-out" : "Déconnexion réussie !"
+    "auth" : {
+        "error" : {
+            "empty-username-password": "Le nom d'utilisateur et/ou le mot de passe sont vides",
+            "user-already-exists": "Cet utilisateur existe déjà.",
+            "password-too-short": "Le mot de passe est trop court (minimum: 6 caractères).",
+            "invalid-username-password": "Le nom d'utilisateur et/ou le mot de passe sont invalides.",
+            "other-error": "Une erreur inconnue est survenue"
+        },
+        "dialog-feedback" : {
+            "sign-in" : "Connexion réussie !",
+            "sign-up" : "Inscription réussie !",
+            "sign-out" : "Déconnexion réussie !"
+        }
     },
     "page" : {
         "username" : "Nom d'utilisateur",
@@ -19,6 +21,7 @@
         "login-action" : "Se connecter",
         "signup-action" : "S'inscrire",
         "return-to-login" : "Retourner à la page de connexion",
-        "logout" : "Se déconnecter"
+        "logout-action" : "Se déconnecter"
     }
+
 }

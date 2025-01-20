@@ -1,4 +1,7 @@
-<div id="main-container">
-    <app-chat></app-chat>
-    <button mat-raised-button id="logout-button" (click)="logout()">{{ displayText.Logout }}</button>
-</div>
+<ng-container *transloco="let t">
+    <div id="main-container">
+        <app-chat></app-chat>
+        <button mat-raised-button id="logout-button" (click)="logout()">{{ t('page.logout-action') }}</button>
+    </div>
+</ng-container>
+

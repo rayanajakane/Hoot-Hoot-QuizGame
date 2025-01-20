@@ -84,16 +84,16 @@ export class AuthenticationService {
     private handleAuthErrorMessage(error: FirebaseError): string {
         switch (error.code) {
             case 'auth/email-already-in-use': {
-                return this.translocoService.translate('error.user-already-exists');
+                return this.translocoService.translate('auth.error.user-already-exists');
             }
             case 'auth/weak-password': {
-                return this.translocoService.translate('error.password-too-short');
+                return this.translocoService.translate('auth.error.password-too-short');
             }
             case 'auth/invalid-credential': {
-                return this.translocoService.translate('error.invalid-username-password');
+                return this.translocoService.translate('auth.error.invalid-username-password');
             }
             default: {
-                return this.translocoService.translate('error.other-error');
+                return this.translocoService.translate('auth.error.other-error');
             }
         }
     }
