@@ -10,9 +10,7 @@ import { environment } from '../environments/environment';
         provideTransloco({
             config: {
                 availableLangs: ['en', 'fr'],
-                defaultLang: 'en',
-                // Remove this option if your application doesn't support changing language in runtime.
-                reRenderOnLangChange: true,
+                defaultLang: 'fr',
                 prodMode: environment.production,
             },
             loader: TranslocoHttpLoader,

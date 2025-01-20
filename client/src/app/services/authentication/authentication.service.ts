@@ -5,8 +5,8 @@ import { ChatEvents } from '@common/events/chat.events';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { User } from 'firebase/auth';
 import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
-import { AuthErrorText, AuthFeedbackText } from 'src/assets/i18n/auth/fr';
 import { FirebaseError } from '@angular/fire/app';
+import { TranslocoService } from '@jsverse/transloco';
 
 @Injectable({
     providedIn: 'root',
@@ -18,6 +18,7 @@ export class AuthenticationService {
         private readonly router: Router,
         private readonly socketHandler: SocketHandlerService,
         private readonly notificationService: NotificationService,
+        private readonly translocoService: TranslocoService,
         private auth: Auth,
     ) {
         onAuthStateChanged(this.auth, (user) => {
@@ -41,7 +42,7 @@ export class AuthenticationService {
         createUserWithEmailAndPassword(this.auth, `${formattedUsername}@polyQuiz.com`, password)
             .then((userCredential) => {
                 updateProfile(userCredential.user, { displayName: formattedUsername });
-                this.notificationService.displaySuccessMessage(AuthFeedbackText.SignUp);
+                this.notificationService.displaySuccessMessage(this.translocoService.translate('dialog-feedback.sign-up'));
             })
             .catch((error) => {
                 const errorMessage = this.handleAuthErrorMessage(error);
@@ -53,7 +54,7 @@ export class AuthenticationService {
         const formattedUsername = username.trim();
         signInWithEmailAndPassword(this.auth, `${formattedUsername}@polyQuiz.com`, password)
             .then(() => {
-                this.notificationService.displaySuccessMessage(AuthFeedbackText.SignIn);
+                this.notificationService.displaySuccessMessage(this.translocoService.translate('dialog-feedback.sign-in'));
             })
             .catch((error) => {
                 const errorMessage = this.handleAuthErrorMessage(error);
@@ -72,7 +73,7 @@ export class AuthenticationService {
     signOut() {
         signOut(this.auth)
             .then(() => {
-                this.notificationService.displaySuccessMessage(AuthFeedbackText.SignOut);
+                this.notificationService.displaySuccessMessage(this.translocoService.translate('dialog-feedback.sign-out'));
             })
             .catch((error) => {
                 this.notificationService.displayErrorMessage(error.message);
@@ -83,16 +84,16 @@ export class AuthenticationService {
     private handleAuthErrorMessage(error: FirebaseError): string {
         switch (error.code) {
             case 'auth/email-already-in-use': {
-                return AuthErrorText.UserAlreadyExists;
+                return this.translocoService.translate('error.user-already-exists');
             }
             case 'auth/weak-password': {
-                return AuthErrorText.PasswordTooShort;
+                return this.translocoService.translate('error.password-too-short');
             }
             case 'auth/invalid-credential': {
-                return AuthErrorText.InvalidUsernamePassword;
+                return this.translocoService.translate('error.invalid-username-password');
             }
             default: {
-                return AuthErrorText.OtherError;
+                return this.translocoService.translate('error.other-error');
             }
         }
     }
