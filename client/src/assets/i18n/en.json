@@ -21,6 +21,8 @@
         "login-action" : "Sign in",
         "signup-action" : "Sign up",
         "return-to-login" : "Return to login",
-        "logout-action" : "Log out"
+        "logout-action" : "Log out",
+        "message-label": "Message",
+        "disabled-label" : "Disabled"
     }
 }

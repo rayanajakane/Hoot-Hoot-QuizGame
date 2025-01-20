@@ -21,7 +21,9 @@
         "login-action" : "Se connecter",
         "signup-action" : "S'inscrire",
         "return-to-login" : "Retourner à la page de connexion",
-        "logout-action" : "Se déconnecter"
+        "logout-action" : "Se déconnecter",
+        "message-label": "Message",
+        "disabled-label" : "Désactivé"
     }
 
 }

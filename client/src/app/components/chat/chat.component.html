@@ -23,9 +23,9 @@
         </div>
     </div>
 
-    <form id="chat-form">
+    <form id="chat-form" *transloco="let t">
         <mat-form-field id="chat-input-container">
-            <mat-label>{{ disableMessagingField ? displayText.DisabledLabel : displayText.MessageLabel }}</mat-label>
+            <mat-label>{{ disableMessagingField ? t('page.disabled-label') : t('page.message-label') }}</mat-label>
             <input
                 id="chat-input"
                 matInput

@@ -42,7 +42,7 @@ export class AuthenticationService {
         createUserWithEmailAndPassword(this.auth, `${formattedUsername}@polyQuiz.com`, password)
             .then((userCredential) => {
                 updateProfile(userCredential.user, { displayName: formattedUsername });
-                this.notificationService.displaySuccessMessage(this.translocoService.translate('dialog-feedback.sign-up'));
+                this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-up'));
             })
             .catch((error) => {
                 const errorMessage = this.handleAuthErrorMessage(error);
@@ -54,7 +54,7 @@ export class AuthenticationService {
         const formattedUsername = username.trim();
         signInWithEmailAndPassword(this.auth, `${formattedUsername}@polyQuiz.com`, password)
             .then(() => {
-                this.notificationService.displaySuccessMessage(this.translocoService.translate('dialog-feedback.sign-in'));
+                this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-in'));
             })
             .catch((error) => {
                 const errorMessage = this.handleAuthErrorMessage(error);
@@ -73,7 +73,7 @@ export class AuthenticationService {
     signOut() {
         signOut(this.auth)
             .then(() => {
-                this.notificationService.displaySuccessMessage(this.translocoService.translate('dialog-feedback.sign-out'));
+                this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-out'));
             })
             .catch((error) => {
                 this.notificationService.displayErrorMessage(error.message);
