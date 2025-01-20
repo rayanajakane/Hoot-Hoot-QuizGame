@@ -12,25 +12,44 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.polyquiz.SnackbarController
+import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.DisplayAuthenticationText
+import kotlinx.coroutines.launch
 
 @Composable
 fun ChatPage(modifier: Modifier, navigateToLogin: () -> Unit, authViewModel: AuthViewModel) {
     val authState = authViewModel.authState.observeAsState()
-    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
     LaunchedEffect(authState.value) {
         when(authState.value) {
             is AuthState.Unauthenticated -> {
-                Toast.makeText(context, AuthFeedbackText.SIGN_OUT.value, Toast.LENGTH_SHORT).show()
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = AuthFeedbackText.SIGN_OUT.value,
+                        )
+                    )
+                }
                 navigateToLogin()
             }
-            is AuthState.Error -> Toast.makeText(context, (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
+            is AuthState.Error -> {
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = (authState.value as AuthState.Error).message,
+                        )
+                    )
+                }
+            }
             else -> Unit
         }
     }

@@ -84,6 +84,11 @@ class AuthViewModel : ViewModel() {
 
     fun signOut() {
         auth.signOut()
+        resetAuthState()
+    }
+
+    fun resetAuthState() {
+        // This is to avoid the bug where an error state transfers from login to signup page.
         _authState.value = AuthState.Unauthenticated
     }
 

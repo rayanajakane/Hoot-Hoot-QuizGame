@@ -21,14 +21,18 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.polyquiz.SnackbarController
+import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.DisplayAuthenticationText
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignupPage(
@@ -41,15 +45,32 @@ fun SignupPage(
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
-    val context = LocalContext.current
     val authState = authViewModel.authState.observeAsState()
+    val scope = rememberCoroutineScope()
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     LaunchedEffect(authState.value) {
         when(authState.value) {
             is AuthState.Authenticated -> {
-                Toast.makeText(context, AuthFeedbackText.SIGN_IN.value, Toast.LENGTH_SHORT).show()
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = AuthFeedbackText.SIGN_UP.value,
+                        )
+                    )
+                }
                 navigateToChat()
             }
-            is AuthState.Error -> Toast.makeText(context, (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
+            is AuthState.Error -> {
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = (authState.value as AuthState.Error).message,
+                        )
+                    )
+                }
+            }
             else -> Unit
         }
     }
@@ -93,6 +114,7 @@ fun SignupPage(
                     singleLine = true,
                     keyboardActions = KeyboardActions(onDone = {
                         authViewModel.signUp(username, password)
+                        keyboardController?.hide()
                     }),
                     label = { Text(DisplayAuthenticationText.PASSWORD.value) },
                     modifier = Modifier.fillMaxWidth(),
@@ -113,14 +135,22 @@ fun SignupPage(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
-                    onClick = {  authViewModel.signUp(username, password) },
+                    onClick =
+                    {
+                        authViewModel.signUp(username, password)
+                        keyboardController?.hide()
+                    },
                     enabled = authState.value != AuthState.Loading
                 ) {
                     Text(DisplayAuthenticationText.SIGNUP_ACTION.value)
                 }
 
                 ElevatedButton(
-                    onClick = { navigateToLogin() },
+                    onClick =
+                    {
+                        navigateToLogin()
+                        authViewModel.resetAuthState()
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.surfaceBright,
                         contentColor = MaterialTheme.colorScheme.onSurface
