@@ -1,11 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { AppComponent } from '@app/pages/app/app.component';
+import { getTranslocoModule } from '@app/transloco-testing.module';
 
 describe('AppComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [AppRoutingModule],
+            imports: [AppRoutingModule, getTranslocoModule()],
             declarations: [AppComponent],
         }).compileComponents();
     });

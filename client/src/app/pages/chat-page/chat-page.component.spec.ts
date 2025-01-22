@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { ChatService } from '@app/services/chat/chat.service';
+import { getTranslocoModule } from '@app/transloco-testing.module';
 import { ChatPageComponent } from './chat-page.component';
 
 import SpyObj = jasmine.SpyObj;
@@ -14,8 +15,9 @@ describe('ChatPageComponent', () => {
 
     beforeEach(() => {
         const chatSpy = jasmine.createSpyObj('ChatService', ['clearMessages']);
-        const authenticationSpy = jasmine.createSpyObj('AuthenticationService', ['logout']);
+        const authenticationSpy = jasmine.createSpyObj('AuthenticationService', ['signOut', 'disconnectSocket']);
         TestBed.configureTestingModule({
+            imports: [getTranslocoModule()],
             declarations: [ChatPageComponent],
             providers: [
                 { provide: ChatService, useValue: chatSpy },
@@ -33,11 +35,11 @@ describe('ChatPageComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should logout and clear messages', () => {
+    it('should signOut and clear messages', () => {
         const clearSpy = chatServiceSpy.clearMessages.and.returnValue();
-        const logoutSpy = authenticationServiceSpy.logout.and.returnValue();
-        component.logout();
+        const signOutSpy = authenticationServiceSpy.signOut.and.returnValue();
+        component.signOut();
         expect(clearSpy).toHaveBeenCalled();
-        expect(logoutSpy).toHaveBeenCalled();
+        expect(signOutSpy).toHaveBeenCalled();
     });
 });

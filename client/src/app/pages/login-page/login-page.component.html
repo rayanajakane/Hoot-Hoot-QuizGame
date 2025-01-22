@@ -1,20 +1,22 @@
-<div id="main-container" (keyup.enter)="login()">
-    <mat-card id="main-card">
-        <h1>{{ displayText.LoginTitle }}</h1>
-        <div id="form">
-            <mat-form-field id="username">
-                <mat-label>{{ displayText.Username }}</mat-label>
-                <input matInput placeholder="" [(ngModel)]="username" id="username-input" autofocus cdkFocusInitial />
-            </mat-form-field>
-            <mat-form-field id="Password">
-                <mat-label>{{ displayText.Password }}</mat-label>
-                <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="password" />
-                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-                    <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
-                </button>
-            </mat-form-field>
-        </div>
-        <button mat-raised-button color="primary" (click)="login()">{{ displayText.LoginAction }}</button>
-        <button mat-raised-button routerLink="/signup">{{ displayText.SignupAction }}</button>
-    </mat-card>
-</div>
+<ng-container *transloco="let t">
+    <div id="main-container" (keyup.enter)="signIn()">
+        <mat-card id="main-card">
+            <h1>{{ t('page.login-title') }}</h1>
+            <div id="form">
+                <mat-form-field id="username">
+                    <mat-label>{{ t('page.username') }}</mat-label>
+                    <input matInput placeholder="" [(ngModel)]="username" id="username-input" autofocus cdkFocusInitial />
+                </mat-form-field>
+                <mat-form-field id="Password">
+                    <mat-label>{{ t('page.password') }}</mat-label>
+                    <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="password" />
+                    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                        <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+                    </button>
+                </mat-form-field>
+            </div>
+            <button mat-raised-button color="primary" (click)="signIn()">{{ t('page.login-action') }}</button>
+            <button mat-raised-button routerLink="/signup">{{ t('page.signup-action') }}</button>
+        </mat-card>
+    </div>
+</ng-container>
