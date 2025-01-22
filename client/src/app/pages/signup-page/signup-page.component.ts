@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { DisplayAuthenticationText } from '@app/constants/display-texts';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 
 @Component({
@@ -12,8 +11,6 @@ export class SignupPageComponent implements OnInit {
     username: string = '';
     password: string = '';
 
-    displayText = DisplayAuthenticationText;
-
     constructor(private readonly authenticationService: AuthenticationService) {}
 
     ngOnInit() {
@@ -23,15 +20,15 @@ export class SignupPageComponent implements OnInit {
     autofocus() {
         // REFERENCE: https://stackoverflow.com/questions/59893531/accessibilty-focus-is-lost-when-route-changed-in-angular
         const blurElement: HTMLElement = document.getElementById('username-input') as HTMLElement;
-        blurElement.blur();
+        blurElement?.blur();
 
         setTimeout(() => {
             const focusElement: HTMLElement = document.getElementById('username-input') as HTMLElement;
-            focusElement.focus();
+            focusElement?.focus();
         }, 0);
     }
 
-    signup() {
-        this.authenticationService.signup(this.username, this.password);
+    signUp() {
+        this.authenticationService.signUp(this.username, this.password);
     }
 }

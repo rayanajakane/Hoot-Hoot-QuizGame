@@ -1,6 +1,8 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getAuth, provideAuth } from '@angular/fire/auth';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
@@ -14,6 +16,7 @@ import { ClickStopPropagationDirective } from './directives/click-stop-propagati
 import { ChatPageComponent } from './pages/chat-page/chat-page.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { SignupPageComponent } from './pages/signup-page/signup-page.component';
+import { TranslocoRootModule } from './transloco-root.module';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -31,9 +34,24 @@ import { SignupPageComponent } from './pages/signup-page/signup-page.component';
         HttpClientModule,
         DragDropModule,
         ReactiveFormsModule,
+        TranslocoRootModule,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    providers: [{ provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: tooltipOptions }],
+    providers: [
+        { provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: tooltipOptions },
+        provideFirebaseApp(() =>
+            initializeApp({
+                projectId: 'log3900-201-7daa3',
+                appId: '1:4479204095:web:3b704c8df42da16ac2eaca',
+                databaseURL: 'https://log3900-201-7daa3-default-rtdb.firebaseio.com',
+                storageBucket: 'log3900-201-7daa3.firebasestorage.app',
+                apiKey: 'AIzaSyBylwnS_bSV6_M5PORmlyS1vjgVr62Tr-s',
+                authDomain: 'log3900-201-7daa3.firebaseapp.com',
+                messagingSenderId: '4479204095',
+            }),
+        ),
+        provideAuth(() => getAuth()),
+    ],
     exports: [],
     bootstrap: [AppComponent],
 })

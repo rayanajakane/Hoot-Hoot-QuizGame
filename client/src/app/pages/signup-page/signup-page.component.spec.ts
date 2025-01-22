@@ -9,7 +9,7 @@ describe('SignupPageComponent', () => {
     let authenticationServiceSpy: SpyObj<AuthenticationService>;
 
     beforeEach(() => {
-        const authenticationSpy = jasmine.createSpyObj('AuthenticationService', ['signup']);
+        const authenticationSpy = jasmine.createSpyObj('AuthenticationService', ['signUp']);
         TestBed.configureTestingModule({
             declarations: [SignupPageComponent],
             providers: [{ provide: AuthenticationService, useValue: authenticationSpy }],
@@ -23,11 +23,11 @@ describe('SignupPageComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
-    it('should signup', () => {
+    it('should signUp', () => {
         component.username = 'mockUsername';
         component.password = 'mockPassword';
-        const signupSpy = authenticationServiceSpy.signup.and.returnValue();
-        component.signup();
-        expect(signupSpy).toHaveBeenCalledWith(component.username, component.password);
+        const signUpSpy = authenticationServiceSpy.signUp.and.returnValue();
+        component.signUp();
+        expect(signUpSpy).toHaveBeenCalledWith(component.username, component.password);
     });
 });

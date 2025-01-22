@@ -1,24 +1,19 @@
-import { AfterViewChecked, ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 
 import { Message } from '@common/interfaces/message';
 
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { ChatService } from '@app/services/chat/chat.service';
-import { ChatEvents } from '@common/events/chat.events';
-
-import { DisplayChatText } from '@app/constants/display-texts';
 
 @Component({
     selector: 'app-chat',
     templateUrl: './chat.component.html',
     styleUrls: ['./chat.component.scss'],
 })
-export class ChatComponent implements AfterViewChecked, OnInit, OnDestroy {
+export class ChatComponent implements AfterViewChecked, OnInit {
     @ViewChild('messagesContainer', { static: true }) messagesContainer: ElementRef;
 
     @Input() disableMessagingField: boolean;
-
-    displayText = DisplayChatText;
 
     constructor(
         readonly authenticationService: AuthenticationService,
@@ -34,11 +29,6 @@ export class ChatComponent implements AfterViewChecked, OnInit, OnDestroy {
     ngAfterViewChecked() {
         this.scrollToBottom();
         this.cdr.detectChanges();
-    }
-
-    ngOnDestroy() {
-        this.chatService.socketHandler.socket.removeListener(ChatEvents.NewMessage);
-        this.authenticationService.disconnectSocket();
     }
 
     sendMessage(messageText: string): void {
