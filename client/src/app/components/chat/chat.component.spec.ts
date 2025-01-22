@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ChatService } from '@app/services/chat/chat.service';
+import { getTranslocoModule } from '@app/transloco-testing.module';
 import { ChatComponent } from './chat.component';
 import SpyObj = jasmine.SpyObj;
 
@@ -32,7 +33,15 @@ describe('ChatComponent', () => {
 
         TestBed.configureTestingModule({
             declarations: [ChatComponent],
-            imports: [MatIconModule, MatFormFieldModule, MatInputModule, BrowserAnimationsModule, MatSnackBarModule, MatDialogModule],
+            imports: [
+                getTranslocoModule(),
+                MatIconModule,
+                MatFormFieldModule,
+                MatInputModule,
+                BrowserAnimationsModule,
+                MatSnackBarModule,
+                MatDialogModule,
+            ],
             providers: [{ provide: ChatService, useValue: chatSpy }],
         }).compileComponents();
 

@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { ChatService } from '@app/services/chat/chat.service';
+import { getTranslocoModule } from '@app/transloco-testing.module';
 import { ChatPageComponent } from './chat-page.component';
 
 import SpyObj = jasmine.SpyObj;
@@ -16,6 +17,7 @@ describe('ChatPageComponent', () => {
         const chatSpy = jasmine.createSpyObj('ChatService', ['clearMessages']);
         const authenticationSpy = jasmine.createSpyObj('AuthenticationService', ['signOut']);
         TestBed.configureTestingModule({
+            imports: [getTranslocoModule()],
             declarations: [ChatPageComponent],
             providers: [
                 { provide: ChatService, useValue: chatSpy },

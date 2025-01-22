@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { NotificationService } from '@app/services/notification/notification.service';
+import { getTranslocoModule } from '@app/transloco-testing.module';
 import { authenticationGuard } from './authentication.guard';
 import SpyObj = jasmine.SpyObj;
 
@@ -16,6 +17,7 @@ describe('authenticationGuard', () => {
         routerSpy = jasmine.createSpyObj('Router', ['navigateByUrl']);
         notificationSpy = jasmine.createSpyObj('NotificationService', ['displayErrorMessage']);
         TestBed.configureTestingModule({
+            imports: [getTranslocoModule()],
             providers: [
                 { provide: authenticationSpy, useValue: authenticationSpy },
                 { provide: Router, useValue: routerSpy },
