@@ -14,6 +14,9 @@ export class ChatPageComponent {
     ) {}
 
     signOut() {
+        // TODO: Move this line in a more appropriate place:
+        // this.chatService.socketHandler.socket.removeListener(ChatEvents.NewMessage);
+        this.authenticationService.disconnectSocket();
         this.authenticationService.signOut();
         this.chatService.clearMessages();
     }

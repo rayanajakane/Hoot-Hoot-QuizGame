@@ -15,7 +15,7 @@ describe('ChatPageComponent', () => {
 
     beforeEach(() => {
         const chatSpy = jasmine.createSpyObj('ChatService', ['clearMessages']);
-        const authenticationSpy = jasmine.createSpyObj('AuthenticationService', ['signOut']);
+        const authenticationSpy = jasmine.createSpyObj('AuthenticationService', ['signOut', 'disconnectSocket']);
         TestBed.configureTestingModule({
             imports: [getTranslocoModule()],
             declarations: [ChatPageComponent],
