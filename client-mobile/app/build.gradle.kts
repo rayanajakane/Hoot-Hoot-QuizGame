@@ -1,8 +1,15 @@
+tasks.register<Wrapper>("wrapper") {
+    gradleVersion = "5.6.4"
+}
+
+tasks.register("prepareKotlinBuildScriptModel"){}
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     kotlin("plugin.serialization") version "2.1.0"
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -42,6 +49,8 @@ android {
 
 dependencies {
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.auth)
     val coreVersion = "1.13.1"
     val navVersion = "2.8.4"
     implementation("androidx.core:core-ktx:$coreVersion")
@@ -54,6 +63,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
     implementation("androidx.navigation:navigation-compose:$navVersion")
+    implementation("androidx.compose.material:material-icons-extended-android:1.7.5")
     implementation (libs.socket.io.client)
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")

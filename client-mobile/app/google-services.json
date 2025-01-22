@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "4479204095",
+    "firebase_url": "https://log3900-201-7daa3-default-rtdb.firebaseio.com",
+    "project_id": "log3900-201-7daa3",
+    "storage_bucket": "log3900-201-7daa3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:4479204095:android:f8d0a9a8e276c4c1c2eaca",
+        "android_client_info": {
+          "package_name": "com.example.polyquiz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5J1kYGuVHobtZgncVVFr7l6s9rR3AZNU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
