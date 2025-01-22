@@ -1,8 +1,6 @@
+import en from '@assets/i18n/en.json';
+import fr from '@assets/i18n/fr.json';
 import { TranslocoTestingModule, TranslocoTestingOptions } from '@jsverse/transloco';
-// @ts-ignore
-import en from '../assets/i18n/en.json';
-// @ts-ignore
-import fr from '../assets/i18n/fr.json';
 
 export function getTranslocoModule(options: TranslocoTestingOptions = {}) {
     return TranslocoTestingModule.forRoot({

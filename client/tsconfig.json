@@ -19,14 +19,16 @@
         "emitDecoratorMetadata": true,
         "moduleResolution": "node",
         "allowSyntheticDefaultImports": true,
-        "resolveJsonModule": false,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
         "importHelpers": true,
         "target": "ES2022",
         "module": "es2020",
         "lib": ["es2018", "dom"],
         "paths": {
             "@app/*": ["./src/app/*"],
-            "@common/*": ["../common/*"]
+            "@common/*": ["../common/*"],
+            "@assets/*": ["./src/assets/*"]
         },
         "useDefineForClassFields": false
     },
