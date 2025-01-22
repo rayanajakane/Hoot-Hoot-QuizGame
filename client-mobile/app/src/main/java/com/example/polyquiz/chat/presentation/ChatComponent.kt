@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -53,7 +54,7 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         ),
         shape = RoundedCornerShape(0.dp),
-        modifier = Modifier.size(width = 300.dp, height = 1000.dp).fillMaxHeight()
+        modifier = Modifier.size(width = 300.dp, height = 1000.dp).fillMaxHeight().imePadding()
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceAround,
