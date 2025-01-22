@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
+import { FirebaseError } from '@angular/fire/app';
+import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { ChatEvents } from '@common/events/chat.events';
-import { NotificationService } from '@app/services/notification/notification.service';
-import { User } from 'firebase/auth';
-import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
-import { FirebaseError } from '@angular/fire/app';
 import { TranslocoService } from '@jsverse/transloco';
+import { User } from 'firebase/auth';
 
 @Injectable({
     providedIn: 'root',
@@ -33,7 +33,7 @@ export class AuthenticationService {
     }
 
     get userDisplayName(): string {
-        const displayName: string = this.currentUser?.displayName ?? 'DisplayNameNotFound';
+        const displayName: string = this.currentUser?.displayName ?? '';
         return displayName;
     }
 

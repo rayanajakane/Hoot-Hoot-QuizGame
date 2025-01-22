@@ -14,7 +14,7 @@ describe('ChatPageComponent', () => {
 
     beforeEach(() => {
         const chatSpy = jasmine.createSpyObj('ChatService', ['clearMessages']);
-        const authenticationSpy = jasmine.createSpyObj('AuthenticationService', ['logout']);
+        const authenticationSpy = jasmine.createSpyObj('AuthenticationService', ['signOut']);
         TestBed.configureTestingModule({
             declarations: [ChatPageComponent],
             providers: [
@@ -33,11 +33,11 @@ describe('ChatPageComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should logout and clear messages', () => {
+    it('should signOut and clear messages', () => {
         const clearSpy = chatServiceSpy.clearMessages.and.returnValue();
-        const logoutSpy = authenticationServiceSpy.logout.and.returnValue();
-        component.logout();
+        const signOutSpy = authenticationServiceSpy.signOut.and.returnValue();
+        component.signOut();
         expect(clearSpy).toHaveBeenCalled();
-        expect(logoutSpy).toHaveBeenCalled();
+        expect(signOutSpy).toHaveBeenCalled();
     });
 });

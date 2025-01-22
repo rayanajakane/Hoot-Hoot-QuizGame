@@ -13,7 +13,7 @@ export class ChatPageComponent {
         private readonly chatService: ChatService,
     ) {}
 
-    logout() {
+    signOut() {
         this.authenticationService.signOut();
         this.chatService.clearMessages();
     }
