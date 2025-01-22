@@ -5,11 +5,15 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.auth.presentation.LoginPage
+import com.example.polyquiz.auth.presentation.SignupPage
+import com.example.polyquiz.chat.presentation.ChatPage
 import com.example.polyquiz.constants.Route
 
 // References: https://youtu.be/AIC_OFQ1r3k  and  https://youtu.be/lv1raAvwcgI
 @Composable
-fun Navigation(modifier: Modifier) {
+fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
@@ -23,7 +27,8 @@ fun Navigation(modifier: Modifier) {
                 },
                 navigateToSignup = {
                     navController.navigate(Route.Signup)
-                }
+                },
+                authViewModel = authViewModel
             )
         }
         composable<Route.Signup> {
@@ -34,14 +39,16 @@ fun Navigation(modifier: Modifier) {
                 },
                 navigateToChat = {
                     navController.navigate(Route.Chat)
-                }
+                },
+                authViewModel = authViewModel
             )
         }
         composable<Route.Chat> {
             ChatPage(modifier,
                 navigateToLogin = {
                     navController.navigate(Route.Login)
-                })
+                },
+                authViewModel = authViewModel)
         }
     }
 }

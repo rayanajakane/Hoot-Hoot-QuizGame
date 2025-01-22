@@ -15,3 +15,17 @@ enum class DisplayChatText (val value: String) {
     MESSAGE_LABEL("Message"),
     DISABLED_LABLE("Désactivé")
 }
+
+enum class AuthErrorText (val value: String) {
+    EMPTY_USERNAME_PASSWORD("❌ Le nom d'utilisateur et/ou le mot de passe sont vides"),
+    USER_ALREADY_EXISTS( "❌ Cet utilisateur existe déjà."),
+    PASSWORD_TOO_SHORT("❌ Le mot de passe est trop court (minimum: 6 caractères)."),
+    INVALID_USERNAME_PASSWORD("❌ Le nom d'utilisateur et/ou le mot de passe sont invalides."),
+    OTHER_ERROR("❌ Erreur")
+}
+
+enum class AuthFeedbackText (val value: String) {
+    SIGN_IN("✅ Connexion réussie !"),
+    SIGN_UP("✅ Inscription réussie !"),
+    SIGN_OUT("✅ Déconnexion réussie !")
+}

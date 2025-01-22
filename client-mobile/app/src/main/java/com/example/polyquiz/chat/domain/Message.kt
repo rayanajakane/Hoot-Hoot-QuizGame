@@ -1,4 +1,4 @@
-package com.example.polyquiz
+package com.example.polyquiz.chat.domain
 
 import java.util.Date
 
