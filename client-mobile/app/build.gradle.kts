@@ -1,3 +1,9 @@
+tasks.register<Wrapper>("wrapper") {
+    gradleVersion = "5.6.4"
+}
+
+tasks.register("prepareKotlinBuildScriptModel"){}
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
