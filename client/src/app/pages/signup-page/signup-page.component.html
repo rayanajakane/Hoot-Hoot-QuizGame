@@ -1,5 +1,5 @@
 <ng-container *transloco="let t">
-    <div id="main-container" (keyup.enter)="signup()">
+    <div id="main-container" (keyup.enter)="signUp()">
         <mat-card id="main-card">
             <h1>{{ t('page.signup-action') }}</h1>
             <div id="form">
@@ -15,9 +15,8 @@
                     </button>
                 </mat-form-field>
             </div>
-            <button mat-raised-button color="primary" (click)="signup()">{{ t('page.signup-action') }}</button>
+            <button mat-raised-button color="primary" (click)="signUp()">{{ t('page.signup-action') }}</button>
             <button mat-raised-button routerLink="/login">{{ t('page.return-to-login') }}</button>
         </mat-card>
     </div>
 </ng-container>
-
