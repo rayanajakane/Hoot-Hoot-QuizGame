@@ -41,8 +41,11 @@ export class AuthenticationService {
         const formattedUsername = username.trim();
         createUserWithEmailAndPassword(this.auth, `${formattedUsername}@polyQuiz.com`, password)
             .then((userCredential) => {
-                updateProfile(userCredential.user, { displayName: formattedUsername });
-                this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-up'));
+                updateProfile(userCredential.user, { displayName: formattedUsername }).then(() => {
+                    this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-up'));
+                    this.currentUser = userCredential.user;
+                    this.router.navigateByUrl('/chat');
+                });
             })
             .catch((error) => {
                 const errorMessage = this.handleAuthErrorMessage(error);
