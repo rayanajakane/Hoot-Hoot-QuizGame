@@ -91,6 +91,7 @@ fun SignupPage(
                 modifier = Modifier
                     .fillMaxWidth(0.5f)
                     .padding(60.dp)
+                    .imePadding()
             ) {
                 Text(
                     text = DisplayAuthenticationText.SIGNUP_TITLE.value,

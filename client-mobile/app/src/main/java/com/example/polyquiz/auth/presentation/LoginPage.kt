@@ -76,7 +76,8 @@ fun LoginPage(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .imePadding(),
         contentAlignment = Alignment.Center
     ) {
         ElevatedCard(
