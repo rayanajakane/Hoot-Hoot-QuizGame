@@ -92,7 +92,7 @@ fun LoginPage(
                     .padding(60.dp)
             ) {
                 Text(
-                    text = DisplayAuthenticationText.LOGIN_ACTION.value,
+                    text = DisplayAuthenticationText.LOGIN_TITLE.value,
                     fontSize = 35.sp,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
@@ -142,7 +142,7 @@ fun LoginPage(
                     },
                     enabled = authState.value != AuthState.Loading
                 ) {
-                    Text(DisplayAuthenticationText.LOGIN_TITLE.value)
+                    Text(DisplayAuthenticationText.LOGIN_ACTION.value)
                 }
 
                 ElevatedButton(
