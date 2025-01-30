@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.constants.AuthErrorText
 import com.example.vanillaprototype.socket.SocketHandler
 import com.google.android.gms.tasks.Task
@@ -51,8 +50,7 @@ class AuthViewModel : ViewModel() {
                 if (task.isSuccessful) {
                     user = task.result.user
                     _authState.value = AuthState.Authenticated
-                    ChatService.deleteMessages()
-                    connectToSocket()
+                    SocketHandler.connect()
                     Log.d(TAG, "signInWithEmail:success")
                 } else {
                     handleAuthError(task)
@@ -77,9 +75,8 @@ class AuthViewModel : ViewModel() {
                     user?.updateProfile(displayNameUpdate)?.addOnCompleteListener { updateTask ->
                         if (updateTask.isSuccessful) {
                             _authState.value = AuthState.Authenticated
-                            connectToSocket()
+                            SocketHandler.connect()
                         }
-                        ChatService.deleteMessages()
                         Log.d(TAG, "createUserWithEmail:success")
                     }
                 } else {
@@ -90,9 +87,8 @@ class AuthViewModel : ViewModel() {
 
     fun signOut() {
         auth.signOut()
-        ChatService.deleteMessages()
         resetAuthState()
-        disconnectFromSocket()
+        SocketHandler.disconnect()
     }
 
     fun resetAuthState() {
@@ -114,15 +110,6 @@ class AuthViewModel : ViewModel() {
         }
         _authState.value = AuthState.Error(errorMessage)
         Log.w(TAG, "createUserWithEmail:failure", task.exception)
-    }
-
-    private fun connectToSocket() {
-        SocketHandler.connect()
-        ChatService.handleReceivedMessage()
-    }
-
-    private fun disconnectFromSocket() {
-        SocketHandler.disconnect()
     }
 
 }
