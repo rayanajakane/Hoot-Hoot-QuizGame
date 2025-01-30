@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.constants.AuthErrorText
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
@@ -49,6 +50,7 @@ class AuthViewModel : ViewModel() {
                 if (task.isSuccessful) {
                     user = task.result.user
                     _authState.value = AuthState.Authenticated
+                    ChatService.deleteMessages()
                     Log.d(TAG, "signInWithEmail:success")
                 } else {
                     handleAuthError(task)
@@ -74,6 +76,7 @@ class AuthViewModel : ViewModel() {
                         if (updateTask.isSuccessful) {
                             _authState.value = AuthState.Authenticated
                         }
+                        ChatService.deleteMessages()
                         Log.d(TAG, "createUserWithEmail:success")
                     }
                 } else {
@@ -84,6 +87,7 @@ class AuthViewModel : ViewModel() {
 
     fun signOut() {
         auth.signOut()
+        ChatService.deleteMessages()
         resetAuthState()
     }
 

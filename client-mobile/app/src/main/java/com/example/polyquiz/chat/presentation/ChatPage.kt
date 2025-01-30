@@ -1,6 +1,5 @@
 package com.example.polyquiz.chat.presentation
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,13 +13,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
-import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.DisplayAuthenticationText
 import kotlinx.coroutines.launch
@@ -63,7 +60,6 @@ fun ChatPage(modifier: Modifier, navigateToLogin: () -> Unit, authViewModel: Aut
         ElevatedButton(
             onClick = {
                 authViewModel.signOut()
-                ChatService.deleteMessages()
             },
             modifier = Modifier.padding(20.dp),
             colors = ButtonDefaults.buttonColors(
