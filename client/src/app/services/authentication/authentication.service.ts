@@ -27,6 +27,7 @@ export class AuthenticationService {
         onAuthStateChanged(this.auth, async (user) => {
             if (user) {
                 const userRef = this.getUserDatabaseRef(user.uid);
+                this.currentUser = user;
                 return this.ensureUserSession(user.uid).then(() => {
                     onDisconnect(userRef)
                         .update({
@@ -70,7 +71,6 @@ export class AuthenticationService {
                     console.log('CACA');
                     return Promise.reject();
                 } else {
-                    this.currentUser = user;
                     return Promise.resolve();
                 }
             })
@@ -91,7 +91,6 @@ export class AuthenticationService {
                 updateProfile(userCredential.user, { displayName: formattedUsername }).then(() => {
                     const userRef = this.getUserDatabaseRef(userCredential.user.uid);
                     set(userRef, {
-                        displayName: formattedUsername,
                         isOnline: true,
                     });
                     this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-up'));
@@ -126,6 +125,12 @@ export class AuthenticationService {
     }
 
     signOut() {
+        const user = this.auth.currentUser;
+        if (!user) {
+            return;
+        }
+        const userRef = this.getUserDatabaseRef(user.uid);
+        update(userRef, { isOnline: false });
         signOut(this.auth)
             .then(() => {
                 this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-out'));
