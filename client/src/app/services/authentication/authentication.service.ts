@@ -34,17 +34,15 @@ export class AuthenticationService {
                         })
                         .then(async () => {
                             set(userRef, { isOnline: true });
-                            this.currentUser = user;
-                            this.router.navigateByUrl('/chat');
                         })
                         .catch((error) => {
                             console.error(error);
                         });
                 });
             } else {
+                // TODO : How to resolve correctly?
                 this.currentUser = null;
                 this.router.navigateByUrl('/login');
-                // TODO : How to resolve correctly?
                 return Promise.resolve();
             }
         });
@@ -59,17 +57,21 @@ export class AuthenticationService {
         const userRef = this.getUserDatabaseRef(uid);
         return get(userRef)
             .then(async (databaseSnapshot: DataSnapshot) => {
+                const user = databaseSnapshot.val();
                 if (!databaseSnapshot.exists()) {
                     // Session does not exist
                     return set(userRef, {
                         isOnline: true,
                     });
                 }
-                const user = databaseSnapshot.val();
+
                 if (user.isOnline) {
                     // TODO : Reject reason - class SessionAlreadyExists error??
                     console.log('CACA');
                     return Promise.reject();
+                } else {
+                    this.currentUser = user;
+                    this.router.navigateByUrl('/chat');
                 }
 
                 return Promise.resolve();
