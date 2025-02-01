@@ -25,6 +25,9 @@ class AuthViewModel : ViewModel() {
 
     init {
         checkAuthStatus()
+        if (authState.value == AuthState.Authenticated) {
+            SocketHandler.connect()
+        }
     }
 
     fun getUsername(): String {
