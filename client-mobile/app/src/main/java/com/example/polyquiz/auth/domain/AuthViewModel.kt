@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.polyquiz.constants.AuthErrorText
+import com.example.vanillaprototype.socket.SocketHandler
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -24,6 +25,9 @@ class AuthViewModel : ViewModel() {
 
     init {
         checkAuthStatus()
+        if (authState.value == AuthState.Authenticated) {
+            SocketHandler.connect()
+        }
     }
 
     fun getUsername(): String {
@@ -49,6 +53,7 @@ class AuthViewModel : ViewModel() {
                 if (task.isSuccessful) {
                     user = task.result.user
                     _authState.value = AuthState.Authenticated
+                    SocketHandler.connect()
                     Log.d(TAG, "signInWithEmail:success")
                 } else {
                     handleAuthError(task)
@@ -73,6 +78,7 @@ class AuthViewModel : ViewModel() {
                     user?.updateProfile(displayNameUpdate)?.addOnCompleteListener { updateTask ->
                         if (updateTask.isSuccessful) {
                             _authState.value = AuthState.Authenticated
+                            SocketHandler.connect()
                         }
                         Log.d(TAG, "createUserWithEmail:success")
                     }
@@ -85,6 +91,7 @@ class AuthViewModel : ViewModel() {
     fun signOut() {
         auth.signOut()
         resetAuthState()
+        SocketHandler.disconnect()
     }
 
     fun resetAuthState() {

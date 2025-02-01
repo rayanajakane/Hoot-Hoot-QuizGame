@@ -28,10 +28,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        // TODO: Check if we want to make a separate activity for the chat
         SocketHandler.setSocket()
-        SocketHandler.connect() // TODO: Find most appropriate place to disconnect (probably after logout)
-        ChatService.handleReceivedMessage() // TODO: Find a more appropriate place to do this (probably after login/signup; it should be guarded by auth)
         val authViewModel : AuthViewModel by viewModels()
         setContent {
             PolyQuizTheme {
