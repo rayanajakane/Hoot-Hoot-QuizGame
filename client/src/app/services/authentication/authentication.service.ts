@@ -71,14 +71,13 @@ export class AuthenticationService {
                     return Promise.reject();
                 } else {
                     this.currentUser = user;
-                    this.router.navigateByUrl('/chat');
+                    return Promise.resolve();
                 }
-
-                return Promise.resolve();
             })
             .catch(() => {
                 console.log('Error ensuring user session');
-            });
+            })
+            .finally(async () => this.router.navigateByUrl('/chat'));
     }
 
     getUserDatabaseRef(uid: string) {
