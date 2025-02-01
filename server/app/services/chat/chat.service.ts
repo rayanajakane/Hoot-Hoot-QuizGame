@@ -15,7 +15,7 @@ export class ChatService {
 
     addMessage(message: Message): Message {
         message.date = new Date();
-        this.messages.push(message);
+        this.messages.push(message); // TODO: Check if we save messages (else, remove this line)
         return message;
     }
 }
