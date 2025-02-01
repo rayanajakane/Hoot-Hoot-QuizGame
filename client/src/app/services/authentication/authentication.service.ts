@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Injectable } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
 import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
@@ -5,6 +6,7 @@ import { Router } from '@angular/router';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { ChatEvents } from '@common/events/chat.events';
+import { DataSnapshot, get, getDatabase, onDisconnect, ref, set } from 'firebase/database';
 import { TranslocoService } from '@jsverse/transloco';
 import { User } from 'firebase/auth';
 
@@ -13,6 +15,7 @@ import { User } from 'firebase/auth';
 })
 export class AuthenticationService {
     private currentUser: User | null;
+    private database = getDatabase();
 
     constructor(
         private readonly router: Router,
@@ -21,13 +24,28 @@ export class AuthenticationService {
         private readonly translocoService: TranslocoService,
         private auth: Auth,
     ) {
-        onAuthStateChanged(this.auth, (user) => {
+        onAuthStateChanged(this.auth, async (user) => {
             if (user) {
-                this.currentUser = user;
-                this.router.navigateByUrl('/chat');
+                const userRef = this.getUserDatabaseRef(user.uid);
+                return this.ensureUserSession(user.uid).then(() => {
+                    onDisconnect(userRef)
+                        .set({
+                            isOnline: false,
+                        })
+                        .then(async () => {
+                            set(userRef, { isOnline: true });
+                            this.currentUser = user;
+                            this.router.navigateByUrl('/chat');
+                        })
+                        .catch((error) => {
+                            console.error(error);
+                        });
+                });
             } else {
                 this.currentUser = null;
                 this.router.navigateByUrl('/login');
+                // TODO : How to resolve correctly?
+                return Promise.resolve();
             }
         });
     }
@@ -35,6 +53,34 @@ export class AuthenticationService {
     get userDisplayName(): string {
         const displayName: string = this.currentUser?.displayName ?? '';
         return displayName;
+    }
+
+    async ensureUserSession(uid: string) {
+        const userRef = this.getUserDatabaseRef(uid);
+        return get(userRef)
+            .then(async (databaseSnapshot: DataSnapshot) => {
+                if (!databaseSnapshot.exists()) {
+                    // Session does not exist
+                    return set(userRef, {
+                        isOnline: true,
+                    });
+                }
+                const user = databaseSnapshot.val();
+                if (user.isOnline) {
+                    // TODO : Reject reason - class SessionAlreadyExists error??
+                    console.log('CACA');
+                    return Promise.reject();
+                }
+
+                return Promise.resolve();
+            })
+            .catch(() => {
+                console.log('Error ensuring user session');
+            });
+    }
+
+    getUserDatabaseRef(uid: string) {
+        return ref(this.database, `users/${uid}`);
     }
 
     signUp(username: string, password: string) {
