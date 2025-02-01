@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { ChatEvents } from '@common/events/chat.events';
-import { DataSnapshot, get, getDatabase, onDisconnect, ref, set } from 'firebase/database';
+import { DataSnapshot, get, getDatabase, onDisconnect, ref, set, update } from 'firebase/database';
 import { TranslocoService } from '@jsverse/transloco';
 import { User } from 'firebase/auth';
 
@@ -29,11 +29,11 @@ export class AuthenticationService {
                 const userRef = this.getUserDatabaseRef(user.uid);
                 return this.ensureUserSession(user.uid).then(() => {
                     onDisconnect(userRef)
-                        .set({
+                        .update({
                             isOnline: false,
                         })
                         .then(async () => {
-                            set(userRef, { isOnline: true });
+                            update(userRef, { isOnline: true });
                         })
                         .catch((error) => {
                             console.error(error);
@@ -60,7 +60,7 @@ export class AuthenticationService {
                 const user = databaseSnapshot.val();
                 if (!databaseSnapshot.exists()) {
                     // Session does not exist
-                    return set(userRef, {
+                    return update(userRef, {
                         isOnline: true,
                     });
                 }
@@ -89,6 +89,11 @@ export class AuthenticationService {
         createUserWithEmailAndPassword(this.auth, `${formattedUsername}@polyQuiz.com`, password)
             .then((userCredential) => {
                 updateProfile(userCredential.user, { displayName: formattedUsername }).then(() => {
+                    const userRef = this.getUserDatabaseRef(userCredential.user.uid);
+                    set(userRef, {
+                        displayName: formattedUsername,
+                        isOnline: true,
+                    });
                     this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-up'));
                     this.currentUser = userCredential.user;
                     this.router.navigateByUrl('/chat');
