@@ -1,6 +1,8 @@
 package com.example.vanillaprototype.socket
 
 import android.util.Log
+import com.example.polyquiz.chat.domain.ChatService
+import com.example.polyquiz.constants.ChatEvents
 import com.example.polyquiz.constants.Environment
 import io.socket.client.IO
 import io.socket.client.Socket
@@ -12,7 +14,7 @@ object SocketHandler {
     @Synchronized
     fun setSocket() {
         try {
-            mSocket = IO.socket(Environment.SERVER_LOCAL_ADDRESS.value)
+            mSocket = IO.socket(Environment.SERVER_ADDRESS_WITHOUT_API.value)
         } catch (e: Exception) {
             Log.e("ERROR", e.toString())
         }
@@ -25,11 +27,17 @@ object SocketHandler {
 
     @Synchronized
     fun connect() {
-        mSocket.connect()
+        if (!mSocket.connected()) {
+            mSocket.connect()
+            ChatService.deleteMessages()
+            ChatService.handleReceivedMessage()
+        }
     }
 
     @Synchronized
     fun disconnect() {
+        mSocket.off(ChatEvents.SENT_PROTOTYPE_MESSAGE.value)
+        ChatService.deleteMessages()
         mSocket.disconnect()
     }
 }

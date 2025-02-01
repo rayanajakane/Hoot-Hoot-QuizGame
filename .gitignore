@@ -8,6 +8,9 @@ package-lock.json
 # Code Coverage Folder
 coverage/
 
+# Build Folder
+build/
+
 #Node Modules
 /node_modules
 client-mobile/.idea/inspectionProfiles/Project_Default.xml
