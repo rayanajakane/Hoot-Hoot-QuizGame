@@ -58,7 +58,6 @@ export class AuthenticationService {
         const userRef = this.getUserDatabaseRef(uid);
         return get(userRef)
             .then(async (databaseSnapshot: DataSnapshot) => {
-                const user = databaseSnapshot.val();
                 if (!databaseSnapshot.exists()) {
                     // Session does not exist
                     return update(userRef, {
@@ -66,18 +65,19 @@ export class AuthenticationService {
                     });
                 }
 
-                if (user.isOnline) {
+                const isUserOnline = databaseSnapshot.val().isOnline;
+                if (isUserOnline) {
                     // TODO : Reject reason - class SessionAlreadyExists error??
                     console.log('CACA');
                     return Promise.reject();
                 } else {
+                    this.router.navigateByUrl('/chat');
                     return Promise.resolve();
                 }
             })
             .catch(() => {
                 console.log('Error ensuring user session');
-            })
-            .finally(async () => this.router.navigateByUrl('/chat'));
+            });
     }
 
     getUserDatabaseRef(uid: string) {
