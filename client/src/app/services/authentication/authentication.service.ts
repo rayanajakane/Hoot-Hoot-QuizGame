@@ -6,9 +6,9 @@ import { Router } from '@angular/router';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { ChatEvents } from '@common/events/chat.events';
-import { DataSnapshot, get, getDatabase, onDisconnect, ref, set, update } from 'firebase/database';
 import { TranslocoService } from '@jsverse/transloco';
 import { User } from 'firebase/auth';
+import { DataSnapshot, get, getDatabase, ref, set, update } from 'firebase/database';
 import { SessionAlreadyExistsError } from './session-exists';
 
 @Injectable({
@@ -27,32 +27,18 @@ export class AuthenticationService {
     ) {
         onAuthStateChanged(this.auth, async (user) => {
             if (user) {
-                const userRef = this.getUserDatabaseRef(user.uid);
+                // Login
+                await this.ensureUserSession(user.uid);
                 this.currentUser = user;
-                return this.ensureUserSession(user.uid).then(() => {
-                    onDisconnect(userRef)
-                        .update({
-                            isOnline: false,
-                        })
-                        .then(async () => {
-                            update(userRef, { isOnline: true });
-                        })
-                        .catch((error) => {
-                            console.log(error.message);
-                        });
-                });
+                this.router.navigateByUrl('/chat');
             } else {
+                // Logout
                 // TODO : How to resolve correctly?
                 this.currentUser = null;
                 this.router.navigateByUrl('/login');
                 return Promise.resolve();
             }
         });
-    }
-
-    get userDisplayName(): string {
-        const displayName: string = this.currentUser?.displayName ?? '';
-        return displayName;
     }
 
     async ensureUserSession(uid: string) {
@@ -72,14 +58,18 @@ export class AuthenticationService {
                     throw new SessionAlreadyExistsError();
                     // return Promise.reject(SessionAlreadyExistsError);
                 } else {
-                    this.router.navigateByUrl('/chat');
                     return Promise.resolve();
                 }
             })
-            .catch((error) => {
+            .catch((error: any) => {
                 this.currentUser = null;
                 console.log(error);
             });
+    }
+
+    get userDisplayName(): string {
+        const displayName: string = this.currentUser?.displayName ?? '';
+        return displayName;
     }
 
     getUserDatabaseRef(uid: string) {
