@@ -25,18 +25,16 @@ export class AuthenticationService {
         private readonly translocoService: TranslocoService,
         private auth: Auth,
     ) {
-        onAuthStateChanged(this.auth, async (user) => {
+        onAuthStateChanged(this.auth, (user) => {
             if (user) {
                 // Login
-                await this.ensureUserSession(user.uid);
                 this.currentUser = user;
-                this.router.navigateByUrl('/chat');
+                // this.router.navigateByUrl('/chat');
             } else {
                 // Logout
                 // TODO : How to resolve correctly?
                 this.currentUser = null;
                 this.router.navigateByUrl('/login');
-                return Promise.resolve();
             }
         });
     }
@@ -47,23 +45,26 @@ export class AuthenticationService {
             .then(async (databaseSnapshot: DataSnapshot) => {
                 if (!databaseSnapshot.exists()) {
                     // Session does not exist
-                    return update(userRef, {
+                    update(userRef, {
                         isOnline: true,
                     });
+                    return Promise.resolve(true);
                 }
 
                 const isUserOnline = databaseSnapshot.val().isOnline;
                 if (isUserOnline) {
                     // TODO : Reject reason
-                    throw new SessionAlreadyExistsError();
+                    return Promise.resolve(false);
+                    // throw new SessionAlreadyExistsError();
                     // return Promise.reject(SessionAlreadyExistsError);
                 } else {
-                    return Promise.resolve();
+                    return Promise.resolve(true);
                 }
             })
             .catch((error: any) => {
                 this.currentUser = null;
                 console.log(error);
+                return Promise.resolve(false);
             });
     }
 
@@ -99,8 +100,18 @@ export class AuthenticationService {
     signIn(username: string, password: string) {
         const formattedUsername = username.trim();
         signInWithEmailAndPassword(this.auth, `${formattedUsername}@polyQuiz.com`, password)
-            .then(() => {
-                this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-in'));
+            .then(async (userCredential) => {
+                const userRef = this.getUserDatabaseRef(userCredential.user.uid);
+                const isAbleToSignIn = await this.ensureUserSession(userCredential.user.uid);
+                if (isAbleToSignIn) {
+                    update(userRef, {
+                        isOnline: true,
+                    });
+                    this.router.navigateByUrl('/chat');
+                    this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-in'));
+                } else {
+                    throw new SessionAlreadyExistsError();
+                }
             })
             .catch((error) => {
                 const errorMessage = this.handleAuthErrorMessage(error);
