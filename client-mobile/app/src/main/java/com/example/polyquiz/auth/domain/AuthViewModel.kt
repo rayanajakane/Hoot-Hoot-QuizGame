@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.example.polyquiz.constants.AuthErrorText
 import com.example.vanillaprototype.socket.SocketHandler
 import com.google.android.gms.tasks.Task
+import com.google.firebase.Firebase
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -14,20 +15,28 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.database
 
 class AuthViewModel : ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val _authState = MutableLiveData<AuthState>()
     val authState: LiveData<AuthState> = _authState
     private var user: FirebaseUser? = null
+    private val database = Firebase.database
 
     private val TAG = "EmailAuthActivity"
 
     init {
         checkAuthStatus()
         if (authState.value == AuthState.Authenticated) {
-            SocketHandler.connect()
+            signOut();
         }
+    }
+
+    fun getUserDatabaseRef(uid: String): DatabaseReference {
+        return database.getReference("users/${uid}")
     }
 
     fun getUsername(): String {
@@ -51,10 +60,21 @@ class AuthViewModel : ViewModel() {
         auth.signInWithEmailAndPassword("$username@polyQuiz.com", password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    user = task.result.user
-                    _authState.value = AuthState.Authenticated
-                    SocketHandler.connect()
-                    Log.d(TAG, "signInWithEmail:success")
+                    val userRef = task.result.user?.let { this.getUserDatabaseRef(it.uid) }
+                    userRef?.child("isOnline")?.get()?.addOnSuccessListener { dataSnapshot: DataSnapshot ->
+                        val isOnline: Boolean = dataSnapshot.value as Boolean
+                        if (isOnline) {
+                            auth.signOut()
+                            _authState.value = AuthState.Error(AuthErrorText.ALREADY_ONLINE.value)
+                            return@addOnSuccessListener
+                        }
+                        userRef.child("isOnline").setValue(true)
+                        userRef.child("isOnline").onDisconnect().setValue(false)
+                        user = task.result.user
+                        _authState.value = AuthState.Authenticated
+                        SocketHandler.connect()
+                        Log.d(TAG, "signInWithEmail:success")
+                    }
                 } else {
                     handleAuthError(task)
                 }
@@ -77,6 +97,9 @@ class AuthViewModel : ViewModel() {
                         .build()
                     user?.updateProfile(displayNameUpdate)?.addOnCompleteListener { updateTask ->
                         if (updateTask.isSuccessful) {
+                            val userRef = task.result.user?.let { this.getUserDatabaseRef(it.uid) }
+                            userRef?.child("isOnline")?.setValue(true)
+                            userRef?.child("isOnline")?.onDisconnect()?.setValue(false)
                             _authState.value = AuthState.Authenticated
                             SocketHandler.connect()
                         }
@@ -89,6 +112,10 @@ class AuthViewModel : ViewModel() {
     }
 
     fun signOut() {
+        if (user != null) {
+            val userRef = this.getUserDatabaseRef(user!!.uid)
+            userRef.child("isOnline").setValue(false)
+        }
         auth.signOut()
         resetAuthState()
         SocketHandler.disconnect()

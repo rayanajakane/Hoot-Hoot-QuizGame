@@ -109,22 +109,20 @@ export class AuthenticationService {
             .then(async (userCredential) => {
                 const userRef = this.getUserDatabaseRef(userCredential.user.uid);
                 const isAbleToSignIn = await this.ensureUserSession(userCredential.user.uid);
-                if (isAbleToSignIn) {
-                    update(userRef, {
-                        isOnline: true,
-                    });
-                    onDisconnect(userRef).update({
-                        isOnline: false,
-                    });
-                    this.router.navigateByUrl('/chat');
-                    this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-in'));
-                } else {
-                    throw new SessionAlreadyExistsError();
-                }
+                if (!isAbleToSignIn) throw new SessionAlreadyExistsError();
+                update(userRef, {
+                    isOnline: true,
+                });
+                onDisconnect(userRef).update({
+                    isOnline: false,
+                });
+                this.router.navigateByUrl('/chat');
+                this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-in'));
             })
             .catch((error) => {
                 const errorMessage = this.handleAuthErrorMessage(error);
                 this.notificationService.displayErrorMessage(errorMessage);
+                signOut(this.auth);
             });
     }
 
