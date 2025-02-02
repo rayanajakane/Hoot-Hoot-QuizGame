@@ -33,16 +33,12 @@ export class AuthenticationService {
         private readonly translocoService: TranslocoService,
         private auth: Auth,
     ) {
-        setPersistence(this.auth, browserSessionPersistence);
+        setPersistence(this.auth, browserSessionPersistence); // TODO: Add this in mobile client, this is very important to prevent bugs
 
         onAuthStateChanged(this.auth, (user) => {
             if (user) {
-                // Login
                 this.currentUser = user;
-                // this.router.navigateByUrl('/chat');
             } else {
-                // Logout
-                // TODO : How to resolve correctly?
                 this.currentUser = null;
                 this.router.navigateByUrl('/login');
             }
@@ -63,10 +59,7 @@ export class AuthenticationService {
 
                 const isUserOnline = databaseSnapshot.val().isOnline;
                 if (isUserOnline) {
-                    // TODO : Reject reason
                     return Promise.resolve(false);
-                    // throw new SessionAlreadyExistsError();
-                    // return Promise.reject(SessionAlreadyExistsError);
                 } else {
                     return Promise.resolve(true);
                 }
