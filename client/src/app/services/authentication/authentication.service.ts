@@ -1,14 +1,22 @@
 /* eslint-disable no-console */
 import { Injectable } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
-import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
+import {
+    Auth,
+    createUserWithEmailAndPassword,
+    onAuthStateChanged,
+    setPersistence,
+    signInWithEmailAndPassword,
+    signOut,
+    updateProfile,
+} from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { ChatEvents } from '@common/events/chat.events';
 import { TranslocoService } from '@jsverse/transloco';
-import { User } from 'firebase/auth';
-import { DataSnapshot, get, getDatabase, ref, set, update } from 'firebase/database';
+import { browserSessionPersistence, User } from 'firebase/auth';
+import { DataSnapshot, get, getDatabase, onDisconnect, ref, set, update } from 'firebase/database';
 import { SessionAlreadyExistsError } from './session-exists';
 
 @Injectable({
@@ -25,6 +33,8 @@ export class AuthenticationService {
         private readonly translocoService: TranslocoService,
         private auth: Auth,
     ) {
+        setPersistence(this.auth, browserSessionPersistence);
+
         onAuthStateChanged(this.auth, (user) => {
             if (user) {
                 // Login
@@ -86,6 +96,9 @@ export class AuthenticationService {
                     set(userRef, {
                         isOnline: true,
                     });
+                    onDisconnect(userRef).update({
+                        isOnline: false,
+                    });
                     this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-up'));
                     this.currentUser = userCredential.user;
                     this.router.navigateByUrl('/chat');
@@ -106,6 +119,9 @@ export class AuthenticationService {
                 if (isAbleToSignIn) {
                     update(userRef, {
                         isOnline: true,
+                    });
+                    onDisconnect(userRef).update({
+                        isOnline: false,
                     });
                     this.router.navigateByUrl('/chat');
                     this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-in'));
