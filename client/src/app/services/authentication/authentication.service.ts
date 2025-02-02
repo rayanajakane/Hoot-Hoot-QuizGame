@@ -9,6 +9,7 @@ import { ChatEvents } from '@common/events/chat.events';
 import { DataSnapshot, get, getDatabase, onDisconnect, ref, set, update } from 'firebase/database';
 import { TranslocoService } from '@jsverse/transloco';
 import { User } from 'firebase/auth';
+import { SessionAlreadyExistsError } from './session-exists';
 
 @Injectable({
     providedIn: 'root',
@@ -37,7 +38,7 @@ export class AuthenticationService {
                             update(userRef, { isOnline: true });
                         })
                         .catch((error) => {
-                            console.error(error);
+                            console.log(error.message);
                         });
                 });
             } else {
@@ -67,16 +68,17 @@ export class AuthenticationService {
 
                 const isUserOnline = databaseSnapshot.val().isOnline;
                 if (isUserOnline) {
-                    // TODO : Reject reason - class SessionAlreadyExists error??
-                    console.log('CACA');
-                    return Promise.reject();
+                    // TODO : Reject reason
+                    throw new SessionAlreadyExistsError();
+                    // return Promise.reject(SessionAlreadyExistsError);
                 } else {
                     this.router.navigateByUrl('/chat');
                     return Promise.resolve();
                 }
             })
-            .catch(() => {
-                console.log('Error ensuring user session');
+            .catch((error) => {
+                this.currentUser = null;
+                console.log(error);
             });
     }
 
