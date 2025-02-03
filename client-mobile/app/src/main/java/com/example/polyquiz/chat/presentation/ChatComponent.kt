@@ -82,7 +82,7 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                 value = newMessageText,
                 onValueChange = { newText -> newMessageText = newText },
                 label = { Text(text = DisplayChatText.MESSAGE_LABEL.value) },
-                singleLine = true,
+                singleLine = false,
                 shape = RoundedCornerShape(0.dp),
                 keyboardActions = KeyboardActions(onDone = {
                     ChatService.sendMessage(newMessageText.text, username)
