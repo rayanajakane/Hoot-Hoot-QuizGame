@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.Card
@@ -36,6 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.polyquiz.constants.DisplayChatText
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.chat.domain.Message
@@ -46,7 +49,7 @@ import java.util.Locale
 fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     val username by remember { mutableStateOf(authViewModel.getUsername() )}
     val messages by ChatService.messages.observeAsState()
-    var newMessageText by remember{ mutableStateOf(TextFieldValue("")) }
+    var newMessageText by remember{ mutableStateOf("") }
 
     Card(
         colors = CardDefaults.cardColors(
@@ -82,17 +85,21 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                 value = newMessageText,
                 onValueChange = { newText -> newMessageText = newText },
                 label = { Text(text = DisplayChatText.MESSAGE_LABEL.value) },
-                singleLine = false,
+                singleLine = true,
                 shape = RoundedCornerShape(0.dp),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                ),
                 keyboardActions = KeyboardActions(onDone = {
-                    ChatService.sendMessage(newMessageText.text, username)
-                    newMessageText = newMessageText.copy("")
+                    ChatService.sendMessage(newMessageText, username)
+                    newMessageText = ""
                 }),
                 trailingIcon = {
                     val image = Icons.AutoMirrored.Filled.Send;
                     IconButton(onClick = {
-                        ChatService.sendMessage(newMessageText.text, username)
-                        newMessageText = newMessageText.copy("")
+                        ChatService.sendMessage(newMessageText, username)
+                        newMessageText = ""
                     }) {
                         Icon(imageVector = image, "send")
                     }
