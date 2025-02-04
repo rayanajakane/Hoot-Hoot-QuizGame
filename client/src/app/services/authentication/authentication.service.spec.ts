@@ -49,18 +49,4 @@ fdescribe('AuthenticationService', () => {
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
-
-    // let spectator: SpectatorService<AuthenticationService>;
-    // const createService = createServiceFactory({
-    //     service: AuthenticationService,
-    //     imports: [getTranslocoModule()],
-    // });
-
-    // beforeEach(() => {
-    //     spectator = createService();
-    // });
-
-    // it('should be created', () => {
-    //     expect(spectator.service).toBeTruthy();
-    // });
 });
