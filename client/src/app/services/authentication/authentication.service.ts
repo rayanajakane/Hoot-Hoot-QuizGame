@@ -153,6 +153,9 @@ export class AuthenticationService {
 
     private handleAuthErrorMessage(error: FirebaseError): string {
         switch (error.code) {
+            case 'SessionAlreadyExists': {
+                return "L'utilisateur est déjà connecté !";
+            }
             case 'auth/email-already-in-use': {
                 return this.translocoService.translate('auth.error.user-already-exists');
             }
