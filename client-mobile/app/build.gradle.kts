@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.database)
     val coreVersion = "1.13.1"
     val navVersion = "2.8.4"
     implementation("androidx.core:core-ktx:$coreVersion")
