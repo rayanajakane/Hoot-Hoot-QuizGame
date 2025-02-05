@@ -1,9 +1,9 @@
-import { getTranslocoModule } from '@app/transloco-testing.module';
-import { AuthenticationService } from './authentication.service';
 import { TestBed } from '@angular/core/testing';
+import { getTranslocoModule } from '@app/transloco-testing.module';
 import { BehaviorSubject } from 'rxjs';
+import { AuthenticationService } from './authentication.service';
 
-fdescribe('AuthenticationService', () => {
+describe('AuthenticationService', () => {
     let service: AuthenticationService;
 
     // Ref : https://github.com/angular/angularfire/discussions/18
