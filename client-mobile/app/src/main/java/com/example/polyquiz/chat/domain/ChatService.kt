@@ -18,6 +18,12 @@ object ChatService {
     private val mSocket = SocketHandler.getSocket()
 
     fun addMessage(newMessage: Message) {
+        if (_messages.value != null && _messages.value!!.isNotEmpty()) {
+            if (newMessage.equals(messages.value!![_messages.value!!.size - 1])) {
+                // TEMPORARY HOTFIX: To avoid double messages
+                return
+            }
+        }
         val newMessages = (_messages.value ?: emptyList()).plus(newMessage)
         // REFERENCE: //https://stackoverflow.com/questions/53304347/mutablelivedata-cannot-invoke-setvalue-on-a-background-thread-from-coroutine
         // Using postValue is asynchronous (unlike setValue)
