@@ -1,23 +1,15 @@
 /* eslint-disable no-console */
 import { Injectable } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
-import {
-    Auth,
-    createUserWithEmailAndPassword,
-    onAuthStateChanged,
-    setPersistence,
-    signInWithEmailAndPassword,
-    signOut,
-    updateProfile,
-} from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { SessionAlreadyExistsError } from '@app/services/authentication/session-exists';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { ChatEvents } from '@common/events/chat.events';
 import { TranslocoService } from '@jsverse/transloco';
-import { browserSessionPersistence, User } from 'firebase/auth';
+import { browserSessionPersistence, setPersistence, User } from 'firebase/auth';
 import { DataSnapshot, get, getDatabase, onDisconnect, ref, set, update } from 'firebase/database';
-import { SessionAlreadyExistsError } from './session-exists';
 
 @Injectable({
     providedIn: 'root',
@@ -33,7 +25,7 @@ export class AuthenticationService {
         private readonly translocoService: TranslocoService,
         private auth: Auth,
     ) {
-        setPersistence(this.auth, browserSessionPersistence); // TODO: Add this in mobile client, this is very important to prevent bugs
+        setPersistence(this.auth, browserSessionPersistence);
 
         onAuthStateChanged(this.auth, (user) => {
             if (user) {

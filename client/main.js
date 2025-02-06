@@ -9,6 +9,7 @@ function initWindow() {
         width: 1000,
         webPreferences: {
             nodeIntegration: true,
+            devTools: false,
         },
     });
 
