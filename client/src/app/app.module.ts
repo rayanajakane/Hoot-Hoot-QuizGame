@@ -7,15 +7,26 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DialogTextInputComponent } from '@app/components/dialog-text-input/dialog-text-input.component';
+import { QuestionListItemComponent } from '@app/components/question-list-item/question-list-item.component';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
+import { AdminEditPageComponent } from '@app/pages/admin-edit-page/admin-edit-page.component';
 import { AppComponent } from '@app/pages/app/app.component';
+import { SortByLastModificationPipe } from '@app/pipes/sort-by-last-modification.pipe';
 import { ChatComponent } from './components/chat/chat.component';
+import { DialogConfirmComponent } from './components/dialog-confirm/dialog-confirm.component';
+import { GameListItemComponent } from './components/game-list-item/game-list-item.component';
+import { QuestionCreationFormComponent } from './components/question-creation-form/question-creation-form.component';
+import { ShortQuestionComponent } from './components/short-question/short-question.component';
 import { tooltipOptions } from './constants/tooltip-options';
 import { ClickStopPropagationDirective } from './directives/click-stop-propagation.directive';
+import { AdminMainPageComponent } from './pages/admin-main-page/admin-main-page.component';
+import { AdminQuestionBankComponent } from './pages/admin-question-bank/admin-question-bank.component';
 import { ChatPageComponent } from './pages/chat-page/chat-page.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { SignupPageComponent } from './pages/signup-page/signup-page.component';
+import { FilterByQuestionTypePipe } from './pipes/filter-by-question-type.pipe';
 import { TranslocoRootModule } from './transloco-root.module';
 /**
  * Main module that is used in main.ts.
@@ -24,7 +35,25 @@ import { TranslocoRootModule } from './transloco-root.module';
  * Otherwise Angular Cli will not know in which module to put new component
  */
 @NgModule({
-    declarations: [AppComponent, ClickStopPropagationDirective, ChatComponent, ChatPageComponent, LoginPageComponent, SignupPageComponent],
+    declarations: [
+        AppComponent,
+        ClickStopPropagationDirective,
+        AdminQuestionBankComponent,
+        ShortQuestionComponent,
+        QuestionCreationFormComponent,
+        DialogConfirmComponent,
+        AdminEditPageComponent,
+        ChatComponent,
+        ChatPageComponent,
+        LoginPageComponent,
+        SignupPageComponent,
+        DialogTextInputComponent,
+        SortByLastModificationPipe,
+        FilterByQuestionTypePipe,
+        QuestionListItemComponent,
+        AdminMainPageComponent,
+        GameListItemComponent,
+    ],
     imports: [
         AppMaterialModule,
         AppRoutingModule,
