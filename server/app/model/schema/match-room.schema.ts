@@ -1,10 +1,13 @@
-import { ChoiceTracker } from '@app/model/tally-trackers/choice-tracker/choice-tracker';
 import { Game } from '@app/model/database/game';
 import { Question } from '@app/model/database/question';
+import { ChoiceTracker } from '@app/model/tally-trackers/choice-tracker/choice-tracker';
 import { Histogram } from '@common/interfaces/histogram';
 import { Socket } from 'socket.io';
 import { Message } from './message.schema';
 import { Player } from './player.schema';
+
+// TODO: Remove isTestRoom and isRandomMode attributes
+// Replace them with a single attribute "matchMode"
 
 export interface MatchRoom {
     code: string;
