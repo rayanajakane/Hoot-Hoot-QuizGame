@@ -9,7 +9,6 @@ import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { getMockGame } from '@app/constants/game-mocks';
 import { GameService } from '@app/services/game/game.service';
-import { of } from 'rxjs';
 import { GameListItemComponent } from './game-list-item.component';
 import SpyObj = jasmine.SpyObj;
 
@@ -22,8 +21,6 @@ describe('GameListItemComponent', () => {
 
     beforeEach(waitForAsync(() => {
         gameServiceSpy = jasmine.createSpyObj('GameService', ['getGames', 'getGameById', 'toggleGameVisibility', 'deleteGame', 'uploadGame']);
-
-        gameServiceSpy.toggleGameVisibility.and.returnValue(of());
 
         TestBed.configureTestingModule({
             imports: [MatCardModule, HttpClientModule, MatIconModule, RouterModule, RouterTestingModule, ScrollingModule, MatTooltipModule],

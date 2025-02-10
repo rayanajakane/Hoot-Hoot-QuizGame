@@ -1,3 +1,5 @@
+// TODO : remove
+
 const MINIMUM_QUESTIONS = 5;
 const DURATION = 20;
 const RANDOM_GAME = {
