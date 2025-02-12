@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 export class GameCreationService {
     updateDateAndVisibility(game: Game): Game {
         const currentDate = new Date();
-        game.isVisible = false;
+        game.isVisible = true;
         game.lastModification = currentDate;
         game.questions.forEach((question) => (question.lastModification = currentDate));
         return game;
