@@ -42,7 +42,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         const errorMessage = codeErrors + usernameErrors;
         if (errorMessage) {
             this.sendError(socket.id, errorMessage);
-            this.server.in(socket.id).disconnectSockets();
+            // this.server.in(socket.id).disconnectSockets();
         } else {
             socket.join(data.roomCode);
             const newPlayer = this.playerRoomService.addPlayer(socket, data.roomCode, data.username);
@@ -116,7 +116,7 @@ export class MatchGateway implements OnGatewayDisconnect {
             this.playerRoomService.deletePlayer(data.roomCode, data.username);
             this.sendError(playerToBan.socket.id, BAN_PLAYER);
             this.server.in(playerToBan.socket.id).emit(MatchEvents.KickPlayer);
-            this.server.in(playerToBan.socket.id).disconnectSockets();
+            // this.server.in(playerToBan.socket.id).disconnectSockets();
         }
         this.sendPlayersData(socket, data.roomCode);
     }

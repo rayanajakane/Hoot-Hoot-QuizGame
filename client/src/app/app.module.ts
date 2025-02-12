@@ -14,9 +14,17 @@ import { AppMaterialModule } from '@app/modules/material.module';
 import { AdminEditPageComponent } from '@app/pages/admin-edit-page/admin-edit-page.component';
 import { AppComponent } from '@app/pages/app/app.component';
 import { SortByLastModificationPipe } from '@app/pipes/sort-by-last-modification.pipe';
+import { AlertComponent } from './components/alert/alert.component';
 import { ChatComponent } from './components/chat/chat.component';
 import { DialogConfirmComponent } from './components/dialog-confirm/dialog-confirm.component';
 import { GameListItemComponent } from './components/game-list-item/game-list-item.component';
+import { HistogramComponent } from './components/histogram/histogram.component';
+import { LongAnswerAreaComponent } from './components/long-answer-area/long-answer-area.component';
+import { LongAnswerHistogramComponent } from './components/long-answer-histogram/long-answer-histogram.component';
+import { MultipleChoiceAreaComponent } from './components/multiple-choice-area/multiple-choice-area.component';
+import { PlayersListComponent } from './components/players-list/players-list.component';
+import { PulseLoaderComponent } from './components/pulse-loader/pulse-loader.component';
+import { QuestionAreaComponent } from './components/question-area/question-area.component';
 import { QuestionCreationFormComponent } from './components/question-creation-form/question-creation-form.component';
 import { ShortQuestionComponent } from './components/short-question/short-question.component';
 import { tooltipOptions } from './constants/tooltip-options';
@@ -24,9 +32,17 @@ import { ClickStopPropagationDirective } from './directives/click-stop-propagati
 import { AdminMainPageComponent } from './pages/admin-main-page/admin-main-page.component';
 import { AdminQuestionBankComponent } from './pages/admin-question-bank/admin-question-bank.component';
 import { ChatPageComponent } from './pages/chat-page/chat-page.component';
+import { HomePageComponent } from './pages/home-page/home-page.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
+import { MatchCreationPageComponent } from './pages/match-creation-page/match-creation-page.component';
+import { ResultsPageComponent } from './pages/results-page/results-page.component';
 import { SignupPageComponent } from './pages/signup-page/signup-page.component';
+import { WaitPageComponent } from './pages/wait-page/wait-page.component';
 import { FilterByQuestionTypePipe } from './pipes/filter-by-question-type.pipe';
+import { SortAnswersPipe } from './pipes/sort-answers.pipe';
+import { SortByScorePipe } from './pipes/sort-by-score.pipe';
+import { SortHistoryPipe } from './pipes/sort-history.pipe';
+import { SortPlayersPipe } from './pipes/sort-players.pipe';
 import { TranslocoRootModule } from './transloco-root.module';
 /**
  * Main module that is used in main.ts.
@@ -53,6 +69,24 @@ import { TranslocoRootModule } from './transloco-root.module';
         QuestionListItemComponent,
         AdminMainPageComponent,
         GameListItemComponent,
+        HistogramComponent,
+        LongAnswerAreaComponent,
+        LongAnswerHistogramComponent,
+        MultipleChoiceAreaComponent,
+        PlayersListComponent,
+        QuestionAreaComponent,
+        AlertComponent,
+        PulseLoaderComponent,
+        HomePageComponent,
+        MatchCreationPageComponent,
+        ResultsPageComponent,
+        WaitPageComponent,
+        FilterByQuestionTypePipe,
+        SortAnswersPipe,
+        SortByLastModificationPipe,
+        SortByScorePipe,
+        SortHistoryPipe,
+        SortPlayersPipe,
     ],
     imports: [
         AppMaterialModule,
