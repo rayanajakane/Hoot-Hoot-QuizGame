@@ -21,10 +21,7 @@ export class ChatComponent implements AfterViewChecked, OnInit {
         private cdr: ChangeDetectorRef,
     ) {}
 
-    ngOnInit(): void {
-        this.authenticationService.connectToSocket();
-        this.chatService.handleReceivedMessages();
-    }
+    ngOnInit(): void {}
 
     ngAfterViewChecked() {
         this.scrollToBottom();

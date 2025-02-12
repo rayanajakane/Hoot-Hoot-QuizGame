@@ -4,6 +4,7 @@ import { FirebaseError } from '@angular/fire/app';
 import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { SessionAlreadyExistsError } from '@app/services/authentication/session-exists';
+import { ChatService } from '@app/services/chat/chat.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { ChatEvents } from '@common/events/chat.events';
@@ -23,6 +24,7 @@ export class AuthenticationService {
         private readonly socketHandler: SocketHandlerService,
         private readonly notificationService: NotificationService,
         private readonly translocoService: TranslocoService,
+        private readonly chatService: ChatService,
         private auth: Auth,
     ) {
         setPersistence(this.auth, browserSessionPersistence);
@@ -84,9 +86,10 @@ export class AuthenticationService {
                     onDisconnect(userRef).update({
                         isOnline: false,
                     });
-                    this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-up'));
+                    this.connectToSocket();
                     this.currentUser = userCredential.user;
                     this.router.navigateByUrl('/chat');
+                    this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-up'));
                 });
             })
             .catch((error) => {
@@ -108,6 +111,7 @@ export class AuthenticationService {
                 onDisconnect(userRef).update({
                     isOnline: false,
                 });
+                this.connectToSocket();
                 this.router.navigateByUrl('/chat');
                 this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-in'));
             })
@@ -119,11 +123,16 @@ export class AuthenticationService {
     }
 
     connectToSocket() {
-        this.socketHandler.connect();
+        if (!this.socketHandler.isSocketAlive()) {
+            this.socketHandler.connect();
+            this.chatService.handleReceivedMessages();
+        }
     }
 
     disconnectSocket() {
         this.socketHandler.disconnect();
+        this.socketHandler.socket.removeListener(ChatEvents.NewMessage);
+        this.chatService.clearMessages();
     }
 
     signOut() {
@@ -136,11 +145,11 @@ export class AuthenticationService {
         signOut(this.auth)
             .then(() => {
                 this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-out'));
+                this.disconnectSocket();
             })
             .catch((error) => {
                 this.notificationService.displayErrorMessage(error.message);
             });
-        this.socketHandler.socket.removeListener(ChatEvents.NewMessage);
     }
 
     private handleAuthErrorMessage(error: FirebaseError): string {
@@ -158,6 +167,7 @@ export class AuthenticationService {
                 return this.translocoService.translate('auth.error.invalid-username-password');
             }
             default: {
+                console.log(error);
                 return this.translocoService.translate('auth.error.other-error');
             }
         }
