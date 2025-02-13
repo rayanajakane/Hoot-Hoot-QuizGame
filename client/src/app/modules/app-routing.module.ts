@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { QuestionAreaComponent } from '@app/components/question-area/question-area.component';
 import { ManagementState } from '@app/constants/states';
+import { authenticationGuard } from '@app/guards/authentication/authentication.guard';
 import { matchLoginGuard } from '@app/guards/match-login/match-login.guard';
-import { returnGuard } from '@app/guards/return-guard/return.guard';
 import { AdminEditPageComponent } from '@app/pages/admin-edit-page/admin-edit-page.component';
 import { AdminMainPageComponent } from '@app/pages/admin-main-page/admin-main-page.component';
 import { AdminQuestionBankComponent } from '@app/pages/admin-question-bank/admin-question-bank.component';
@@ -17,13 +17,13 @@ import { WaitPageComponent } from '@app/pages/wait-page/wait-page.component';
 
 const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
-    { path: 'home', component: HomePageComponent },
+    { path: 'home', component: HomePageComponent, canActivate: [authenticationGuard] },
     { path: 'login', component: LoginPageComponent },
     { path: 'signup', component: SignupPageComponent },
-    // TODO : Change guard condition
-    { path: 'chat', component: ChatPageComponent },
+    { path: 'chat', component: ChatPageComponent, canActivate: [authenticationGuard] },
     {
         path: 'admin',
+        canActivate: [authenticationGuard],
         children: [
             { path: 'bank', component: AdminQuestionBankComponent },
             { path: 'games', component: AdminMainPageComponent },
@@ -31,19 +31,17 @@ const routes: Routes = [
                 path: 'games/new',
                 component: AdminEditPageComponent,
                 data: { state: ManagementState.GameCreate },
-                canDeactivate: [returnGuard],
             },
             {
                 path: 'games/:id',
                 component: AdminEditPageComponent,
                 data: { state: ManagementState.GameModify },
-                canDeactivate: [returnGuard],
             },
         ],
     },
-    { path: 'host', component: MatchCreationPageComponent },
-    { path: 'match-room', canActivate: [matchLoginGuard], canDeactivate: [returnGuard], component: WaitPageComponent },
-    { path: 'play-match', canActivate: [matchLoginGuard], canDeactivate: [returnGuard], component: QuestionAreaComponent },
+    { path: 'host', component: MatchCreationPageComponent, canActivate: [authenticationGuard] },
+    { path: 'match-room', canActivate: [matchLoginGuard], component: WaitPageComponent },
+    { path: 'play-match', canActivate: [matchLoginGuard], component: QuestionAreaComponent },
     { path: 'results', canActivate: [matchLoginGuard], component: ResultsPageComponent },
 ];
 

@@ -1,3 +1,7 @@
+#main-container {
+    margin-left: 20vw;
+}
+
 .bank-container {
     background-color: white;
 }
@@ -124,7 +128,7 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 0;
+    left: 20vw;
     right: 0;
     padding: 1rem 8rem;
 }
