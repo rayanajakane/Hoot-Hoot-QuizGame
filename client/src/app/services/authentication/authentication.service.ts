@@ -39,6 +39,10 @@ export class AuthenticationService {
         });
     }
 
+    isUserAuthenticated(): boolean {
+        return this.currentUser != null;
+    }
+
     async ensureUserSession(uid: string) {
         const userRef = this.getUserDatabaseRef(uid);
         return get(userRef)
@@ -88,7 +92,7 @@ export class AuthenticationService {
                     });
                     this.connectToSocket();
                     this.currentUser = userCredential.user;
-                    this.router.navigateByUrl('/chat');
+                    this.router.navigateByUrl('/home');
                     this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-up'));
                 });
             })
@@ -112,7 +116,7 @@ export class AuthenticationService {
                     isOnline: false,
                 });
                 this.connectToSocket();
-                this.router.navigateByUrl('/chat');
+                this.router.navigateByUrl('/home');
                 this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-in'));
             })
             .catch((error) => {
@@ -146,6 +150,7 @@ export class AuthenticationService {
             .then(() => {
                 this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-out'));
                 this.disconnectSocket();
+                this.router.navigateByUrl('/login');
             })
             .catch((error) => {
                 this.notificationService.displayErrorMessage(error.message);
