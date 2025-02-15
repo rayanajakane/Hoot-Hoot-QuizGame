@@ -32,6 +32,8 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
     disabled: boolean;
     notificationShown: boolean = false;
 
+    // Reference: https://medium.com/@fabiozuin/angular-17-inject-or-constructor-signals-or-observables-changedetection-a1b48a5479d9
+    // This is to avoid initialization error in unit tests
     questionService = Inject(QuestionService);
     bankService = Inject(BankService);
 
