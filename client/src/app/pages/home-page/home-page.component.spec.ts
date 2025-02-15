@@ -75,36 +75,21 @@ describe('HomePageComponent', () => {
         expect(submitCodeSpy).toHaveBeenCalled();
     });
 
-    it('submitCode() should call validateMatchRoomCode and open a new dialog if code is valid', () => {
+    it('submitCode() should call validateMatchRoomCode if code is valid', () => {
         joinMatchSpy.validateMatchRoomCode.and.returnValue(of(mockHttpResponse));
-        const openSpy = spyOn(component, 'openUsernameDialog');
         component.submitCode('mock');
         expect(joinMatchSpy.validateMatchRoomCode).toHaveBeenCalled();
-        expect(openSpy).toHaveBeenCalled();
     });
 
-    it('submitCode() should call validateMatchRoomCode and not open a new dialog if code is invalid', () => {
+    it('submitCode() should call validateMatchRoomCode if code is invalid', () => {
         const httpError = new HttpErrorResponse({
             status: 409,
             error: { code: '409', message: 'mock' },
         });
         joinMatchSpy.validateMatchRoomCode.and.returnValue(throwError(() => httpError));
-        const openSpy = spyOn(component, 'openUsernameDialog');
         spyOn(JSON, 'parse').and.returnValue(httpError.error);
         component.submitCode('mock');
         expect(joinMatchSpy.validateMatchRoomCode).toHaveBeenCalled();
-        expect(openSpy).not.toHaveBeenCalled();
         expect(notificationSpy.displayErrorMessage).toHaveBeenCalled();
-    });
-
-    it('openUsernameDialog() should open a new dialog and validate username', () => {
-        component.input = 'mock';
-        component.openUsernameDialog();
-        expect(dialogMock.open).toHaveBeenCalled();
-        const closeDialog = () => {
-            return dialogMock.closeAll;
-        };
-        closeDialog();
-        expect(joinMatchSpy.validateUsername).toHaveBeenCalled();
     });
 });

@@ -5,13 +5,13 @@ import { MatchContext } from '@app/constants/states';
 import { Message } from '@app/interfaces/message';
 import { Player } from '@app/interfaces/player';
 import { Question } from '@app/interfaces/question';
+import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { HOST_USERNAME } from '@common/constants/match-constants';
 import { ChatEvents } from '@common/events/chat.events';
 import { MatchEvents } from '@common/events/match.events';
 import { UserInfo } from '@common/interfaces/user-info';
-import { MatchContextService } from '../match-context/match-context.service';
 
 @Injectable({
     providedIn: 'root',

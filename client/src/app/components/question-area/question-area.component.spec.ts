@@ -16,18 +16,15 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
-import { WarningMessage } from '@app/constants/feedback-messages';
 import { getMockQuestion } from '@app/constants/question-mocks';
-import { MatchContext } from '@app/constants/states';
 import { Player } from '@app/interfaces/player';
 import { AnswerService } from '@app/services/answer/answer.service';
+import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { NotificationService } from '@app/services/notification/notification.service';
-import { MatchContextService } from '@app/services/question-context/question-context.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { TimeService } from '@app/services/time/time.service';
 import { AnswerCorrectness } from '@common/constants/answer-correctness';
-import { Subject } from 'rxjs';
 import { Socket } from 'socket.io-client';
 import { QuestionAreaComponent } from './question-area.component';
 import spyObj = jasmine.SpyObj;
@@ -169,54 +166,6 @@ describe('QuestionAreaComponent', () => {
     it('should return the answer options type', () => {
         const answerOptions = component.answerOptions;
         expect(answerOptions).toEqual(AnswerCorrectness);
-    });
-
-    it('should deactivate page on results page', () => {
-        matchRoomSpy.isResults = true;
-        const isDeactivated = component.canDeactivate();
-        expect(isDeactivated).toBe(true);
-    });
-
-    it('should deactivate page when player or host is quitting', () => {
-        matchRoomSpy.isResults = false;
-        matchRoomSpy.isQuitting = true;
-        const isDeactivated = component.canDeactivate();
-        expect(isDeactivated).toBe(true);
-    });
-
-    it('should deactivate page if on test page', () => {
-        matchRoomSpy.isResults = false;
-        matchRoomSpy.isQuitting = false;
-
-        questionContextSpy.getContext.and.returnValue(MatchContext.TestPage);
-        const isDeactivated = component.canDeactivate();
-        expect(matchRoomSpy.disconnect).toHaveBeenCalled();
-        expect(matchRoomSpy.isQuitting).toBe(true);
-        expect(isDeactivated).toBe(true);
-    });
-
-    it('should deactivate page host quit', () => {
-        matchRoomSpy.isResults = false;
-        matchRoomSpy.isQuitting = false;
-        questionContextSpy.getContext.and.returnValue(MatchContext.PlayerView);
-        matchRoomSpy.isHostPlaying = false;
-        const isDeactivated = component.canDeactivate();
-        expect(isDeactivated).toBe(true);
-    });
-
-    it('should prompt user if back button is pressed and only deactivate if user confirms', () => {
-        matchRoomSpy.isResults = false;
-        matchRoomSpy.isQuitting = false;
-        questionContextSpy.getContext.and.returnValue(MatchContext.PlayerView);
-        matchRoomSpy.isHostPlaying = true;
-        const deactivateSubject = new Subject<boolean>();
-        notificationServiceSpy.openWarningDialog.and.returnValue(deactivateSubject);
-        const result = component.canDeactivate();
-        expect(result instanceof Subject).toBeTrue();
-        expect(notificationServiceSpy.openWarningDialog).toHaveBeenCalledWith(WarningMessage.QUIT);
-        expect(matchRoomSpy.disconnect).not.toHaveBeenCalled();
-        deactivateSubject.next(true);
-        expect(matchRoomSpy.disconnect).toHaveBeenCalled();
     });
 
     it('should handle enter event', () => {

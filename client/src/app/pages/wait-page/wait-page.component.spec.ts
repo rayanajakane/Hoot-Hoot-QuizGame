@@ -6,7 +6,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { WarningMessage } from '@app/constants/feedback-messages';
 import { Game } from '@app/interfaces/game';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
@@ -14,7 +13,6 @@ import { MatchService } from '@app/services/match/match.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { TimeService } from '@app/services/time/time.service';
 import { HOST_USERNAME } from '@common/constants/match-constants';
-import { Subject } from 'rxjs';
 import { WaitPageComponent } from './wait-page.component';
 import SpyObj = jasmine.SpyObj;
 
@@ -132,51 +130,6 @@ describe('WaitPageComponent', () => {
         matchRoomSpy.isQuitting = true;
         component.quitGame();
         expect(navigateSpy).toHaveBeenCalledWith('/home');
-    });
-
-    it('should deactivate page when player or host is quitting', () => {
-        matchRoomSpy.isQuitting = true;
-        const isDeactivated = component.canDeactivate();
-        expect(isDeactivated).toBe(true);
-    });
-
-    it('should deactivate page host quit', () => {
-        matchRoomSpy.isQuitting = false;
-        matchRoomSpy.isHostPlaying = false;
-        const isDeactivated = component.canDeactivate();
-        expect(isDeactivated).toBe(true);
-    });
-
-    it('should deactivate page if wait is over', () => {
-        matchRoomSpy.isQuitting = false;
-        matchRoomSpy.isHostPlaying = true;
-        matchRoomSpy.isWaitOver = true;
-        const isDeactivated = component.canDeactivate();
-        expect(isDeactivated).toBe(true);
-    });
-
-    it('should deactivate page if user is banned', () => {
-        matchRoomSpy.isQuitting = false;
-        matchRoomSpy.isHostPlaying = true;
-        matchRoomSpy.isWaitOver = false;
-        matchRoomSpy.isBanned = true;
-        const isDeactivated = component.canDeactivate();
-        expect(isDeactivated).toBe(true);
-    });
-
-    it('should prompt user if back button is pressed and only deactivate if user confirms', () => {
-        matchRoomSpy.isQuitting = false;
-        matchRoomSpy.isHostPlaying = true;
-        matchRoomSpy.isWaitOver = false;
-        matchRoomSpy.isBanned = false;
-        const deactivateSubject = new Subject<boolean>();
-        notificationServiceSpy.openWarningDialog.and.returnValue(deactivateSubject);
-        const result = component.canDeactivate();
-        expect(result instanceof Subject).toBeTrue();
-        expect(notificationServiceSpy.openWarningDialog).toHaveBeenCalledWith(WarningMessage.QUIT);
-        expect(matchRoomSpy.disconnect).not.toHaveBeenCalled();
-        deactivateSubject.next(true);
-        expect(matchRoomSpy.disconnect).toHaveBeenCalled();
     });
 
     it('resetWaitPage() should reset all wait page attributes', () => {

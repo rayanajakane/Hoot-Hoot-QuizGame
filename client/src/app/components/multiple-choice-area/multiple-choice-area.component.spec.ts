@@ -10,7 +10,7 @@ import { Choice } from '@app/interfaces/choice';
 import { Question } from '@app/interfaces/question';
 import { AnswerService } from '@app/services/answer/answer.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
-import { MatchContextService } from '@app/services/question-context/question-context.service';
+import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { MultipleChoiceAreaComponent } from './multiple-choice-area.component';
 import spyObj = jasmine.SpyObj;
 

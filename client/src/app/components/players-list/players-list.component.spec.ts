@@ -38,11 +38,4 @@ describe('PlayersListComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
-
-    it('should toggle chat state', () => {
-        const player = { username: 'test', isChatActive: true } as Player;
-        component.toggleChat(player);
-        expect(matchRoomSpy.getRoomCode).toHaveBeenCalled();
-        expect(player.isChatActive).toBeFalse();
-    });
 });

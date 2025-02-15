@@ -163,7 +163,7 @@ describe('ResultsPageComponent', () => {
 
     it('should call matchRoomService.disconnect on handleDisconnect', () => {
         component.handleDisconnect();
-        expect(matchRoomServiceSpy.disconnect).toHaveBeenCalled();
+        expect(matchRoomServiceSpy.disconnectFromRoom).toHaveBeenCalled();
     });
 
     it('subscribeToHistogramHistory() should add a subscription to histogram history and respond when history changes ', () => {

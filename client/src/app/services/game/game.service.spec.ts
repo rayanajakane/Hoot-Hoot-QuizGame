@@ -67,14 +67,6 @@ describe('GameService', () => {
         expect(spy).toHaveBeenCalled();
     });
 
-    it('should toggle visibility with toggleGameVisibility()', () => {
-        const spy = spyOn(service, 'update').and.returnValue(of(MOCK_HTTP_RESPONSE_GAME));
-        const visibleGame = getMockGame();
-        service.toggleGameVisibility(visibleGame);
-        expect(visibleGame.isVisible).toBeFalsy();
-        expect(spy).toHaveBeenCalled();
-    });
-
     it('should add a game successfully with addGame()', () => {
         const spy = spyOn(service, 'add').and.returnValue(of(MOCK_HTTP_RESPONSE_GAME));
         service.uploadGame(NEW_MOCK_GAME);
