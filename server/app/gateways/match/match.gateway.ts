@@ -1,7 +1,6 @@
 import { CHAT_REACTIVATED } from '@app/constants/chat-state-messages';
 import { ExpiredTimerEvents } from '@app/constants/expired-timer-events';
 import { BAN_PLAYER, NO_MORE_HOST, NO_MORE_PLAYERS } from '@app/constants/match-errors';
-import { PlayerEvents } from '@app/constants/player-events';
 import { Game } from '@app/model/database/game';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
 import { Player } from '@app/model/schema/player.schema';
@@ -143,7 +142,6 @@ export class MatchGateway implements OnGatewayDisconnect {
     @SubscribeMessage(MatchEvents.Disconnect)
     handleDisconnectFromRoom(@ConnectedSocket() socket: Socket) {
         const isHostDisconnected = this.handleHostDisconnect(socket);
-        console.log(isHostDisconnected);
         if (!isHostDisconnected) this.handlePlayersDisconnect(socket);
     }
 
@@ -152,8 +150,6 @@ export class MatchGateway implements OnGatewayDisconnect {
         if (!hostRoomCode) return false;
         const hostRoom = this.matchRoomService.getRoom(hostRoomCode);
         socket.leave(hostRoomCode);
-        console.log(`HostRoom Playing: ${hostRoom.isPlaying}`);
-        console.log(`Current Question Index: ${hostRoom.currentQuestionIndex}`);
         if (hostRoom.isPlaying || !hostRoom.currentQuestionIndex) {
             this.sendError(hostRoomCode, NO_MORE_HOST);
             this.deleteRoom(hostRoomCode);
@@ -173,8 +169,6 @@ export class MatchGateway implements OnGatewayDisconnect {
         if (!roomCode || !player) {
             return;
         }
-
-        this.eventEmitter.emit(PlayerEvents.Quit, roomCode);
         const room = this.matchRoomService.getRoom(roomCode);
         const isRoomEmpty = this.isRoomEmpty(room);
         if (room.isPlaying && isRoomEmpty) {
@@ -191,9 +185,8 @@ export class MatchGateway implements OnGatewayDisconnect {
     }
 
     deleteRoom(matchRoomCode: string) {
-        console.log('PROUT');
         this.server.to(matchRoomCode).emit(MatchEvents.HostQuitMatch);
-        // this.server.in(matchRoomCode).disconnectSockets();
+        // this.server.in(matchRoomCode).disconnectSockets(); // TODO: Check if we need to manually remove from room instead.
         this.matchRoomService.deleteRoom(matchRoomCode);
     }
 
