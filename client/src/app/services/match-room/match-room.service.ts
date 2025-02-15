@@ -8,7 +8,6 @@ import { Question } from '@app/interfaces/question';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { HOST_USERNAME } from '@common/constants/match-constants';
-import { PlayerState } from '@common/constants/player-states';
 import { ChatEvents } from '@common/events/chat.events';
 import { MatchEvents } from '@common/events/match.events';
 import { GameOverInfo } from '@common/interfaces/game-over-info';
@@ -96,18 +95,12 @@ export class MatchRoomService {
         // this.socketService.disconnect();
     }
 
-    createRoom(gameId: string, isTestRoom: boolean = false, isRandomMode: boolean = false) {
-        this.socketService.send(MatchEvents.CreateRoom, { gameId, isTestPage: isTestRoom, isRandomMode }, (res: { code: string }) => {
+    createRoom(gameId: string, isClassicMode: boolean = true) {
+        this.socketService.send(MatchEvents.CreateRoom, { gameId, isClassicMode }, (res: { code: string }) => {
             this.matchRoomCode = res.code;
             this.username = HOST_USERNAME;
-            if (isTestRoom) {
-                this.players = [
-                    { username: this.username, score: 0, bonusCount: 0, isChatActive: true, isPlaying: true, state: PlayerState.default },
-                ];
-            } else {
-                this.sendPlayersData(this.matchRoomCode);
-                this.router.navigateByUrl('/match-room');
-            }
+            this.sendPlayersData(this.matchRoomCode);
+            this.router.navigateByUrl('/match-room');
         });
     }
 
@@ -172,7 +165,7 @@ export class MatchRoomService {
     }
 
     onBeginQuiz() {
-        this.socketService.on(MatchEvents.BeginQuiz, (data: { firstQuestion: Question; gameDuration: number; isTestRoom: boolean }) => {
+        this.socketService.on(MatchEvents.BeginQuiz, (data: { firstQuestion: Question; gameDuration: number; isClassicMode: boolean }) => {
             this.isWaitOver = true;
             this.currentQuestion = data.firstQuestion;
             this.gameDuration = data.gameDuration;

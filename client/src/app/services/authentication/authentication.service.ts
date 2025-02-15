@@ -28,7 +28,6 @@ export class AuthenticationService {
         private auth: Auth,
     ) {
         setPersistence(this.auth, browserSessionPersistence);
-
         onAuthStateChanged(this.auth, (user) => {
             if (user) {
                 this.currentUser = user;
@@ -40,7 +39,7 @@ export class AuthenticationService {
     }
 
     isUserAuthenticated(): boolean {
-        return this.currentUser != null;
+        return !!this.currentUser;
     }
 
     async ensureUserSession(uid: string) {
@@ -150,6 +149,7 @@ export class AuthenticationService {
             .then(() => {
                 this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-out'));
                 this.disconnectSocket();
+                this.currentUser = null;
                 this.router.navigateByUrl('/login');
             })
             .catch((error) => {

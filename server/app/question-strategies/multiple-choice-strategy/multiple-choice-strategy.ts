@@ -1,17 +1,17 @@
 import { GradingEvents } from '@app/constants/grading-events';
+import { PanicThresholdTime } from '@app/constants/panic-threasholds-time';
+import { QuestionType } from '@app/constants/question-types';
+import { MultipleChoiceAnswer } from '@app/model/answer-types/multiple-choice-answer/multiple-choice-answer';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
 import { Player } from '@app/model/schema/player.schema';
+import { ChoiceTracker } from '@app/model/tally-trackers/choice-tracker/choice-tracker';
+import { QuestionStrategy } from '@app/question-strategies/question-strategy';
 import { AnswerCorrectness } from '@common/constants/answer-correctness';
 import { BONUS_FACTOR } from '@common/constants/match-constants';
 import { AnswerEvents } from '@common/events/answer.events';
+import { MultipleChoiceHistogram } from '@common/interfaces/histogram';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { QuestionStrategy } from '@app/question-strategies/question-strategy';
-import { MultipleChoiceAnswer } from '@app/model/answer-types/multiple-choice-answer/multiple-choice-answer';
-import { ChoiceTracker } from '@app/model/tally-trackers/choice-tracker/choice-tracker';
-import { MultipleChoiceHistogram } from '@common/interfaces/histogram';
-import { QuestionType } from '@app/constants/question-types';
-import { PanicThresholdTime } from '@app/constants/panic-threasholds-time';
 
 @Injectable()
 export class MultipleChoiceStrategy extends QuestionStrategy {
@@ -39,8 +39,7 @@ export class MultipleChoiceStrategy extends QuestionStrategy {
             }
         });
 
-        if ((fastestTime && !matchRoom.isTestRoom) || matchRoom.isTestRoom)
-            this.computeFastestPlayerBonus(currentQuestionPoints, fastestTime, correctPlayers);
+        if (fastestTime) this.computeFastestPlayerBonus(currentQuestionPoints, fastestTime, correctPlayers);
     }
 
     buildHistogram(matchRoom: MatchRoom, choice: string, selection: boolean): MultipleChoiceHistogram {

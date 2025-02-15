@@ -12,7 +12,6 @@ import { COOLDOWN_TIME, COUNTDOWN_TIME, FACTOR, MAXIMUM_CODE_LENGTH } from '@com
 import { MatchEvents } from '@common/events/match.events';
 import { TimerEvents } from '@common/events/timer.events';
 import { GameInfo } from '@common/interfaces/game-info';
-import { GameOverInfo } from '@common/interfaces/game-over-info';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Server, Socket } from 'socket.io';
@@ -55,9 +54,9 @@ export class MatchRoomService {
 
     // allow more parameters to make method more reusable
     // eslint-disable-next-line max-params
-    addRoom(selectedGame: Game, socket: Socket, isTestPage: boolean = false, isRandomMode: boolean = false): MatchRoom {
-        const isLocked: boolean = isTestPage && !isRandomMode;
-        const isPlaying: boolean = isTestPage && !isRandomMode;
+    addRoom(selectedGame: Game, socket: Socket, isClassicMode: boolean = true): MatchRoom {
+        const isLocked: boolean = false;
+        const isPlaying: boolean = false;
 
         const newRoom: MatchRoom = {
             code: this.generateRoomCode(),
@@ -77,8 +76,7 @@ export class MatchRoomService {
             activePlayers: 0,
             submittedPlayers: 0,
             messages: [],
-            isTestRoom: isTestPage || isRandomMode,
-            isRandomMode,
+            isClassicMode,
             startTime: new Date(),
         };
         this.matchRooms.push(newRoom);
@@ -151,14 +149,12 @@ export class MatchRoomService {
         const matchRoom: MatchRoom = this.getRoom(matchRoomCode);
         const firstQuestion = matchRoom.game.questions[0];
         const gameDuration: number = matchRoom.game.duration;
-        const isTestRoom = matchRoom.isTestRoom;
         this.setQuestionStrategy(matchRoom);
         matchRoom.currentQuestionAnswer = this.filterCorrectChoices(firstQuestion);
         this.removeIsCorrectField(firstQuestion);
-        if (!isTestRoom) {
-            matchRoom.hostSocket.send(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
-        }
-        server.in(matchRoomCode).emit(MatchEvents.BeginQuiz, { firstQuestion, gameDuration, isTestRoom });
+        matchRoom.hostSocket.send(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
+        const isClassicMode: boolean = matchRoom.isClassicMode;
+        server.in(matchRoomCode).emit(MatchEvents.BeginQuiz, { firstQuestion, gameDuration, isClassicMode });
         this.timeService.startTimer(server, matchRoomCode, matchRoom.questionDuration, ExpiredTimerEvents.QuestionTimerExpired);
     }
 
@@ -170,16 +166,6 @@ export class MatchRoomService {
     sendNextQuestion(server: Server, matchRoomCode: string): void {
         const matchRoom: MatchRoom = this.getRoom(matchRoomCode);
 
-        if (matchRoom.currentQuestionIndex === matchRoom.gameLength && matchRoom.isRandomMode) {
-            this.eventEmitter.emit(MatchEvents.RouteToResultsPage, matchRoomCode);
-            return;
-        }
-
-        if (matchRoom.currentQuestionIndex === matchRoom.gameLength) {
-            const gameOverInfo: GameOverInfo = { isTestRoom: matchRoom.isTestRoom, isRandomMode: matchRoom.isRandomMode };
-            server.in(matchRoomCode).emit(MatchEvents.GameOver, gameOverInfo);
-            return;
-        }
         const nextQuestion = this.getCurrentQuestion(matchRoomCode);
         matchRoom.currentQuestion = nextQuestion;
         matchRoom.currentQuestionAnswer = this.filterCorrectChoices(nextQuestion);
@@ -208,7 +194,7 @@ export class MatchRoomService {
         if (!room) {
             return false;
         }
-        return (room.isLocked && room.players.length > 0 && !room.isRandomMode) || (room.isLocked && room.isRandomMode);
+        return room.isLocked && room.players.length > 0;
     }
 
     getCurrentQuestion(matchRoomCode: string) {

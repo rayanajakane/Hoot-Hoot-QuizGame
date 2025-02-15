@@ -133,9 +133,8 @@ export class PlayerRoomService {
     }
 
     isHostUsernameCorrect(matchRoomCode: string, username: string): boolean {
-        const matchRoom = this.matchRoomService.getRoom(matchRoomCode);
         const isHostUsername = username.trim().toUpperCase() === HOST_USERNAME.toUpperCase();
-        return matchRoom.isTestRoom && isHostUsername && !this.isHostPlayer(matchRoomCode);
+        return isHostUsername && !this.isHostPlayer(matchRoomCode);
     }
 
     getUsernameErrors(matchRoomCode: string, username: string): string {

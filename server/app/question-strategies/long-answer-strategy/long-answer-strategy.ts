@@ -1,20 +1,20 @@
-import { LongAnswer } from '@app/model/answer-types/long-answer/long-answer';
 import { GradingEvents } from '@app/constants/grading-events';
+import { PanicThresholdTime } from '@app/constants/panic-threasholds-time';
+import { QuestionType } from '@app/constants/question-types';
+import { LongAnswer } from '@app/model/answer-types/long-answer/long-answer';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
 import { Player } from '@app/model/schema/player.schema';
+import { GradeTracker } from '@app/model/tally-trackers/grade-tracker/grade-tracker';
+import { QuestionStrategy } from '@app/question-strategies/question-strategy';
+import { AnswerCorrectness } from '@common/constants/answer-correctness';
 import { HISTOGRAM_UPDATE_TIME_MS, MULTIPLICATION_FACTOR } from '@common/constants/match-constants';
 import { AnswerEvents } from '@common/events/answer.events';
+import { Grade } from '@common/interfaces/choice-tally';
+import { GradesHistogram, PlayerCountHistogram } from '@common/interfaces/histogram';
 import { LongAnswerInfo } from '@common/interfaces/long-answer-info';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { QuestionStrategy } from '@app/question-strategies/question-strategy';
-import { GradesHistogram, PlayerCountHistogram } from '@common/interfaces/histogram';
-import { GradeTracker } from '@app/model/tally-trackers/grade-tracker/grade-tracker';
-import { AnswerCorrectness } from '@common/constants/answer-correctness';
 import { isInt } from 'class-validator';
-import { Grade } from '@common/interfaces/choice-tally';
-import { QuestionType } from '@app/constants/question-types';
-import { PanicThresholdTime } from '@app/constants/panic-threasholds-time';
 
 @Injectable()
 export class LongAnswerStrategy extends QuestionStrategy {
@@ -77,12 +77,6 @@ export class LongAnswerStrategy extends QuestionStrategy {
     }
 
     private prepareAnswersForGrading(matchRoom: MatchRoom, players: Player[]) {
-        if (matchRoom.isTestRoom) {
-            const testAnswer: LongAnswerInfo[] = [{ username: players[0].username, answer: '', score: AnswerCorrectness.GOOD.toString() }];
-            this.calculateScore(matchRoom, players, testAnswer);
-            return;
-        }
-
         const playingPlayers = players.filter((player) => player.isPlaying);
 
         const playerAnswers = playingPlayers.map((player: Player) => {

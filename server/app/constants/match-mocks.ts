@@ -39,8 +39,7 @@ const MOCK_MATCH_ROOM: MatchRoom = {
     submittedPlayers: 0,
     messages: [],
     hostSocket: undefined,
-    isTestRoom: false,
-    isRandomMode: false,
+    isClassicMode: true,
     startTime: new Date(),
 };
 
@@ -62,8 +61,7 @@ const MOCK_TEST_MATCH_ROOM: MatchRoom = {
     submittedPlayers: 0,
     messages: [],
     hostSocket: undefined,
-    isTestRoom: true,
-    isRandomMode: false,
+    isClassicMode: true,
     startTime: new Date(),
 };
 
@@ -85,8 +83,7 @@ const MOCK_RANDOM_MATCH_ROOM: MatchRoom = {
     submittedPlayers: 0,
     messages: [],
     hostSocket: undefined,
-    isTestRoom: true,
-    isRandomMode: true,
+    isClassicMode: true,
     startTime: new Date(),
 };
 
@@ -108,8 +105,7 @@ const MOCK_PLAYER_ROOM: MatchRoom = {
     submittedPlayers: 0,
     messages: [],
     hostSocket: undefined,
-    isTestRoom: false,
-    isRandomMode: false,
+    isClassicMode: true,
     startTime: new Date(),
 };
 
@@ -122,9 +118,9 @@ export {
     MOCK_MESSAGE_INFO,
     MOCK_PLAYER,
     MOCK_PLAYER_ROOM,
+    MOCK_RANDOM_MATCH_ROOM,
     MOCK_ROOM_CODE,
     MOCK_TEST_MATCH_ROOM,
-    MOCK_RANDOM_MATCH_ROOM,
-    MOCK_USERNAME,
     MOCK_USER_INFO,
+    MOCK_USERNAME,
 };
