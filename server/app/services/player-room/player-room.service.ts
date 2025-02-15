@@ -132,14 +132,8 @@ export class PlayerRoomService {
         return !!this.getPlayerByUsername(matchRoomCode, HOST_USERNAME);
     }
 
-    isHostUsernameCorrect(matchRoomCode: string, username: string): boolean {
-        const isHostUsername = username.trim().toUpperCase() === HOST_USERNAME.toUpperCase();
-        return isHostUsername && !this.isHostPlayer(matchRoomCode);
-    }
-
     getUsernameErrors(matchRoomCode: string, username: string): string {
         let errors = '';
-        if (this.isHostUsernameCorrect(matchRoomCode, username)) return errors;
         const usernameToValidate = username.trim().toUpperCase();
         const errorConditions: Map<string, boolean> = new Map([
             [EMPTY_USERNAME, !usernameToValidate],

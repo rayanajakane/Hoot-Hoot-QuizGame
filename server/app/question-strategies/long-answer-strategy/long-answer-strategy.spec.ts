@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MatchRoom } from '@app/model/schema/match-room.schema';
-import { LongAnswerStrategy } from './long-answer-strategy';
-import { LongAnswer } from '@app/model/answer-types/long-answer/long-answer';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Test, TestingModule } from '@nestjs/testing';
-import { MOCK_PLAYER, MOCK_PLAYER_ROOM } from '@app/constants/match-mocks';
 import { GradingEvents } from '@app/constants/grading-events';
-import { LongAnswerInfo } from '@common/interfaces/long-answer-info';
+import { MOCK_PLAYER, MOCK_PLAYER_ROOM } from '@app/constants/match-mocks';
+import { LongAnswer } from '@app/model/answer-types/long-answer/long-answer';
+import { MatchRoom } from '@app/model/schema/match-room.schema';
 import { GradeTracker } from '@app/model/tally-trackers/grade-tracker/grade-tracker';
-import { PlayerCountHistogram } from '@common/interfaces/histogram';
 import { AnswerEvents } from '@common/events/answer.events';
 import { Grade } from '@common/interfaces/choice-tally';
+import { PlayerCountHistogram } from '@common/interfaces/histogram';
+import { LongAnswerInfo } from '@common/interfaces/long-answer-info';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Test, TestingModule } from '@nestjs/testing';
+import { LongAnswerStrategy } from './long-answer-strategy';
 
 describe('LongAnswerStrategy', () => {
     let strategy: LongAnswerStrategy;
@@ -160,22 +160,11 @@ describe('LongAnswerStrategy', () => {
     });
 
     it("prepareAnswersForGrading() should convert every players's answers to a list of LongAnswerInfo for grading of a regular match", () => {
-        matchRoom.isTestRoom = false;
         grades.forEach((grade) => (grade.score = null));
 
         strategy['prepareAnswersForGrading'](matchRoom, matchRoom.players);
 
         expect(mockHostSocket.emit).toHaveBeenCalledWith(AnswerEvents.GradeAnswers, grades);
-    });
-
-    it('prepareAnswersForGrading() should call calculateScore with the best score for grading of a test match', () => {
-        const calculateScoreSpy = jest.spyOn<any, any>(strategy, 'calculateScore').mockReturnThis();
-        const testAnswer: LongAnswerInfo[] = [{ username: matchRoom.players[0].username, answer: '', score: '100' }];
-        matchRoom.isTestRoom = true;
-
-        strategy['prepareAnswersForGrading'](matchRoom, matchRoom.players);
-
-        expect(calculateScoreSpy).toHaveBeenCalledWith(matchRoom, matchRoom.players, testAnswer);
     });
 
     it('getPossibleGrades() should return a list of possible grades available in the type AnswerCorrectness', () => {

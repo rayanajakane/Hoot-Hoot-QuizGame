@@ -4,7 +4,7 @@
 import { ExpiredTimerEvents } from '@app/constants/expired-timer-events';
 import { MOCK_CHOICES, getMockGame } from '@app/constants/game-mocks';
 import { INVALID_CODE, LOCKED_ROOM } from '@app/constants/match-login-errors';
-import { MOCK_MATCH_ROOM, MOCK_PLAYER, MOCK_RANDOM_MATCH_ROOM, MOCK_ROOM_CODE } from '@app/constants/match-mocks';
+import { MOCK_MATCH_ROOM, MOCK_PLAYER, MOCK_ROOM_CODE } from '@app/constants/match-mocks';
 import { getMockQuestion } from '@app/constants/question-mocks';
 import { FAKE_ROOM_ID } from '@app/constants/time-mocks';
 import { PlayerInfo } from '@app/model/schema/answer.schema';
@@ -155,8 +155,7 @@ describe('MatchRoomService', () => {
             activePlayers: 0,
             submittedPlayers: 0,
             messages: [],
-            isTestRoom: false,
-            isRandomMode: false,
+            isClassicMode: true,
             startTime: new Date(),
         };
 
@@ -165,26 +164,6 @@ describe('MatchRoomService', () => {
         expect(strategySpy).toHaveBeenCalled();
         expect(result).toEqual(expectedResult);
         expect(service.matchRooms.length).toEqual(1);
-    });
-
-    it('addRoom() should set isLocked and isPlaying attributes approprietly if room is a test page', () => {
-        service.matchRooms = [];
-        jest.spyOn(service, 'generateRoomCode').mockReturnValue(MOCK_ROOM_CODE);
-        jest.spyOn<any, any>(service, 'setQuestionStrategy').mockImplementation();
-        const mockGame = getMockGame();
-        const result = service.addRoom(mockGame, socket, false, true);
-        expect(result.isLocked).toEqual(false);
-        expect(result.isPlaying).toEqual(false);
-    });
-
-    it('addRoom() should set isLocked and isPlaying attributes approprietly if room is a random page', () => {
-        service.matchRooms = [];
-        jest.spyOn(service, 'generateRoomCode').mockReturnValue(MOCK_ROOM_CODE);
-        jest.spyOn<any, any>(service, 'setQuestionStrategy').mockImplementation();
-        const mockGame = getMockGame();
-        const result = service.addRoom(mockGame, socket, true, false);
-        expect(result.isLocked).toEqual(true);
-        expect(result.isPlaying).toEqual(true);
     });
 
     it('getRoomCodeByHostSocket() should return code of the room where the host belongs', () => {
@@ -283,16 +262,6 @@ describe('MatchRoomService', () => {
         });
     });
 
-    it('canStartMatch() should return true if room is  locked and is random mode', () => {
-        const randomRoom = { ...MOCK_RANDOM_MATCH_ROOM };
-        randomRoom.isLocked = true;
-        randomRoom.isRandomMode = true;
-
-        jest.spyOn(service, 'getRoom').mockReturnValue(randomRoom);
-        const result = service['canStartMatch'](randomRoom.code);
-        expect(result).toBeTruthy();
-    });
-
     it('resetPlayerSubmissionCount() should reset submitted players to 0 when called', () => {
         matchRoom.submittedPlayers = 3;
         expect(service.getRoom(MOCK_ROOM_CODE).submittedPlayers).toEqual(3);
@@ -339,28 +308,10 @@ describe('MatchRoomService', () => {
         expect(emitMock).toHaveBeenCalledWith('beginQuiz', {
             firstQuestion: currentQuestion,
             gameDuration: matchRoom.game.duration,
-            isTestRoom: false,
+            isClassicMode: true,
         });
         expect(mockHostSocket.send).toHaveBeenCalledWith('currentAnswers', [currentAnswers]);
         expect(startTimerMock).toHaveBeenCalledWith(mockServer, MOCK_ROOM_CODE, matchRoom.game.duration, ExpiredTimerEvents.QuestionTimerExpired);
-    });
-
-    it('sendNextQuestion() should emit gameOver if is last question and is not a random page', () => {
-        matchRoom.currentQuestionIndex = 2;
-        matchRoom.gameLength = 2;
-        matchRoom.isTestRoom = true;
-        jest.spyOn(service, 'getRoom').mockReturnValue(matchRoom);
-        service.sendNextQuestion(mockServer, matchRoom.code);
-        expect(emitMock).toHaveBeenCalledWith('gameOver', { isRandomMode: false, isTestRoom: true });
-    });
-
-    it('sendNextQuestion() should not emit gamOver if is last question and is a random page', () => {
-        matchRoom.currentQuestionIndex = 2;
-        matchRoom.gameLength = 2;
-        matchRoom.isRandomMode = true;
-        jest.spyOn(service, 'getRoom').mockReturnValue(matchRoom);
-        service.sendNextQuestion(mockServer, matchRoom.code);
-        expect(emitMock).not.toHaveBeenCalled();
     });
 
     it('sendNextQuestion() should emit the next question if there are any and start a timer with the game duration as its value', () => {

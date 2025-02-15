@@ -94,7 +94,7 @@ describe('MatchGateway', () => {
         const result = gateway.joinRoom(socket, MOCK_USER_INFO);
         expect(socket.join.calledOnce).toBeTruthy();
         expect(playerRoomSpy.addPlayer.calledOnce).toBeTruthy();
-        expect(result).toEqual({ code: MOCK_USER_INFO.roomCode, username: MOCK_PLAYER.username, isRandomMode: false });
+        expect(result).toEqual({ code: MOCK_USER_INFO.roomCode, username: MOCK_PLAYER.username });
     });
 
     it('joinRoom() should not let the player join if the room code or the username are invalid', () => {
@@ -116,8 +116,7 @@ describe('MatchGateway', () => {
         matchRoomSpy.addRoom.returns(MOCK_MATCH_ROOM);
         const result = await gateway.createRoom(socket, {
             gameId: MOCK_MATCH_ROOM.game.id,
-            // isTestPage: MOCK_MATCH_ROOM.isTestRoom,
-            // isRandomMode: MOCK_MATCH_ROOM.isRandomMode,
+            isClassicMode: true,
         });
         expect(socket.join.calledOnce).toBeTruthy();
         expect(result).toEqual({ code: MOCK_MATCH_ROOM.code });
@@ -127,8 +126,7 @@ describe('MatchGateway', () => {
         matchRoomSpy.addRoom.returns(MOCK_TEST_MATCH_ROOM);
         const result = await gateway.createRoom(socket, {
             gameId: MOCK_TEST_MATCH_ROOM.game.id,
-            // isTestPage: MOCK_TEST_MATCH_ROOM.isTestRoom,
-            // isRandomMode: MOCK_MATCH_ROOM.isRandomMode,
+            isClassicMode: true,
         });
         expect(socket.join.calledOnce).toBeTruthy();
         expect(result).toEqual({ code: MOCK_TEST_MATCH_ROOM.code });
@@ -139,50 +137,11 @@ describe('MatchGateway', () => {
         matchBackupSpy.getBackupGame.returns(GAME_VALID_QUESTION);
         const result = await gateway.createRoom(socket, {
             gameId: MOCK_RANDOM_MATCH_ROOM.game.id,
-            // isTestPage: MOCK_RANDOM_MATCH_ROOM.isTestRoom,
-            // isRandomMode: MOCK_RANDOM_MATCH_ROOM.isRandomMode,
+            isClassicMode: true,
         });
         expect(socket.join.calledOnce).toBeTruthy();
         expect(result).toEqual({ code: MOCK_RANDOM_MATCH_ROOM.code });
     });
-
-    // it('routeToResultsPage() should emit a routing event to a room, save history and call emitHistogramHistory', () => {
-    //     jest.spyOn(matchRoomSpy, 'getRoomIndex').mockReturnValue(0);
-    //     const mockRoom = { ...MOCK_PLAYER_ROOM };
-    //     mockRoom.players[0].isChatActive = false;
-    //     mockRoom.players[0].socket = socket;
-    //     matchRoomSpy.matchRooms = [mockRoom];
-    //     const spy = jest.spyOn<any, any>(gateway, 'emitHistogramHistory').mockReturnThis();
-    //     const stateSpy = jest.spyOn(playerRoomSpy, 'setStateForAll').mockReturnThis();
-    //     // const spyHistory = jest.spyOn(historySpy, 'createHistoryItem').mockReturnThis();
-    //     server.to.returns({
-    //         emit: (event: string) => {
-    //             expect(event).toBe('routeToResultsPage');
-    //         },
-    //     } as BroadcastOperator<unknown, unknown>);
-    //     server.in.returns({
-    //         emit: (event: string, notificationMessage: string) => {
-    //             expect(event).toEqual(ChatEvents.ChatReactivated);
-    //             expect(notificationMessage).toEqual(CHAT_REACTIVATED);
-    //         },
-    //     } as BroadcastOperator<unknown, unknown>);
-    //     gateway.routeToResultsPage(socket, MOCK_ROOM_CODE);
-    //     expect(spy).toHaveBeenCalled();
-    //     // expect(spyHistory).toHaveBeenCalled();
-    //     expect(stateSpy).toHaveBeenCalledWith(MOCK_ROOM_CODE, PlayerState.default);
-    // });
-
-    // it('emitHistogramHistory() should emit a list of histograms to a given room', () => {
-    //     const histograms = [] as Histogram[];
-    //     // histogramSpy.sendHistogramHistory.returns(histograms);
-    //     server.to.returns({
-    //         emit: (event: string, res) => {
-    //             expect(event).toBe('histogramHistory');
-    //             expect(res).toBe(histograms);
-    //         },
-    //     } as BroadcastOperator<unknown, unknown>);
-    //     gateway['emitHistogramHistory'](MOCK_ROOM_CODE);
-    // });
 
     it('isRoomEmpty() should return true if room is empty', () => {
         const room = { ...MOCK_PLAYER_ROOM };
@@ -288,7 +247,6 @@ describe('MatchGateway', () => {
         mockRoom.players = [mockPlayer];
         mockRoom.currentQuestionIndex = 1;
         mockRoom.gameLength = 1;
-        mockRoom.isRandomMode = false;
         matchRoomSpy.getRoomCodeByHostSocket.returns(MOCK_ROOM_CODE);
         matchRoomSpy.getRoom.returns(mockRoom);
         const deleteSpy = jest.spyOn(gateway, 'deleteRoom').mockReturnThis();
@@ -303,7 +261,6 @@ describe('MatchGateway', () => {
         mockRoom.players = [mockPlayer];
         mockRoom.currentQuestionIndex = 1;
         mockRoom.gameLength = 1;
-        mockRoom.isRandomMode = false;
         matchRoomSpy.getRoomCodeByHostSocket.returns(MOCK_ROOM_CODE);
         matchRoomSpy.getRoom.returns(mockRoom);
         const deleteSpy = jest.spyOn(gateway, 'deleteRoom').mockReturnThis();
@@ -457,45 +414,13 @@ describe('MatchGateway', () => {
 
     it('onCooldownTimerExpired() should call helper functions when CooldownTimerExpired event is emitted', () => {
         const sendNextQuestionSpy = jest.spyOn(matchRoomSpy, 'sendNextQuestion').mockReturnThis();
-        // const histogramResetSpy = jest.spyOn(histogramSpy, 'resetChoiceTracker').mockReturnThis();
-        // const histogramSendSpy = jest.spyOn(histogramSpy, 'sendEmptyHistogram').mockReturnThis();
-        jest.spyOn<any, any>(gateway, 'isTestRoom').mockReturnValue(false);
-        jest.spyOn<any, any>(gateway, 'isRandomModeRoom').mockReturnValue(false);
         eventEmitter.addListener(ExpiredTimerEvents.CooldownTimerExpired, gateway.onCountdownTimerExpired);
         expect(eventEmitter.hasListeners(ExpiredTimerEvents.CooldownTimerExpired)).toBe(true);
 
         gateway.onCooldownTimerExpired(MOCK_ROOM_CODE);
         expect(sendNextQuestionSpy).toHaveBeenCalledWith(server, MOCK_ROOM_CODE);
-        // expect(histogramResetSpy).toHaveBeenCalledWith(MOCK_ROOM_CODE);
-        // expect(histogramSendSpy).toHaveBeenCalledWith(MOCK_ROOM_CODE);
 
         eventEmitter.removeListener(ExpiredTimerEvents.CooldownTimerExpired, gateway.onCountdownTimerExpired);
-    });
-
-    it('isTestRoom() should return false if context is not test page', () => {
-        const mockRoom = { ...MOCK_PLAYER_ROOM };
-        mockRoom.code = MOCK_ROOM_CODE;
-        mockRoom.hostSocket = mockRoom.players[0].socket;
-        jest.spyOn(matchRoomSpy, 'getRoom').mockReturnValue(mockRoom);
-        const isTestPage = gateway['isTestRoom'](MOCK_ROOM_CODE);
-        expect(isTestPage).toBe(false);
-    });
-
-    it('isTestRoom() should return false if context is a random match', () => {
-        const mockRoom = { ...MOCK_RANDOM_MATCH_ROOM };
-        mockRoom.code = MOCK_ROOM_CODE;
-        jest.spyOn(matchRoomSpy, 'getRoom').mockReturnValue(mockRoom);
-        const isTestPage = gateway['isTestRoom'](MOCK_ROOM_CODE);
-        expect(isTestPage).toBe(false);
-    });
-
-    it('isRandomModeRoom() should return true if random mode', () => {
-        const mockRoom = { ...MOCK_RANDOM_MATCH_ROOM };
-        mockRoom.code = MOCK_ROOM_CODE;
-        mockRoom.isRandomMode = true;
-        jest.spyOn(matchRoomSpy, 'getRoom').mockReturnValue(mockRoom);
-        const isRandomModeRoom = gateway['isRandomModeRoom'](MOCK_ROOM_CODE);
-        expect(isRandomModeRoom).toBe(true);
     });
 
     it('onRouteToResultsPage() should call routeToResultsPage when RouteToResultsPage event is emitted', () => {

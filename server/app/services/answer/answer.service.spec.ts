@@ -27,7 +27,6 @@ describe('AnswerService', () => {
     let playerService;
     let matchRoomService;
     let timeService;
-    let histogramService;
     let questionStrategyContext;
     let matchRoom: MatchRoom;
     let currentDate: number;
@@ -154,26 +153,21 @@ describe('AnswerService', () => {
     it('updateChoice() should delegate choice tally according to selection', () => {
         player2.answer.isSubmitted = false;
         jest.spyOn<any, any>(playerService, 'getPlayerByUsername').mockReturnValue(player2);
-        const updateSpy = jest.spyOn<any, any>(histogramService, 'buildHistogram').mockImplementation();
 
         service.updateChoice('choice1', true, 'player2', MOCK_ROOM_CODE);
         expect(player2.answer.updateChoice).toHaveBeenCalledWith('choice1', true);
-        expect(updateSpy).toHaveBeenCalledWith(matchRoom, 'choice1', true);
 
         service.updateChoice('choice1', false, 'player2', MOCK_ROOM_CODE);
         expect(player2.answer.updateChoice).toHaveBeenCalledWith('choice1', false);
-        expect(updateSpy).toHaveBeenCalledWith(matchRoom, 'choice1', false);
     });
 
     it('updateChoice() should not count selection if answer was already submitted', () => {
         player1.answer.isSubmitted = true;
         jest.spyOn<any, any>(playerService, 'getPlayerByUsername').mockReturnValue(player1);
-        const updateSpy = jest.spyOn<any, any>(histogramService, 'buildHistogram');
 
         service.updateChoice('choice1', true, 'player1', MOCK_ROOM_CODE);
 
         expect(player1.answer.updateChoice).not.toHaveBeenCalled();
-        expect(updateSpy).not.toHaveBeenCalled();
     });
 
     it('calculateScore() should delegate score calculation to current strategy', () => {

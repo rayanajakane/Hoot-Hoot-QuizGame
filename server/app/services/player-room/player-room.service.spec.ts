@@ -210,7 +210,7 @@ describe('PlayerRoomService', () => {
         expect(service.isBannedUsername('', MOCK_USERNAME)).toEqual(false);
     });
 
-    it('getUsernameErrors() should applicable errors', () => {
+    it('getUsernameErrors() should show applicable errors', () => {
         const testCases = [
             { username: MOCK_USERNAME, isBanned: false, isUsed: false, expectedResult: '' },
             { username: HOST_USERNAME, isBanned: false, isUsed: false, expectedResult: HOST_CONFLICT },
@@ -225,17 +225,6 @@ describe('PlayerRoomService', () => {
             expect(usedSpy).toHaveBeenCalled();
             expect(result).toEqual(expectedResult);
         }
-    });
-
-    it('getUsernameErrors() should return empty string if used in testPage', () => {
-        matchRoomSpy.getRoom(MOCK_ROOM_CODE).isTestRoom = true;
-        MOCK_PLAYER.username = HOST_USERNAME;
-        matchRoomSpy.getRoom(MOCK_ROOM_CODE).players = [];
-        jest.spyOn(service, 'isHostPlayer').mockReturnValue(true);
-        jest.spyOn(service, 'isHostUsernameCorrect').mockReturnValue(true);
-
-        const result = service.getUsernameErrors(MOCK_ROOM_CODE, HOST_USERNAME);
-        expect(result).toBe('');
     });
 
     it('setStateForAll() should change state for all players in match room', () => {
@@ -299,27 +288,5 @@ describe('PlayerRoomService', () => {
 
         const result = service.isHostPlayer(MOCK_ROOM_CODE);
         expect(result).toEqual(false);
-    });
-    it("isHostUsernameCorrect() should return true if the username is the host's and the room is a test room and the player is not the host", () => {
-        const matchRoomCode = 'test-room';
-        const username = HOST_USERNAME;
-        const matchRoom = MOCK_MATCH_ROOM;
-        matchRoom.isTestRoom = true;
-        jest.spyOn(matchRoomSpy, 'getRoom').mockReturnValue(matchRoom);
-        jest.spyOn(service, 'isHostPlayer').mockReturnValue(false);
-
-        const result = service.isHostUsernameCorrect(matchRoomCode, username);
-
-        expect(result).toBe(true);
-    });
-
-    it('should return an empty string if isHostUsernameCorrect() returns true', () => {
-        const username = HOST_USERNAME;
-        const matchRoom = MOCK_MATCH_ROOM;
-
-        jest.spyOn(service, 'isHostUsernameCorrect').mockReturnValue(true);
-        const result = service.getUsernameErrors(matchRoom.code, username);
-
-        expect(result).toBe('');
     });
 });

@@ -32,11 +32,11 @@ describe('GameCreationService', () => {
         expect(service).toBeDefined();
     });
 
-    it('updateDateAndVisibility() should update the game date and make its visibility to false', async () => {
+    it('updateDateAndVisibility() should update the game date and make its visibility to true', async () => {
         const mockGame = getMockGame();
         const updatedGame = service.updateDateAndVisibility(mockGame);
         expect(updatedGame.id).toEqual(mockGame.id);
-        expect(updatedGame.isVisible).toBeFalsy();
+        expect(updatedGame.isVisible).toBeTruthy();
         expect(updatedGame.lastModification).toEqual(MOCK_DATE);
         updatedGame.questions.forEach((question) => {
             expect(question.lastModification).toEqual(MOCK_DATE);
