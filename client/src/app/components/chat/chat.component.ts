@@ -1,4 +1,4 @@
-import { AfterViewChecked, ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, ElementRef, Input, ViewChild } from '@angular/core';
 
 import { Message } from '@common/interfaces/message';
 
@@ -10,7 +10,7 @@ import { ChatService } from '@app/services/chat/chat.service';
     templateUrl: './chat.component.html',
     styleUrls: ['./chat.component.scss'],
 })
-export class ChatComponent implements AfterViewChecked, OnInit {
+export class ChatComponent implements AfterViewChecked {
     @ViewChild('messagesContainer', { static: true }) messagesContainer: ElementRef;
 
     @Input() disableMessagingField: boolean;
@@ -20,8 +20,6 @@ export class ChatComponent implements AfterViewChecked, OnInit {
         readonly chatService: ChatService,
         private cdr: ChangeDetectorRef,
     ) {}
-
-    ngOnInit(): void {}
 
     ngAfterViewChecked() {
         this.scrollToBottom();

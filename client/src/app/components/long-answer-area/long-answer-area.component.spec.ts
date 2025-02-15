@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MatFormFieldModule, MatHint, MatLabel } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -52,8 +53,8 @@ describe('LongAnswerComponent', () => {
         matchRoomSpy.currentQuestion = mockQuestion;
 
         TestBed.configureTestingModule({
-            imports: [MatIconModule, MatFormFieldModule, MatInputModule, NoopAnimationsModule],
-            declarations: [LongAnswerAreaComponent, MatHint, MatLabel],
+            imports: [MatIconModule, MatFormFieldModule, MatInputModule, NoopAnimationsModule, FormsModule],
+            declarations: [LongAnswerAreaComponent],
 
             providers: [
                 { provide: AnswerService, useValue: answerSpy },

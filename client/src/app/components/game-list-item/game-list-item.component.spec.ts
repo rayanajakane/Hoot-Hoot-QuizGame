@@ -49,8 +49,10 @@ describe('GameListItemComponent', () => {
     });
 
     it('should do nothing if not in admin mode when trying to delete', () => {
+        const emitSpy = spyOn(component.deleteGameFromList, 'emit');
         component.isAdminMode = false;
         component.deleteGame();
+        expect(emitSpy).not.toHaveBeenCalled();
     });
 
     it('should display admin buttons if in admin mode', () => {

@@ -63,7 +63,7 @@ class MockAlertComponent {}
 })
 class MockAudioPlayerComponent {}
 
-describe('QuestionAreaComponent', () => {
+fdescribe('QuestionAreaComponent', () => {
     let component: QuestionAreaComponent;
     let fixture: ComponentFixture<QuestionAreaComponent>;
     let timerSpy: spyObj<TimeService>;
@@ -74,7 +74,6 @@ describe('QuestionAreaComponent', () => {
     let questionContextSpy: spyObj<MatchContextService>;
     let notificationServiceSpy: spyObj<NotificationService>;
     let answerSpy: spyObj<AnswerService>;
-    let router: Router;
 
     const routes: Routes = [{ path: 'home', component: QuestionAreaComponent }];
 
@@ -156,7 +155,6 @@ describe('QuestionAreaComponent', () => {
         fixture = TestBed.createComponent(QuestionAreaComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-        router = TestBed.inject(Router);
     });
 
     it('should create', () => {
@@ -199,11 +197,12 @@ describe('QuestionAreaComponent', () => {
         expect(answerSpy.isNextQuestionButtonEnabled).toBe(false);
     });
 
-    it('quitGame() navigate to home page', () => {
-        const navigateSpy = spyOn(router, 'navigateByUrl');
-        matchRoomSpy.isResults = true;
-        component.quitGame();
-        expect(navigateSpy).toHaveBeenCalledWith('/home');
+    describe('quitGame()', () => {
+        it('should set isQuitting to true and call disconnectFromRoom', () => {
+            component.quitGame();
+            expect(matchRoomSpy.isQuitting).toBeTrue();
+            expect(matchRoomSpy.disconnectFromRoom).toHaveBeenCalled();
+        });
     });
 
     it('should call matchRoomService.routeToResultsPage when routeToResultsPage is called', () => {

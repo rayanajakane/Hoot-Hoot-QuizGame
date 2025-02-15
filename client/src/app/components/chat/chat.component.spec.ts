@@ -74,11 +74,6 @@ describe('ChatComponent', () => {
         expect(true).toBeTruthy();
     });
 
-    it('should call the even listener handleReceivedMessages() on init', () => {
-        component.ngOnInit();
-        expect(chatServiceSpy.handleReceivedMessages).toHaveBeenCalled();
-    });
-
     it('should send message', () => {
         component.sendMessage(mockMessage.text);
         expect(chatServiceSpy.sendPrototypeMessage).toHaveBeenCalledWith(mockMessage);

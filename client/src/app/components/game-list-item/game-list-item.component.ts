@@ -11,8 +11,6 @@ export class GameListItemComponent {
     @Input() isAdminMode: boolean;
     @Output() deleteGameFromList: EventEmitter<string> = new EventEmitter<string>();
 
-    constructor() {}
-
     deleteGame() {
         if (!this.isAdminMode) return;
         this.deleteGameFromList.emit(this.game.id);
