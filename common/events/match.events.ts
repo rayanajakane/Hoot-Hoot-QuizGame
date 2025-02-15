@@ -16,6 +16,6 @@ export enum MatchEvents {
     Winner = 'winner',
     RouteToResultsPage = 'routeToResultsPage',
     HostQuitMatch = 'hostQuitMatch',
-    Disconnect = 'disconnect',
+    Disconnect = 'disconnectFromRoom',
     Error = 'error',
 }

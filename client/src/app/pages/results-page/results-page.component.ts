@@ -68,7 +68,7 @@ export class ResultsPageComponent implements OnInit, OnDestroy {
     }
 
     handleDisconnect() {
-        this.matchRoomService.disconnect();
+        this.matchRoomService.disconnectFromRoom();
     }
 
     private subscribeToHistogramHistory() {

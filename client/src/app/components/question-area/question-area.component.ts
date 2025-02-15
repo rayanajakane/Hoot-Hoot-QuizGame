@@ -1,18 +1,14 @@
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertComponent } from '@app/components/alert/alert.component';
-import { WarningMessage } from '@app/constants/feedback-messages';
 import { MatchContext } from '@app/constants/states';
-import { CanDeactivateType } from '@app/interfaces/can-component-deactivate';
 import { AnswerService } from '@app/services/answer/answer.service';
 import { AudioPlayerService } from '@app/services/audio-player/audio-player.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
-import { NotificationService } from '@app/services/notification/notification.service';
 import { TimeService } from '@app/services/time/time.service';
 import { AnswerCorrectness } from '@common/constants/answer-correctness';
 import { QuestionType } from '@common/constants/question-types';
-import { Subject } from 'rxjs';
 @Component({
     selector: 'app-question-area',
     templateUrl: './question-area.component.html',
@@ -34,7 +30,6 @@ export class QuestionAreaComponent implements OnInit {
         public audioService: AudioPlayerService,
         public router: Router,
         private readonly matchContextService: MatchContextService,
-        private readonly notificationService: NotificationService,
     ) {}
 
     get time() {
@@ -67,27 +62,6 @@ export class QuestionAreaComponent implements OnInit {
         }
     }
 
-    canDeactivate(): CanDeactivateType {
-        if (this.matchRoomService.isResults) return true;
-        if (this.matchRoomService.isQuitting) return true;
-        if (this.matchContextService.getContext() === MatchContext.TestPage) {
-            this.matchRoomService.isQuitting = true;
-            this.matchRoomService.disconnect();
-            return true;
-        }
-        if (!this.matchRoomService.isHostPlaying) return true;
-
-        const deactivateSubject = new Subject<boolean>();
-        this.notificationService.openWarningDialog(WarningMessage.QUIT).subscribe((confirm: boolean) => {
-            deactivateSubject.next(confirm);
-            if (confirm) {
-                this.matchRoomService.isQuitting = true;
-                this.matchRoomService.disconnect();
-            }
-        });
-        return deactivateSubject;
-    }
-
     ngOnInit(): void {
         this.resetStateForNewQuestion();
         this.listenToGameEvents();
@@ -114,7 +88,7 @@ export class QuestionAreaComponent implements OnInit {
 
     quitGame() {
         this.matchRoomService.isQuitting = true;
-        this.matchRoomService.disconnect();
+        this.matchRoomService.disconnectFromRoom();
     }
 
     triggerPanicTimer() {

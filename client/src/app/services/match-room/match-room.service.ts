@@ -76,7 +76,7 @@ export class MatchRoomService {
         }
     }
 
-    disconnect() {
+    disconnectFromRoom() {
         this.router.navigateByUrl('/home');
         this.hasEnteredRoom = false;
         this.matchContextService.resetContext();
@@ -199,7 +199,7 @@ export class MatchRoomService {
     onHostQuit() {
         this.socketService.on(MatchEvents.HostQuitMatch, () => {
             this.isHostPlaying = false;
-            this.disconnect();
+            this.disconnectFromRoom();
         });
     }
 
@@ -235,7 +235,7 @@ export class MatchRoomService {
     onPlayerKick() {
         this.socketService.on(MatchEvents.KickPlayer, () => {
             this.isBanned = true;
-            this.disconnect();
+            this.disconnectFromRoom();
         });
     }
 
