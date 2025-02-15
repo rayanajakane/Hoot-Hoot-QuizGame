@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatAccordion } from '@angular/material/expansion';
 import { QuestionCreationFormComponent } from '@app/components/question-creation-form/question-creation-form.component';
@@ -13,7 +13,7 @@ import { QuestionService } from '@app/services/question/question.service';
     templateUrl: './admin-question-bank.component.html',
     styleUrl: './admin-question-bank.component.scss',
 })
-export class AdminQuestionBankComponent {
+export class AdminQuestionBankComponent implements OnInit {
     @Output() createQuestionEventQuestionBank: EventEmitter<Question> = new EventEmitter<Question>();
     @Input() createNewQuestionButton: boolean = false;
     @Input() createNewQuestionToBankButton: boolean = false;

@@ -56,7 +56,7 @@ describe('ChatComponent', () => {
         chatServiceSpy = TestBed.inject(ChatService) as jasmine.SpyObj<ChatService>;
         authServiceSpy = TestBed.inject(AuthenticationService) as jasmine.SpyObj<AuthenticationService>;
         authServiceSpy.connectToSocket.and.returnValue();
-        (authServiceSpy as any).userDisplayName = 'todo';
+        (authServiceSpy as unknown).userDisplayName = 'todo';
         fixture.detectChanges();
     });
 

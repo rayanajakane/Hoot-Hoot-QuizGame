@@ -135,14 +135,14 @@ export class MatchGateway implements OnGatewayDisconnect {
         this.routeToResultsPage({} as Socket, matchRoomCode);
     }
 
-    handleDisconnect(@ConnectedSocket() socket: Socket) {
-        this.handleDisconnectFromRoom(socket);
-    }
-
     @SubscribeMessage(MatchEvents.Disconnect)
     handleDisconnectFromRoom(@ConnectedSocket() socket: Socket) {
         const isHostDisconnected = this.handleHostDisconnect(socket);
         if (!isHostDisconnected) this.handlePlayersDisconnect(socket);
+    }
+
+    handleDisconnect(@ConnectedSocket() socket: Socket) {
+        this.handleDisconnectFromRoom(socket);
     }
 
     handleHostDisconnect(@ConnectedSocket() socket: Socket): boolean {

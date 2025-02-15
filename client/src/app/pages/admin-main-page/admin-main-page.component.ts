@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Game } from '@app/interfaces/game';
 import { GameService } from '@app/services/game/game.service';
 
@@ -7,7 +7,7 @@ import { GameService } from '@app/services/game/game.service';
     templateUrl: './admin-main-page.component.html',
     styleUrl: './admin-main-page.component.scss',
 })
-export class AdminMainPageComponent {
+export class AdminMainPageComponent implements OnInit {
     order: string = 'ascending';
     subject: string = 'date';
 

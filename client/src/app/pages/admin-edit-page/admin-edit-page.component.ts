@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GameStatus } from '@app/constants/feedback-messages';
 import { ManagementState } from '@app/constants/states';
@@ -14,7 +14,7 @@ import { Subject } from 'rxjs';
     templateUrl: './admin-edit-page.component.html',
     styleUrl: './admin-edit-page.component.scss',
 })
-export class AdminEditPageComponent {
+export class AdminEditPageComponent implements OnInit {
     @Output() createQuestionEvent: EventEmitter<Question> = new EventEmitter<Question>();
     @Output() createQuestionEventQuestionBank: EventEmitter<Question> = new EventEmitter<Question>();
 

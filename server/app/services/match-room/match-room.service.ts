@@ -55,8 +55,8 @@ export class MatchRoomService {
     // allow more parameters to make method more reusable
     // eslint-disable-next-line max-params
     addRoom(selectedGame: Game, socket: Socket, isClassicMode: boolean = true): MatchRoom {
-        const isLocked: boolean = false;
-        const isPlaying: boolean = false;
+        const isLocked = false;
+        const isPlaying = false;
 
         const newRoom: MatchRoom = {
             code: this.generateRoomCode(),

@@ -47,7 +47,7 @@ describe('QuestionCreationFormComponent', () => {
     beforeEach(() => {
         const snackBarSpyObj = jasmine.createSpyObj('MatSnackBar', ['open']);
         questionServiceSpy = jasmine.createSpyObj('QuestionService', ['validateChoicesLength']);
-        bankServiceSpy = jasmine.createSpyObj('QuestionService', ['addQuestion']);
+        bankServiceSpy = jasmine.createSpyObj('BankService', ['addQuestion']);
 
         TestBed.configureTestingModule({
             declarations: [QuestionCreationFormComponent, QuestionListItemComponent],

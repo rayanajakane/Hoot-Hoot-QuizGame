@@ -61,7 +61,7 @@ export class AuthenticationService {
                     return Promise.resolve(true);
                 }
             })
-            .catch((error: any) => {
+            .catch(async (error: unknown) => {
                 this.currentUser = null;
                 console.log(error);
                 return Promise.resolve(false);

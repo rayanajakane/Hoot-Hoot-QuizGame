@@ -63,7 +63,7 @@ class MockAlertComponent {}
 })
 class MockAudioPlayerComponent {}
 
-fdescribe('QuestionAreaComponent', () => {
+describe('QuestionAreaComponent', () => {
     let component: QuestionAreaComponent;
     let fixture: ComponentFixture<QuestionAreaComponent>;
     let timerSpy: spyObj<TimeService>;
@@ -97,7 +97,7 @@ fdescribe('QuestionAreaComponent', () => {
             'goToNextQuestion',
             'getUsername',
             'getRoomCode',
-            'disconnect',
+            'disconnectFromRoom',
             'sendPlayersData',
             'onRouteToResultsPage',
             'routeToResultsPage',

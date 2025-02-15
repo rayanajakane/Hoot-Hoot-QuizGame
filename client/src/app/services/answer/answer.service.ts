@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatchContext } from '@app/constants/states';
+import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { TimeService } from '@app/services/time/time.service';
@@ -11,7 +12,6 @@ import { Feedback } from '@common/interfaces/feedback';
 import { GradesInfo } from '@common/interfaces/grades-info';
 import { LongAnswerInfo } from '@common/interfaces/long-answer-info';
 import { UserInfo } from '@common/interfaces/user-info';
-import { MatchContextService } from '../match-context/match-context.service';
 
 @Injectable({
     providedIn: 'root',

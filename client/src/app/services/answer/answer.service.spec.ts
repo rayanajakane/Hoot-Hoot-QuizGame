@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
 import { MatchContext } from '@app/constants/states';
+import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { AnswerCorrectness } from '@common/constants/answer-correctness';
@@ -11,7 +12,6 @@ import { Feedback } from '@common/interfaces/feedback';
 import { LongAnswerInfo } from '@common/interfaces/long-answer-info';
 import { UserInfo } from '@common/interfaces/user-info';
 import { Socket } from 'socket.io-client';
-import { MatchContextService } from '../match-context/match-context.service';
 import { AnswerService } from './answer.service';
 import SpyObj = jasmine.SpyObj;
 
