@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogTextInputComponent } from '@app/components/dialog-text-input/dialog-text-input.component';
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { JoinMatchService } from '@app/services/join-match/join-match.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 
@@ -19,6 +20,7 @@ export class HomePageComponent {
         private readonly dialog: MatDialog,
         private readonly joinMatchService: JoinMatchService,
         private readonly notificationService: NotificationService,
+        private readonly authenticationService: AuthenticationService,
     ) {}
 
     openJoinDialog(): void {
@@ -39,24 +41,12 @@ export class HomePageComponent {
         this.joinMatchService.validateMatchRoomCode(roomCode).subscribe({
             next: () => {
                 this.joinMatchService.matchRoomCode = roomCode;
-                this.openUsernameDialog();
+                this.joinMatchService.validateUsername(this.authenticationService.userDisplayName);
             },
             error: (error: HttpErrorResponse) => {
                 this.notificationService.displayErrorMessage(`${JSON.parse(error.error)['message']}`);
                 this.joinMatchService.matchRoomCode = '';
             },
-        });
-    }
-
-    openUsernameDialog(): void {
-        const dialogRef = this.dialog.open(DialogTextInputComponent, {
-            data: { input: this.input, title: "Veillez saisir un nom d'utilisateur", placeholder: 'Nom' },
-        });
-
-        dialogRef.afterClosed().subscribe((result: string) => {
-            if (result) {
-                this.joinMatchService.validateUsername(result);
-            }
         });
     }
 }
