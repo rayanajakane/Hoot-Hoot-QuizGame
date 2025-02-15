@@ -79,9 +79,6 @@ export class MatchRoomService {
     disconnectFromRoom() {
         this.router.navigateByUrl('/home');
         this.hasEnteredRoom = false;
-        this.matchContextService.resetContext();
-        this.socketService.send(MatchEvents.Disconnect);
-        // this.socketService.socket.removeListener(MatchEvents.Disconnect);
         this.socketService.socket.removeListener(MatchEvents.FetchPlayersData);
         this.socketService.socket.removeListener(MatchEvents.MatchStarting);
         this.socketService.socket.removeListener(MatchEvents.BeginQuiz);
@@ -91,6 +88,9 @@ export class MatchRoomService {
         this.socketService.socket.removeListener(MatchEvents.KickPlayer);
         this.socketService.socket.removeListener(MatchEvents.Error);
         this.socketService.socket.removeListener(MatchEvents.RouteToResultsPage);
+        this.socketService.send(MatchEvents.Disconnect);
+        this.matchContextService.resetContext();
+        // this.socketService.socket.removeListener(MatchEvents.Disconnect);
     }
 
     createRoom(gameId: string, isClassicMode: boolean = true) {
