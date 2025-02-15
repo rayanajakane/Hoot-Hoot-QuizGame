@@ -32,13 +32,14 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
     disabled: boolean;
     notificationShown: boolean = false;
 
+    questionService = Inject(QuestionService);
+    bankService = Inject(BankService);
+
     // Allow more constructor parameters to reduce logic in the component
     // eslint-disable-next-line max-params
     constructor(
         private readonly snackBar: MatSnackBar,
         private readonly formBuilder: FormBuilder,
-        private readonly questionService: QuestionService,
-        public bankService: BankService,
         @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: DialogManagement,
     ) {
         this.initializeForm();
