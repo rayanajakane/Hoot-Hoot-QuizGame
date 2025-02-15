@@ -10,7 +10,6 @@ import { SocketHandlerService } from '@app/services/socket-handler/socket-handle
 import { HOST_USERNAME } from '@common/constants/match-constants';
 import { ChatEvents } from '@common/events/chat.events';
 import { MatchEvents } from '@common/events/match.events';
-import { GameOverInfo } from '@common/interfaces/game-over-info';
 import { UserInfo } from '@common/interfaces/user-info';
 import { MatchContextService } from '../match-context/match-context.service';
 
@@ -68,7 +67,6 @@ export class MatchRoomService {
             this.onMatchStarted();
             this.onBeginQuiz();
             this.onNextQuestion();
-            this.onGameOver();
             this.onStartCooldown();
             this.onHostQuit();
             this.onPlayerKick();
@@ -81,18 +79,17 @@ export class MatchRoomService {
     disconnect() {
         this.hasEnteredRoom = false;
         this.matchContextService.resetContext();
+        this.socketService.send(MatchEvents.Disconnect);
         this.socketService.socket.removeListener(MatchEvents.Disconnect);
         this.socketService.socket.removeListener(MatchEvents.FetchPlayersData);
         this.socketService.socket.removeListener(MatchEvents.MatchStarting);
         this.socketService.socket.removeListener(MatchEvents.BeginQuiz);
         this.socketService.socket.removeListener(MatchEvents.GoToNextQuestion);
-        this.socketService.socket.removeListener(MatchEvents.GameOver);
         this.socketService.socket.removeListener(MatchEvents.StartCooldown);
         this.socketService.socket.removeListener(MatchEvents.HostQuitMatch);
         this.socketService.socket.removeListener(MatchEvents.KickPlayer);
         this.socketService.socket.removeListener(MatchEvents.Error);
         this.socketService.socket.removeListener(MatchEvents.RouteToResultsPage);
-        // this.socketService.disconnect();
     }
 
     createRoom(gameId: string, isClassicMode: boolean = true) {
@@ -120,10 +117,7 @@ export class MatchRoomService {
 
     joinRoom(roomCode: string, username: string) {
         const sentInfo: UserInfo = { roomCode, username };
-        this.socketService.send(MatchEvents.JoinRoom, sentInfo, (res: { code: string; username: string; isRandomMode: boolean }) => {
-            if (res.isRandomMode) {
-                this.matchContextService.setContext(MatchContext.RandomMode);
-            }
+        this.socketService.send(MatchEvents.JoinRoom, sentInfo, (res: { code: string; username: string }) => {
             this.matchRoomCode = res.code;
             this.username = res.username;
             this.router.navigateByUrl('/match-room');
@@ -188,15 +182,6 @@ export class MatchRoomService {
         });
     }
 
-    onGameOver() {
-        this.socketService.on(MatchEvents.GameOver, (gameOverInfo: GameOverInfo) => {
-            const { isTestRoom, isRandomMode } = gameOverInfo;
-            if (isTestRoom && !isRandomMode) {
-                this.router.navigateByUrl('/host');
-            }
-        });
-    }
-
     onNextQuestion() {
         this.socketService.on(MatchEvents.GoToNextQuestion, (question: Question) => {
             this.isCooldown = false;
@@ -213,6 +198,7 @@ export class MatchRoomService {
     onHostQuit() {
         this.socketService.on(MatchEvents.HostQuitMatch, () => {
             this.isHostPlaying = false;
+            this.disconnect();
         });
     }
 

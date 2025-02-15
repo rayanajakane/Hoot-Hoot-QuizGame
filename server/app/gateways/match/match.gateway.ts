@@ -46,34 +46,17 @@ export class MatchGateway implements OnGatewayDisconnect {
         } else {
             socket.join(data.roomCode);
             const newPlayer = this.playerRoomService.addPlayer(socket, data.roomCode, data.username);
-            // return { code: data.roomCode, username: newPlayer.username, isRandomMode: this.matchRoomService.getRoom(data.roomCode).isRandomMode };
             return { code: data.roomCode, username: newPlayer.username };
         }
     }
 
     @SubscribeMessage(MatchEvents.CreateRoom)
-    // async createRoom(@ConnectedSocket() socket: Socket, @MessageBody() data: { gameId: string; isTestPage: boolean; isRandomMode: boolean }) {
     async createRoom(@ConnectedSocket() socket: Socket, @MessageBody() data: { gameId: string; isClassicMode: boolean }) {
         let selectedGame: Game = {} as Game;
         selectedGame = this.matchBackupService.getBackupGame(data.gameId);
 
         // TODO : Remove all mention of randomMode
         const newMatchRoom: MatchRoom = this.matchRoomService.addRoom(selectedGame, socket, data.isClassicMode);
-        // const newMatchRoom: MatchRoom = this.matchRoomService.addRoom(selectedGame, socket, data.isTestPage, data.isRandomMode);
-        // this.histogramService.resetChoiceTracker(newMatchRoom.code);
-        // if (data.isTestPage || data.isRandomMode) {
-        //     const playerInfo = { roomCode: newMatchRoom.code, username: HOST_USERNAME };
-        //     socket.join(newMatchRoom.code);
-
-        //     this.playerRoomService.addPlayer(socket, playerInfo.roomCode, playerInfo.username);
-
-        //     if (!newMatchRoom.isRandomMode) {
-        //         this.matchRoomService.sendFirstQuestion(this.server, playerInfo.roomCode);
-        //         this.matchRoomService.startMatch(socket, this.server, newMatchRoom.code);
-        //     }
-
-        //     return { code: newMatchRoom.code };
-        // }
 
         socket.join(newMatchRoom.code);
         return { code: newMatchRoom.code };
@@ -146,10 +129,6 @@ export class MatchGateway implements OnGatewayDisconnect {
     @OnEvent(ExpiredTimerEvents.CooldownTimerExpired)
     onCooldownTimerExpired(matchRoomCode: string) {
         this.matchRoomService.sendNextQuestion(this.server, matchRoomCode);
-        // if (!this.isTestRoom(matchRoomCode) && !this.isRandomModeRoom(matchRoomCode)) {
-        //     // this.histogramService.resetChoiceTracker(matchRoomCode);
-        //     // this.histogramService.sendEmptyHistogram(matchRoomCode);
-        // }
     }
 
     @OnEvent(MatchEvents.RouteToResultsPage)
@@ -157,6 +136,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         this.routeToResultsPage({} as Socket, matchRoomCode);
     }
 
+    @OnEvent(MatchEvents.Disconnect)
     handleDisconnect(@ConnectedSocket() socket: Socket) {
         const isHostDisconnected = this.handleHostDisconnect(socket);
         if (!isHostDisconnected) this.handlePlayersDisconnect(socket);
@@ -166,7 +146,6 @@ export class MatchGateway implements OnGatewayDisconnect {
         const hostRoomCode = this.matchRoomService.getRoomCodeByHostSocket(socket.id);
         if (!hostRoomCode) return false;
         const hostRoom = this.matchRoomService.getRoom(hostRoomCode);
-        // if ((hostRoom.isPlaying || !hostRoom.currentQuestionIndex) && !hostRoom.isRandomMode) {
         if (hostRoom.isPlaying || !hostRoom.currentQuestionIndex) {
             this.sendError(hostRoomCode, NO_MORE_HOST);
             this.deleteRoom(hostRoomCode);
@@ -222,21 +201,7 @@ export class MatchGateway implements OnGatewayDisconnect {
             .emit(ChatEvents.NewMessage, { roomCode, message: { author: '', text: `${username} a quitté la partie.`, date: new Date() } });
     }
 
-    // private emitHistogramHistory(matchRoomCode: string) {
-    //     // const histograms = this.histogramService.sendHistogramHistory(matchRoomCode);
-    //     // this.server.to(matchRoomCode).emit(HistogramEvents.HistogramHistory, histograms);
-    // }
-
     private isRoomEmpty(room: MatchRoom) {
         return room.players.every((player) => !player.isPlaying);
     }
-
-    // private isTestRoom(matchRoomCode: string) {
-    //     const matchRoom = this.matchRoomService.getRoom(matchRoomCode);
-    //     return matchRoom.isTestRoom && !matchRoom.isRandomMode;
-    // }
-
-    // private isRandomModeRoom(matchRoomCode: string) {
-    //     return this.matchRoomService.getRoom(matchRoomCode).isRandomMode;
-    // }
 }

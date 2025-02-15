@@ -6,9 +6,6 @@ import { Socket } from 'socket.io';
 import { Message } from './message.schema';
 import { Player } from './player.schema';
 
-// TODO: Remove isTestRoom and isRandomMode attributes
-// Replace them with a single attribute "matchMode"
-
 export interface MatchRoom {
     code: string;
     isLocked: boolean;
