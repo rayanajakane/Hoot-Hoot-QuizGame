@@ -29,7 +29,7 @@ describe('TimeService', () => {
         router = jasmine.createSpyObj('Router', ['navigateByUrl']);
         socketHelper = new SocketTestHelper();
         socketSpy = new SocketHandlerServiceMock(router);
-        socketSpy.socket = socketHelper as unknown as Socket;
+        socketSpy.socket = socketHelper as any as Socket;
 
         TestBed.configureTestingModule({
             providers: [

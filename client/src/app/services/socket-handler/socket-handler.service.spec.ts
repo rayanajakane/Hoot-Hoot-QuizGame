@@ -15,7 +15,7 @@ describe('SocketHandlerService', () => {
             providers: [{ provide: Router, useValue: router }],
         });
         service = TestBed.inject(SocketHandlerService);
-        service.socket = new SocketTestHelper() as unknown as Socket;
+        service.socket = new SocketTestHelper() as any as Socket;
     });
 
     it('should be created', () => {
@@ -47,7 +47,7 @@ describe('SocketHandlerService', () => {
     });
 
     it('isSocketAlive should return false if the socket is not defined', () => {
-        (service.socket as unknown) = undefined;
+        (service.socket as any) = undefined;
         const isAlive = service.isSocketAlive();
         expect(isAlive).toBeFalsy();
     });

@@ -47,7 +47,7 @@ describe('MatchController', () => {
     it('allVisibleGames() should return all visible games', async () => {
         const mockGames = [new Game(), new Game()];
         matchBackupService.getAllVisibleGames.resolves(mockGames);
-        const res = {} as unknown as Response;
+        const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.OK);
             return res;
@@ -61,7 +61,7 @@ describe('MatchController', () => {
 
     it('allGames() should return NOT_FOUND when service is unable to fetch the games', async () => {
         matchBackupService.getAllVisibleGames.rejects();
-        const res = {} as unknown as Response;
+        const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.NOT_FOUND);
             return res;
@@ -74,7 +74,7 @@ describe('MatchController', () => {
     it('gameByIdWithoutIsCorrect() should return the game with the corresponding ID', async () => {
         const mockGame = new Game();
         matchBackupService.getGameByIdWithoutIsCorrect.resolves(mockGame);
-        const res = {} as unknown as Response;
+        const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.OK);
             return res;
@@ -89,7 +89,7 @@ describe('MatchController', () => {
 
     it('gameByIdWithoutIsCorrect() should return NOT_FOUND when service is unable to fetch the game', async () => {
         matchBackupService.getGameByIdWithoutIsCorrect.rejects();
-        const res = {} as unknown as Response;
+        const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.NOT_FOUND);
             return res;
@@ -100,7 +100,7 @@ describe('MatchController', () => {
 
     it('validateMatchRoomCode() should return OK if the code is valid', () => {
         matchRoomService.getRoomCodeErrors.returns('');
-        const res = {} as unknown as Response;
+        const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.OK);
             return res;
@@ -111,7 +111,7 @@ describe('MatchController', () => {
 
     it('validateMatchRoomCode() should return FORBIDDEN if the code is invalid', () => {
         matchRoomService.getRoomCodeErrors.returns(INVALID_CODE);
-        const res = {} as unknown as Response;
+        const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.FORBIDDEN);
             return res;
@@ -121,7 +121,7 @@ describe('MatchController', () => {
     });
     it('validateUsername() should return OK if the username is valid', () => {
         playerRoomService.getUsernameErrors.returns('');
-        const res = {} as unknown as Response;
+        const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.OK);
             return res;
@@ -131,7 +131,7 @@ describe('MatchController', () => {
     });
     it('validateUsername() should return FORBIDDEN if the username is invalid', () => {
         playerRoomService.getUsernameErrors.returns(HOST_CONFLICT);
-        const res = {} as unknown as Response;
+        const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.FORBIDDEN);
             return res;

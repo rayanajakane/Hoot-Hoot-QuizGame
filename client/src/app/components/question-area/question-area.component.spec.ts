@@ -120,7 +120,7 @@ describe('QuestionAreaComponent', () => {
 
         socketHelper = new SocketTestHelper();
         socketSpy = new SocketHandlerServiceMock(routerSpy);
-        socketSpy.socket = socketHelper as unknown as Socket;
+        socketSpy.socket = socketHelper as any as Socket;
 
         await TestBed.configureTestingModule({
             declarations: [

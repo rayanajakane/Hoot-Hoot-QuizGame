@@ -69,14 +69,14 @@ describe('MatchRoomService', () => {
         player1.isPlaying = true;
         player1.socket = {
             emit: jest.fn(),
-        } as unknown as Socket;
+        } as any as Socket;
 
         const player2 = { ...MOCK_PLAYER };
         player2.score = 50;
         player2.isPlaying = true;
         player2.socket = {
             emit: jest.fn(),
-        } as unknown as Socket;
+        } as any as Socket;
 
         matchRoom.players = [player1, player2];
         matchRoom.code = MOCK_ROOM_CODE;

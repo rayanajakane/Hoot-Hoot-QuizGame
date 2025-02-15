@@ -259,7 +259,7 @@ describe('GameModificationService', () => {
     });
 
     it('should call openConfirmDialog on dropQuizQuestion if container is present', () => {
-        const mockEvent = { event: { target: { closest: () => true } } } as unknown as CdkDragEnd<Question[]>;
+        const mockEvent = { event: { target: { closest: () => true } } } as any as CdkDragEnd<Question[]>;
         spyOn(service, 'openConfirmDialog');
         service.dropQuizQuestion(mockEvent);
         expect(service.openConfirmDialog).toHaveBeenCalled();
@@ -268,7 +268,7 @@ describe('GameModificationService', () => {
     it('should not call openConfirmDialog on dropQuizQuestion if container is not present', () => {
         const mockEvent = {
             event: { target: { closest: () => false } },
-        } as unknown as CdkDragEnd<Question[]>;
+        } as any as CdkDragEnd<Question[]>;
 
         spyOn(service, 'openConfirmDialog');
         service.dropQuizQuestion(mockEvent);
@@ -301,7 +301,7 @@ describe('GameModificationService', () => {
             currentIndex: 1,
             container,
             previousContainer: container,
-        } as unknown as CdkDragDrop<Question[]>;
+        } as any as CdkDragDrop<Question[]>;
         service.dropInQuizList(mockDragDropEvent);
         expect(service.game.questions[0].id).toEqual('2');
         expect(service.game.questions[1].id).toEqual('1');
@@ -314,7 +314,7 @@ describe('GameModificationService', () => {
             container: { data: service.game.questions },
             previousIndex: 0,
             currentIndex: 0,
-        } as unknown as CdkDragDrop<Question[]>;
+        } as any as CdkDragDrop<Question[]>;
 
         const duplicateSpy = spyOn<any>(service, 'isDuplicateQuestion').and.returnValue(false);
         spyOn<any>(service, 'setBankMessage').and.returnValue({});
@@ -334,7 +334,7 @@ describe('GameModificationService', () => {
             container: { data: mockQuestions },
             previousIndex: 0,
             currentIndex: 0,
-        } as unknown as CdkDragDrop<Question[]>;
+        } as any as CdkDragDrop<Question[]>;
 
         service.dropInQuizList(mockDragDropEvent);
         expect(service['notificationService'].displayErrorMessage).toHaveBeenCalled();

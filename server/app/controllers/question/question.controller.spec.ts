@@ -33,7 +33,7 @@ describe('QuestionController', () => {
     it('getAllQuestions() should return all questions', async () => {
         const fakeQuestions = [new Question(), new Question()];
         questionService.getAllQuestions.resolves(fakeQuestions);
-        const res = {} as unknown as Response;
+        const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.OK);
             return res;
@@ -48,7 +48,7 @@ describe('QuestionController', () => {
 
     it('getAllQuestions() should return NOT FOUND if the service fails', async () => {
         questionService.getAllQuestions.rejects('');
-        const res = {} as unknown as Response;
+        const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.NOT_FOUND);
             return res;
@@ -61,7 +61,7 @@ describe('QuestionController', () => {
         const fakeQuestion = new Question();
         questionService.getQuestionById.resolves(fakeQuestion);
 
-        const res = {} as unknown as Response;
+        const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.OK);
             return res;
@@ -76,7 +76,7 @@ describe('QuestionController', () => {
 
     it('getQuestionById() should return NOT_FOUND when service is unable to fetch the question', async () => {
         questionService.getQuestionById.rejects();
-        const res = {} as unknown as Response;
+        const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.NOT_FOUND);
             return res;
@@ -88,7 +88,7 @@ describe('QuestionController', () => {
 
     it('addQuestion() should succeed if service is able to add the question', async () => {
         questionService.addQuestion.resolves();
-        const res = {} as unknown as Response;
+        const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.CREATED);
             return res;
@@ -99,7 +99,7 @@ describe('QuestionController', () => {
 
     it('addQuestion() should return BAD_REQUEST when service is not able to find the course', async () => {
         questionService.addQuestion.rejects();
-        const res = {} as unknown as Response;
+        const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.BAD_REQUEST);
             return res;
@@ -110,7 +110,7 @@ describe('QuestionController', () => {
 
     it('updateQuestion() should succeed if service is able to update the question', async () => {
         questionService.updateQuestion.resolves();
-        const res = {} as unknown as Response;
+        const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.OK);
             return res;
@@ -123,7 +123,7 @@ describe('QuestionController', () => {
         jest.spyOn(questionService, 'updateQuestion').mockImplementationOnce(async () => {
             return Promise.reject(ERROR_QUESTION_NOT_FOUND);
         });
-        const res = {} as unknown as Response;
+        const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.NOT_FOUND);
             return res;
@@ -134,7 +134,7 @@ describe('QuestionController', () => {
 
     it('updateQuestion() should return BAD_REQUEST when service cannot update the question', async () => {
         questionService.updateQuestion.rejects();
-        const res = {} as unknown as Response;
+        const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.BAD_REQUEST);
             return res;
@@ -145,7 +145,7 @@ describe('QuestionController', () => {
 
     it('deleteQuestion() should succeed if service is able to delete the question', async () => {
         questionService.deleteQuestion.resolves();
-        const res = {} as unknown as Response;
+        const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.NO_CONTENT);
             return res;
@@ -156,7 +156,7 @@ describe('QuestionController', () => {
 
     it('deleteQuestion() should return NOT_FOUND when service cannot delete the question', async () => {
         questionService.deleteQuestion.rejects();
-        const res = {} as unknown as Response;
+        const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.NOT_FOUND);
             return res;
@@ -167,7 +167,7 @@ describe('QuestionController', () => {
 
     it('validateQuestion() should return OK if the question is valid.', async () => {
         questionService.validateNewQuestion.resolves();
-        const res = {} as unknown as Response;
+        const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.OK);
             return res;
@@ -178,7 +178,7 @@ describe('QuestionController', () => {
 
     it('validateQuestion() should return BAD_REQUEST if the question is invalid.', async () => {
         questionService.validateNewQuestion.rejects();
-        const res = {} as unknown as Response;
+        const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.BAD_REQUEST);
             return res;

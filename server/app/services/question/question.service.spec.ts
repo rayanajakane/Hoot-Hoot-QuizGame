@@ -27,7 +27,7 @@ describe('QuestionService', () => {
             update: jest.fn(),
             updateOne: jest.fn(),
             deleteMany: jest.fn(),
-        } as unknown as Model<QuestionDocument>;
+        } as any as Model<QuestionDocument>;
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 QuestionService,

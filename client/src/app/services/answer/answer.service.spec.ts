@@ -51,7 +51,7 @@ describe('AnswerService', () => {
 
         socketHelper = new SocketTestHelper();
         socketSpy = new SocketHandlerServiceMock(router);
-        socketSpy.socket = socketHelper as unknown as Socket;
+        socketSpy.socket = socketHelper as any as Socket;
 
         TestBed.configureTestingModule({
             providers: [
@@ -286,7 +286,7 @@ describe('AnswerService', () => {
     });
 
     it('should set isGradingComplete to false if any answer is missing a score', () => {
-        service.playersAnswers = [{ score: '0' } as LongAnswerInfo, { score: null } as unknown as LongAnswerInfo, { score: '100' } as LongAnswerInfo];
+        service.playersAnswers = [{ score: '0' } as LongAnswerInfo, { score: null } as any as LongAnswerInfo, { score: '100' } as LongAnswerInfo];
         service.handleGrading();
         expect(service.isGradingComplete).toBe(false);
     });

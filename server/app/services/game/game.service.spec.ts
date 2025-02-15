@@ -37,7 +37,7 @@ describe('GameService', () => {
             updateOne: jest.fn(),
             deleteMany: jest.fn(),
             findOneAndUpdate: jest.fn(),
-        } as unknown as Model<GameDocument>;
+        } as any as Model<GameDocument>;
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 GameService,

@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MOCK_PLAYER, MOCK_PLAYER_ROOM } from '@app/constants/match-mocks';
-import { MultipleChoiceStrategy } from './multiple-choice-strategy';
-import { MatchRoom } from '@app/model/schema/match-room.schema';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Test, TestingModule } from '@nestjs/testing';
 import { GradingEvents } from '@app/constants/grading-events';
+import { MOCK_PLAYER, MOCK_PLAYER_ROOM } from '@app/constants/match-mocks';
 import { MultipleChoiceAnswer } from '@app/model/answer-types/multiple-choice-answer/multiple-choice-answer';
+import { MatchRoom } from '@app/model/schema/match-room.schema';
+import { ChoiceTracker } from '@app/model/tally-trackers/choice-tracker/choice-tracker';
 import { BONUS_FACTOR } from '@common/constants/match-constants';
 import { AnswerEvents } from '@common/events/answer.events';
-import { ChoiceTracker } from '@app/model/tally-trackers/choice-tracker/choice-tracker';
 import { MultipleChoiceHistogram } from '@common/interfaces/histogram';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Test, TestingModule } from '@nestjs/testing';
+import { MultipleChoiceStrategy } from './multiple-choice-strategy';
 
 describe('MultipleChoiceStrategy', () => {
     let strategy: MultipleChoiceStrategy;
@@ -103,7 +103,7 @@ describe('MultipleChoiceStrategy', () => {
             incrementCount: jest.fn(),
             decrementCount: jest.fn(),
         };
-        matchRoom.choiceTracker = mockChoiceTracker as unknown as ChoiceTracker;
+        matchRoom.choiceTracker = mockChoiceTracker as any as ChoiceTracker;
         const histogramConverterSpy = jest.spyOn<any, any>(strategy, 'convertToHistogram').mockReturnThis();
 
         const choice = matchRoom.currentQuestion.choices[0].text;

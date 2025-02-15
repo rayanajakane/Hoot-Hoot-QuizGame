@@ -31,13 +31,13 @@ describe('authenticationGuard', () => {
     });
 
     it('should redirect to login page if user is not authenticated', () => {
-        (authenticationSpy as unknown).userDisplayName = '';
+        (authenticationSpy as any).userDisplayName = '';
         TestBed.runInInjectionContext(authenticationGuard);
         expect(routerSpy.navigateByUrl).toHaveBeenCalledWith('/login');
     });
 
     it('should not redirect to login page if user is authenticated', () => {
-        (authenticationSpy as unknown).userDisplayName = 'LoremIpsum';
+        (authenticationSpy as any).userDisplayName = 'LoremIpsum';
         TestBed.runInInjectionContext(authenticationGuard);
         expect(routerSpy.navigateByUrl).not.toHaveBeenCalled();
     });
