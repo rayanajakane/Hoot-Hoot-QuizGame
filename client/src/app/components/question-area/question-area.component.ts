@@ -115,7 +115,6 @@ export class QuestionAreaComponent implements OnInit {
     quitGame() {
         this.matchRoomService.isQuitting = true;
         this.matchRoomService.disconnect();
-        this.router.navigateByUrl('/home');
     }
 
     triggerPanicTimer() {

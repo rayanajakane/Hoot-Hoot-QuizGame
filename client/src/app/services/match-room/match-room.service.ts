@@ -77,10 +77,11 @@ export class MatchRoomService {
     }
 
     disconnect() {
+        this.router.navigateByUrl('/home');
         this.hasEnteredRoom = false;
         this.matchContextService.resetContext();
         this.socketService.send(MatchEvents.Disconnect);
-        this.socketService.socket.removeListener(MatchEvents.Disconnect);
+        // this.socketService.socket.removeListener(MatchEvents.Disconnect);
         this.socketService.socket.removeListener(MatchEvents.FetchPlayersData);
         this.socketService.socket.removeListener(MatchEvents.MatchStarting);
         this.socketService.socket.removeListener(MatchEvents.BeginQuiz);
