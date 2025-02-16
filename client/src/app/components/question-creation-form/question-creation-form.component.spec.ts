@@ -46,8 +46,8 @@ describe('QuestionCreationFormComponent', () => {
 
     beforeEach(() => {
         const snackBarSpyObj = jasmine.createSpyObj('MatSnackBar', ['open']);
-        questionServiceSpy = jasmine.createSpyObj('QuestionService', ['validateChoicesLength']);
-        bankServiceSpy = jasmine.createSpyObj('BankService', ['addQuestion']);
+        questionServiceSpy = jasmine.createSpyObj('QuestionService', ['validateChoicesLength'], { addToBank: false });
+        const bankServiceSpyObj = jasmine.createSpyObj('BankService', ['addQuestion']);
 
         TestBed.configureTestingModule({
             declarations: [QuestionCreationFormComponent, QuestionListItemComponent],
@@ -67,7 +67,7 @@ describe('QuestionCreationFormComponent', () => {
                 FormBuilder,
                 { provide: MAT_DIALOG_DATA, useValue: dialogData },
                 { provide: QuestionService, useValue: questionServiceSpy },
-                { provide: BankService, useValue: bankServiceSpy },
+                { provide: BankService, useValue: bankServiceSpyObj },
                 {
                     provide: NG_VALUE_ACCESSOR,
                     useExisting: forwardRef(() => 'bankToggle'),
@@ -77,6 +77,7 @@ describe('QuestionCreationFormComponent', () => {
         }).compileComponents();
 
         snackBarSpy = TestBed.inject(MatSnackBar) as jasmine.SpyObj<MatSnackBar>;
+        bankServiceSpy = TestBed.inject(BankService) as jasmine.SpyObj<BankService>;
         fixture = TestBed.createComponent(QuestionCreationFormComponent);
         formBuilder = TestBed.inject(FormBuilder);
         component = fixture.componentInstance;
@@ -159,6 +160,7 @@ describe('QuestionCreationFormComponent', () => {
         expect(component.modifyQuestionEvent.emit).toHaveBeenCalledWith(mockQuestionSubmit);
     });
 
+    // TODO
     it('should create copy of question in the bank if toggled', () => {
         spyOn(component.modifyQuestionEvent, 'emit');
 

@@ -4,7 +4,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Router, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Game } from '@app/interfaces/game';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
@@ -30,7 +30,6 @@ describe('WaitPageComponent', () => {
     let timeSpy: SpyObj<TimeService>;
     let questionContextSpy: SpyObj<MatchContextService>;
     let notificationServiceSpy: SpyObj<NotificationService>;
-    let router: Router;
 
     const routes: Routes = [{ path: 'home', component: WaitPageComponent }];
 
@@ -70,7 +69,6 @@ describe('WaitPageComponent', () => {
         fixture = TestBed.createComponent(WaitPageComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-        router = TestBed.inject(Router);
     });
 
     it('should create', () => {
@@ -125,11 +123,9 @@ describe('WaitPageComponent', () => {
         expect(matchRoomSpy.startMatch).toHaveBeenCalled();
     });
 
-    it('quitGame() navigate to home page', () => {
-        const navigateSpy = spyOn(router, 'navigateByUrl');
-        matchRoomSpy.isQuitting = true;
+    it('quitGame() should call disconnectFromRoom from matchRoomService', () => {
         component.quitGame();
-        expect(navigateSpy).toHaveBeenCalledWith('/home');
+        expect(matchRoomSpy.disconnectFromRoom).toHaveBeenCalled();
     });
 
     it('resetWaitPage() should reset all wait page attributes', () => {
