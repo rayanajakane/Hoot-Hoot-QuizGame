@@ -7,9 +7,9 @@ import { DialogManagement, QuestionCreationFormComponent } from '@app/components
 import { MatDialogMock } from '@app/constants/mat-dialog-mock';
 import { getMockQuestion } from '@app/constants/question-mocks';
 import { Question } from '@app/interfaces/question';
+import { QuestionService } from '@app/services/question/question.service';
 import { QuestionType } from '@common/constants/question-types';
 import { of } from 'rxjs';
-import { QuestionService } from './question.service';
 
 const mockHttpResponse: HttpResponse<string> = new HttpResponse({ status: 200, statusText: 'OK', body: JSON.stringify(true) });
 

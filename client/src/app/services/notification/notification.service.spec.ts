@@ -6,7 +6,7 @@ import { DialogConfirmComponent } from '@app/components/dialog-confirm/dialog-co
 import { WarningMessage } from '@app/constants/feedback-messages';
 import { MatDialogMock } from '@app/constants/mat-dialog-mock';
 import { ConfirmDialogData } from '@app/interfaces/dialog-data/confirm-dialog-data';
-import { NotificationService } from './notification.service';
+import { NotificationService } from '@app/services/notification/notification.service';
 
 describe('NotificationService', () => {
     let service: NotificationService;

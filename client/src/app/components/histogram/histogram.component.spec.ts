@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HistogramComponent } from '@app/components/histogram/histogram.component';
 import { HistogramService } from '@app/services/histogram/histogram.service';
 import { ChoiceTally } from '@common/interfaces/choice-tally';
 import { Histogram, MultipleChoiceHistogram } from '@common/interfaces/histogram';
 import { AgChartsAngularModule } from 'ag-charts-angular';
 import { Subject, Subscription } from 'rxjs';
-import { HistogramComponent } from './histogram.component';
 
 describe('HistogramComponent', () => {
     let component: HistogramComponent;

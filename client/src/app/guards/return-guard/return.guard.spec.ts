@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Route, Router, provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
-import { returnGuard } from './return.guard';
+import { returnGuard } from '@app/guards/return-guard/return.guard';
 
 @Component({ template: '' })
 class MockPendingChangesComponent {

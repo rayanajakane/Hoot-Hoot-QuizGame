@@ -1,6 +1,6 @@
 import { Player } from '@app/interfaces/player';
+import { SortPlayersPipe } from '@app/pipes/sort-players.pipe';
 import { PlayerState } from '@common/constants/player-states';
-import { SortPlayersPipe } from './sort-players.pipe';
 // Magic numbers verifications are disabled because we need these numbers to test if players are sorted by score.
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 const MOCK_PLAYER_0 = { username: 'z', score: 1000, bonusCount: 0, isPlaying: true, state: PlayerState.noInteraction } as Player;

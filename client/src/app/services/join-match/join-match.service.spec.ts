@@ -2,11 +2,11 @@ import { TestBed } from '@angular/core/testing';
 
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { JoinMatchService } from '@app/services/join-match/join-match.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { of, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { JoinMatchService } from './join-match.service';
 
 const SERVER_URL: string = environment.serverUrl;
 

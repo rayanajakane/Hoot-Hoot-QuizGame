@@ -2,11 +2,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { LongAnswerHistogramComponent } from '@app/components/long-answer-histogram/long-answer-histogram.component';
 import { HistogramService } from '@app/services/histogram/histogram.service';
 import { Histogram, PlayerCountHistogram } from '@common/interfaces/histogram';
 import { AgChartsAngularModule } from 'ag-charts-angular';
 import { Subject, Subscription } from 'rxjs';
-import { LongAnswerHistogramComponent } from './long-answer-histogram.component';
 
 describe('LongAnswerHistogramComponent', () => {
     let component: LongAnswerHistogramComponent;

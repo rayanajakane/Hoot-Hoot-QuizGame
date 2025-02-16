@@ -4,13 +4,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { By } from '@angular/platform-browser';
+import { HomePageComponent } from '@app/pages/home-page/home-page.component';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { JoinMatchService } from '@app/services/join-match/join-match.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { getTranslocoModule } from '@app/transloco-testing.module';
 import { mockProvider } from '@ngneat/spectator';
 import { of, throwError } from 'rxjs';
-import { HomePageComponent } from './home-page.component';
 import SpyObj = jasmine.SpyObj;
 
 const mockHttpResponse: HttpResponse<string> = new HttpResponse({ status: 200, statusText: 'OK', body: JSON.stringify(true) });

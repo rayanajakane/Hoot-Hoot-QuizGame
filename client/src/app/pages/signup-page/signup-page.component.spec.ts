@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { SignupPageComponent } from '@app/pages/signup-page/signup-page.component';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
-import { SignupPageComponent } from './signup-page.component';
 import SpyObj = jasmine.SpyObj;
 
 describe('SignupPageComponent', () => {

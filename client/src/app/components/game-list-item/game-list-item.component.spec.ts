@@ -7,9 +7,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { By } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { GameListItemComponent } from '@app/components/game-list-item/game-list-item.component';
 import { getMockGame } from '@app/constants/game-mocks';
 import { GameService } from '@app/services/game/game.service';
-import { GameListItemComponent } from './game-list-item.component';
 import SpyObj = jasmine.SpyObj;
 
 const MOCK_GAME = getMockGame();

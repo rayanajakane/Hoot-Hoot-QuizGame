@@ -9,6 +9,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { PLAYER_MOCK } from '@app/constants/chat-mocks';
 import { Player } from '@app/interfaces/player';
+import { ResultsPageComponent } from '@app/pages/results-page/results-page.component';
 import { ConfettiService } from '@app/services/confetti/confetti.service';
 import { HistogramService } from '@app/services/histogram/histogram.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
@@ -17,7 +18,6 @@ import { GradesHistogram, Histogram, MultipleChoiceHistogram } from '@common/int
 import { AgChartsAngularModule } from 'ag-charts-angular';
 import { AgChartOptions } from 'ag-charts-community';
 import { Subject, Subscription } from 'rxjs';
-import { ResultsPageComponent } from './results-page.component';
 
 @Component({
     // Component is provided by Angular Material; therefore, its selector starts with mat

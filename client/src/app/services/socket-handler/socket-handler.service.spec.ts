@@ -2,8 +2,8 @@ import { TestBed } from '@angular/core/testing';
 
 import { Router } from '@angular/router';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
+import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { Socket } from 'socket.io-client';
-import { SocketHandlerService } from './socket-handler.service';
 
 describe('SocketHandlerService', () => {
     let service: SocketHandlerService;

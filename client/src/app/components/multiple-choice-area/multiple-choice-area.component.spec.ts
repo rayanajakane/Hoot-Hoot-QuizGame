@@ -5,13 +5,13 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MultipleChoiceAreaComponent } from '@app/components/multiple-choice-area/multiple-choice-area.component';
 import { getMockQuestion } from '@app/constants/question-mocks';
 import { Choice } from '@app/interfaces/choice';
 import { Question } from '@app/interfaces/question';
 import { AnswerService } from '@app/services/answer/answer.service';
-import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
-import { MultipleChoiceAreaComponent } from './multiple-choice-area.component';
+import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import spyObj = jasmine.SpyObj;
 
 describe('MultipleChoiceAreaComponent', () => {

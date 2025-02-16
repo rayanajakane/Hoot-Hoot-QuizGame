@@ -12,10 +12,10 @@ import { getMockQuestion } from '@app/constants/question-mocks';
 import { ManagementState } from '@app/constants/states';
 import { Question } from '@app/interfaces/question';
 import { SortByLastModificationPipe } from '@app/pipes/sort-by-last-modification.pipe';
+import { BankService } from '@app/services/bank/bank.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { QuestionService } from '@app/services/question/question.service';
 import { of, throwError } from 'rxjs';
-import { BankService } from './bank.service';
 
 describe('BankService', () => {
     let service: BankService;

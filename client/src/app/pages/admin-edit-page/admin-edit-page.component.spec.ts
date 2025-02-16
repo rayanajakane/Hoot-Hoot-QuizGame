@@ -30,9 +30,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { GameStatus } from '@app/constants/feedback-messages';
 import { getMockGame } from '@app/constants/game-mocks';
 import { getMockQuestion } from '@app/constants/question-mocks';
+import { AdminEditPageComponent } from '@app/pages/admin-edit-page/admin-edit-page.component';
 import { GameModificationService } from '@app/services/game-modification/game-modification.service';
 import { of, throwError } from 'rxjs';
-import { AdminEditPageComponent } from './admin-edit-page.component';
 
 describe('AdminEditPageComponent', () => {
     let component: AdminEditPageComponent;

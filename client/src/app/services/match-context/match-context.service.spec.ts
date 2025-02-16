@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { MatchContextService } from './match-context.service';
+import { MatchContextService } from '@app/services/match-context/match-context.service';
 describe('MatchContextService', () => {
     let service: MatchContextService;
 

@@ -5,10 +5,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ChatComponent } from '@app/components/chat/chat.component';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { ChatService } from '@app/services/chat/chat.service';
 import { getTranslocoModule } from '@app/transloco-testing.module';
-import { ChatComponent } from './chat.component';
 import SpyObj = jasmine.SpyObj;
 
 const mockDate = new Date();

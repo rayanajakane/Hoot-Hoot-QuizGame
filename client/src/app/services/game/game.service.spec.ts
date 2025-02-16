@@ -5,9 +5,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { getMockGame } from '@app/constants/game-mocks';
 import { ManagementState } from '@app/constants/states';
 import { Game } from '@app/interfaces/game';
+import { GameService } from '@app/services/game/game.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { of, throwError } from 'rxjs';
-import { GameService } from './game.service';
 
 const MOCK_GAMES = [getMockGame(), getMockGame()];
 const NEW_MOCK_GAME = getMockGame();

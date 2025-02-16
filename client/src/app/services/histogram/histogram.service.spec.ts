@@ -2,10 +2,10 @@ import { TestBed } from '@angular/core/testing';
 
 import { Router } from '@angular/router';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
+import { HistogramService } from '@app/services/histogram/histogram.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { Histogram, MultipleChoiceHistogram } from '@common/interfaces/histogram';
 import { Socket } from 'socket.io-client';
-import { HistogramService } from './histogram.service';
 import SpyObj = jasmine.SpyObj;
 
 class SocketHandlerServiceMock extends SocketHandlerService {

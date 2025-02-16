@@ -4,10 +4,10 @@ import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
+import { TimeService } from '@app/services/time/time.service';
 import { PANIC_ALERT_DELAY } from '@common/constants/match-constants';
 import { TimerInfo } from '@common/interfaces/timer-info';
 import { Socket } from 'socket.io-client';
-import { TimeService } from './time.service';
 import SpyObj = jasmine.SpyObj;
 
 class SocketHandlerServiceMock extends SocketHandlerService {

@@ -6,7 +6,7 @@ import {
     MOCK_HISTORY_ITEM_5,
 } from '@app/constants/history-mocks';
 import { HistoryItem } from '@app/interfaces/history-item';
-import { SortHistoryPipe } from './sort-history.pipe';
+import { SortHistoryPipe } from '@app/pipes/sort-history.pipe';
 
 const MOCK_HISTORY_3_ITEMS = [MOCK_HISTORY_ITEM_1, MOCK_HISTORY_ITEM_3, MOCK_HISTORY_ITEM_2];
 const REVERSED_HISTORY_3_ITEMS = [MOCK_HISTORY_ITEM_2, MOCK_HISTORY_ITEM_3, MOCK_HISTORY_ITEM_1];

@@ -16,6 +16,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
+import { QuestionAreaComponent } from '@app/components/question-area/question-area.component';
 import { getMockQuestion } from '@app/constants/question-mocks';
 import { Player } from '@app/interfaces/player';
 import { AnswerService } from '@app/services/answer/answer.service';
@@ -26,7 +27,6 @@ import { SocketHandlerService } from '@app/services/socket-handler/socket-handle
 import { TimeService } from '@app/services/time/time.service';
 import { AnswerCorrectness } from '@common/constants/answer-correctness';
 import { Socket } from 'socket.io-client';
-import { QuestionAreaComponent } from './question-area.component';
 import spyObj = jasmine.SpyObj;
 
 class SocketHandlerServiceMock extends SocketHandlerService {

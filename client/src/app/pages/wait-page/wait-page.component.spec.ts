@@ -7,13 +7,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Game } from '@app/interfaces/game';
+import { WaitPageComponent } from '@app/pages/wait-page/wait-page.component';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { MatchService } from '@app/services/match/match.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { TimeService } from '@app/services/time/time.service';
 import { HOST_USERNAME } from '@common/constants/match-constants';
-import { WaitPageComponent } from './wait-page.component';
 import SpyObj = jasmine.SpyObj;
 
 @Component({

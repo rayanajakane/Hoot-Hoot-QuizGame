@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { PlayersListComponent } from '@app/components/players-list/players-list.component';
 import { Player } from '@app/interfaces/player';
 import { SortByScorePipe } from '@app/pipes/sort-by-score.pipe';
 import { SortPlayersPipe } from '@app/pipes/sort-players.pipe';
 import { ChatService } from '@app/services/chat/chat.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
-import { PlayersListComponent } from './players-list.component';
 
 describe('PlayersListComponent', () => {
     let component: PlayersListComponent;

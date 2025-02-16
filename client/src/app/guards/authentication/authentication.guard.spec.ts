@@ -2,10 +2,10 @@ import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
 import { Auth } from '@angular/fire/auth';
+import { authenticationGuard } from '@app/guards/authentication/authentication.guard';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { getTranslocoModule } from '@app/transloco-testing.module';
-import { authenticationGuard } from './authentication.guard';
 import SpyObj = jasmine.SpyObj;
 
 describe('authenticationGuard', () => {

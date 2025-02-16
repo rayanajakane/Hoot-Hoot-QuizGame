@@ -7,9 +7,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { QuestionListItemComponent } from '@app/components/question-list-item/question-list-item.component';
 import { ManagementState } from '@app/constants/states';
 import { Question } from '@app/interfaces/question';
-import { QuestionListItemComponent } from './question-list-item.component';
 
 describe('QuestionListItemComponent', () => {
     let component: QuestionListItemComponent;

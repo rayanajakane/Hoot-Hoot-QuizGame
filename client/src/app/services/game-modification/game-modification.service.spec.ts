@@ -24,7 +24,7 @@ import { ManagementState } from '@app/constants/states';
 import { Game } from '@app/interfaces/game';
 import { Question } from '@app/interfaces/question';
 import { BankService } from '@app/services/bank/bank.service';
-import { GameModificationService } from './game-modification.service';
+import { GameModificationService } from '@app/services/game-modification/game-modification.service';
 
 describe('GameModificationService', () => {
     let service: GameModificationService;

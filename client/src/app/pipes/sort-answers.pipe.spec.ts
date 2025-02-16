@@ -1,4 +1,4 @@
-import { SortAnswersPipe } from './sort-answers.pipe';
+import { SortAnswersPipe } from '@app/pipes/sort-answers.pipe';
 import { LongAnswerInfo } from '@common/interfaces/long-answer-info';
 
 describe('SortAnswersPipe', () => {

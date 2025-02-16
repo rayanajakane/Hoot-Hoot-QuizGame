@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { MatchContext } from '@app/constants/states';
+import { matchLoginGuard } from '@app/guards/match-login/match-login.guard';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { NotificationService } from '@app/services/notification/notification.service';
-import { matchLoginGuard } from './match-login.guard';
 import SpyObj = jasmine.SpyObj;
 
 describe('matchLoginGuard', () => {

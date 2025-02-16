@@ -1,6 +1,6 @@
 import { getMockQuestion } from '@app/constants/question-mocks';
+import { FilterByQuestionTypePipe } from '@app/pipes/filter-by-question-type.pipe';
 import { QuestionType } from '@common/constants/question-types';
-import { FilterByQuestionTypePipe } from './filter-by-question-type.pipe';
 
 const MOCK_QUESTIONS = [getMockQuestion(), getMockQuestion()];
 MOCK_QUESTIONS[0].type = QuestionType.LongAnswer;

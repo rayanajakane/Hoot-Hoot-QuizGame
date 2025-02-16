@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PulseLoaderComponent } from './pulse-loader.component';
+import { PulseLoaderComponent } from '@app/components/pulse-loader/pulse-loader.component';
 
 describe('PulseLoaderComponent', () => {
     let component: PulseLoaderComponent;

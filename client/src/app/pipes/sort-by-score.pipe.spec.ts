@@ -1,5 +1,5 @@
 import { Player } from '@app/interfaces/player';
-import { SortByScorePipe } from './sort-by-score.pipe';
+import { SortByScorePipe } from '@app/pipes/sort-by-score.pipe';
 
 // Magic numbers verifications are disabled because we need these numbers to test if players are sorted by score.
 /* eslint-disable @typescript-eslint/no-magic-numbers */

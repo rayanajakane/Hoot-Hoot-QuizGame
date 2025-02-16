@@ -1,8 +1,8 @@
 import { HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { ChoiceValidationService } from '@app/services/choice-validation/choice-validation.service';
 import { of } from 'rxjs';
-import { ChoiceValidationService } from './choice-validation.service';
 
 const mockHttpResponse: HttpResponse<string> = new HttpResponse({ status: 200, statusText: 'OK', body: JSON.stringify(true) });
 

@@ -32,16 +32,13 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
     disabled: boolean;
     notificationShown: boolean = false;
 
-    // Reference: https://medium.com/@fabiozuin/angular-17-inject-or-constructor-signals-or-observables-changedetection-a1b48a5479d9
-    // This is to avoid initialization error in unit tests
-    questionService = Inject(QuestionService);
-    bankService = Inject(BankService);
-
     // Allow more constructor parameters to reduce logic in the component
     // eslint-disable-next-line max-params
     constructor(
         private readonly snackBar: MatSnackBar,
         private readonly formBuilder: FormBuilder,
+        private questionService: QuestionService,
+        public bankService: BankService,
         @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: DialogManagement,
     ) {
         this.initializeForm();
@@ -97,6 +94,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
                 this.createQuestionEvent.emit(newQuestion);
             }
             if (this.bankService.addToBank) {
+                console.log('prout3');
                 this.bankService.addQuestion(newQuestion, true);
             }
         }

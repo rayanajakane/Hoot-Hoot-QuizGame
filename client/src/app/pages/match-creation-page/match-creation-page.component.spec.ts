@@ -14,6 +14,7 @@ import { RANDOM_MODE_GAME } from '@app/constants/question-creation';
 import { MatchContext } from '@app/constants/states';
 import { Game } from '@app/interfaces/game';
 import { Question } from '@app/interfaces/question';
+import { MatchCreationPageComponent } from '@app/pages/match-creation-page/match-creation-page.component';
 import { GameService } from '@app/services/game/game.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { MatchService } from '@app/services/match/match.service';
@@ -21,7 +22,6 @@ import { NotificationService } from '@app/services/notification/notification.ser
 import { QuestionService } from '@app/services/question/question.service';
 import { MINIMUM_QUESTIONS } from '@common/constants/match-constants';
 import { Subject, of, throwError } from 'rxjs';
-import { MatchCreationPageComponent } from './match-creation-page.component';
 import SpyObj = jasmine.SpyObj;
 
 describe('MatchCreationPageComponent', () => {

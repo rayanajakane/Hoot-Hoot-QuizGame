@@ -5,9 +5,9 @@ import { SocketHandlerService } from '@app/services/socket-handler/socket-handle
 
 import { Router } from '@angular/router';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
+import { ConfettiService } from '@app/services/confetti/confetti.service';
 import { ConfettiOptions } from '@common/constants/confetti-options';
 import { Socket } from 'socket.io-client';
-import { ConfettiService } from './confetti.service';
 import spyObj = jasmine.SpyObj;
 class SocketHandlerServiceMock extends SocketHandlerService {
     // Override connect() is required to not actually connect the socket

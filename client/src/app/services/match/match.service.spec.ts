@@ -6,9 +6,9 @@ import { getMockGame } from '@app/constants/game-mocks';
 import { Game } from '@app/interfaces/game';
 import { ChoiceValidationService } from '@app/services/choice-validation/choice-validation.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
+import { MatchService } from '@app/services/match/match.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { Observable, of } from 'rxjs';
-import { MatchService } from './match.service';
 
 describe('MatchService', () => {
     let service: MatchService;

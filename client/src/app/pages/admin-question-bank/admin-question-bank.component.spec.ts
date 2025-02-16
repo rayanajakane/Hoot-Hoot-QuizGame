@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Question } from '@app/interfaces/question';
+import { AdminQuestionBankComponent } from '@app/pages/admin-question-bank/admin-question-bank.component';
 import { QuestionService } from '@app/services/question/question.service';
-import { AdminQuestionBankComponent } from './admin-question-bank.component';
 
 import { HttpResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output } from '@angular/core';

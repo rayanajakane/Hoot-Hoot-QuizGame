@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { DialogTextInputComponent } from './dialog-text-input.component';
+import { DialogTextInputComponent } from '@app/components/dialog-text-input/dialog-text-input.component';
 
 describe('DialogTextInputComponent', () => {
     let component: DialogTextInputComponent;
