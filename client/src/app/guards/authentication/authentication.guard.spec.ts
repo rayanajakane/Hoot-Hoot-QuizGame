@@ -15,7 +15,7 @@ describe('authenticationGuard', () => {
     let mockAuth: SpyObj<Auth>;
 
     beforeEach(() => {
-        authenticationSpy = jasmine.createSpyObj('AuthenticationService', ['userDisplayName']);
+        authenticationSpy = jasmine.createSpyObj('AuthenticationService', ['userDisplayName', 'isUserAuthenticated']);
         routerSpy = jasmine.createSpyObj('Router', ['navigateByUrl']);
         notificationSpy = jasmine.createSpyObj('NotificationService', ['displayErrorMessage']);
         mockAuth = jasmine.createSpyObj<Auth>('Auth', ['name']);
@@ -38,6 +38,7 @@ describe('authenticationGuard', () => {
 
     it('should not redirect to login page if user is authenticated', () => {
         (authenticationSpy as any).userDisplayName = 'LoremIpsum';
+        authenticationSpy.isUserAuthenticated.and.returnValue(true);
         TestBed.runInInjectionContext(authenticationGuard);
         expect(routerSpy.navigateByUrl).not.toHaveBeenCalled();
     });
