@@ -81,7 +81,7 @@ describe('ResultsPageComponent', () => {
     const playersMock = [PLAYER_MOCK];
 
     beforeEach(() => {
-        matchRoomServiceSpy = jasmine.createSpyObj('MatchRoomService', ['disconnect', 'gameOver']);
+        matchRoomServiceSpy = jasmine.createSpyObj('MatchRoomService', ['disconnectFromRoom', 'gameOver']);
         histogramServiceSpy = jasmine.createSpyObj('HistogramService', ['onHistogramHistory']);
         confettiServiceSpy = jasmine.createSpyObj('ConfettiService', ['onWinner']);
         TestBed.configureTestingModule({

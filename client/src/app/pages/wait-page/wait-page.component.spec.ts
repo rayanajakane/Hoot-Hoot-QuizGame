@@ -47,7 +47,7 @@ describe('WaitPageComponent', () => {
             'beginQuiz',
             'goToNextQuestion',
             'gameOver',
-            'disconnect',
+            'disconnectFromRoom',
         ]);
         matchSpy = jasmine.createSpyObj('MatchService', ['']);
         questionContextSpy = jasmine.createSpyObj('QuestionContextService', ['setContext', 'getContext']);

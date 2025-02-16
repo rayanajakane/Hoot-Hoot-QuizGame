@@ -27,11 +27,11 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { GameStatus, WarningMessage } from '@app/constants/feedback-messages';
+import { GameStatus } from '@app/constants/feedback-messages';
 import { getMockGame } from '@app/constants/game-mocks';
 import { getMockQuestion } from '@app/constants/question-mocks';
 import { GameModificationService } from '@app/services/game-modification/game-modification.service';
-import { Subject, of, throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { AdminEditPageComponent } from './admin-edit-page.component';
 
 describe('AdminEditPageComponent', () => {
@@ -122,30 +122,6 @@ describe('AdminEditPageComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
-    });
-
-    it('should return true when there are no pending changes', () => {
-        gameModificationSpy.isPendingChanges = false;
-        const result = component.canDeactivate();
-        expect(result).toBeTrue();
-    });
-
-    it('should prompt user if they try to leave while there are pending changes and only deactivate if user confirms', () => {
-        gameModificationSpy.isPendingChanges = true;
-        const deactivateSubject = new Subject<boolean>();
-        notificationServiceSpy.openWarningDialog.and.returnValue(deactivateSubject);
-        const result = component.canDeactivate();
-        deactivateSubject.next(true);
-        expect(result instanceof Subject).toBeTrue();
-        expect(notificationServiceSpy.openWarningDialog).toHaveBeenCalledWith(WarningMessage.PENDING);
-    });
-
-    it('should call openWarningDialog when there are pending changes', () => {
-        gameModificationSpy.isPendingChanges = true;
-        const confirmSubject = new Subject<boolean>();
-        notificationServiceSpy.openWarningDialog.and.returnValue(confirmSubject);
-        component.canDeactivate();
-        expect(notificationServiceSpy.openWarningDialog).toHaveBeenCalledWith(WarningMessage.PENDING);
     });
 
     it('should set state to Modification and call setGame when game is to be modified', () => {

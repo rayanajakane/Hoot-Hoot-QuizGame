@@ -1,13 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, EventEmitter, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GameStatus } from '@app/constants/feedback-messages';
 import { ManagementState } from '@app/constants/states';
-import { CanDeactivateType } from '@app/interfaces/can-component-deactivate';
 import { Question } from '@app/interfaces/question';
 import { GameModificationService } from '@app/services/game-modification/game-modification.service';
 import { NotificationService } from '@app/services/notification/notification.service';
-import { Subject } from 'rxjs';
 
 @Component({
     selector: 'app-admin-edit-page',
@@ -32,15 +30,6 @@ export class AdminEditPageComponent implements OnInit {
 
     get managementState(): typeof ManagementState {
         return ManagementState;
-    }
-
-    canDeactivate(): CanDeactivateType {
-        if (!this.gameModificationService.isPendingChanges) return true;
-
-        // TODO : notification service redo
-        const deactivateSubject = new Subject<boolean>();
-        // this.notificationService.openWarningDialog(WarningMessage.PENDING).subscribe((confirm: boolean) => deactivateSubject.next(confirm));
-        return deactivateSubject;
     }
 
     ngOnInit() {
