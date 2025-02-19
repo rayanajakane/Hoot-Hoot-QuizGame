@@ -24,6 +24,7 @@
         "return-to-login": "Return to login",
         "logout-action": "Log out",
         "message-label": "Message",
-        "disabled-label": "Disabled"
+        "disabled-label": "Disabled",
+        "email": "Email"
     }
 }

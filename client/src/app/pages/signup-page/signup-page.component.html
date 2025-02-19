@@ -3,9 +3,13 @@
         <mat-card id="main-card">
             <h1>{{ t('page.signup-title') }}</h1>
             <div id="form">
+                <mat-form-field id="email">
+                    <mat-label>{{ t('page.email ') }}</mat-label>
+                    <input matInput placeholder="" id="username-id" [(ngModel)]="email" autofocus cdkFocusInitial />
+                </mat-form-field>
                 <mat-form-field id="username">
                     <mat-label>{{ t('page.username') }}</mat-label>
-                    <input matInput placeholder="" id="username-input" [(ngModel)]="username" autofocus cdkFocusInitial />
+                    <input matInput placeholder="" id="username-input" [(ngModel)]="username" autofocus />
                 </mat-form-field>
                 <mat-form-field id="Password">
                     <mat-label>{{ t('page.password') }}</mat-label>

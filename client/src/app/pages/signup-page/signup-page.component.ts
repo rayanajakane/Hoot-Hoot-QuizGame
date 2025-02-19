@@ -8,6 +8,7 @@ import { AuthenticationService } from '@app/services/authentication/authenticati
 })
 export class SignupPageComponent implements OnInit {
     hide = true;
+    email: string = '';
     username: string = '';
     password: string = '';
 
@@ -29,6 +30,6 @@ export class SignupPageComponent implements OnInit {
     }
 
     signUp() {
-        this.authenticationService.signUp(this.username, this.password);
+        this.authenticationService.signUp(this.email, this.username, this.password);
     }
 }

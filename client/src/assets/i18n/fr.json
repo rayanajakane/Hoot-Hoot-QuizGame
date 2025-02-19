@@ -24,6 +24,7 @@
         "return-to-login": "Retourner à la page de connexion",
         "logout-action": "Se déconnecter",
         "message-label": "Message",
-        "disabled-label": "Désactivé"
+        "disabled-label": "Désactivé",
+        "email": "Courriel"
     }
 }

@@ -75,16 +75,18 @@ export class AuthenticationService {
             });
     }
 
-    getUserDatabaseRef(uid: string) {
-        return ref(this.database, `users/${uid}`);
+    getUserDatabaseRef(uid: string | null) {
+        return uid ? ref(this.database, `users/${uid}`) : ref(this.database, 'users/');
     }
 
-    signUp(username: string, password: string) {
+    signUp(email: string, username: string, password: string) {
         const formattedUsername = username.trim();
-        createUserWithEmailAndPassword(this.auth, `${formattedUsername}@polyQuiz.com`, password)
+        const formattedEmail = email.trim();
+        createUserWithEmailAndPassword(this.auth, `${formattedEmail}`, password)
             .then((userCredential) => {
                 updateProfile(userCredential.user, { displayName: formattedUsername }).then(() => {
                     const userRef = this.getUserDatabaseRef(userCredential.user.uid);
+
                     set(userRef, {
                         isOnline: true,
                     });
@@ -103,9 +105,9 @@ export class AuthenticationService {
             });
     }
 
-    signIn(username: string, password: string) {
-        const formattedUsername = username.trim();
-        signInWithEmailAndPassword(this.auth, `${formattedUsername}@polyQuiz.com`, password)
+    signIn(email: string, password: string) {
+        const formattedEmail = email.trim();
+        signInWithEmailAndPassword(this.auth, `${formattedEmail}`, password)
             .then(async (userCredential) => {
                 const userRef = this.getUserDatabaseRef(userCredential.user.uid);
                 const isAbleToSignIn = await this.ensureUserSession(userCredential.user.uid);
