@@ -4,13 +4,13 @@ import { Injectable } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
 import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { SessionAlreadyExistsError } from '@app/services/authentication/session-exists';
+import { SessionAlreadyExistsError, UsernameAlreadyExistsError } from '@app/services/authentication/session-exists';
 import { ChatService } from '@app/services/chat/chat.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { ChatEvents } from '@common/events/chat.events';
 import { TranslocoService } from '@jsverse/transloco';
-import { browserSessionPersistence, setPersistence, User } from 'firebase/auth';
+import { browserSessionPersistence, setPersistence, User, UserCredential } from 'firebase/auth';
 import { DataSnapshot, get, getDatabase, onDisconnect, ref, set, update } from 'firebase/database';
 
 @Injectable({
@@ -32,7 +32,7 @@ export class AuthenticationService {
         setPersistence(this.auth, browserSessionPersistence);
         onAuthStateChanged(this.auth, (user) => {
             if (user) {
-                this.currentUser = user;
+                this.setUser(user);
             } else {
                 this.currentUser = null;
                 this.router.navigateByUrl('/login');
@@ -43,6 +43,26 @@ export class AuthenticationService {
     get userDisplayName(): string {
         const displayName: string = this.currentUser?.displayName ?? '';
         return displayName;
+    }
+
+    getUsernameDatabaseRef(username: string) {
+        return ref(this.database, `usernames/${username}`);
+    }
+
+    async checkUsername(username: string): Promise<boolean> {
+        const usernameRef = this.getUsernameDatabaseRef(username);
+        return get(usernameRef).then(async (databaseSnapshot: DataSnapshot) => {
+            if (databaseSnapshot.exists()) {
+                return Promise.reject(new UsernameAlreadyExistsError());
+            } else {
+                set(usernameRef, this.userDisplayName);
+                return Promise.resolve(false);
+            }
+        });
+    }
+
+    setUser(user: User | null) {
+        this.currentUser = user;
     }
 
     isUserAuthenticated(): boolean {
@@ -69,7 +89,7 @@ export class AuthenticationService {
                 }
             })
             .catch(async (error: unknown) => {
-                this.currentUser = null;
+                this.setUser(null);
                 console.log(error);
                 return Promise.resolve(false);
             });
@@ -79,30 +99,38 @@ export class AuthenticationService {
         return uid ? ref(this.database, `users/${uid}`) : ref(this.database, 'users/');
     }
 
-    signUp(email: string, username: string, password: string) {
+    // TODO : Change method name then move to userService
+    async completeUserProfileCreation(userCredential: UserCredential, username: string) {
+        updateProfile(userCredential.user, { displayName: username }).then(() => {
+            const userRef = this.getUserDatabaseRef(userCredential.user.uid);
+
+            set(userRef, {
+                isOnline: true,
+            });
+            onDisconnect(userRef).update({
+                isOnline: false,
+            });
+            this.connectToSocket();
+            this.setUser(userCredential.user);
+            this.router.navigateByUrl('/home');
+            this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-up'));
+        });
+    }
+
+    async signUp(email: string, username: string, password: string) {
         const formattedUsername = username.trim();
         const formattedEmail = email.trim();
-        createUserWithEmailAndPassword(this.auth, `${formattedEmail}`, password)
-            .then((userCredential) => {
-                updateProfile(userCredential.user, { displayName: formattedUsername }).then(() => {
-                    const userRef = this.getUserDatabaseRef(userCredential.user.uid);
 
-                    set(userRef, {
-                        isOnline: true,
-                    });
-                    onDisconnect(userRef).update({
-                        isOnline: false,
-                    });
-                    this.connectToSocket();
-                    this.currentUser = userCredential.user;
-                    this.router.navigateByUrl('/home');
-                    this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-up'));
-                });
-            })
-            .catch((error) => {
-                const errorMessage = this.handleAuthErrorMessage(error);
-                this.notificationService.displayErrorMessage(errorMessage);
+        try {
+            await this.checkUsername(formattedUsername.toLowerCase());
+            createUserWithEmailAndPassword(this.auth, `${formattedEmail}`, password).then((userCredential) => {
+                this.completeUserProfileCreation(userCredential, formattedUsername);
             });
+            // sorry
+        } catch (error: any) {
+            const errorMessage = this.handleAuthErrorMessage(error);
+            this.notificationService.displayErrorMessage(errorMessage);
+        }
     }
 
     signIn(email: string, password: string) {
@@ -153,7 +181,7 @@ export class AuthenticationService {
             .then(() => {
                 this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-out'));
                 this.disconnectSocket();
-                this.currentUser = null;
+                this.setUser(null);
                 this.router.navigateByUrl('/login');
             })
             .catch((error) => {
@@ -165,6 +193,9 @@ export class AuthenticationService {
         switch (error.code) {
             case 'SessionAlreadyExists': {
                 return "L'utilisateur est déjà connecté !";
+            }
+            case 'UsernameAlreadyExists': {
+                return "Le nom d'utilisateur est déjà pris!";
             }
             case 'auth/email-already-in-use': {
                 return this.translocoService.translate('auth.error.user-already-exists');
