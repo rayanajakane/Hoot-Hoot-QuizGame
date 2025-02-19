@@ -2,24 +2,42 @@
     <div id="main-container" (keyup.enter)="signUp()">
         <mat-card id="main-card">
             <h1>{{ t('page.signup-title') }}</h1>
-            <div id="form">
-                <mat-form-field id="email">
-                    <mat-label>{{ t('page.email') }}</mat-label>
-                    <input matInput placeholder="" id="email-input" [(ngModel)]="email" autofocus cdkFocusInitial />
-                </mat-form-field>
-                <mat-form-field id="username">
-                    <mat-label>{{ t('page.username') }}</mat-label>
-                    <input matInput placeholder="" id="username-input" [(ngModel)]="username" />
-                </mat-form-field>
-                <mat-form-field id="Password">
-                    <mat-label>{{ t('page.password') }}</mat-label>
-                    <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="password" />
-                    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-                        <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
-                    </button>
-                </mat-form-field>
+            <div class="two-columns-container">
+                <div id="avatars-container">
+                    <div id="main-avatar-container">
+                        <div id="main-avatar"><!--TODO: AVATAR--></div>
+                        <button mat-raised-button color="primary" (click)="uploadAvatar()" id="upload-button">{{ t('page.upload-avatar') }}</button>
+                    </div>
+                    <div id="avatar-choices-container">
+                        <p>{{ t('page.avatar-choices') }}</p>
+                        <div id="avatar-choices">
+                            <div class="avatar-mini"></div>
+                            <div class="avatar-mini"></div>
+                            <div class="avatar-mini"></div>
+                            <div class="avatar-mini"></div>
+                            <div class="avatar-mini"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="form">
+                    <mat-form-field id="email">
+                        <mat-label>{{ t('page.email') }}</mat-label>
+                        <input matInput placeholder="" id="email-input" [(ngModel)]="email" autofocus cdkFocusInitial />
+                    </mat-form-field>
+                    <mat-form-field id="username">
+                        <mat-label>{{ t('page.username') }}</mat-label>
+                        <input matInput placeholder="" id="username-input" [(ngModel)]="username" />
+                    </mat-form-field>
+                    <mat-form-field id="Password">
+                        <mat-label>{{ t('page.password') }}</mat-label>
+                        <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="password" />
+                        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                            <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+                        </button>
+                    </mat-form-field>
+                </div>
             </div>
-            <button mat-raised-button color="primary" (click)="signUp()">{{ t('page.signup-action') }}</button>
+            <button mat-raised-button color="primary" (click)="signUp()" id="signup-button">{{ t('page.signup-action') }}</button>
             <button mat-raised-button routerLink="/login">{{ t('page.return-to-login') }}</button>
         </mat-card>
     </div>

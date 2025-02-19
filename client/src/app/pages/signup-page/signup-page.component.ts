@@ -32,4 +32,8 @@ export class SignupPageComponent implements OnInit {
     signUp() {
         this.authenticationService.signUp(this.email, this.username, this.password);
     }
+
+    uploadAvatar() {
+        // TODO
+    }
 }
