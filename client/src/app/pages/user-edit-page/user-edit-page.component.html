@@ -1,6 +1,9 @@
 <ng-container *transloco="let t">
     <div id="main-container">
-        <h1>{{ t('page.user-edit') }}</h1>
+        <div class="nav">
+            <h1>{{ t('page.user-edit') }}</h1>
+            <button mat-raised-button routerLink="/home"><mat-icon>home</mat-icon>Page principale</button>
+        </div>
         <div class="content-container">
             <mat-card class="two-columns-container">
                 <div id="avatar"><!--TODO: AVATAR--></div>
