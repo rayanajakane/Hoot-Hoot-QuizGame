@@ -25,6 +25,8 @@
         "logout-action": "Se déconnecter",
         "message-label": "Message",
         "disabled-label": "Désactivé",
-        "email": "Courriel"
+        "email": "Courriel",
+        "user-edit": "Modification du Profil",
+        "save": "Sauvegarder"
     }
 }

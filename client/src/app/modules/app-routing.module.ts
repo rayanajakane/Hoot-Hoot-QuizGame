@@ -12,6 +12,7 @@ import { LoginPageComponent } from '@app/pages/login-page/login-page.component';
 import { MatchCreationPageComponent } from '@app/pages/match-creation-page/match-creation-page.component';
 import { ResultsPageComponent } from '@app/pages/results-page/results-page.component';
 import { SignupPageComponent } from '@app/pages/signup-page/signup-page.component';
+import { UserEditPageComponent } from '@app/pages/user-edit-page/user-edit-page.component';
 import { WaitPageComponent } from '@app/pages/wait-page/wait-page.component';
 
 const routes: Routes = [
@@ -41,6 +42,7 @@ const routes: Routes = [
     { path: 'match-room', canActivate: [matchLoginGuard], component: WaitPageComponent },
     { path: 'play-match', canActivate: [matchLoginGuard], component: QuestionAreaComponent },
     { path: 'results', canActivate: [matchLoginGuard], component: ResultsPageComponent },
+    { path: 'edit-profile', component: UserEditPageComponent },
 ];
 
 @NgModule({

@@ -1,0 +1,31 @@
+#main-container {
+    padding: 1rem 8rem;
+}
+#form {
+    display: flex;
+    flex-direction: column;
+    width: 30vw;
+}
+
+#avatar {
+    background-color: gray;
+    width: 10rem;
+    height: 10rem;
+    border-radius: 100rem;
+}
+
+.two-columns-container {
+    display: flex;
+    flex-direction: row;
+    padding: 2rem;
+    gap: 2rem;
+}
+
+#save-button {
+    width: 10vw;
+    padding: 1.5rem 3rem;
+}
+
+.content-container {
+    width: 50vw;
+}

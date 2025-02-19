@@ -25,6 +25,8 @@
         "logout-action": "Log out",
         "message-label": "Message",
         "disabled-label": "Disabled",
-        "email": "Email"
+        "email": "Email",
+        "user-edit": "Edit Profile",
+        "save": "Save"
     }
 }

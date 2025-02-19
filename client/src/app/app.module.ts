@@ -43,6 +43,7 @@ import { SortByScorePipe } from '@app/pipes/sort-by-score.pipe';
 import { SortHistoryPipe } from '@app/pipes/sort-history.pipe';
 import { SortPlayersPipe } from '@app/pipes/sort-players.pipe';
 import { TranslocoRootModule } from '@app/transloco-root.module';
+import { UserEditPageComponent } from './pages/user-edit-page/user-edit-page.component';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -79,6 +80,7 @@ import { TranslocoRootModule } from '@app/transloco-root.module';
         MatchCreationPageComponent,
         ResultsPageComponent,
         WaitPageComponent,
+        UserEditPageComponent,
         FilterByQuestionTypePipe,
         SortAnswersPipe,
         SortByLastModificationPipe,
