@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getMockGame } from '@app/constants/game-mocks';
 import {
     ERROR_DEFAULT,

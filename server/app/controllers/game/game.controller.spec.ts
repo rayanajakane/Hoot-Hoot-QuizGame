@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ERROR_GAME_SAME_TITLE } from '@app/constants/request-errors';
 import { Game } from '@app/model/database/game';
 import { GameService } from '@app/services/game/game.service';

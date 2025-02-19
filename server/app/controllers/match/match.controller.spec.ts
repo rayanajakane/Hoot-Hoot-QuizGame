@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HOST_CONFLICT, INVALID_CODE } from '@app/constants/match-login-errors';
 import { Game } from '@app/model/database/game';
 import { MatchBackupService } from '@app/services/match-backup/match-backup.service';

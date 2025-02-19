@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getMockQuestion } from '@app/constants/question-mocks';
 import { ERROR_DEFAULT, ERROR_INVALID_QUESTION, ERROR_QUESTION_BANK_SAME_TITLE, ERROR_QUESTION_NOT_FOUND } from '@app/constants/request-errors';
 import { stringifyQuestionPublicValues } from '@app/constants/test-utils';

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getMockQuestion } from '@app/constants/question-mocks';
 import { Choice } from '@app/model/database/choice';
 import { Game } from '@app/model/database/game';

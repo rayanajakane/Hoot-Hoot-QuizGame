@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ERROR_QUESTION_NOT_FOUND } from '@app/constants/request-errors';
 import { Question } from '@app/model/database/question';
 import { QuestionService } from '@app/services/question/question.service';
