@@ -23,6 +23,9 @@ export class QuestionListItemComponent implements OnInit {
     }
 
     deleteQuestion() {
+        if (!this.question.id) {
+            this.question.id = 'questionToDelete';
+        }
         this.deleteQuestionEvent.emit(this.question.id);
     }
 
