@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
 import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
@@ -19,6 +20,7 @@ export class AuthenticationService {
     private currentUser: User | null;
     private database = getDatabase();
 
+    // eslint-disable-next-line max-params
     constructor(
         private readonly router: Router,
         private readonly socketHandler: SocketHandlerService,
@@ -36,6 +38,11 @@ export class AuthenticationService {
                 this.router.navigateByUrl('/login');
             }
         });
+    }
+
+    get userDisplayName(): string {
+        const displayName: string = this.currentUser?.displayName ?? '';
+        return displayName;
     }
 
     isUserAuthenticated(): boolean {
@@ -66,11 +73,6 @@ export class AuthenticationService {
                 console.log(error);
                 return Promise.resolve(false);
             });
-    }
-
-    get userDisplayName(): string {
-        const displayName: string = this.currentUser?.displayName ?? '';
-        return displayName;
     }
 
     getUserDatabaseRef(uid: string) {
