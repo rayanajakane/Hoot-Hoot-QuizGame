@@ -55,6 +55,10 @@
     padding: 0.5rem;
 }
 
+.message-text-info-container {
+    width: 15vw;
+}
+
 .message-author {
     font-weight: 600;
 }
@@ -120,4 +124,21 @@ input[matInput] {
     transform: translateY(-50%);
     font-size: 24px;
     cursor: pointer;
+}
+
+.avatar-container {
+    display: flex;
+    align-items: end;
+}
+
+.avatar {
+    background-color: grey;
+    border-radius: 100rem;
+    width: 3rem;
+    height: 3rem;
+}
+
+.two-columns-container {
+    display: flex;
+    gap: 1rem;
 }

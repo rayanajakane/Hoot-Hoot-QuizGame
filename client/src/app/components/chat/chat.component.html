@@ -6,19 +6,29 @@
             class="message-container"
             [ngClass]="message.author === this.authenticationService.userDisplayName ? 'right-message' : 'left-message'"
         >
-            <div class="message-info-container">
-                <p class="message-author">{{ message.author }}</p>
-                <p>{{ message.date | date: 'HH:mm:ss' }}</p>
-            </div>
-            <div
-                class="message-text-container"
-                [ngClass]="[
-                    message.author === this.authenticationService.userDisplayName ? 'own-message' : 'received-message',
-                    message.author === 'Organisateur' ? 'host-message' : '',
-                    message.author === '' ? 'player-quit-message' : ''
-                ]"
-            >
-                <p>{{ message.text }}</p>
+            <div class="two-columns-container">
+                <div *ngIf="message.author !== this.authenticationService.userDisplayName" class="avatar-container">
+                    <div class="avatar"><!--TODO: AVATAR--></div>
+                </div>
+                <div class="message-text-info-container">
+                    <div class="message-info-container">
+                        <p class="message-author">{{ message.author }}</p>
+                        <p>{{ message.date | date: 'HH:mm:ss' }}</p>
+                    </div>
+                    <div
+                        class="message-text-container"
+                        [ngClass]="[
+                            message.author === this.authenticationService.userDisplayName ? 'own-message' : 'received-message',
+                            message.author === 'Organisateur' ? 'host-message' : '',
+                            message.author === '' ? 'player-quit-message' : ''
+                        ]"
+                    >
+                        <p>{{ message.text }}</p>
+                    </div>
+                </div>
+                <div *ngIf="message.author === this.authenticationService.userDisplayName" class="avatar-container">
+                    <div class="avatar"><!--TODO: AVATAR--></div>
+                </div>
             </div>
         </div>
     </div>
