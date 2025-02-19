@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
 import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { SessionAlreadyExistsError, UsernameAlreadyExistsError } from '@app/services/authentication/session-exists';
+import { AuthError } from '@app/services/authentication/auth-error';
 import { ChatService } from '@app/services/chat/chat.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
@@ -53,7 +53,7 @@ export class AuthenticationService {
         const usernameRef = this.getUsernameDatabaseRef(username);
         return get(usernameRef).then(async (databaseSnapshot: DataSnapshot) => {
             if (databaseSnapshot.exists()) {
-                return Promise.reject(new UsernameAlreadyExistsError());
+                return Promise.reject(new AuthError('UsernameAlreadyExists', 'UsernameAlreadyExistsError'));
             } else {
                 set(usernameRef, this.userDisplayName);
                 return Promise.resolve(false);
@@ -139,7 +139,7 @@ export class AuthenticationService {
             .then(async (userCredential) => {
                 const userRef = this.getUserDatabaseRef(userCredential.user.uid);
                 const isAbleToSignIn = await this.ensureUserSession(userCredential.user.uid);
-                if (!isAbleToSignIn) throw new SessionAlreadyExistsError();
+                if (!isAbleToSignIn) throw new AuthError('SessionAlreadyExists', 'SessionAlreadyExistsError');
                 update(userRef, {
                     isOnline: true,
                 });
