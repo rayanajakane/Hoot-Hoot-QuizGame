@@ -20,11 +20,11 @@ export class SignupPageComponent implements OnInit {
 
     autofocus() {
         // REFERENCE: https://stackoverflow.com/questions/59893531/accessibilty-focus-is-lost-when-route-changed-in-angular
-        const blurElement: HTMLElement = document.getElementById('username-input') as HTMLElement;
+        const blurElement: HTMLElement = document.getElementById('email-input') as HTMLElement;
         blurElement?.blur();
 
         setTimeout(() => {
-            const focusElement: HTMLElement = document.getElementById('username-input') as HTMLElement;
+            const focusElement: HTMLElement = document.getElementById('email-input') as HTMLElement;
             focusElement?.focus();
         }, 0);
     }
