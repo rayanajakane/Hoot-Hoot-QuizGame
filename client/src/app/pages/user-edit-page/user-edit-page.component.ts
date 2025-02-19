@@ -18,4 +18,8 @@ export class UserEditPageComponent implements OnInit {
     save() {
         // TODO
     }
+
+    uploadAvatar() {
+        // TODO
+    }
 }

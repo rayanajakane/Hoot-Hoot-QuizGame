@@ -6,9 +6,25 @@
         </div>
         <div class="content-container">
             <mat-card class="two-columns-container">
-                <div id="avatar"><!--TODO: AVATAR--></div>
+                <div id="avatars-container">
+                    <div id="main-avatar-container">
+                        <div id="main-avatar"><!--TODO: AVATAR--></div>
+                        <button mat-raised-button color="primary" (click)="uploadAvatar()" id="upload-button">{{ t('page.upload-avatar') }}</button>
+                    </div>
+                    <div id="avatar-choices-container">
+                        <p>{{ t('page.avatar-choices') }}</p>
+                        <div id="avatar-choices">
+                            <div class="avatar-mini"></div>
+                            <div class="avatar-mini"></div>
+                            <div class="avatar-mini"></div>
+                            <div class="avatar-mini"></div>
+                            <div class="avatar-mini"></div>
+                        </div>
+                    </div>
+                </div>
                 <div id="form">
                     <mat-form-field id="email">
+                        <!-- TODO: Disable -->
                         <mat-label>{{ t('page.email') }}</mat-label>
                         <input matInput placeholder="" id="email-input" [(ngModel)]="email" />
                     </mat-form-field>
@@ -22,6 +38,20 @@
                         <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
                             <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
                         </button>
+                    </mat-form-field>
+                    <mat-form-field id="theme">
+                        <mat-label>{{ t('page.theme') }}</mat-label>
+                        <mat-select>
+                            <mat-option value="option1">Option 1</mat-option>
+                            <mat-option value="option2">Option 2</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field id="language">
+                        <mat-label>{{ t('page.language') }}</mat-label>
+                        <mat-select>
+                            <mat-option value="option1">Option 1</mat-option>
+                            <mat-option value="option2">Option 2</mat-option>
+                        </mat-select>
                     </mat-form-field>
                     <button mat-raised-button color="primary" (click)="save()" id="save-button">{{ t('page.save') }}</button>
                 </div>

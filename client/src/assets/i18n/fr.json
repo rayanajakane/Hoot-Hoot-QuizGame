@@ -27,6 +27,10 @@
         "disabled-label": "Désactivé",
         "email": "Courriel",
         "user-edit": "Modification du Profil",
-        "save": "Sauvegarder"
+        "save": "Sauvegarder",
+        "theme": "Thème visuel",
+        "language": "Langue",
+        "upload-avatar": "Téléverser un avatar",
+        "avatar-choices": "Avatars prédéfinis"
     }
 }

@@ -27,6 +27,10 @@
         "disabled-label": "Disabled",
         "email": "Email",
         "user-edit": "Edit Profile",
-        "save": "Save"
+        "save": "Save",
+        "theme": "Visual Theme",
+        "language": "Language",
+        "upload-avatar": "Upload Avatar",
+        "avatar-choices": "Avatar prédéfinis"
     }
 }

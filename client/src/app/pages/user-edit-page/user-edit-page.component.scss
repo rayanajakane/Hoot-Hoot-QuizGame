@@ -7,10 +7,40 @@
     width: 30vw;
 }
 
-#avatar {
+#avatars-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#main-avatar-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+#main-avatar {
     background-color: gray;
     width: 10rem;
     height: 10rem;
+    border-radius: 100rem;
+}
+
+#avatar-choices-container {
+    padding: 1rem;
+}
+
+#avatar-choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.avatar-mini {
+    background-color: gray;
+    width: 2rem;
+    height: 2rem;
     border-radius: 100rem;
 }
 
