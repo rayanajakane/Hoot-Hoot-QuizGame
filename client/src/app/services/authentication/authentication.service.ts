@@ -99,7 +99,6 @@ export class AuthenticationService {
         return uid ? ref(this.database, `users/${uid}`) : ref(this.database, 'users/');
     }
 
-    // TODO : Change method name then move to userService
     async completeUserProfileCreation(userCredential: UserCredential, username: string) {
         updateProfile(userCredential.user, { displayName: username }).then(() => {
             const userRef = this.getUserDatabaseRef(userCredential.user.uid);
@@ -188,6 +187,23 @@ export class AuthenticationService {
                 this.notificationService.displayErrorMessage(error.message);
             });
     }
+
+    // TODO : Move this into service
+    // private checkUsernameFormat(username: string): string {
+    //     const MIN_LENGTH = 3;
+    //     const MAX_LENGTH = 20;
+    //     const regex = new RegExp('/[^A-Za-z0-9_]/');
+    //     if (username.length < MIN_LENGTH) {
+    //         return 'username too short';
+    //     }
+    //     if (username.length > MAX_LENGTH) {
+    //         return 'username too long';
+    //     }
+    //     if (regex.test(username)) {
+    //         return 'cannot contain special characters';
+    //     }
+    //     return 'not caca :D';
+    // }
 
     private handleAuthErrorMessage(error: FirebaseError): string {
         switch (error.code) {
