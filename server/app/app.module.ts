@@ -1,9 +1,31 @@
+import { BackupController } from '@app/controllers/backup/backup.controller';
+import { GameController } from '@app/controllers/game/game.controller';
+import { MatchController } from '@app/controllers/match/match.controller';
+import { QuestionController } from '@app/controllers/question/question.controller';
+import { AnswerGateway } from '@app/gateways/answer/answer.gateway';
 import { ChatGateway } from '@app/gateways/chat/chat.gateway';
+import { MatchGateway } from '@app/gateways/match/match.gateway';
+import { TimerGateway } from '@app/gateways/timer/timer.gateway';
+import { Game, gameSchema } from '@app/model/database/game';
+import { Question, questionSchema } from '@app/model/database/question';
+import { LongAnswerStrategy } from '@app/question-strategies/long-answer-strategy/long-answer-strategy';
+import { MultipleChoiceStrategy } from '@app/question-strategies/multiple-choice-strategy/multiple-choice-strategy';
+import { AnswerService } from '@app/services/answer/answer.service';
 import { ChatService } from '@app/services/chat/chat.service';
+import { GameCreationService } from '@app/services/game-creation/game-creation.service';
+import { GameValidationService } from '@app/services/game-validation/game-validation.service';
+import { GameService } from '@app/services/game/game.service';
+import { MatchBackupService } from '@app/services/match-backup/match-backup.service';
+import { MatchRoomService } from '@app/services/match-room/match-room.service';
+import { PlayerRoomService } from '@app/services/player-room/player-room.service';
+import { QuestionStrategyContext } from '@app/services/question-strategy-context/question-strategy-context.service';
+import { QuestionService } from '@app/services/question/question.service';
+import { TimeService } from '@app/services/time/time.service';
 import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MongooseModule } from '@nestjs/mongoose';
+
 @Module({
     imports: [
         ConfigModule.forRoot({ isGlobal: true }),
@@ -14,9 +36,30 @@ import { MongooseModule } from '@nestjs/mongoose';
                 uri: config.get<string>('DATABASE_CONNECTION_STRING'),
             }),
         }),
+        MongooseModule.forFeature([{ name: Game.name, schema: gameSchema }]),
+        MongooseModule.forFeature([{ name: Question.name, schema: questionSchema }]),
         EventEmitterModule.forRoot(),
     ],
-    controllers: [],
-    providers: [Logger, ChatService, ChatGateway],
+    controllers: [GameController, QuestionController, MatchController, BackupController],
+    providers: [
+        Logger,
+        ChatService,
+        ChatGateway,
+        GameService,
+        GameCreationService,
+        GameValidationService,
+        QuestionService,
+        AnswerGateway,
+        MatchGateway,
+        TimerGateway,
+        AnswerService,
+        MatchBackupService,
+        MatchRoomService,
+        PlayerRoomService,
+        TimeService,
+        QuestionStrategyContext,
+        MultipleChoiceStrategy,
+        LongAnswerStrategy,
+    ],
 })
 export class AppModule {}

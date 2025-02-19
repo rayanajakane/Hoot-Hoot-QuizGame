@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { TestBed } from '@angular/core/testing';
 
 import { Router } from '@angular/router';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
+import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { Socket } from 'socket.io-client';
-import { SocketHandlerService } from './socket-handler.service';
 
 describe('SocketHandlerService', () => {
     let service: SocketHandlerService;
@@ -15,7 +17,7 @@ describe('SocketHandlerService', () => {
             providers: [{ provide: Router, useValue: router }],
         });
         service = TestBed.inject(SocketHandlerService);
-        service.socket = new SocketTestHelper() as unknown as Socket;
+        service.socket = new SocketTestHelper() as any as Socket;
     });
 
     it('should be created', () => {
@@ -47,7 +49,7 @@ describe('SocketHandlerService', () => {
     });
 
     it('isSocketAlive should return false if the socket is not defined', () => {
-        (service.socket as unknown) = undefined;
+        (service.socket as any) = undefined;
         const isAlive = service.isSocketAlive();
         expect(isAlive).toBeFalsy();
     });

@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { ChatService } from '@app/services/chat/chat.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
-import { ChatService } from './chat.service';
 import SpyObj = jasmine.SpyObj;
 
 describe('ChatService', () => {

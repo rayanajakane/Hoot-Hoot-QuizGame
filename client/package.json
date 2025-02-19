@@ -46,6 +46,7 @@
         "@angular/cli": "17.3.11",
         "@angular/compiler-cli": "17.3.12",
         "@electron/packager": "^18.3.6",
+        "@ngneat/spectator": "^17.1.0",
         "@types/canvas-confetti": "^1.6.4",
         "@types/jasmine": "4.3.5",
         "@types/node": "20.4.8",
