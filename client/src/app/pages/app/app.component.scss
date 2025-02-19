@@ -1,0 +1,14 @@
+.two-columns-layout {
+    display: column;
+    grid-template: 3fr 7fr;
+}
+
+.second-column {
+    margin-left: 20vw;
+}
+
+#logout-button {
+    right: 0;
+    margin-right: 0;
+    margin-left: 90vw;
+}

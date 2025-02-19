@@ -1,10 +1,11 @@
-// import { Game } from '@app/interfaces/game';
+import { HttpErrorResponse } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { Game } from '@app/interfaces/game';
+import { CommunicationService } from '@app/services/communication/communication.service';
+import { environment } from 'src/environments/environment';
 
-xdescribe('CommunicationService', () => {
-    it('should create', () => {
-        expect(true).toBeTruthy();
-    });
-    /*
+describe('CommunicationService', () => {
     let gameService: CommunicationService<Game>;
     let httpMock: HttpTestingController;
 
@@ -133,5 +134,4 @@ xdescribe('CommunicationService', () => {
             },
         });
     });
-    */
 });

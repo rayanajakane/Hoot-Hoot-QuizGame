@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, DebugElement } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { ClickStopPropagationDirective } from './click-stop-propagation.directive';
+import { ClickStopPropagationDirective } from '@app/directives/click-stop-propagation.directive';
 
 @Component({
     template: '<div appClickStopPropagation (click)="onClick()"></div>',

@@ -5,7 +5,7 @@ import { AuthenticationService } from '@app/services/authentication/authenticati
 export const authenticationGuard = (): boolean => {
     const authenticationService = inject(AuthenticationService);
     const router = inject(Router);
-    if (!authenticationService.userDisplayName) {
+    if (!authenticationService.isUserAuthenticated()) {
         router.navigateByUrl('/login');
         return false;
     }

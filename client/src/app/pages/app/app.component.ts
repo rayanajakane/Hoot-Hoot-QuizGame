@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { TranslocoService } from '@jsverse/transloco';
 
 @Component({
@@ -7,7 +8,10 @@ import { TranslocoService } from '@jsverse/transloco';
     styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-    constructor(private translocoService: TranslocoService) {}
+    constructor(
+        private translocoService: TranslocoService,
+        public authenticationService: AuthenticationService,
+    ) {}
     ngOnInit(): void {
         this.translocoService.load('fr').subscribe();
     }
