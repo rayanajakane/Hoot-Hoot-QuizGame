@@ -1,1 +1,9 @@
-<router-outlet></router-outlet>
+<button mat-raised-button id="logout-button" *ngIf="this.authenticationService.isUserAuthenticated()" (click)="this.authenticationService.signOut()">
+    Se déconnecter
+</button>
+<div [ngClass]="this.authenticationService.isUserAuthenticated() ? 'two-columns-layout' : ''">
+    <app-chat *ngIf="this.authenticationService.isUserAuthenticated()"> </app-chat>
+    <div [ngClass]="this.authenticationService.isUserAuthenticated() ? 'second-column' : ''">
+        <router-outlet> </router-outlet>
+    </div>
+</div>

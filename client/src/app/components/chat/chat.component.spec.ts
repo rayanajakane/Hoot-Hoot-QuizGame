@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -5,10 +6,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ChatComponent } from '@app/components/chat/chat.component';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { ChatService } from '@app/services/chat/chat.service';
 import { getTranslocoModule } from '@app/transloco-testing.module';
-import { ChatComponent } from './chat.component';
 import SpyObj = jasmine.SpyObj;
 
 const mockDate = new Date();
@@ -72,11 +73,6 @@ describe('ChatComponent', () => {
 
     it('should create', () => {
         expect(true).toBeTruthy();
-    });
-
-    it('should call the even listener handleReceivedMessages() on init', () => {
-        component.ngOnInit();
-        expect(chatServiceSpy.handleReceivedMessages).toHaveBeenCalled();
     });
 
     it('should send message', () => {

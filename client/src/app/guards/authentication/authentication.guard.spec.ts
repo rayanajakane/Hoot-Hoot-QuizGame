@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
 import { Auth } from '@angular/fire/auth';
+import { authenticationGuard } from '@app/guards/authentication/authentication.guard';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { getTranslocoModule } from '@app/transloco-testing.module';
-import { authenticationGuard } from './authentication.guard';
 import SpyObj = jasmine.SpyObj;
 
 describe('authenticationGuard', () => {
@@ -15,7 +17,7 @@ describe('authenticationGuard', () => {
     let mockAuth: SpyObj<Auth>;
 
     beforeEach(() => {
-        authenticationSpy = jasmine.createSpyObj('AuthenticationService', ['userDisplayName']);
+        authenticationSpy = jasmine.createSpyObj('AuthenticationService', ['userDisplayName', 'isUserAuthenticated']);
         routerSpy = jasmine.createSpyObj('Router', ['navigateByUrl']);
         notificationSpy = jasmine.createSpyObj('NotificationService', ['displayErrorMessage']);
         mockAuth = jasmine.createSpyObj<Auth>('Auth', ['name']);
@@ -38,6 +40,7 @@ describe('authenticationGuard', () => {
 
     it('should not redirect to login page if user is authenticated', () => {
         (authenticationSpy as any).userDisplayName = 'LoremIpsum';
+        authenticationSpy.isUserAuthenticated.and.returnValue(true);
         TestBed.runInInjectionContext(authenticationGuard);
         expect(routerSpy.navigateByUrl).not.toHaveBeenCalled();
     });

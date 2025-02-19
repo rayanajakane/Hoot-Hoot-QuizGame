@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { TestBed } from '@angular/core/testing';
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { getTranslocoModule } from '@app/transloco-testing.module';
 import { BehaviorSubject } from 'rxjs';
-import { AuthenticationService } from './authentication.service';
 
 describe('AuthenticationService', () => {
     let service: AuthenticationService;

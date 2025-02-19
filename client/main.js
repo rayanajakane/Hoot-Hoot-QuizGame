@@ -1,12 +1,15 @@
 const { app, BrowserWindow } = require('electron');
 
+// REF (to allow HTTP): https://stackoverflow.com/questions/44658269/electron-how-to-allow-insecure-https/50419166
+app.commandLine.appendSwitch('ignore-certificate-errors');
+
 let appWindow;
 
 function initWindow() {
     appWindow = new BrowserWindow({
         // fullscreen: true,
-        height: 800,
-        width: 1000,
+        height: 1080,
+        width: 1920,
         webPreferences: {
             nodeIntegration: true,
             devTools: false,

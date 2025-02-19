@@ -1,9 +1,11 @@
 /* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
 import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { SessionAlreadyExistsError } from '@app/services/authentication/session-exists';
+import { ChatService } from '@app/services/chat/chat.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { ChatEvents } from '@common/events/chat.events';
@@ -18,15 +20,16 @@ export class AuthenticationService {
     private currentUser: User | null;
     private database = getDatabase();
 
+    // eslint-disable-next-line max-params
     constructor(
         private readonly router: Router,
         private readonly socketHandler: SocketHandlerService,
         private readonly notificationService: NotificationService,
         private readonly translocoService: TranslocoService,
+        private readonly chatService: ChatService,
         private auth: Auth,
     ) {
         setPersistence(this.auth, browserSessionPersistence);
-
         onAuthStateChanged(this.auth, (user) => {
             if (user) {
                 this.currentUser = user;
@@ -35,6 +38,15 @@ export class AuthenticationService {
                 this.router.navigateByUrl('/login');
             }
         });
+    }
+
+    get userDisplayName(): string {
+        const displayName: string = this.currentUser?.displayName ?? '';
+        return displayName;
+    }
+
+    isUserAuthenticated(): boolean {
+        return !!this.currentUser;
     }
 
     async ensureUserSession(uid: string) {
@@ -56,16 +68,11 @@ export class AuthenticationService {
                     return Promise.resolve(true);
                 }
             })
-            .catch((error: any) => {
+            .catch(async (error: unknown) => {
                 this.currentUser = null;
                 console.log(error);
                 return Promise.resolve(false);
             });
-    }
-
-    get userDisplayName(): string {
-        const displayName: string = this.currentUser?.displayName ?? '';
-        return displayName;
     }
 
     getUserDatabaseRef(uid: string) {
@@ -84,9 +91,10 @@ export class AuthenticationService {
                     onDisconnect(userRef).update({
                         isOnline: false,
                     });
-                    this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-up'));
+                    this.connectToSocket();
                     this.currentUser = userCredential.user;
-                    this.router.navigateByUrl('/chat');
+                    this.router.navigateByUrl('/home');
+                    this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-up'));
                 });
             })
             .catch((error) => {
@@ -108,7 +116,8 @@ export class AuthenticationService {
                 onDisconnect(userRef).update({
                     isOnline: false,
                 });
-                this.router.navigateByUrl('/chat');
+                this.connectToSocket();
+                this.router.navigateByUrl('/home');
                 this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-in'));
             })
             .catch((error) => {
@@ -119,11 +128,16 @@ export class AuthenticationService {
     }
 
     connectToSocket() {
-        this.socketHandler.connect();
+        if (!this.socketHandler.isSocketAlive()) {
+            this.socketHandler.connect();
+            this.chatService.handleReceivedMessages();
+        }
     }
 
     disconnectSocket() {
         this.socketHandler.disconnect();
+        this.socketHandler.socket.removeListener(ChatEvents.NewMessage);
+        this.chatService.clearMessages();
     }
 
     signOut() {
@@ -136,11 +150,13 @@ export class AuthenticationService {
         signOut(this.auth)
             .then(() => {
                 this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-out'));
+                this.disconnectSocket();
+                this.currentUser = null;
+                this.router.navigateByUrl('/login');
             })
             .catch((error) => {
                 this.notificationService.displayErrorMessage(error.message);
             });
-        this.socketHandler.socket.removeListener(ChatEvents.NewMessage);
     }
 
     private handleAuthErrorMessage(error: FirebaseError): string {
@@ -158,6 +174,7 @@ export class AuthenticationService {
                 return this.translocoService.translate('auth.error.invalid-username-password');
             }
             default: {
+                console.log(error);
                 return this.translocoService.translate('auth.error.other-error');
             }
         }
