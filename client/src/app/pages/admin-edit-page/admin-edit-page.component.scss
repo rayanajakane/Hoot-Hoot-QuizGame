@@ -46,7 +46,15 @@
 .cdk-drag-preview {
     cursor: grabbing;
 }
+.question {
+    cursor: grab;
+    width: 100%;
+    display: block;
+}
 
+.question:active {
+    cursor: grabbing;
+}
 .draggable-element.cdk-drag-preview {
     pointer-events: auto;
     cursor: grabbing;
@@ -143,7 +151,7 @@ mat-sidenav {
 
 .item-container {
     margin-left: 0.5rem;
-    width: 70vw;
+    width: 60vw;
 }
 
 .sidenav-close {

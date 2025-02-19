@@ -110,20 +110,23 @@
                             banque.
                         </p>
 
-                        <app-question-list-item
+                        <div
                             class="question game-question"
                             *ngFor="let question of game.questions; let i = index"
-                            [isExpanded]="i === 0 && gameModificationService.isFirstInteraction"
-                            [index]="game.questions.indexOf(question) + 1"
-                            [question]="question"
-                            [isBankQuestion]="false"
-                            (deleteQuestionEvent)="gameModificationService.deleteQuestion($event)"
+                            cdkDrag
+                            [cdkDragData]="question"
                             (cdkDragStarted)="gameModificationService.dragQuizQuestion(question)"
                             (cdkDragEnded)="gameModificationService.dropQuizQuestion($event)"
-                            cdkDrag
                         >
-                            <div cdkDragHandle></div>
-                        </app-question-list-item>
+                            <app-question-list-item
+                                [isExpanded]="i === 0 && gameModificationService.isFirstInteraction"
+                                [index]="game.questions.indexOf(question) + 1"
+                                [question]="question"
+                                [isBankQuestion]="false"
+                                (deleteQuestionEvent)="gameModificationService.deleteQuestion($event)"
+                            >
+                            </app-question-list-item>
+                        </div>
                     </mat-accordion>
                 </div>
             </div>
