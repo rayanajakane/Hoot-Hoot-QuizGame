@@ -1,5 +1,6 @@
 package com.example.polyquiz.auth.presentation
 import android.widget.Toast
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
@@ -19,7 +20,9 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -44,13 +47,13 @@ fun LoginPage(
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
-    val authState = authViewModel.authState.observeAsState()
+    val authState by authViewModel.authState.observeAsState()
     val scope = rememberCoroutineScope()
-
+    val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    LaunchedEffect(authState.value) {
-        when(authState.value) {
+    LaunchedEffect(authState) {
+        when(authState) {
             is AuthState.Authenticated -> {
                 scope.launch {
                     SnackbarController.sendEvent(
@@ -65,7 +68,7 @@ fun LoginPage(
                 scope.launch {
                     SnackbarController.sendEvent(
                         event = SnackbarEvent(
-                            message = (authState.value as AuthState.Error).message,
+                            message = (authState as AuthState.Error).message,
                         )
                     )
                 }
@@ -77,7 +80,13 @@ fun LoginPage(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .imePadding(),
+            .imePadding()
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                })
+            },
         contentAlignment = Alignment.Center
     ) {
         ElevatedCard(
@@ -140,7 +149,7 @@ fun LoginPage(
                         authViewModel.signIn(username, password)
                         keyboardController?.hide()
                     },
-                    enabled = authState.value != AuthState.Loading
+                    enabled = authState != AuthState.Loading
                 ) {
                     Text(DisplayAuthenticationText.LOGIN_ACTION.value)
                 }
