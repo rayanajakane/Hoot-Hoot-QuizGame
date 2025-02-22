@@ -1,5 +1,4 @@
 package com.example.polyquiz
-import retrofit2.Call
 import retrofit2.http.GET
 
 interface CommunicationService {

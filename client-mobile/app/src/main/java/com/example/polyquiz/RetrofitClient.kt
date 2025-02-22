@@ -5,6 +5,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+// REFERENCE: https://medium.com/@desiappdev24/fetching-data-using-retrofit-in-jetpack-compose-a-complete-guide-97f4c2101cb7
+// https://www.baeldung.com/retrofit
 object RetrofitClient {
     private const val BASE_URL = "http://10.0.2.2:3000/api/"
 
