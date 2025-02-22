@@ -1,5 +1,4 @@
 package com.example.polyquiz.auth.presentation
-import android.widget.Toast
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
@@ -21,7 +20,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -40,7 +38,7 @@ import kotlinx.coroutines.launch
 fun LoginPage(
     modifier: Modifier,
     navigateToSignup: () -> Unit,
-    navigateToChat: () -> Unit,
+    navigateToHome: () -> Unit,
     authViewModel: AuthViewModel
 ) {
     var username by remember { mutableStateOf("") }
@@ -62,7 +60,7 @@ fun LoginPage(
                         )
                     )
                 }
-                navigateToChat()
+                navigateToHome()
             }
             is AuthState.Error -> {
                 scope.launch {

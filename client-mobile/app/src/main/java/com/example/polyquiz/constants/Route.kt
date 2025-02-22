@@ -11,4 +11,7 @@ object Route {
 
     @Serializable
     object Home
+
+    @Serializable
+    object MatchCreation
 }

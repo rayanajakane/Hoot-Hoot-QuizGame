@@ -21,7 +21,7 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
         composable<Route.Login> {
             LoginPage(
                 modifier = modifier,
-                navigateToChat = {
+                navigateToHome = {
                     navController.navigate(Route.Home)
                 },
                 navigateToSignup = {
@@ -47,7 +47,22 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                 navigateToLogin = {
                     navController.navigate(Route.Login)
                 },
-                authViewModel = authViewModel)
+                navigateToCreate = {
+                    navController.navigate(Route.MatchCreation)
+                },
+                authViewModel = authViewModel
+            )
+        }
+        composable<Route.MatchCreation> {
+            MatchCreationPage(modifier,
+                navigateToLogin = {
+                    navController.navigate(Route.Login)
+                },
+                navigateToHome = {
+                    navController.navigate(Route.Home)
+                },
+                authViewModel = authViewModel
+            )
         }
     }
 }

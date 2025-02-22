@@ -1,7 +1,6 @@
 package com.example.polyquiz
 
 import androidx.compose.foundation.gestures.detectTapGestures
-import com.example.polyquiz.chat.presentation.ChatComponent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,12 +26,13 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.DisplayAuthenticationText
 import kotlinx.coroutines.launch
 
 @Composable
-fun HomePage(modifier: Modifier, navigateToLogin: () -> Unit, navigateToCreate: () -> Unit, authViewModel: AuthViewModel) {
+fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateToHome: () -> Unit, authViewModel: AuthViewModel) {
     val authState = authViewModel.authState.observeAsState()
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
@@ -67,11 +67,11 @@ fun HomePage(modifier: Modifier, navigateToLogin: () -> Unit, navigateToCreate: 
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxSize()
             .pointerInput(Unit) {
-            detectTapGestures(onTap = {
-                focusManager.clearFocus()
-                keyboardController?.hide()
-            })
-        }
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                })
+            }
     ){
         ChatComponent(modifier = modifier, authViewModel = authViewModel)
         Column (
@@ -85,16 +85,7 @@ fun HomePage(modifier: Modifier, navigateToLogin: () -> Unit, navigateToCreate: 
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary)
             ) {
-                Text(text = "Joindre une partie")
-            }
-            Button(
-                onClick = {
-                    navigateToCreate()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary)) {
-                Text(text = "Créer une partie")
+                Text(text = "Jouer")
             }
             Surface(
                 shadowElevation = 10.dp,
@@ -103,12 +94,14 @@ fun HomePage(modifier: Modifier, navigateToLogin: () -> Unit, navigateToCreate: 
                 modifier = Modifier.padding(10.dp)
             ){
                 Button(
-                    onClick = { },
+                    onClick = {
+                        navigateToHome()
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.surfaceBright,
                         contentColor = MaterialTheme.colorScheme.onSurface),
                 ) {
-                    Text(text = "Administrer les jeux")
+                    Text(text = "Retourner à la page d'accueil")
                 }
             }
         }
