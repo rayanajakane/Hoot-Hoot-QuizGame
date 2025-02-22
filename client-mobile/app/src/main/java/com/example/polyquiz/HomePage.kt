@@ -1,5 +1,6 @@
 package com.example.polyquiz
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import com.example.polyquiz.chat.presentation.ChatComponent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,9 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
@@ -31,6 +35,8 @@ import kotlinx.coroutines.launch
 fun HomePage(modifier: Modifier, navigateToLogin: () -> Unit, authViewModel: AuthViewModel) {
     val authState = authViewModel.authState.observeAsState()
     val scope = rememberCoroutineScope()
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(authState.value) {
         when(authState.value) {
@@ -60,6 +66,12 @@ fun HomePage(modifier: Modifier, navigateToLogin: () -> Unit, authViewModel: Aut
     Row (
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxSize()
+            .pointerInput(Unit) {
+            detectTapGestures(onTap = {
+                focusManager.clearFocus()
+                keyboardController?.hide()
+            })
+        }
     ){
         ChatComponent(modifier = modifier, authViewModel = authViewModel)
         Column (
