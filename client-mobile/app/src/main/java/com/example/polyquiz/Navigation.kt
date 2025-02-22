@@ -8,7 +8,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.auth.presentation.LoginPage
 import com.example.polyquiz.auth.presentation.SignupPage
-import com.example.polyquiz.chat.presentation.ChatPage
 import com.example.polyquiz.constants.Route
 
 // References: https://youtu.be/AIC_OFQ1r3k  and  https://youtu.be/lv1raAvwcgI
@@ -23,7 +22,7 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
             LoginPage(
                 modifier = modifier,
                 navigateToChat = {
-                    navController.navigate(Route.Chat)
+                    navController.navigate(Route.Home)
                 },
                 navigateToSignup = {
                     navController.navigate(Route.Signup)
@@ -38,13 +37,13 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                     navController.navigate(Route.Login)
                 },
                 navigateToChat = {
-                    navController.navigate(Route.Chat)
+                    navController.navigate(Route.Home)
                 },
                 authViewModel = authViewModel
             )
         }
-        composable<Route.Chat> {
-            ChatPage(modifier,
+        composable<Route.Home> {
+            HomePage(modifier,
                 navigateToLogin = {
                     navController.navigate(Route.Login)
                 },

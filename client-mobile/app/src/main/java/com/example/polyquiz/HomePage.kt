@@ -1,0 +1,113 @@
+package com.example.polyquiz
+
+import com.example.polyquiz.chat.presentation.ChatComponent
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.example.polyquiz.auth.domain.AuthState
+import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.constants.AuthFeedbackText
+import com.example.polyquiz.constants.DisplayAuthenticationText
+import kotlinx.coroutines.launch
+
+@Composable
+fun HomePage(modifier: Modifier, navigateToLogin: () -> Unit, authViewModel: AuthViewModel) {
+    val authState = authViewModel.authState.observeAsState()
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(authState.value) {
+        when(authState.value) {
+            is AuthState.Unauthenticated -> {
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = AuthFeedbackText.SIGN_OUT.value,
+                        )
+                    )
+                }
+                navigateToLogin()
+            }
+            is AuthState.Error -> {
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = (authState.value as AuthState.Error).message,
+                        )
+                    )
+                }
+            }
+            else -> Unit
+        }
+    }
+
+    Row (
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxSize()
+    ){
+        ChatComponent(modifier = modifier, authViewModel = authViewModel)
+        Column (
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxHeight()
+        ) {
+            Button(
+                onClick = { },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary)
+            ) {
+                Text(text = "Joindre une partie")
+            }
+            Button(
+                onClick = { },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary)) {
+                Text(text = "Créer une partie")
+            }
+            Surface(
+                shadowElevation = 10.dp,
+                tonalElevation = 10.dp,
+                color = MaterialTheme.colorScheme.surfaceColorAtElevation(10.dp),
+                modifier = Modifier.padding(10.dp)
+            ){
+                Button(
+                    onClick = { },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceBright,
+                        contentColor = MaterialTheme.colorScheme.onSurface),
+                ) {
+                    Text(text = "Administrer les jeux")
+                }
+            }
+        }
+        ElevatedButton(
+            onClick = {
+                authViewModel.signOut()
+            },
+            modifier = Modifier.padding(20.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.surfaceBright,
+                contentColor = MaterialTheme.colorScheme.onSurface)
+        ) {
+            Text(text = DisplayAuthenticationText.LOGOUT.value)
+        }
+    }
+}

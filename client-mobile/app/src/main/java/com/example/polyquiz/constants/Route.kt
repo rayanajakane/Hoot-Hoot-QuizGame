@@ -10,5 +10,5 @@ object Route {
     object Signup
 
     @Serializable
-    object Chat
+    object Home
 }
