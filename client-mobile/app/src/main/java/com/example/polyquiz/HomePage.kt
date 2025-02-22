@@ -89,6 +89,7 @@ fun HomePage(modifier: Modifier, navigateToLogin: () -> Unit, navigateToCreate: 
             }
             Button(
                 onClick = {
+                    println("Create")
                     navigateToCreate()
                 },
                 colors = ButtonDefaults.buttonColors(
