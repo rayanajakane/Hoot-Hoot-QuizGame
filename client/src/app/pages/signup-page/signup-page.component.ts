@@ -56,7 +56,10 @@ export class SignupPageComponent implements OnInit {
     }
 
     signUp() {
-        this.authenticationService.signUp(this.email.value as string, this.username.value as string, this.password.value as string);
+        this.form.markAllAsTouched();
+        if (this.form.valid) {
+            this.authenticationService.signUp(this.email.value as string, this.username.value as string, this.password.value as string);
+        }
     }
 
     uploadAvatar() {

@@ -9,6 +9,7 @@
             "invalid-username-password": "The username and/or the password are invalid.",
             "username-already-exists": "This username is taken.",
             "other-error": "An unknown error occurred.",
+            "invalid-email": "Invalid email.",
             "username-too-short": "Username too short. Min {{length}} characters.",
             "username-too-long": "Username too long. Max {{length}} characters.",
             "username-special-char": "Should not contain special characters."

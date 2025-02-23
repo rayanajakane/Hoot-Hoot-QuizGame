@@ -24,8 +24,13 @@
                         <mat-form-field id="email">
                             <mat-label>{{ t('page.email') }}</mat-label>
                             <input required matInput type="email" name="email" placeholder="" formControlName="email" autofocus cdkFocusInitial />
+                            <mat-error *ngIf="form.get('email')?.hasError('required')">{{ t('auth.error.invalid-email') }} </mat-error>
+                            <mat-error *ngIf="form.get('email')?.hasError('email')">{{ t('auth.error.invalid-email') }} </mat-error>
                         </mat-form-field>
-                        <mat-form-field id="username">
+                        <mat-form-field
+                            id="username"
+                            [ngClass]="{ 'mat-form-field-invalid': form.get('username')?.invalid && form.get('username')?.touched }"
+                        >
                             <mat-label>{{ t('page.username') }}</mat-label>
                             <input required matInput type="username" name="username" formControlName="username" placeholder="" id="username-input" />
                             <mat-error *ngIf="form.get('username')?.hasError('containsSpecialChar')"
