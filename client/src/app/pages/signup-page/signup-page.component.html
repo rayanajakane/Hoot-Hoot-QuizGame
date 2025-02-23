@@ -19,22 +19,34 @@
                         </div>
                     </div>
                 </div>
-                <div id="form">
-                    <mat-form-field id="email">
-                        <mat-label>{{ t('page.email') }}</mat-label>
-                        <input matInput placeholder="" id="email-input" [(ngModel)]="email" autofocus cdkFocusInitial />
-                    </mat-form-field>
-                    <mat-form-field id="username">
-                        <mat-label>{{ t('page.username') }}</mat-label>
-                        <input matInput placeholder="" id="username-input" [(ngModel)]="username" />
-                    </mat-form-field>
-                    <mat-form-field id="Password">
-                        <mat-label>{{ t('page.password') }}</mat-label>
-                        <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="password" />
-                        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-                            <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
-                        </button>
-                    </mat-form-field>
+                <div>
+                    <form id="form" [formGroup]="form">
+                        <mat-form-field id="email">
+                            <mat-label>{{ t('page.email') }}</mat-label>
+                            <input required matInput type="email" name="email" placeholder="" formControlName="email" autofocus cdkFocusInitial />
+                        </mat-form-field>
+                        <mat-form-field id="username">
+                            <mat-label>{{ t('page.username') }}</mat-label>
+                            <input required matInput type="username" name="username" formControlName="username" placeholder="" id="username-input" />
+                            <mat-error *ngIf="form.get('username')?.hasError('containsSpecialChar')"
+                                >{{ t('auth.error.username-special-char') }}
+                            </mat-error>
+                            <mat-error *ngIf="form.get('username')?.hasError('minlength')"
+                                >{{ t('auth.error.username-too-short', { length: minUsernameLength }) }}
+                            </mat-error>
+                            <mat-error *ngIf="form.get('username')?.hasError('maxlength')"
+                                >{{ t('auth.error.username-too-long', { length: maxUsernameLength }) }}
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field id="password">
+                            <mat-label>{{ t('page.password') }}</mat-label>
+                            <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" />
+                            <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                                <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+                            </button>
+                        </mat-form-field>
+                    </form>
                 </div>
             </div>
             <button mat-raised-button color="primary" (click)="signUp()" id="signup-button">{{ t('page.signup-action') }}</button>

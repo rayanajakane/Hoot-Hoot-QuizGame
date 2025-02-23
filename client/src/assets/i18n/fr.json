@@ -8,7 +8,10 @@
             "password-too-short": "Le mot de passe est trop court (minimum: 6 caractères).",
             "invalid-username-password": "Le nom d'utilisateur et/ou le mot de passe sont invalides.",
             "username-already-exists": "Ce nom d'utilisateur est déjà pris",
-            "other-error": "Une erreur inconnue est survenue."
+            "other-error": "Une erreur inconnue est survenue.",
+            "username-too-short": "Nom d'utilisateur trop court. Min {{length}} caractères.",
+            "username-too-long": "Nom d'utilisateur trop long. Max {{length}} caractères.",
+            "username-special-char": "Ne doit pas contenir des charactères spéciaux."
         },
         "dialog-feedback": {
             "sign-in": "Connexion réussie !",

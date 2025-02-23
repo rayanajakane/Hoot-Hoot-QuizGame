@@ -8,7 +8,10 @@
             "password-too-short": "Password is too short (minimum: 6 characters).",
             "invalid-username-password": "The username and/or the password are invalid.",
             "username-already-exists": "This username is taken.",
-            "other-error": "An unknown error occurred."
+            "other-error": "An unknown error occurred.",
+            "username-too-short": "Username too short. Min {{length}} characters.",
+            "username-too-long": "Username too long. Max {{length}} characters.",
+            "username-special-char": "Should not contain special characters."
         },
         "dialog-feedback": {
             "sign-in": "Signed in successfully !",
