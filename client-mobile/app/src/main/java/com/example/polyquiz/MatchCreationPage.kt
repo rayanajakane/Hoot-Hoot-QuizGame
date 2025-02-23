@@ -24,12 +24,13 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.DisplayAuthenticationText
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 
 @Composable
@@ -38,11 +39,23 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    val viewModel: QuestionViewModel = viewModel()
-    val question = viewModel.questions.value
+    val questionService = QuestionService()
 
-    fun fetchUsers() {
-
+    fun fetchQuestions() {
+        questionService.getAllQuestions(
+            onSuccess = { questions ->
+                val gson = Gson()
+                val json = gson.toJson(questions)
+                val listType = object : TypeToken<List<Question>>() {}.type
+                val result: List<Question> = gson.fromJson(json, listType)
+                result.forEach { question ->
+                    println("Question: ${question.text}")
+                }
+            },
+            onError = { errorMessage ->
+                println("Error: $errorMessage")
+            }
+        )
     }
 
     LaunchedEffect(authState.value) {
@@ -89,7 +102,7 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
         ) {
             Button(
                 onClick = {
-                    viewModel.fetchQuestions()
+                    fetchQuestions()
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -97,7 +110,6 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
             ) {
                 Text(text = "Jouer")
             }
-            Text(text = question)
             Surface(
                 shadowElevation = 10.dp,
                 tonalElevation = 10.dp,
