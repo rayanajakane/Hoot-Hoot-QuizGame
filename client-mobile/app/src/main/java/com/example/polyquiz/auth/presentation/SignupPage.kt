@@ -20,6 +20,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -41,8 +42,16 @@ fun SignupPage(
     navigateToLogin: () -> Unit,
     authViewModel: AuthViewModel
 ) {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+//    var username by remember { mutableStateOf("") }
+//    var password by remember { mutableStateOf("") }
+    val email by authViewModel.email.collectAsState()
+    val username by authViewModel.username.collectAsState()
+    val password by authViewModel.password.collectAsState()
+
+    val emailError by authViewModel.emailError.collectAsState()
+    val usernameError by authViewModel.usernameError.collectAsState()
+    val passwordError by authViewModel.passwordError.collectAsState()
+
     var passwordVisible by remember { mutableStateOf(false) }
 
     val authState = authViewModel.authState.observeAsState()
@@ -101,23 +110,30 @@ fun SignupPage(
 
                 TextField(
                     value = username,
-                    onValueChange = { username = it },
+                    onValueChange = { authViewModel.updateUsername(it) },
+                    isError = usernameError.isNotEmpty(),
                     singleLine = true,
                     label = { Text(DisplayAuthenticationText.USERNAME.value) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
+                // TODO : See if can make less ugly later
+                if(usernameError.isNotEmpty()) {
+                    Text(text = usernameError, color = Color.Red)
+                }
+
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextField(
                     value = password,
-                    onValueChange = { password = it },
+                    onValueChange = {authViewModel.updatePassword(it)},
                     singleLine = true,
                     keyboardActions = KeyboardActions(onDone = {
                         authViewModel.signUp(username, password)
                         keyboardController?.hide()
                     }),
                     label = { Text(DisplayAuthenticationText.PASSWORD.value) },
+                    isError = passwordError.isNotEmpty(),
                     modifier = Modifier.fillMaxWidth(),
                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     trailingIcon = {
@@ -132,6 +148,10 @@ fun SignupPage(
                         }
                     },
                 )
+
+                if(passwordError.isNotEmpty()) {
+                    Text(text = passwordError, color = Color.Red)
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 

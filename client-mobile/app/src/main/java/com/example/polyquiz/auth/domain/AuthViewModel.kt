@@ -1,6 +1,8 @@
 package com.example.polyquiz.auth.domain
 
+import android.text.TextUtils
 import android.util.Log
+import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,6 +20,8 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.database
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class AuthViewModel : ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -28,6 +32,26 @@ class AuthViewModel : ViewModel() {
 
     private val TAG = "EmailAuthActivity"
 
+    // Reactive programming in Kotlin :
+    // https://codersee.com/reactive-programming-in-kotlin-a-step-by-step-guide/
+    private val _email = MutableStateFlow("")
+    val email: StateFlow<String> get() = _email
+
+    private val _username = MutableStateFlow("")
+    val username: StateFlow<String> get() = _username
+
+    private val _password = MutableStateFlow("")
+    val password: StateFlow<String> get() = _password
+
+    private val _emailError = MutableStateFlow("")
+    val emailError: StateFlow<String> get() = _emailError
+
+    private val _usernameError = MutableStateFlow("")
+    val usernameError: StateFlow<String> get() = _usernameError
+
+    private val _passwordError = MutableStateFlow("")
+    val passwordError: StateFlow<String> get() = _passwordError
+
     init {
         checkAuthStatus()
         if (authState.value == AuthState.Authenticated) {
@@ -37,6 +61,21 @@ class AuthViewModel : ViewModel() {
 
     fun getUserDatabaseRef(uid: String): DatabaseReference {
         return database.getReference("users/${uid}")
+    }
+
+    fun updateEmail(newEmail: String) {
+        _email.value = newEmail
+        validateEmail(newEmail)
+    }
+
+    fun updateUsername(newUsername : String) {
+        _username.value = newUsername
+        validateUsername(newUsername)
+    }
+
+    fun updatePassword(newPassword: String) {
+        _password.value = newPassword
+        validatePassword(newPassword)
     }
 
     fun getUsername(): String {
@@ -82,11 +121,17 @@ class AuthViewModel : ViewModel() {
     }
 
     fun signUp(username: String, password: String) {
-        // TODO: Replace spaces? (or simply forbid them?)
         if (username.isEmpty() || password.isEmpty()) {
             _authState.value = AuthState.Error(AuthErrorText.EMPTY_USERNAME_PASSWORD.value)
             return
         }
+        // TODO : Add email input view!
+        if (emailError.value.isNotEmpty() || passwordError.value.isNotEmpty() || usernameError.value.isNotEmpty()) {
+            _authState.value = AuthState.Error(AuthErrorText.INVALID_USERNAME_PASSWORD.value)
+            return
+        }
+//        // TODO: Replace spaces? (or simply forbid them?)
+
         _authState.value = AuthState.Loading
         auth.createUserWithEmailAndPassword("$username@polyQuiz.com", password)
             .addOnCompleteListener { task ->
@@ -140,6 +185,43 @@ class AuthViewModel : ViewModel() {
         }
         _authState.value = AuthState.Error(errorMessage)
         Log.w(TAG, "createUserWithEmail:failure", task.exception)
+    }
+
+    private fun validatePassword(password: String) {
+        if(password.length < 8) {
+            _passwordError.value = "Password too short. Min : 8 characters."
+        } else {
+            _passwordError.value = ""
+        }
+    }
+
+    private fun validateUsername(username: String) {
+        if(username.matches(".*[^A-Za-z0-9_].*".toRegex())) {
+            _usernameError.value = "Username must not contain special characters."
+        } else if(username.length < 3) {
+            _usernameError.value = "Username too short. Min : 3 characters."
+        } else if(username.length > 20) {
+            _usernameError.value = "Username too long. Max : 20 characters."
+        } else {
+            _usernameError.value = ""
+        }
+    }
+
+    private fun validateEmail(email: String) {
+        if(email.isBlank() || !isValidEmail(email)) {
+            _emailError.value = "Invalid email"
+        } else {
+            _emailError.value = ""
+        }
+    }
+
+    // https://developer.android.com/reference/android/util/Patterns#EMAIL_ADDRESS
+    private fun isValidEmail(target: CharSequence) : Boolean {
+        return if(TextUtils.isEmpty(target)) {
+            false
+        } else {
+            Patterns.EMAIL_ADDRESS.matcher(target).matches()
+        }
     }
 
 }
