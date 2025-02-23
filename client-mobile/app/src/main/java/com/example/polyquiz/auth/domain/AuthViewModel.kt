@@ -189,7 +189,7 @@ class AuthViewModel : ViewModel() {
 
     private fun validatePassword(password: String) {
         if(password.length < 8) {
-            _passwordError.value = "Password too short. Min : 8 characters."
+            _passwordError.value = AuthErrorText.PASSWORD_TOO_SHORT.value
         } else {
             _passwordError.value = ""
         }
@@ -197,11 +197,11 @@ class AuthViewModel : ViewModel() {
 
     private fun validateUsername(username: String) {
         if(username.matches(".*[^A-Za-z0-9_].*".toRegex())) {
-            _usernameError.value = "Username must not contain special characters."
+            _usernameError.value = AuthErrorText.SPECIAL_CHAR_USERNAME.value
         } else if(username.length < 3) {
-            _usernameError.value = "Username too short. Min : 3 characters."
+            _usernameError.value = AuthErrorText.SHORT_USERNAME.value
         } else if(username.length > 20) {
-            _usernameError.value = "Username too long. Max : 20 characters."
+            _usernameError.value = AuthErrorText.LONG_USERNAME.value
         } else {
             _usernameError.value = ""
         }
@@ -209,7 +209,7 @@ class AuthViewModel : ViewModel() {
 
     private fun validateEmail(email: String) {
         if(email.isBlank() || !isValidEmail(email)) {
-            _emailError.value = "Invalid email"
+            _emailError.value = AuthErrorText.INVALID_EMAIL.value
         } else {
             _emailError.value = ""
         }

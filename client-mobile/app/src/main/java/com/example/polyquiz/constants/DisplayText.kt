@@ -22,7 +22,11 @@ enum class AuthErrorText (val value: String) {
     PASSWORD_TOO_SHORT("❌ Le mot de passe est trop court (minimum: 6 caractères)."),
     ALREADY_ONLINE("❌ Cet utilisateur est déjà connecté."),
     INVALID_USERNAME_PASSWORD("❌ Le nom d'utilisateur et/ou le mot de passe sont invalides."),
-    OTHER_ERROR("❌ Erreur")
+    OTHER_ERROR("❌ Erreur"),
+    INVALID_EMAIL("Adresse courriel invalide."),
+    SHORT_USERNAME("Nom d'utilisateur trop court. Min 3 caractères"),
+    LONG_USERNAME("Nom d'utilisateur trop long. Max 20 caractères."),
+    SPECIAL_CHAR_USERNAME("Ne doit pas contenir des charactères spéciaux.")
 }
 
 enum class AuthFeedbackText (val value: String) {
