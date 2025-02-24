@@ -19,12 +19,6 @@
     font-weight: 800;
 }
 
-#exit-button {
-    position: absolute;
-    top: 5vh;
-    right: -5vw;
-}
-
 #host-options-container {
     width: 50vw;
     display: flex;
@@ -70,6 +64,11 @@
     padding: 2rem;
     font-size: 1.5rem;
     font-weight: 500;
+}
+
+#exit-button-container {
+    display: flex;
+    justify-content: center;
 }
 
 #exit-button {
