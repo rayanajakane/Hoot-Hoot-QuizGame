@@ -109,6 +109,21 @@ fun SignupPage(
                 )
 
                 TextField(
+                    value = email,
+                    onValueChange = { authViewModel.updateEmail(it) },
+                    isError = emailError.isNotEmpty(),
+                    singleLine = true,
+                    label = { Text(DisplayAuthenticationText.EMAIL.value) },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                if(emailError.isNotEmpty()) {
+                    Text(text = emailError, color = Color.Red)
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                TextField(
                     value = username,
                     onValueChange = { authViewModel.updateUsername(it) },
                     isError = usernameError.isNotEmpty(),
@@ -129,7 +144,7 @@ fun SignupPage(
                     onValueChange = {authViewModel.updatePassword(it)},
                     singleLine = true,
                     keyboardActions = KeyboardActions(onDone = {
-                        authViewModel.signUp(username, password)
+                        authViewModel.signUp(email, username, password)
                         keyboardController?.hide()
                     }),
                     label = { Text(DisplayAuthenticationText.PASSWORD.value) },
@@ -158,7 +173,7 @@ fun SignupPage(
                 Button(
                     onClick =
                     {
-                        authViewModel.signUp(username, password)
+                        authViewModel.signUp(email, username, password)
                         keyboardController?.hide()
                     },
                     enabled = authState.value != AuthState.Loading

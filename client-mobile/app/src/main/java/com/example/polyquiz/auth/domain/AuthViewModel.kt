@@ -90,13 +90,13 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    fun signIn(username: String, password: String) {
-        if (username.isEmpty() || password.isEmpty()) {
+    fun signIn(email: String, password: String) {
+        if (email.isEmpty() || password.isEmpty()) {
             _authState.value = AuthState.Error(AuthErrorText.EMPTY_USERNAME_PASSWORD.value)
             return
         }
         _authState.value = AuthState.Loading
-        auth.signInWithEmailAndPassword("$username@polyQuiz.com", password)
+        auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val userRef = task.result.user?.let { this.getUserDatabaseRef(it.uid) }
@@ -120,8 +120,8 @@ class AuthViewModel : ViewModel() {
             }
     }
 
-    fun signUp(username: String, password: String) {
-        if (username.isEmpty() || password.isEmpty()) {
+    fun signUp(email: String, username: String, password: String) {
+        if (email.isEmpty() || username.isEmpty() || password.isEmpty()) {
             _authState.value = AuthState.Error(AuthErrorText.EMPTY_USERNAME_PASSWORD.value)
             return
         }

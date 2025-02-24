@@ -1,6 +1,7 @@
 package com.example.polyquiz.constants
 
 enum class DisplayAuthenticationText (val value: String) {
+    EMAIL("Courriel"),
     USERNAME("Nom d'utilisateur"),
     PASSWORD("Mot de passe"),
     LOGIN_TITLE("Connexion"),
@@ -17,7 +18,7 @@ enum class DisplayChatText (val value: String) {
 }
 
 enum class AuthErrorText (val value: String) {
-    EMPTY_USERNAME_PASSWORD("❌ Le nom d'utilisateur et/ou le mot de passe sont vides"),
+    EMPTY_USERNAME_PASSWORD("❌ Le courriel, le nom d'utilisateur et/ou le mot de passe sont vides"),
     USER_ALREADY_EXISTS( "❌ Cet utilisateur existe déjà."),
     PASSWORD_TOO_SHORT("❌ Le mot de passe est trop court (minimum: 6 caractères)."),
     ALREADY_ONLINE("❌ Cet utilisateur est déjà connecté."),
