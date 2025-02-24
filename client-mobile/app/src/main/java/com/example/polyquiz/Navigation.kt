@@ -12,6 +12,7 @@ import com.example.polyquiz.classicmode.domain.TimeService
 import com.example.polyquiz.classicmode.presentation.QuestionAreaComponent
 import com.example.polyquiz.classicmode.presentation.TimerComponent
 import com.example.polyquiz.constants.Route
+import com.example.polyquiz.match.presentation.QuestionArea
 
 // References: https://youtu.be/AIC_OFQ1r3k  and  https://youtu.be/lv1raAvwcgI
 @Composable
