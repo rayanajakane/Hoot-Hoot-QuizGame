@@ -55,7 +55,7 @@ class AuthViewModel : ViewModel() {
     init {
         checkAuthStatus()
         if (authState.value == AuthState.Authenticated) {
-            signOut();
+            signOut()
         }
     }
 
@@ -181,7 +181,7 @@ class AuthViewModel : ViewModel() {
         } catch(e: FirebaseAuthInvalidCredentialsException) {
            AuthErrorText.INVALID_USERNAME_PASSWORD.value
         } catch (e: Exception) {
-            e.message ?: AuthErrorText.OTHER_ERROR.value;
+            e.message ?: AuthErrorText.OTHER_ERROR.value
         }
         _authState.value = AuthState.Error(errorMessage)
         Log.w(TAG, "createUserWithEmail:failure", task.exception)

@@ -14,7 +14,7 @@ enum class DisplayAuthenticationText (val value: String) {
 
 enum class DisplayChatText (val value: String) {
     MESSAGE_LABEL("Message"),
-    DISABLED_LABLE("Désactivé")
+    DISABLED_LABEL("Désactivé")
 }
 
 enum class AuthErrorText (val value: String) {

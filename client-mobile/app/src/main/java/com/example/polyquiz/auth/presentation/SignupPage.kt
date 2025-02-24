@@ -1,6 +1,5 @@
 package com.example.polyquiz.auth.presentation
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
@@ -21,7 +20,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -42,8 +40,6 @@ fun SignupPage(
     navigateToLogin: () -> Unit,
     authViewModel: AuthViewModel
 ) {
-//    var username by remember { mutableStateOf("") }
-//    var password by remember { mutableStateOf("") }
     val email by authViewModel.email.collectAsState()
     val username by authViewModel.username.collectAsState()
     val password by authViewModel.password.collectAsState()
