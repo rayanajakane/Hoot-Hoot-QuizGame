@@ -17,7 +17,6 @@ class MatchRoomService(
     private val matchContextService: MatchContextService,
 //    private val navigator: Navigation
 ) {
-    // Domain properties
     var players: List<Player> = emptyList()
     var messages: List<Message> = emptyList()
     var isMatchStarted = false
@@ -38,7 +37,6 @@ class MatchRoomService(
 
     private val socket = SocketHandler.getSocket()
 
-    // Assuming your Socket.IO client provides an id() method:
     val socketId: String
         get() = socket.id() ?: ""
 
@@ -179,7 +177,6 @@ class MatchRoomService(
                 )
                 currentQuestion = firstQuestion
                 gameDuration = data.getInt("gameDuration")
-                // Navigate to the play-match screen with question and duration as arguments.
 //                navigator.navigateTo("play-match", mapOf("question" to firstQuestion, "duration" to gameDuration))
             }
         }
