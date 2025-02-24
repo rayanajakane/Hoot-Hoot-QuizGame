@@ -6,9 +6,11 @@ import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.polyquiz.constants.AuthErrorText
 import com.example.vanillaprototype.socket.SocketHandler
 import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.Firebase
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -19,9 +21,16 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class AuthViewModel : ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -63,6 +72,10 @@ class AuthViewModel : ViewModel() {
         return database.getReference("users/${uid}")
     }
 
+    fun getUsernameDatabaseRef(username: String) : DatabaseReference {
+        return database.getReference("usernames/${username}")
+    }
+
     fun updateEmail(newEmail: String) {
         _email.value = newEmail
         validateEmail(newEmail)
@@ -90,11 +103,30 @@ class AuthViewModel : ViewModel() {
         }
     }
 
+    private fun checkUsername(username: String) : LiveData<Boolean> {
+        val usernameRef = getUsernameDatabaseRef(username)
+        val isUsernameTaken = MutableLiveData<Boolean>()
+
+        viewModelScope.launch {
+            val databaseSnapshot : DataSnapshot = usernameRef.get().await()
+                if(databaseSnapshot.exists()) {
+                    // TODO : Make new error text
+                    _authState.value = AuthState.Error("CACA")
+                    isUsernameTaken.postValue(true)
+                } else {
+                    usernameRef.setValue(username)
+                    isUsernameTaken.postValue(false)
+                }
+        }
+        return isUsernameTaken
+    }
+
     fun signIn(email: String, password: String) {
         if (email.isEmpty() || password.isEmpty()) {
             _authState.value = AuthState.Error(AuthErrorText.EMPTY_USERNAME_PASSWORD.value)
             return
         }
+
         _authState.value = AuthState.Loading
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
@@ -120,7 +152,7 @@ class AuthViewModel : ViewModel() {
             }
     }
 
-    fun signUp(email: String, username: String, password: String) {
+     fun signUp(email: String, username: String, password: String) {
         if (email.isEmpty() || username.isEmpty() || password.isEmpty()) {
             _authState.value = AuthState.Error(AuthErrorText.EMPTY_USERNAME_PASSWORD.value)
             return
@@ -130,10 +162,16 @@ class AuthViewModel : ViewModel() {
             _authState.value = AuthState.Error(AuthErrorText.INVALID_USERNAME_PASSWORD.value)
             return
         }
-//        // TODO: Replace spaces? (or simply forbid them?)
+         // TODO: Replace spaces? (or simply forbid them?)
+         var isUsernameTaken = checkUsername(username)
+         if(isUsernameTaken.value == true) {
+             _authState.value = AuthState.Error("Username is already taken")
+             Log.e(TAG, "caca.")
+             return
+         }
 
         _authState.value = AuthState.Loading
-        auth.createUserWithEmailAndPassword("$username@polyQuiz.com", password)
+        auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     user = task.result.user
