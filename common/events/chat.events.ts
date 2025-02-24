@@ -7,6 +7,6 @@ export enum ChatEvents {
     ToggleChatState = 'toggleChatState',
     ReturnCurrentChatState = 'returnCurrentChatState',
     ChatReactivated = 'chatReactivated',
-    PrototypeMessage = 'prototypeMessage',
-    SentPrototypeMessage = 'sentPrototypeMessage',
+    GeneralMessage = 'generalMessage',
+    SentGeneralMessage = 'sentGeneralMessage',
 }

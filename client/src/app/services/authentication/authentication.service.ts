@@ -12,6 +12,7 @@ import { ChatEvents } from '@common/events/chat.events';
 import { TranslocoService } from '@jsverse/transloco';
 import { browserSessionPersistence, setPersistence, User, UserCredential } from 'firebase/auth';
 import { DataSnapshot, get, getDatabase, onDisconnect, ref, set, update } from 'firebase/database';
+import { MatchRoomService } from '../match-room/match-room.service';
 
 @Injectable({
     providedIn: 'root',
@@ -27,6 +28,7 @@ export class AuthenticationService {
         private readonly notificationService: NotificationService,
         private readonly translocoService: TranslocoService,
         private readonly chatService: ChatService,
+        private matchRoomService: MatchRoomService,
         private auth: Auth,
     ) {
         setPersistence(this.auth, browserSessionPersistence);
@@ -159,10 +161,12 @@ export class AuthenticationService {
         if (!this.socketHandler.isSocketAlive()) {
             this.socketHandler.connect();
             this.chatService.handleReceivedMessages();
+            this.chatService.handleRoomMessages();
         }
     }
 
     disconnectSocket() {
+        this.matchRoomService.disconnectFromRoom();
         this.socketHandler.disconnect();
         this.socketHandler.socket.removeListener(ChatEvents.NewMessage);
         this.chatService.clearMessages();

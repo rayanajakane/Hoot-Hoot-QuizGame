@@ -32,11 +32,11 @@ describe('ChatService', () => {
     });
 
     it('should send message', () => {
-        service.sendPrototypeMessage(mockMessage);
+        service.sendGeneralMessage(mockMessage);
         expect(socketHandlerSpy.send).toHaveBeenCalled();
     });
 
-    it('should handle sentPrototypeMessage event', () => {
+    it('should handle sentPGeneralMessage event', () => {
         const sentData = { message: mockMessage };
         service.handleReceivedMessages();
         socketHandlerSpy.on.calls.mostRecent().args[1](sentData);

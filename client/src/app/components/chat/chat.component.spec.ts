@@ -30,7 +30,7 @@ describe('ChatComponent', () => {
 
     beforeEach(() => {
         const socketHandlerSpy = jasmine.createSpyObj('SocketHandlerService', ['send']);
-        const chatSpy = jasmine.createSpyObj('ChatService', ['sendPrototypeMessage', 'handleReceivedMessages']);
+        const chatSpy = jasmine.createSpyObj('ChatService', ['sendGeneralMessage', 'handleReceivedMessages']);
         const authSpy = jasmine.createSpyObj('AuthenticationService', ['connectToSocket', 'userDisplayName']);
         socketHandlerSpy.socket = jasmine.createSpyObj('socket', ['removeListener']);
         chatSpy.socketHandler = socketHandlerSpy;
@@ -77,12 +77,12 @@ describe('ChatComponent', () => {
 
     it('should send message', () => {
         component.sendMessage(mockMessage.text);
-        expect(chatServiceSpy.sendPrototypeMessage).toHaveBeenCalledWith(mockMessage);
+        expect(chatServiceSpy.sendGeneralMessage).toHaveBeenCalledWith(mockMessage);
     });
 
     it('should not send an empty message', () => {
         const messageText = '';
         component.sendMessage(messageText);
-        expect(chatServiceSpy.sendPrototypeMessage).not.toHaveBeenCalled();
+        expect(chatServiceSpy.sendGeneralMessage).not.toHaveBeenCalled();
     });
 });
