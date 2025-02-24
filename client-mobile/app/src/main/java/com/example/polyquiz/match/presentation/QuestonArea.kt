@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -12,15 +13,31 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-@Preview(showBackground = true)
-@Composable
-fun PreviewQuizArea(){
-    QuestionArea()
-}
-@Composable
-fun QuestionArea() {
-    var selectedOptions by remember { mutableStateOf(setOf<String>()) }
+import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.match.domain.MatchRoomService
+import com.example.polyquiz.match.domain.TimeService
 
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewQuizArea(){
+//    QuestionArea()
+//}
+@Composable
+fun QuestionArea(
+    modifier: Modifier = Modifier,
+    navigateToHome: () -> Unit,
+    timeService: TimeService = TimeService,
+    authViewModel: AuthViewModel,
+    matchRoomService: MatchRoomService
+) {
+    var selectedOptions by remember { mutableStateOf(setOf<String>()) }
+    val authState by authViewModel.authState.observeAsState()
+    var room by remember { mutableStateOf("") }
+
+    TimerComponent(
+        modifier = Modifier.fillMaxWidth(),
+        timeService = timeService,
+    )
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -52,11 +69,33 @@ fun QuestionArea() {
 
         Spacer(modifier = Modifier.height(16.dp))
         Button(
-            onClick = {},
+            onClick = { navigateToHome() },
             modifier = Modifier.fillMaxWidth(0.5f),
             shape = RoundedCornerShape(8.dp)
         ) {
-            Text("QUITTER")
+            Text("Page d'accueil")
+        }
+
+        TextField(
+            value = room,
+            onValueChange = { room = it },
+            label = { Text("Room ID") },
+            modifier = Modifier.fillMaxWidth(0.8f).padding(8.dp)
+        )
+
+        Button(
+            onClick = { matchRoomService.joinRoom(room, "sami") },
+        modifier = Modifier.fillMaxWidth(0.5f),
+        shape = RoundedCornerShape(8.dp)
+        ) {
+        Text("join")
+        }
+        Button(
+            onClick = { timeService.handleTimer() },
+            modifier = Modifier.fillMaxWidth(0.5f),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Text("allumer minuterie")
         }
     }
 }

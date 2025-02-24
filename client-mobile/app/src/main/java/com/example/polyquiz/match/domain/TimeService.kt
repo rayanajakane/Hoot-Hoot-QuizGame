@@ -1,5 +1,8 @@
-package com.example.polyquiz.classicmode.domain
+package com.example.polyquiz.match.domain
 
+import android.util.Log
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import com.example.vanillaprototype.socket.SocketHandler
 import com.example.polyquiz.constants.TimerEvents
 import com.example.polyquiz.constants.TimerInfo
@@ -11,29 +14,31 @@ object TimeService {
     //var isPanicking: Boolean = false
     //var isAlertDisplayed: Boolean = false
    // var alertSymbol: String = ""
-    private var counter: Int = 0
+    private var counter: MutableState<Int> = mutableStateOf(0)
     private var initialValue: Int = 0
 
     private val mSocket = SocketHandler.getSocket()
 
     val time: Int
-        get() = counter
+        get() = counter.value
 
     val duration: Int
         get() = initialValue
 
     var timeSetter: Int
-        get() = counter
+        get() = counter.value
         set(newTime) {
-            counter = newTime
+            counter.value = newTime
         }
 
     fun handleTimer() {
         mSocket.on(TimerEvents.TIMER.value) { args ->
             if (args.isNotEmpty() && args[0] != null) {
                 val timerInfo = Gson().fromJson(args[0].toString(), TimerInfo::class.java)
-                counter = timerInfo.currentTime
+                counter.value = timerInfo.currentTime
                 initialValue = timerInfo.duration
+                Log.d("Counter", counter.toString())
+                Log.d("Initial value", initialValue.toString())
             }
         }
     }
@@ -49,16 +54,8 @@ object TimeService {
     }
 
     fun computeTimerProgress(): Float {
-        val progress = (counter.toFloat() / duration.toFloat()) * 100
+        val progress = (counter.value.toFloat() / duration.toFloat()) * 100
         return progress
     }
 
-//    fun joinRoom(roomCode: String, username: String) {
-//        val roomusernameObject = mapOf("roomCode" to roomCode, "username" to username)
-//        val roomCodeJsonObject = Gson().toJson(roomusernameObject)
-//        mSocket.emit("joinRoom", roomCodeJsonObject)
-//        val roomCodeObject = mapOf("roomCode" to roomCode)
-//        val roomJsonObject = Gson().toJson(roomCodeObject)
-//        mSocket.emit("sendPlayersData", roomJsonObject)
-//    }
 }

@@ -8,10 +8,11 @@ import androidx.navigation.compose.rememberNavController
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.auth.presentation.LoginPage
 import com.example.polyquiz.auth.presentation.SignupPage
-import com.example.polyquiz.classicmode.domain.TimeService
-import com.example.polyquiz.classicmode.presentation.QuestionAreaComponent
-import com.example.polyquiz.classicmode.presentation.TimerComponent
+import com.example.polyquiz.constants.MatchContext
+import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.Route
+import com.example.polyquiz.match.domain.MatchContextService
+import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.presentation.QuestionArea
 
 // References: https://youtu.be/AIC_OFQ1r3k  and  https://youtu.be/lv1raAvwcgI
@@ -47,13 +48,16 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
             )
         }
         composable<Route.MatchRoom> {
-            QuestionAreaComponent(
+            val matchContextService = MatchContextService()
+            matchContextService.setContext(MatchContext.PLAYERVIEW)
+            QuestionArea(
                 modifier = modifier,
                 navigateToHome = {
                     navController.navigate(Route.Home)
                 },
                 authViewModel = authViewModel,
-                timeService = TimeService
+                timeService = TimeService,
+                matchRoomService = MatchRoomService(matchContextService)
             )
         }
         composable<Route.Home> {
