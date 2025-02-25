@@ -52,12 +52,13 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
             matchContextService.setContext(MatchContext.PLAYERVIEW)
             QuestionArea(
                 modifier = modifier,
-                navigateToHome = {
-                    navController.navigate(Route.Home)
-                },
+//                navigateToHome = {
+//                    navController.navigate(Route.Home)
+//                },
                 authViewModel = authViewModel,
+                matchRoomService = MatchRoomService(matchContextService),
                 timeService = TimeService,
-                matchRoomService = MatchRoomService(matchContextService)
+                matchContextService = matchContextService
             )
         }
         composable<Route.Home> {
