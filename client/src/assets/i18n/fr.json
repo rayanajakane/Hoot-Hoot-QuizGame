@@ -38,5 +38,11 @@
         "language": "Langue",
         "upload-avatar": "Téléverser un avatar",
         "avatar-choices": "Avatars prédéfinis"
+    },
+    "chat": {
+        "chat": "Clavardage",
+        "channel": "Canal",
+        "general-channel": "Général",
+        "match-room-channel": "Partie de jeu"
     }
 }

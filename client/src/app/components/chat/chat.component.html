@@ -1,63 +1,67 @@
-<div id="main-chat-container">
-    <div class="header-row">
-        <h2 id="header-title">Clavardage</h2>
-        <div>
-            <mat-form-field>
-                <!-- TRANSLOCO -->
-                <mat-label>Channel</mat-label>
-                <mat-select [(value)]="channel">
-                    <mat-option value="general">General</mat-option>
-                    <mat-option value="room" [disabled]="this.matchContextService.getContext() == 0">Room</mat-option>
-                </mat-select>
-            </mat-form-field>
+<ng-container *transloco="let t">
+    <div id="main-chat-container">
+        <div class="header-row">
+            <h2 id="header-title">{{ t('chat.chat') }}</h2>
+            <div>
+                <mat-form-field>
+                    <!-- TRANSLOCO -->
+                    <mat-label>{{ t('chat.channel') }}</mat-label>
+                    <mat-select [(value)]="channel">
+                        <mat-option value="general">{{ t('chat.general-channel') }}</mat-option>
+                        <mat-option value="room" [disabled]="this.matchContextService.getContext() == 0">{{
+                            t('chat.match-room-channel')
+                        }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
         </div>
-    </div>
 
-    <div id="messages-container" #messagesContainer>
-        <div
-            *ngFor="let message of this.messages"
-            class="message-container"
-            [ngClass]="message.author === this.authenticationService.userDisplayName ? 'right-message' : 'left-message'"
-        >
-            <div class="two-columns-container">
-                <div *ngIf="message.author !== this.authenticationService.userDisplayName" class="avatar-container">
-                    <div class="avatar"><!--TODO: AVATAR--></div>
-                </div>
-                <div class="message-text-info-container">
-                    <div class="message-info-container">
-                        <p class="message-author">{{ message.author }}</p>
-                        <p>{{ message.date | date: 'HH:mm:ss' }}</p>
+        <div id="messages-container" #messagesContainer>
+            <div
+                *ngFor="let message of this.messages"
+                class="message-container"
+                [ngClass]="message.author === this.authenticationService.userDisplayName ? 'right-message' : 'left-message'"
+            >
+                <div class="two-columns-container">
+                    <div *ngIf="message.author !== this.authenticationService.userDisplayName" class="avatar-container">
+                        <div class="avatar"><!--TODO: AVATAR--></div>
                     </div>
-                    <div
-                        class="message-text-container"
-                        [ngClass]="[
-                            message.author === this.authenticationService.userDisplayName ? 'own-message' : 'received-message',
-                            message.author === 'Organisateur' ? 'host-message' : '',
-                            message.author === '' ? 'player-quit-message' : ''
-                        ]"
-                    >
-                        <p>{{ message.text }}</p>
+                    <div class="message-text-info-container">
+                        <div class="message-info-container">
+                            <p class="message-author">{{ message.author }}</p>
+                            <p>{{ message.date | date: 'HH:mm:ss' }}</p>
+                        </div>
+                        <div
+                            class="message-text-container"
+                            [ngClass]="[
+                                message.author === this.authenticationService.userDisplayName ? 'own-message' : 'received-message',
+                                message.author === 'Organisateur' ? 'host-message' : '',
+                                message.author === '' ? 'player-quit-message' : ''
+                            ]"
+                        >
+                            <p>{{ message.text }}</p>
+                        </div>
                     </div>
-                </div>
-                <div *ngIf="message.author === this.authenticationService.userDisplayName" class="avatar-container">
-                    <div class="avatar"><!--TODO: AVATAR--></div>
+                    <div *ngIf="message.author === this.authenticationService.userDisplayName" class="avatar-container">
+                        <div class="avatar"><!--TODO: AVATAR--></div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <form id="chat-form" *transloco="let t">
-        <mat-form-field id="chat-input-container">
-            <mat-label>{{ t('page.message-label') }}</mat-label>
-            <input
-                id="chat-input"
-                matInput
-                #message
-                maxlength="200"
-                [placeholder]="'...'"
-                (keydown.enter)="sendMessage(message.value); message.value = ''"
-            />
-            <mat-icon id="chat-send-icon" (click)="sendMessage(message.value); message.value = ''">send</mat-icon>
-        </mat-form-field>
-    </form>
-</div>
+        <form id="chat-form" *transloco="let t">
+            <mat-form-field id="chat-input-container">
+                <mat-label>{{ t('page.message-label') }}</mat-label>
+                <input
+                    id="chat-input"
+                    matInput
+                    #message
+                    maxlength="200"
+                    [placeholder]="'...'"
+                    (keydown.enter)="sendMessage(message.value); message.value = ''"
+                />
+                <mat-icon id="chat-send-icon" (click)="sendMessage(message.value); message.value = ''">send</mat-icon>
+            </mat-form-field>
+        </form>
+    </div>
+</ng-container>
