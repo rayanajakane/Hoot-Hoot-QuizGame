@@ -57,7 +57,7 @@ export class AuthenticationService {
             if (databaseSnapshot.exists()) {
                 return Promise.reject(new AuthError('UsernameAlreadyExists', 'UsernameAlreadyExistsError'));
             } else {
-                set(usernameRef, this.userDisplayName);
+                set(usernameRef, username);
                 return Promise.resolve(false);
             }
         });

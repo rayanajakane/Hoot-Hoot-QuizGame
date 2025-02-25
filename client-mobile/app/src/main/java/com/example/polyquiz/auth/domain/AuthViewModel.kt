@@ -145,14 +145,14 @@ class AuthViewModel : ViewModel() {
             return
         }
          // TODO: Replace spaces? (or simply forbid them?)
-         val usernameRef = getUsernameDatabaseRef(username)
+         val usernameRef = getUsernameDatabaseRef(username.lowercase())
          usernameRef.get().addOnSuccessListener { databaseSnapshot: DataSnapshot ->
              if(databaseSnapshot.exists()) {
                  // TODO : Make new error text
-                 _authState.value = AuthState.Error("Username is already taken")
-                 Log.e(TAG, "caca.")
+                 _authState.value = AuthState.Error("Ce nom d'utilisateur est déjà pris.")
+                 Log.e(TAG, "Nom d'utilisateur déjà pris.")
              } else {
-                 usernameRef.setValue(username)
+                 usernameRef.setValue(username.lowercase())
                  _authState.value = AuthState.Loading
                  auth.createUserWithEmailAndPassword(email, password)
                      .addOnCompleteListener { task ->
