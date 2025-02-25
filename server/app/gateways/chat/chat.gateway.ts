@@ -21,8 +21,10 @@ export class ChatGateway {
 
     @SubscribeMessage(ChatEvents.RoomMessage)
     handleRoomMessage(@ConnectedSocket() socket: Socket, @MessageBody() data: MessageInfo) {
-        this.chatService.addRoomMessage(data.message, data.roomCode);
-        this.sendRoomMessage(data);
+        if (this.chatService.isValidMessage(data.message)) {
+            this.chatService.addRoomMessage(data.message, data.roomCode);
+            this.sendRoomMessage(data);
+        }
     }
 
     sendRoomMessage(data: MessageInfo) {
