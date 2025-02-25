@@ -1,13 +1,13 @@
 <div id="main-chat-container">
     <div class="header-row">
-        <h2 id="header-title">Clavardage</h2>
+        <h2 id="header-title">{{ this.authenticationService.userDisplayName }}</h2>
         <div>
             <mat-form-field>
                 <!-- TRANSLOCO -->
-                <mat-label>Channel</mat-label>
+                <mat-label>Option</mat-label>
                 <mat-select [(value)]="channel">
                     <mat-option value="general">General</mat-option>
-                    <mat-option value="room" [disabled]="this.matchContextService.getContext() == 0">Room</mat-option>
+                    <mat-option value="room" [disabled]="this.matchContextService.getContext() == 0">Match</mat-option>
                 </mat-select>
             </mat-form-field>
         </div>
