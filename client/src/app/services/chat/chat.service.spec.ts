@@ -40,12 +40,12 @@ describe('ChatService', () => {
         const sentData = { message: mockMessage };
         service.handleReceivedMessages();
         socketHandlerSpy.on.calls.mostRecent().args[1](sentData);
-        expect(service.messages.length).toEqual(1);
+        expect(service.generalMessages.length).toEqual(1);
     });
 
     it('should clear messages', () => {
-        service.messages = [mockMessage];
+        service.generalMessages = [mockMessage];
         service.clearMessages();
-        expect(service.messages.length).toEqual(0);
+        expect(service.generalMessages.length).toEqual(0);
     });
 });
