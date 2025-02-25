@@ -103,24 +103,6 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    private fun checkUsername(username: String) : LiveData<Boolean> {
-        val usernameRef = getUsernameDatabaseRef(username)
-        val isUsernameTaken = MutableLiveData<Boolean>()
-
-        viewModelScope.launch {
-            val databaseSnapshot : DataSnapshot = usernameRef.get().await()
-                if(databaseSnapshot.exists()) {
-                    // TODO : Make new error text
-                    _authState.value = AuthState.Error("CACA")
-                    isUsernameTaken.postValue(true)
-                } else {
-                    usernameRef.setValue(username)
-                    isUsernameTaken.postValue(false)
-                }
-        }
-        return isUsernameTaken
-    }
-
     fun signIn(email: String, password: String) {
         if (email.isEmpty() || password.isEmpty()) {
             _authState.value = AuthState.Error(AuthErrorText.EMPTY_USERNAME_PASSWORD.value)
@@ -163,36 +145,40 @@ class AuthViewModel : ViewModel() {
             return
         }
          // TODO: Replace spaces? (or simply forbid them?)
-         var isUsernameTaken = checkUsername(username)
-         if(isUsernameTaken.value == true) {
-             _authState.value = AuthState.Error("Username is already taken")
-             Log.e(TAG, "caca.")
-             return
+         val usernameRef = getUsernameDatabaseRef(username)
+         usernameRef.get().addOnSuccessListener { databaseSnapshot: DataSnapshot ->
+             if(databaseSnapshot.exists()) {
+                 // TODO : Make new error text
+                 _authState.value = AuthState.Error("Username is already taken")
+                 Log.e(TAG, "caca.")
+             } else {
+                 usernameRef.setValue(username)
+                 _authState.value = AuthState.Loading
+                 auth.createUserWithEmailAndPassword(email, password)
+                     .addOnCompleteListener { task ->
+                         if (task.isSuccessful) {
+                             user = task.result.user
+                             val displayNameUpdate = UserProfileChangeRequest.Builder()
+                                 .setDisplayName(username)
+                                 .build()
+                             user?.updateProfile(displayNameUpdate)?.addOnCompleteListener { updateTask ->
+                                 if (updateTask.isSuccessful) {
+                                     val userRef = task.result.user?.let { this.getUserDatabaseRef(it.uid) }
+                                     userRef?.child("isOnline")?.setValue(true)
+                                     userRef?.child("isOnline")?.onDisconnect()?.setValue(false)
+                                     _authState.value = AuthState.Authenticated
+                                     SocketHandler.connect()
+                                 }
+                                 Log.d(TAG, "createUserWithEmail:success")
+                             }
+                         } else {
+                             handleAuthError(task)
+                         }
+                     }
+             }
          }
+     }
 
-        _authState.value = AuthState.Loading
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    user = task.result.user
-                    val displayNameUpdate = UserProfileChangeRequest.Builder()
-                        .setDisplayName(username)
-                        .build()
-                    user?.updateProfile(displayNameUpdate)?.addOnCompleteListener { updateTask ->
-                        if (updateTask.isSuccessful) {
-                            val userRef = task.result.user?.let { this.getUserDatabaseRef(it.uid) }
-                            userRef?.child("isOnline")?.setValue(true)
-                            userRef?.child("isOnline")?.onDisconnect()?.setValue(false)
-                            _authState.value = AuthState.Authenticated
-                            SocketHandler.connect()
-                        }
-                        Log.d(TAG, "createUserWithEmail:success")
-                    }
-                } else {
-                    handleAuthError(task)
-                }
-            }
-    }
 
     fun signOut() {
         if (user != null) {
