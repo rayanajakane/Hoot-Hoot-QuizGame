@@ -38,11 +38,5 @@
         "language": "Language",
         "upload-avatar": "Upload Avatar",
         "avatar-choices": "Avatar prédéfinis"
-    },
-    "chat": {
-        "chat": "Chat",
-        "channel": "Channel",
-        "general-channel": "General",
-        "match-room-channel": "Match"
     }
 }
