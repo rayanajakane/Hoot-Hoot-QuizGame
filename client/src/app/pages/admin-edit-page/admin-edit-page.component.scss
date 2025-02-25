@@ -112,7 +112,7 @@
 }
 
 .duration-card {
-    width: 75%;
+    width: 40vw;
     font-size: 1.2rem;
 }
 
@@ -143,7 +143,7 @@ mat-sidenav {
 
 .item-container {
     margin-left: 0.5rem;
-    width: 70vw;
+    width: 60vw;
 }
 
 .sidenav-close {
@@ -164,6 +164,11 @@ mat-sidenav {
     display: flex;
     flex-direction: column;
     margin-top: 10rem;
+    width: 60vw;
+}
+
+.game-question {
+    width: 50vw;
 }
 
 .bank-scroll {
