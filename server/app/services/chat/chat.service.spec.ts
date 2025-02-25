@@ -1,7 +1,7 @@
 import { MOCK_MATCH_ROOM, MOCK_MESSAGE, MOCK_ROOM_CODE } from '@app/constants/match-mocks';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
+import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { Test, TestingModule } from '@nestjs/testing';
-import { MatchRoomService } from '../match-room/match-room.service';
 import { ChatService } from './chat.service';
 
 const validMessage = {

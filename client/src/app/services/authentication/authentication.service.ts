@@ -6,13 +6,13 @@ import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEma
 import { Router } from '@angular/router';
 import { AuthError } from '@app/services/authentication/auth-error';
 import { ChatService } from '@app/services/chat/chat.service';
+import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { ChatEvents } from '@common/events/chat.events';
 import { TranslocoService } from '@jsverse/transloco';
 import { browserSessionPersistence, setPersistence, User, UserCredential } from 'firebase/auth';
 import { DataSnapshot, get, getDatabase, onDisconnect, ref, set, update } from 'firebase/database';
-import { MatchRoomService } from '../match-room/match-room.service';
 
 @Injectable({
     providedIn: 'root',

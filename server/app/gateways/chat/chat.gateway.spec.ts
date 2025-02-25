@@ -77,6 +77,16 @@ describe('MatchGateway', () => {
         expect(validateMessageSpy).toHaveBeenCalled();
     });
 
+    it('handleRoomMessage() should add the received message to the list of messages, and emit a newMessage event', () => {
+        const sendSpy = jest.spyOn(gateway, 'sendRoomMessage').mockReturnThis();
+        const addMessageSpy = jest.spyOn(chatSpy, 'addRoomMessage').mockReturnThis();
+        const validateMessageSpy = jest.spyOn(chatSpy, 'isValidMessage').mockReturnThis();
+        gateway.handleRoomMessage(socket, { message: mockMessage, roomCode: '1234' });
+        expect(sendSpy).toHaveBeenCalled();
+        expect(addMessageSpy).toHaveBeenCalled();
+        expect(validateMessageSpy).toHaveBeenCalled();
+    });
+
     it('sendGeneralMessage() should emit a NewMessage event and send the messages to the players in the right room', () => {
         const emitSpy = jest.spyOn(server, 'emit').mockReturnThis();
         gateway.sendGeneralMessage(mockMessage);

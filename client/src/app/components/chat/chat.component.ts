@@ -16,18 +16,8 @@ import { MatchRoomService } from '@app/services/match-room/match-room.service';
 export class ChatComponent implements AfterViewChecked {
     @ViewChild('messagesContainer', { static: true }) messagesContainer: ElementRef;
 
-    get channel() {
-        return this.chatService.channel;
-    }
-
-    set channel(selectedChannel: string) {
-        this.chatService.channel = selectedChannel;
-    }
-
-    get messages() {
-        return this.chatService.channel === ChatChannel.GENERAL ? this.chatService.generalMessages : this.chatService.matchRoomMessages;
-    }
-
+    // Allow more constructor parameters to decouple services
+    // eslint-disable-next-line max-params
     constructor(
         readonly authenticationService: AuthenticationService,
         readonly chatService: ChatService,
@@ -35,6 +25,18 @@ export class ChatComponent implements AfterViewChecked {
         public matchContextService: MatchContextService,
         private cdr: ChangeDetectorRef,
     ) {}
+
+    get messages() {
+        return this.chatService.channel === ChatChannel.GENERAL ? this.chatService.generalMessages : this.chatService.matchRoomMessages;
+    }
+
+    get channel() {
+        return this.chatService.channel;
+    }
+
+    set channel(selectedChannel: string) {
+        this.chatService.channel = selectedChannel;
+    }
 
     ngAfterViewChecked() {
         this.scrollToBottom();

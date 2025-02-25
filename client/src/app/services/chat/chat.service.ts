@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { ChatChannel } from '@app/constants/chat-channels';
 import { MatchContext } from '@app/constants/states';
+import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { ChatEvents } from '@common/events/chat.events';
 import { Message } from '@common/interfaces/message';
 import { MessageInfo } from '@common/interfaces/message-info';
-import { MatchContextService } from '../match-context/match-context.service';
 
 @Injectable({
     providedIn: 'root',
@@ -21,9 +21,9 @@ export class ChatService {
     ) {}
 
     sendMessage(message: Message, roomCode: string): void {
-        if (this.channel == ChatChannel.GENERAL) {
+        if (this.channel === ChatChannel.GENERAL) {
             this.sendGeneralMessage(message);
-        } else if (this.channel == ChatChannel.ROOM && this.matchContextService.getContext() != MatchContext.Null) {
+        } else if (this.channel === ChatChannel.ROOM && this.matchContextService.getContext() !== MatchContext.Null) {
             this.sendRoomMessage(roomCode, message);
         }
     }

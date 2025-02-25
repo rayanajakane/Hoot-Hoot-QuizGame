@@ -6,7 +6,7 @@
                 <mat-label>Option</mat-label>
                 <mat-select [(value)]="channel">
                     <mat-option value="general">General</mat-option>
-                    <mat-option value="room" [disabled]="this.matchContextService.getContext() == 0">Match</mat-option>
+                    <mat-option value="room" [disabled]="this.matchContextService.getContext() === 0">Match</mat-option>
                 </mat-select>
             </mat-form-field>
         </div>

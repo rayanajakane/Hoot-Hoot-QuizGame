@@ -5,6 +5,7 @@ import { MatchStatus } from '@app/constants/feedback-messages';
 import { MatchContext } from '@app/constants/states';
 import { Player } from '@app/interfaces/player';
 import { Question } from '@app/interfaces/question';
+import { ChatService } from '@app/services/chat/chat.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
@@ -12,7 +13,6 @@ import { HOST_USERNAME } from '@common/constants/match-constants';
 import { ChatEvents } from '@common/events/chat.events';
 import { MatchEvents } from '@common/events/match.events';
 import { UserInfo } from '@common/interfaces/user-info';
-import { ChatService } from '../chat/chat.service';
 
 @Injectable({
     providedIn: 'root',

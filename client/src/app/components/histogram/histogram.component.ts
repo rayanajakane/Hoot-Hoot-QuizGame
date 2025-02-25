@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import * as ChartParameters from '@app/constants/chart-parameters';
+import * as chartParameters from '@app/constants/chart-parameters';
 import { HistogramService } from '@app/services/histogram/histogram.service';
 import { ChoiceTally } from '@common/interfaces/choice-tally';
 import { Histogram, MultipleChoiceHistogram } from '@common/interfaces/histogram';
@@ -86,15 +86,15 @@ export class HistogramComponent implements OnInit, OnChanges, OnDestroy {
     private setupChart(data: any): void {
         this.chartOptions = {
             title: { text: this.currentQuestion },
-            axes: ChartParameters.HISTOGRAM_AXES,
+            axes: chartParameters.HISTOGRAM_AXES,
             data,
             series: [
                 {
-                    type: ChartParameters.TYPE_BAR,
-                    xKey: ChartParameters.XKEY_LABEL,
-                    xName: ChartParameters.XNAME_CHOICE,
-                    yKey: ChartParameters.YKEY_PICKS,
-                    yName: ChartParameters.YNAME_CHOICE,
+                    type: chartParameters.TYPE_BAR,
+                    xKey: chartParameters.XKEY_LABEL,
+                    xName: chartParameters.XNAME_CHOICE,
+                    yKey: chartParameters.YKEY_PICKS,
+                    yName: chartParameters.YNAME_CHOICE,
                     tooltip: {
                         enabled: true,
                         renderer: this.renderChart.bind(this),
