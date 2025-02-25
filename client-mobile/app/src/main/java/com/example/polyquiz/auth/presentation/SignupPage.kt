@@ -181,6 +181,7 @@ fun SignupPage(
                     onClick =
                     {
                         navigateToLogin()
+                        authViewModel.resetSignUpFields()
                         authViewModel.resetAuthState()
                     },
                     colors = ButtonDefaults.buttonColors(

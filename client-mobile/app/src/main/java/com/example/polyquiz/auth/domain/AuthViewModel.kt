@@ -6,11 +6,9 @@ import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.polyquiz.constants.AuthErrorText
 import com.example.vanillaprototype.socket.SocketHandler
 import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.Firebase
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -21,16 +19,9 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 
 class AuthViewModel : ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -89,6 +80,15 @@ class AuthViewModel : ViewModel() {
     fun updatePassword(newPassword: String) {
         _password.value = newPassword
         validatePassword(newPassword)
+    }
+
+    fun resetSignUpFields() {
+        _email.value = ""
+        _username.value = ""
+        _password.value = ""
+        _emailError.value = ""
+        _usernameError.value = ""
+        _passwordError.value = ""
     }
 
     fun getUsername(): String {
@@ -186,6 +186,7 @@ class AuthViewModel : ViewModel() {
             userRef.child("isOnline").setValue(false)
         }
         auth.signOut()
+        resetSignUpFields()
         resetAuthState()
         SocketHandler.disconnect()
     }
