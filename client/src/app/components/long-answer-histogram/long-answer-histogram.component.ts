@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import * as ChartParameters from '@app/constants/chart-parameters';
+import * as chartParameters from '@app/constants/chart-parameters';
 import { HistogramService } from '@app/services/histogram/histogram.service';
 import { GradeTally } from '@common/interfaces/choice-tally';
 import { GradesHistogram, Histogram, PlayerCountHistogram } from '@common/interfaces/histogram';
@@ -119,24 +119,24 @@ export class LongAnswerHistogramComponent implements OnInit, OnChanges, OnDestro
     private setupChart(data: any): void {
         this.chartOptions = {
             title: { text: this.currentQuestion },
-            axes: ChartParameters.LONG_ANSWER_HISTOGRAM_AXES,
+            axes: chartParameters.LONG_ANSWER_HISTOGRAM_AXES,
             data,
-            series: ChartParameters.LONG_ANSWER_HISTOGRAM_SERIES,
+            series: chartParameters.LONG_ANSWER_HISTOGRAM_SERIES,
         };
     }
 
     private setupResultsPageChart(data: any): void {
         this.chartOptions = {
             title: { text: this.currentQuestion },
-            axes: ChartParameters.LONG_ANSWER_HISTOGRAM_RESULTS_PAGE_AXES,
+            axes: chartParameters.LONG_ANSWER_HISTOGRAM_RESULTS_PAGE_AXES,
             data,
             series: [
                 {
-                    type: ChartParameters.TYPE_BAR,
-                    xKey: ChartParameters.XKEY_GRADE,
-                    xName: ChartParameters.XNAME_GRADE,
-                    yKey: ChartParameters.YKEY_COUNT,
-                    yName: ChartParameters.YNAME_PLAYERS,
+                    type: chartParameters.TYPE_BAR,
+                    xKey: chartParameters.XKEY_GRADE,
+                    xName: chartParameters.XNAME_GRADE,
+                    yKey: chartParameters.YKEY_COUNT,
+                    yName: chartParameters.YNAME_PLAYERS,
                     tooltip: {
                         enabled: true,
                         renderer: this.renderChart.bind(this),

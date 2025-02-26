@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { ChatChannel } from '@app/constants/chat-channels';
 import { MatchStatus } from '@app/constants/feedback-messages';
 import { MatchContext } from '@app/constants/states';
-import { Message } from '@app/interfaces/message';
 import { Player } from '@app/interfaces/player';
 import { Question } from '@app/interfaces/question';
+import { ChatService } from '@app/services/chat/chat.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
@@ -18,7 +19,6 @@ import { UserInfo } from '@common/interfaces/user-info';
 })
 export class MatchRoomService {
     players: Player[];
-    messages: Message[];
     isMatchStarted: boolean;
     isResults: boolean;
     isWaitOver: boolean;
@@ -42,6 +42,7 @@ export class MatchRoomService {
         private readonly router: Router,
         private readonly notificationService: NotificationService,
         private readonly matchContextService: MatchContextService,
+        private chatService: ChatService,
     ) {
         this.hasEnteredRoom = false;
     }
@@ -61,6 +62,7 @@ export class MatchRoomService {
     connect() {
         if (!this.hasEnteredRoom) {
             this.hasEnteredRoom = true;
+            this.chatService.channel = ChatChannel.ROOM;
             this.resetMatchValues();
             this.onRedirectAfterDisconnection();
             this.onFetchPlayersData();
@@ -78,6 +80,8 @@ export class MatchRoomService {
 
     disconnectFromRoom() {
         this.router.navigateByUrl('/home');
+        this.chatService.channel = ChatChannel.GENERAL;
+        this.chatService.clearMatchRoomMessages();
         this.hasEnteredRoom = false;
         this.socketService.socket.removeListener(MatchEvents.FetchPlayersData);
         this.socketService.socket.removeListener(MatchEvents.MatchStarting);
@@ -214,11 +218,11 @@ export class MatchRoomService {
         this.matchRoomCode = '';
         this.username = '';
         this.players = [];
-        this.messages = [];
         this.isResults = false;
         this.isWaitOver = false;
         this.isPlaying = false;
         this.isCooldown = false;
+        this.chatService.clearMatchRoomMessages();
     }
 
     routeToResultsPage() {

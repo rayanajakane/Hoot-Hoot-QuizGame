@@ -40,12 +40,12 @@ object ChatService {
                 Instant.now()))
             val newMessageStringified = Gson().toJson(newMessage)
             val newMessageJsonObject = JSONObject(newMessageStringified)
-            mSocket.emit(ChatEvents.PROTOTYPE_MESSAGE.value, newMessageJsonObject);
+            mSocket.emit(ChatEvents.GENERAL_MESSAGE.value, newMessageJsonObject);
         }
     }
 
     fun handleReceivedMessage() {
-        mSocket.on(ChatEvents.SENT_PROTOTYPE_MESSAGE.value) { args ->
+        mSocket.on(ChatEvents.SENT_GENERAL_MESSAGE.value) { args ->
             if (args[0] != null) {
                 val newMessage = Gson().fromJson(args[0].toString(), Message::class.java) as Message
                 addMessage(newMessage)

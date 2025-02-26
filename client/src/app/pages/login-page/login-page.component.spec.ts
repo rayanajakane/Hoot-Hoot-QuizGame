@@ -26,10 +26,10 @@ describe('LoginPageComponent', () => {
     });
 
     it('should signIn', () => {
-        component.username = 'mockUsername';
+        component.email = 'mockUsername';
         component.password = 'mockPassword';
         const signInSpy = authenticationServiceSpy.signIn.and.returnValue();
         component.signIn();
-        expect(signInSpy).toHaveBeenCalledWith(component.username, component.password);
+        expect(signInSpy).toHaveBeenCalledWith(component.email, component.password);
     });
 });

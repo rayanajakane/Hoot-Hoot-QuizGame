@@ -1,17 +1,30 @@
 {
     "auth": {
         "error": {
+            "email-already-in-use": "Ce courriel est déjà utilisé",
             "session-already-exists": "Cet utilisateur est déjà connecté.",
             "empty-username-password": "Le nom d'utilisateur et/ou le mot de passe sont vides.",
             "user-already-exists": "Cet utilisateur existe déjà.",
+            "user-already-connected": "L'utilisateur est déjà connecté.",
             "password-too-short": "Le mot de passe est trop court (minimum: 6 caractères).",
             "invalid-username-password": "Le nom d'utilisateur et/ou le mot de passe sont invalides.",
-            "other-error": "Une erreur inconnue est survenue."
+            "username-already-exists": "Ce nom d'utilisateur est déjà pris",
+            "other-error": "Une erreur inconnue est survenue.",
+            "invalid-email": "Adresse courriel invalide.",
+            "username-too-short": "Nom d'utilisateur trop court. Min {{length}} caractères.",
+            "username-too-long": "Nom d'utilisateur trop long. Max {{length}} caractères.",
+            "username-special-char": "Ne doit pas contenir des charactères spéciaux.",
+            "password-lowercase": "Devrait contenir au moins 1 lettre minuscule.",
+            "password-uppercase": "Devrait contenir au moins 1 lettre majuscule.",
+            "password-digit": "Devrait contenir au moins 1 chiffre.",
+            "password-special": "Devrait contenir au moins 1 caractère spécial.",
+            "password-too-long": "Mot de passe trop long. Max {{length}} characters."
         },
         "dialog-feedback": {
             "sign-in": "Connexion réussie !",
             "sign-up": "Inscription réussie !",
-            "sign-out": "Déconnexion réussie !"
+            "sign-out": "Déconnexion réussie !",
+            "delete": "Suppression du profil réussie !"
         }
     },
     "page": {
@@ -24,6 +37,15 @@
         "return-to-login": "Retourner à la page de connexion",
         "logout-action": "Se déconnecter",
         "message-label": "Message",
-        "disabled-label": "Désactivé"
+        "disabled-label": "Désactivé",
+        "email": "Courriel",
+        "user-edit": "Modification du Profil",
+        "save": "Sauvegarder",
+        "theme": "Thème visuel",
+        "language": "Langue",
+        "upload-avatar": "Téléverser un avatar",
+        "avatar-choices": "Avatars prédéfinis",
+        "delete-user": "Supprimer le profil",
+        "danger-zone": "Zone dangereuse"
     }
 }

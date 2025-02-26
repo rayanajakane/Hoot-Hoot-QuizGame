@@ -40,7 +40,7 @@ fun LoginPage(
     navigateToChat: () -> Unit,
     authViewModel: AuthViewModel
 ) {
-    var username by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
@@ -99,10 +99,10 @@ fun LoginPage(
 
 
                 TextField(
-                    value = username,
-                    onValueChange = { username = it },
+                    value = email,
+                    onValueChange = { email = it },
                     singleLine = true,
-                    label = { Text(DisplayAuthenticationText.USERNAME.value) },
+                    label = { Text(DisplayAuthenticationText.EMAIL.value) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -115,7 +115,7 @@ fun LoginPage(
                     label = { Text(DisplayAuthenticationText.PASSWORD.value) },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardActions = KeyboardActions(onDone = {
-                        authViewModel.signIn(username, password)
+                        authViewModel.signIn(email, password)
                         keyboardController?.hide()
                     }),
                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -137,7 +137,7 @@ fun LoginPage(
                 Button(
                     onClick =
                     {
-                        authViewModel.signIn(username, password)
+                        authViewModel.signIn(email, password)
                         keyboardController?.hide()
                     },
                     enabled = authState.value != AuthState.Loading
