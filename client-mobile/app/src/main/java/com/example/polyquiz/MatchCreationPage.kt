@@ -44,11 +44,8 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
     fun fetchQuestions() {
         questionService.getAllQuestions(
             onSuccess = { questions ->
-                val gson = Gson()
-                val json = gson.toJson(questions)
-                val listType = object : TypeToken<List<Question>>() {}.type
-                val result: List<Question> = gson.fromJson(json, listType)
-                result.forEach { question ->
+                val result = questionService.convertToGenericType<List<Question>>(questions)
+                result?.forEach { question ->
                     println("Question: ${question.text}")
                 }
             },
