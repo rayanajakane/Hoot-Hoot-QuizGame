@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { MAX_LENGTH, MIN_LENGTH, PW_MIN_LENGTH } from '@app/constants/authentication';
+import { MAX_LENGTH, MIN_LENGTH, PW_MAX_LENGTH, PW_MIN_LENGTH } from '@app/constants/authentication';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 
 @Component({
@@ -13,6 +13,7 @@ export class SignupPageComponent implements OnInit {
     minUsernameLength = MIN_LENGTH;
     maxUsernameLength = MAX_LENGTH;
     passwordMinLength = PW_MIN_LENGTH;
+    passwordMaxLength = PW_MAX_LENGTH;
 
     form = this.fb.group({
         email: ['', { validators: [Validators.required, Validators.email], updateOn: 'blur' }],
@@ -20,7 +21,20 @@ export class SignupPageComponent implements OnInit {
             '',
             { validators: [Validators.required, Validators.minLength(MIN_LENGTH), Validators.maxLength(MAX_LENGTH), this.usernameValidator()] },
         ],
-        password: ['', { validators: [Validators.required, Validators.minLength(PW_MIN_LENGTH)] }],
+        password: [
+            '',
+            {
+                validators: [
+                    Validators.required,
+                    Validators.minLength(PW_MIN_LENGTH),
+                    Validators.maxLength(PW_MAX_LENGTH),
+                    this.passwordLowercaseValidator(),
+                    this.passwordUppercaseValidator(),
+                    this.passwordDigitValidator(),
+                    this.passwordSpecialValidator(),
+                ],
+            },
+        ],
     });
 
     constructor(
@@ -81,6 +95,50 @@ export class SignupPageComponent implements OnInit {
             }
 
             return null;
+        };
+    }
+
+    private passwordLowercaseValidator(): ValidatorFn {
+        return (passwordControl: AbstractControl): ValidationErrors | null => {
+            const password = passwordControl.value as string;
+            if (!password) {
+                return null;
+            }
+            const containsLowercase = /(?=.*[a-z])/.test(password);
+            return containsLowercase ? null : { noLowercase: true };
+        };
+    }
+
+    private passwordUppercaseValidator(): ValidatorFn {
+        return (passwordControl: AbstractControl): ValidationErrors | null => {
+            const password = passwordControl.value as string;
+            if (!password) {
+                return null;
+            }
+            const containsUppercase = /(?=.*[A-Z])/.test(password);
+            return containsUppercase ? null : { noUppercase: true };
+        };
+    }
+
+    private passwordDigitValidator(): ValidatorFn {
+        return (passwordControl: AbstractControl): ValidationErrors | null => {
+            const password = passwordControl.value as string;
+            if (!password) {
+                return null;
+            }
+            const containsDigit = /(?=.*\d)/.test(password);
+            return containsDigit ? null : { noDigit: true };
+        };
+    }
+
+    private passwordSpecialValidator(): ValidatorFn {
+        return (passwordControl: AbstractControl): ValidationErrors | null => {
+            const password = passwordControl.value as string;
+            if (!password) {
+                return null;
+            }
+            const containsSpecial = /(?=.*[-+_!@#$%^&*.,?])/.test(password);
+            return containsSpecial ? null : { noSpecial: true };
         };
     }
 }

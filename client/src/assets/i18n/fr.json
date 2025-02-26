@@ -12,7 +12,12 @@
             "invalid-email": "Adresse courriel invalide.",
             "username-too-short": "Nom d'utilisateur trop court. Min {{length}} caractères.",
             "username-too-long": "Nom d'utilisateur trop long. Max {{length}} caractères.",
-            "username-special-char": "Ne doit pas contenir des charactères spéciaux."
+            "username-special-char": "Ne doit pas contenir des charactères spéciaux.",
+            "password-lowercase": "Devrait contenir au moins 1 lettre minuscule.",
+            "password-uppercase": "Devrait contenir au moins 1 lettre majuscule.",
+            "password-digit": "Devrait contenir au moins 1 chiffre.",
+            "password-special": "Devrait contenir au moins 1 caractère spécial.",
+            "password-too-long": "Mot de passe trop long. Max {{length}} characters."
         },
         "dialog-feedback": {
             "sign-in": "Connexion réussie !",

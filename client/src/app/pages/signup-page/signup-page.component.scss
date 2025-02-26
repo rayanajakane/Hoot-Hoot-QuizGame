@@ -43,8 +43,8 @@ mat-form-field {
 
 #main-avatar {
     background-color: gray;
-    width: 4rem;
-    height: 4rem;
+    width: 10rem;
+    height: 10rem;
     border-radius: 100rem;
 }
 
@@ -74,4 +74,13 @@ mat-form-field {
 #signup-button {
     width: 10vw;
     padding: 1.5rem 3rem;
+}
+
+#buttons-container {
+    display: flex;
+    flex-direction: row;
+    margin-top: 1rem;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
 }

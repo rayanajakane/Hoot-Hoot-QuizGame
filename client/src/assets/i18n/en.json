@@ -12,7 +12,12 @@
             "invalid-email": "Invalid email.",
             "username-too-short": "Username too short. Min {{length}} characters.",
             "username-too-long": "Username too long. Max {{length}} characters.",
-            "username-special-char": "Should not contain special characters."
+            "username-special-char": "Should not contain special characters.",
+            "password-lowercase": "Password should contain at least 1 lowercase letter.",
+            "password-uppercase": "Password should contain at least 1 uppercase letter.",
+            "password-digit": "Password should contain at least 1 digit",
+            "password-special": "Password should contain at least 1 special character",
+            "password-too-long": "Password too long. Max {{length}} characters."
         },
         "dialog-feedback": {
             "sign-in": "Signed in successfully !",

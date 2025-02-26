@@ -47,6 +47,16 @@
                         <mat-form-field id="password">
                             <mat-label>{{ t('page.password') }}</mat-label>
                             <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" />
+                            <mat-error *ngIf="form.get('password')?.hasError('noLowercase')">{{ t('auth.error.password-lowercase') }} </mat-error>
+                            <mat-error *ngIf="form.get('password')?.hasError('noUppercase')">{{ t('auth.error.password-uppercase') }} </mat-error>
+                            <mat-error *ngIf="form.get('password')?.hasError('noDigit')">{{ t('auth.error.password-digit') }} </mat-error>
+                            <mat-error *ngIf="form.get('password')?.hasError('noSpecial')">{{ t('auth.error.password-special') }} </mat-error>
+                            <mat-error *ngIf="form.get('password')?.hasError('minlength')"
+                                >{{ t('auth.error.password-too-short', { length: passwordMinLength }) }}
+                            </mat-error>
+                            <mat-error *ngIf="form.get('password')?.hasError('maxlength')"
+                                >{{ t('auth.error.password-too-long', { length: passwordMaxLength }) }}
+                            </mat-error>
                             <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
                                 <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
                             </button>
@@ -54,8 +64,10 @@
                     </form>
                 </div>
             </div>
-            <button mat-raised-button color="primary" (click)="signUp()" id="signup-button">{{ t('page.signup-action') }}</button>
-            <button mat-raised-button routerLink="/login">{{ t('page.return-to-login') }}</button>
+            <div id="buttons-container">
+                <button mat-raised-button routerLink="/login">{{ t('page.return-to-login') }}</button>
+                <button mat-raised-button color="primary" (click)="signUp()" id="signup-button">{{ t('page.signup-action') }}</button>
+            </div>
         </mat-card>
     </div>
 </ng-container>
