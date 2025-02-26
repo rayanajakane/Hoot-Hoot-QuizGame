@@ -32,14 +32,12 @@ import com.example.polyquiz.match.domain.TimeService
 
 @Composable
 fun QuestionArea(
-    matchRoomService: MatchRoomService,
-    timeService: TimeService,
     matchContextService: MatchContextService,
     modifier: Modifier = Modifier,
     authViewModel: AuthViewModel,
     navigateToHome: () -> Unit
 ) {
-    val question = matchRoomService.currentQuestion
+    val question = MatchRoomService.currentQuestion
     val questionText = question?.text ?: "Question inconnue"
     val questionPoints = question?.points ?: 0
     var room by remember { mutableStateOf("") }
@@ -61,7 +59,7 @@ fun QuestionArea(
 
         TimerComponent(
             modifier = Modifier.fillMaxWidth(),
-            timeService = timeService,
+            timeService = TimeService,
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -138,7 +136,7 @@ fun QuestionArea(
         }
 
         Button(
-            onClick = { matchRoomService.joinRoom(room, username); timeService.handleTimer() },
+            onClick = { MatchRoomService.joinRoom(room, username); TimeService.handleTimer() },
             modifier = Modifier.fillMaxWidth(0.5f),
             shape = RoundedCornerShape(8.dp)
         ) {

@@ -56,8 +56,8 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                     navController.navigate(Route.Home)
                 },
                 authViewModel = authViewModel,
-                timeService = TimeService,
-                matchRoomService = MatchRoomService,
+                //timeService = TimeService,
+                //matchRoomService = MatchRoomService,
                 matchContextService = MatchContextService
             )
         }
