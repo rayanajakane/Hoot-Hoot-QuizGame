@@ -90,9 +90,9 @@ fun LoginPage(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .padding(
-                        start = 64.dp,
+                        start = 128.dp,
                         top = 32.dp,
-                        end = 64.dp,
+                        end = 128.dp,
                         bottom = 32.dp
                     )
                     .fillMaxWidth(0.5f)
