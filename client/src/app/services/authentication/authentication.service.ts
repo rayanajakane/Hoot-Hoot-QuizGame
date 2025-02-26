@@ -128,9 +128,14 @@ export class AuthenticationService {
 
         try {
             await this.checkUsername(formattedUsername.toLowerCase());
-            createUserWithEmailAndPassword(this.auth, `${formattedEmail}`, password).then((userCredential) => {
-                this.completeUserProfileCreation(userCredential, formattedUsername);
-            });
+            createUserWithEmailAndPassword(this.auth, `${formattedEmail}`, password)
+                .then((userCredential) => {
+                    this.completeUserProfileCreation(userCredential, formattedUsername);
+                })
+                .catch((error) => {
+                    const errorMessage = this.handleAuthErrorMessage(error);
+                    this.notificationService.displayErrorMessage(errorMessage);
+                });
         } catch (error: any) {
             const errorMessage = this.handleAuthErrorMessage(error);
             this.notificationService.displayErrorMessage(errorMessage);
