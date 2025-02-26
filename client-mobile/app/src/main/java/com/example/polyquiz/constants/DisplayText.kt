@@ -9,7 +9,9 @@ enum class DisplayAuthenticationText (val value: String) {
     LOGIN_ACTION("Se connecter"),
     SIGNUP_ACTION("S'inscrire"),
     RETURN_TO_LOGIN("Retourner à la page de connexion"),
-    LOGOUT("Se déconnecter")
+    LOGOUT("Se déconnecter"),
+    UPLOAD_AVATAR("Téléverser un avatar"),
+    PRESET_AVATARS("Avatars prédéfinis")
 }
 
 enum class DisplayChatText (val value: String) {
