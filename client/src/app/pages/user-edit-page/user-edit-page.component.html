@@ -5,7 +5,7 @@
             <button mat-raised-button routerLink="/home"><mat-icon>home</mat-icon>Page principale</button>
         </div>
         <div class="content-container">
-            <mat-card class="two-columns-container">
+            <mat-card class="two-columns-container card">
                 <div id="avatars-container">
                     <div id="main-avatar-container">
                         <div id="main-avatar"><!--TODO: AVATAR--></div>
@@ -56,6 +56,8 @@
                     <button mat-raised-button color="primary" (click)="save()" id="save-button">{{ t('page.save') }}</button>
                 </div>
             </mat-card>
+            <h2>{{ t('page.danger-zone') }}</h2>
+            <button mat-raised-button color="accent" (click)="deleteUser()" id="delete-button">{{ t('page.delete-user') }}</button>
         </div>
     </div>
 </ng-container>

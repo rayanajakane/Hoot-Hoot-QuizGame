@@ -17,7 +17,8 @@
         "dialog-feedback": {
             "sign-in": "Signed in successfully !",
             "sign-up": "Signed up successfully !",
-            "sign-out": "Signed out successfully !"
+            "sign-out": "Signed out successfully !",
+            "delete": "Deleted profile sucessfully !"
         }
     },
     "page": {
@@ -37,6 +38,8 @@
         "theme": "Visual Theme",
         "language": "Language",
         "upload-avatar": "Upload Avatar",
-        "avatar-choices": "Avatar prédéfinis"
+        "avatar-choices": "Avatar prédéfinis",
+        "delete-user": "Delete Profile",
+        "danger-zone": "Danger Zone"
     }
 }

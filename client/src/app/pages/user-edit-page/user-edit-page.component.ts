@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
 
 @Component({
     selector: 'app-user-edit-page',
@@ -11,6 +12,8 @@ export class UserEditPageComponent {
     username = 'TODO';
     password = 'TODO';
 
+    constructor(public authenticationService: AuthenticationService) {}
+
     // ngOnInit(): void {
     // TODO: Set email, username, and password based on userService
     // }
@@ -21,5 +24,9 @@ export class UserEditPageComponent {
 
     uploadAvatar() {
         // TODO
+    }
+
+    deleteUser() {
+        this.authenticationService.deleteUser();
     }
 }

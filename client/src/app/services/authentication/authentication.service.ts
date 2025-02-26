@@ -12,7 +12,7 @@ import { SocketHandlerService } from '@app/services/socket-handler/socket-handle
 import { ChatEvents } from '@common/events/chat.events';
 import { TranslocoService } from '@jsverse/transloco';
 import { browserSessionPersistence, setPersistence, User, UserCredential } from 'firebase/auth';
-import { DataSnapshot, get, getDatabase, onDisconnect, ref, set, update } from 'firebase/database';
+import { DataSnapshot, get, getDatabase, onDisconnect, ref, remove, set, update } from 'firebase/database';
 
 @Injectable({
     providedIn: 'root',
@@ -189,6 +189,25 @@ export class AuthenticationService {
             .catch((error) => {
                 this.notificationService.displayErrorMessage(error.message);
             });
+    }
+
+    public deleteUser() {
+        const user = this.auth.currentUser;
+        if (!user) {
+            return;
+        }
+        // Delete user from Realtime database (TODO: Delete profile picture too?)
+        const userRef = this.getUserDatabaseRef(user.uid);
+        remove(userRef);
+        if (user.displayName) {
+            const usernameRef = this.getUsernameDatabaseRef(user.displayName.toLowerCase());
+            remove(usernameRef);
+        }
+        this.disconnectSocket();
+        user.delete();
+        this.setUser(null);
+        this.router.navigateByUrl('/login');
+        this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.delete'));
     }
 
     private handleAuthErrorMessage(error: FirebaseError): string {

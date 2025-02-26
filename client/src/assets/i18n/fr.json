@@ -17,7 +17,8 @@
         "dialog-feedback": {
             "sign-in": "Connexion réussie !",
             "sign-up": "Inscription réussie !",
-            "sign-out": "Déconnexion réussie !"
+            "sign-out": "Déconnexion réussie !",
+            "delete": "Suppression du profil réussie !"
         }
     },
     "page": {
@@ -37,6 +38,8 @@
         "theme": "Thème visuel",
         "language": "Langue",
         "upload-avatar": "Téléverser un avatar",
-        "avatar-choices": "Avatars prédéfinis"
+        "avatar-choices": "Avatars prédéfinis",
+        "delete-user": "Supprimer le profil",
+        "danger-zone": "Zone dangereuse"
     }
 }
