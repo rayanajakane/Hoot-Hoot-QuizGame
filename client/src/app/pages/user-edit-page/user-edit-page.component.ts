@@ -104,7 +104,7 @@ export class UserEditPageComponent {
         const uid = this.currentUser ? this.currentUser.uid : null;
         this.translocoService.setActiveLang(language);
         this.currentLang = language;
-        const langRef = this.authenticationService.getUserDatabaseRef(uid + '/lang');
+        const langRef = this.authenticationService.getUserDatabaseRef(uid + '/configs');
         update(langRef, { lang: language });
     }
 
