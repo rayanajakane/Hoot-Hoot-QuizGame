@@ -2,6 +2,7 @@ package com.example.polyquiz.match.domain
 
 import com.example.polyquiz.constants.AnswerCorrectness
 import com.example.polyquiz.constants.AnswerEvents
+import com.example.polyquiz.constants.ChoiceInfo
 import com.example.polyquiz.constants.Feedback
 import com.example.polyquiz.constants.GradesInfo
 import com.example.polyquiz.constants.LongAnswerInfo
@@ -112,6 +113,22 @@ object AnswerService {
 
     fun handleGrading() {
         isGradingComplete = playersAnswers.all { it.score != null }
+    }
+    fun selectChoice(choice: String, userInfo: UserInfo) {
+        val choiceInfo = ChoiceInfo(choice, userInfo)
+        mSocket.emit(AnswerEvents.SELECT_CHOICE.value, Gson().toJson(choiceInfo))
+    }
+
+    fun deselectChoice(choice: String, userInfo: UserInfo) {
+        val choiceInfo = ChoiceInfo(choice, userInfo)
+        mSocket.emit(AnswerEvents.DESELECT_CHOICE.value, Gson().toJson(choiceInfo))
+    }
+
+    fun updateLongAnswer() {
+        if (!isSelectionEnabled) return
+        val userInfo = UserInfo(username = MatchRoomService.getUsername(), roomCode = MatchRoomService.getRoomCode())
+        val choiceInfo = ChoiceInfo(currentLongAnswer, userInfo)
+        mSocket.emit(AnswerEvents.UPDATE_LONG_ANSWER.value, Gson().toJson(choiceInfo))
     }
 
     private fun processFeedback(feedback: Feedback) {
