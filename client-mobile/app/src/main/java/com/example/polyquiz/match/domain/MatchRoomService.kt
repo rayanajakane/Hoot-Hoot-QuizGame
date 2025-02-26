@@ -1,22 +1,17 @@
 package com.example.polyquiz.match.domain
-import com.example.polyquiz.constants.ChatEvents
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.constants.MatchEvents
 import com.example.polyquiz.constants.MatchStatus
 import com.example.polyquiz.constants.HOST_USERNAME
-import com.example.polyquiz.SnackbarController
-import com.example.polyquiz.Navigation
 import com.example.polyquiz.chat.domain.Message
 import com.example.vanillaprototype.socket.SocketHandler
 import com.google.gson.Gson
 import io.socket.client.Ack
 import org.json.JSONObject
 
-class MatchRoomService(
-//    private val notificationService: NotificationService,
-    private val matchContextService: MatchContextService,
-//    private val navigator: Navigation
-) {
+object MatchRoomService {
+
+
     var players: List<Player> = emptyList()
     var messages: List<Message> = emptyList()
     var isMatchStarted = false
@@ -74,7 +69,7 @@ class MatchRoomService(
         socket.off(MatchEvents.ERROR.value)
         socket.off(MatchEvents.ROUTE_TO_RESULTS_PAGE.value)
         socket.emit(MatchEvents.DISCONNECT.value)
-        matchContextService.resetContext()
+        MatchContextService.resetContext()
     }
 
     fun createRoom(gameId: String, isClassicMode: Boolean = true) {
@@ -189,7 +184,7 @@ class MatchRoomService(
     fun onStartCooldown() {
         socket.on(MatchEvents.START_COOLDOWN.value) { _ ->
             isCooldown = true
-            val context = matchContextService.getContext()
+            val context = MatchContextService.getContext()
             if (isCooldown && context != MatchContext.TESTPAGE && context != MatchContext.RANDOMMODE) {
                 currentQuestion?.text = MatchStatus.PREPARE.value
             }

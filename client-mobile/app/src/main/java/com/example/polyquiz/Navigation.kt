@@ -48,8 +48,8 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
             )
         }
         composable<Route.MatchRoom> {
-            val matchContextService = MatchContextService()
-            matchContextService.setContext(MatchContext.PLAYERVIEW)
+            //val matchContextService = MatchContextService()
+            //matchContextService.setContext(MatchContext.PLAYERVIEW)
             QuestionArea(
                 modifier = modifier,
                 navigateToHome = {
@@ -57,7 +57,7 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                 },
                 authViewModel = authViewModel,
                 timeService = TimeService,
-                matchRoomService = MatchRoomService(matchContextService)
+                matchRoomService = MatchRoomService
             )
         }
         composable<Route.Home> {

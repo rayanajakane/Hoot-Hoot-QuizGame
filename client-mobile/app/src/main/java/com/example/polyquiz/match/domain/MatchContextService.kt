@@ -1,7 +1,7 @@
 package com.example.polyquiz.match.domain
 import com.example.polyquiz.constants.MatchContext
 
-class MatchContextService {
+object MatchContextService {
     private var context: MatchContext = MatchContext.Null
 
     fun resetContext() {

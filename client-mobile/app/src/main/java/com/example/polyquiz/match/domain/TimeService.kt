@@ -10,13 +10,8 @@ import com.google.gson.Gson
 
 object TimeService {
     var isTimerPaused: Boolean = false
-    //var isPanicModeDisabled: Boolean = false
-    //var isPanicking: Boolean = false
-    //var isAlertDisplayed: Boolean = false
-   // var alertSymbol: String = ""
     private var counter: MutableState<Int> = mutableStateOf(0)
     private var initialValue: Int = 0
-
     private val mSocket = SocketHandler.getSocket()
 
     val time: Int
@@ -37,8 +32,6 @@ object TimeService {
                 val timerInfo = Gson().fromJson(args[0].toString(), TimerInfo::class.java)
                 counter.value = timerInfo.currentTime
                 initialValue = timerInfo.duration
-                Log.d("Counter", counter.toString())
-                Log.d("Initial value", initialValue.toString())
             }
         }
     }

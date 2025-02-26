@@ -32,6 +32,7 @@ fun QuestionArea(
 ) {
     var selectedOptions by remember { mutableStateOf(setOf<String>()) }
     val authState by authViewModel.authState.observeAsState()
+    val username by remember { mutableStateOf(authViewModel.getUsername() )}
     var room by remember { mutableStateOf("") }
 
     TimerComponent(
@@ -84,18 +85,11 @@ fun QuestionArea(
         )
 
         Button(
-            onClick = { matchRoomService.joinRoom(room, "sami") },
+            onClick = { matchRoomService.joinRoom(room, username); timeService.handleTimer() },
         modifier = Modifier.fillMaxWidth(0.5f),
         shape = RoundedCornerShape(8.dp)
         ) {
         Text("join")
-        }
-        Button(
-            onClick = { timeService.handleTimer() },
-            modifier = Modifier.fillMaxWidth(0.5f),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text("allumer minuterie")
         }
     }
 }
