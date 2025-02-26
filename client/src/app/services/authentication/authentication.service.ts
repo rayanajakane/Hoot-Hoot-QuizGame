@@ -223,7 +223,7 @@ export class AuthenticationService {
                 return this.translocoService.translate('auth.error.username-already-exists');
             }
             case 'auth/email-already-in-use': {
-                return this.translocoService.translate('auth.error.user-already-exists');
+                return this.translocoService.translate('auth.error.email-already-in-use');
             }
             case 'auth/weak-password': {
                 return this.translocoService.translate('auth.error.password-too-short');

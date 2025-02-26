@@ -1,6 +1,7 @@
 {
     "auth": {
         "error": {
+            "email-already-in-use": "Ce courriel est déjà utilisé",
             "session-already-exists": "Cet utilisateur est déjà connecté.",
             "empty-username-password": "Le nom d'utilisateur et/ou le mot de passe sont vides.",
             "user-already-exists": "Cet utilisateur existe déjà.",
