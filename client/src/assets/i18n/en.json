@@ -1,17 +1,30 @@
 {
     "auth": {
         "error": {
+            "email-already-in-use": "This email is already being used",
             "session-already-exists": "This user is already connected.",
             "empty-username-password": "Username and/or password are empty.",
             "user-already-exists": "User already exists.",
+            "user-already-connected": "User already connected.",
             "password-too-short": "Password is too short (minimum: 6 characters).",
             "invalid-username-password": "The username and/or the password are invalid.",
-            "other-error": "An unknown error occurred."
+            "username-already-exists": "This username is taken.",
+            "other-error": "An unknown error occurred.",
+            "invalid-email": "Invalid email.",
+            "username-too-short": "Username too short. Min {{length}} characters.",
+            "username-too-long": "Username too long. Max {{length}} characters.",
+            "username-special-char": "Should not contain special characters.",
+            "password-lowercase": "Password should contain at least 1 lowercase letter.",
+            "password-uppercase": "Password should contain at least 1 uppercase letter.",
+            "password-digit": "Password should contain at least 1 digit",
+            "password-special": "Password should contain at least 1 special character",
+            "password-too-long": "Password too long. Max {{length}} characters."
         },
         "dialog-feedback": {
             "sign-in": "Signed in successfully !",
             "sign-up": "Signed up successfully !",
-            "sign-out": "Signed out successfully !"
+            "sign-out": "Signed out successfully !",
+            "delete": "Deleted profile sucessfully !"
         }
     },
     "page": {
@@ -24,6 +37,15 @@
         "return-to-login": "Return to login",
         "logout-action": "Log out",
         "message-label": "Message",
-        "disabled-label": "Disabled"
+        "disabled-label": "Disabled",
+        "email": "Email",
+        "user-edit": "Edit Profile",
+        "save": "Save",
+        "theme": "Visual Theme",
+        "language": "Language",
+        "upload-avatar": "Upload Avatar",
+        "avatar-choices": "Avatar prédéfinis",
+        "delete-user": "Delete Profile",
+        "danger-zone": "Danger Zone"
     }
 }

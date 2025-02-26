@@ -1,30 +1,9 @@
 #main-container {
-    margin-top: 10vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: 1rem 8rem;
 }
-
-#main-card {
-    padding: 2rem;
-    width: 50vw;
-    display: flex;
-    gap: 1rem;
-    flex-direction: column;
-    align-items: center;
-}
-
 #form {
     display: flex;
     flex-direction: column;
-    align-items: center;
-}
-
-button {
-    padding: 1rem;
-}
-
-mat-form-field {
     width: 30vw;
 }
 
@@ -66,21 +45,21 @@ mat-form-field {
 }
 
 .two-columns-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    display: flex;
+    flex-direction: row;
+    padding: 2rem;
+    gap: 2rem;
 }
 
-#signup-button {
+#save-button {
     width: 10vw;
     padding: 1.5rem 3rem;
 }
 
-#buttons-container {
-    display: flex;
-    flex-direction: row;
-    margin-top: 1rem;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
+.content-container {
+    width: 50vw;
+}
+
+.card {
+    margin-bottom: 2rem;
 }

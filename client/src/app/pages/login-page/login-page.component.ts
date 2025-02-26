@@ -8,7 +8,7 @@ import { AuthenticationService } from '@app/services/authentication/authenticati
 })
 export class LoginPageComponent implements OnInit {
     hide = true;
-    username: string = '';
+    email: string = '';
     password: string = '';
 
     constructor(private readonly authenticationService: AuthenticationService) {}
@@ -19,17 +19,17 @@ export class LoginPageComponent implements OnInit {
 
     autofocus() {
         // REFERENCE: https://stackoverflow.com/questions/59893531/accessibilty-focus-is-lost-when-route-changed-in-angular
-        const blurElement: HTMLElement = document.getElementById('username-input') as HTMLElement;
+        const blurElement: HTMLElement = document.getElementById('email-input') as HTMLElement;
         blurElement?.blur();
 
         setTimeout(() => {
-            const focusElement: HTMLElement = document.getElementById('username-input') as HTMLElement;
+            const focusElement: HTMLElement = document.getElementById('email-input') as HTMLElement;
             focusElement?.focus();
         }, 0);
     }
 
     // TODO: Maybe disable the login (and sign up) buttons when Firebase is loading?
     signIn() {
-        this.authenticationService.signIn(this.username, this.password);
+        this.authenticationService.signIn(this.email, this.password);
     }
 }

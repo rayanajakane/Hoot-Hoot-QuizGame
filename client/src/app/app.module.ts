@@ -35,6 +35,7 @@ import { LoginPageComponent } from '@app/pages/login-page/login-page.component';
 import { MatchCreationPageComponent } from '@app/pages/match-creation-page/match-creation-page.component';
 import { ResultsPageComponent } from '@app/pages/results-page/results-page.component';
 import { SignupPageComponent } from '@app/pages/signup-page/signup-page.component';
+import { UserEditPageComponent } from '@app/pages/user-edit-page/user-edit-page.component';
 import { WaitPageComponent } from '@app/pages/wait-page/wait-page.component';
 import { FilterByQuestionTypePipe } from '@app/pipes/filter-by-question-type.pipe';
 import { SortAnswersPipe } from '@app/pipes/sort-answers.pipe';
@@ -79,6 +80,7 @@ import { TranslocoRootModule } from '@app/transloco-root.module';
         MatchCreationPageComponent,
         ResultsPageComponent,
         WaitPageComponent,
+        UserEditPageComponent,
         FilterByQuestionTypePipe,
         SortAnswersPipe,
         SortByLastModificationPipe,

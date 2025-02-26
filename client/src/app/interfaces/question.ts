@@ -1,4 +1,4 @@
-import { Choice } from './choice';
+import { Choice } from '@app/interfaces/choice';
 
 export interface Question {
     id: string;
