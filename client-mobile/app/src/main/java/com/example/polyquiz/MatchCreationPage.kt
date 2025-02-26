@@ -44,10 +44,23 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
     fun fetchQuestions() {
         questionService.getAllQuestions(
             onSuccess = { questions ->
+                println("Questions: $questions")
                 val result = questionService.convertToGenericType<List<Question>>(questions)
                 result?.forEach { question ->
-                    println("Question: ${question.text}")
+                    println("Question: ${question}")
                 }
+            },
+            onError = { errorMessage ->
+                println("Error: $errorMessage")
+            }
+        )
+    }
+
+    fun createQuestion() {
+        val question = Question(id="", type="QCM", text="la question ??", points=80.0, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification="")
+        questionService.createQuestion(question,
+            onSuccess = { response ->
+                println("Response: $response")
             },
             onError = { errorMessage ->
                 println("Error: $errorMessage")
@@ -106,6 +119,16 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
                     contentColor = MaterialTheme.colorScheme.onPrimary)
             ) {
                 Text(text = "Jouer")
+            }
+            Button(
+                onClick = {
+                    createQuestion()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary)
+            ) {
+                Text(text = "Créer question")
             }
             Surface(
                 shadowElevation = 10.dp,

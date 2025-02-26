@@ -41,27 +41,31 @@ abstract class CommunicationService<T>(
         call.enqueue(createCallback(onSuccess, onError))
     }
 
-    fun add(payload: T, onSuccess: (String) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
+    fun add(payload: T, onSuccess: (T) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
         val fullEndpoint = buildFullEndpoint(endpoint)
-        val call = apiService.add(fullEndpoint, payload as Any)
+        @Suppress("UNCHECKED_CAST")
+        val call: Call<T> = apiService.add(fullEndpoint, payload as Any) as Call<T>
         call.enqueue(createCallback(onSuccess, onError))
     }
 
-    fun delete(id: String, onSuccess: (String) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
+    fun delete(id: String, onSuccess: (T) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
         val fullEndpoint = buildFullEndpoint(endpoint)
-        val call = apiService.delete("$fullEndpoint/$id")
+        @Suppress("UNCHECKED_CAST")
+        val call: Call<T> = apiService.delete("$fullEndpoint/$id") as Call<T>
         call.enqueue(createCallback(onSuccess, onError))
     }
 
-    fun update(payload: T, id: String, onSuccess: (String) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
+    fun update(payload: T, id: String, onSuccess: (T) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
         val fullEndpoint = buildFullEndpoint(endpoint)
-        val call = apiService.update("$fullEndpoint/$id", payload as Any)
+        @Suppress("UNCHECKED_CAST")
+        val call: Call<T> = apiService.update("$fullEndpoint/$id", payload as Any) as Call<T>
         call.enqueue(createCallback(onSuccess, onError))
     }
 
-    fun put(payload: T, id: String, onSuccess: (String) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
+    fun put(payload: T, id: String, onSuccess: (T) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
         val fullEndpoint = buildFullEndpoint(endpoint)
-        val call = apiService.put("$fullEndpoint/$id", payload as Any)
+        @Suppress("UNCHECKED_CAST")
+        val call: Call<T> = apiService.put("$fullEndpoint/$id", payload as Any) as Call<T>
         call.enqueue(createCallback(onSuccess, onError))
     }
 
@@ -87,6 +91,7 @@ abstract class CommunicationService<T>(
                     }
                 } else {
                     onError("Failed with HTTP code: ${response.code()} - ${response.message()}")
+                    onError("Response body: $response")
                 }
             }
 
@@ -105,15 +110,15 @@ abstract class CommunicationService<T>(
         fun getById(@Path("url") url: String): Call<Any>
 
         @POST("{url}")
-        fun add(@Path("url") url: String, @Body payload: Any): Call<String>
+        fun add(@Path("url") url: String, @Body payload: Any): Call<Any>
 
         @DELETE("{url}")
-        fun delete(@Path("url") url: String): Call<String>
+        fun delete(@Path("url") url: String): Call<Any>
 
         @PATCH("{url}")
-        fun update(@Path("url") url: String, @Body payload: Any): Call<String>
+        fun update(@Path("url") url: String, @Body payload: Any): Call<Any>
 
         @PUT("{url}")
-        fun put(@Path("url") url: String, @Body payload: Any): Call<String>
+        fun put(@Path("url") url: String, @Body payload: Any): Call<Any>
     }
 }
