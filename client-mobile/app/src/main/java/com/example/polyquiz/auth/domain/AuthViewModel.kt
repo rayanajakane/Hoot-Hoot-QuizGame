@@ -139,7 +139,6 @@ class AuthViewModel : ViewModel() {
             _authState.value = AuthState.Error(AuthErrorText.EMPTY_USERNAME_PASSWORD.value)
             return
         }
-        // TODO : Add email input view!
         if (emailError.value.isNotEmpty() || passwordError.value.isNotEmpty() || usernameError.value.isNotEmpty()) {
             _authState.value = AuthState.Error(AuthErrorText.INVALID_USERNAME_PASSWORD.value)
             return
@@ -213,22 +212,40 @@ class AuthViewModel : ViewModel() {
     }
 
     private fun validatePassword(password: String) {
-        if(password.length < 8) {
-            _passwordError.value = AuthErrorText.PASSWORD_TOO_SHORT.value
-        } else {
-            _passwordError.value = ""
+        _passwordError.value = ""
+        if(password.length < 6) {
+            _passwordError.value += AuthErrorText.PASSWORD_TOO_SHORT.value + "\n"
+        }
+        if (password.length > 14) {
+            _passwordError.value += AuthErrorText.PASSWORD_TOO_LONG.value + "\n"
+        }
+        if (!password.matches("/(?=.*[a-z])/;".toRegex())) {
+            _passwordError.value += AuthErrorText.PASSWORD_LOWERCASE.value + "\n"
+        }
+        if (!password.matches("/(?=.*[A-Z])/".toRegex())) {
+            _passwordError.value += AuthErrorText.PASSWORD_UPPERCASE.value + "\n"
+        }
+        if (!password.matches("/(?=.*\\d)/".toRegex())) {
+            _passwordError.value += AuthErrorText.PASSWORD_SPECIAL.value + "\n"
+        }
+        if (_passwordError.value.isNotEmpty()) {
+            _passwordError.value.dropLast(1);
         }
     }
 
     private fun validateUsername(username: String) {
+        _usernameError.value = ""
         if(username.matches(".*[^A-Za-z0-9_].*".toRegex())) {
-            _usernameError.value = AuthErrorText.SPECIAL_CHAR_USERNAME.value
-        } else if(username.length < 3) {
-            _usernameError.value = AuthErrorText.SHORT_USERNAME.value
-        } else if(username.length > 20) {
-            _usernameError.value = AuthErrorText.LONG_USERNAME.value
-        } else {
-            _usernameError.value = ""
+            _usernameError.value += AuthErrorText.SPECIAL_CHAR_USERNAME.value + "\n"
+        }
+        if(username.length < 3) {
+            _usernameError.value += AuthErrorText.SHORT_USERNAME.value + "\n"
+        }
+        if(username.length > 20) {
+            _usernameError.value += AuthErrorText.LONG_USERNAME.value + "\n"
+        }
+        if (_usernameError.value.isNotEmpty()) {
+            _usernameError.value.dropLast(1);
         }
     }
 
