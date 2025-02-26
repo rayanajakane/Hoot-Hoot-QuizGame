@@ -65,8 +65,7 @@
                         <mat-form-field id="language">
                             <mat-label>{{ t('page.language') }}</mat-label>
                             <mat-select>
-                                <mat-option value="option1">Option 1</mat-option>
-                                <mat-option value="option2">Option 2</mat-option>
+                                <mat-option *ngFor="let lang of availableLangs" value="lang">{{ lang }}</mat-option>
                             </mat-select>
                         </mat-form-field>
                         <button mat-raised-button color="primary" (click)="save()" id="save-button">{{ t('page.save') }}</button>

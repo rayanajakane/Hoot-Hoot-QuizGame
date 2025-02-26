@@ -26,8 +26,8 @@ import { DataSnapshot, get, getDatabase, onDisconnect, ref, remove, set, update 
     providedIn: 'root',
 })
 export class AuthenticationService {
-    private currentUser: User | null;
-    private database = getDatabase();
+    currentUser: User | null;
+    database = getDatabase();
 
     // eslint-disable-next-line max-params
     constructor(

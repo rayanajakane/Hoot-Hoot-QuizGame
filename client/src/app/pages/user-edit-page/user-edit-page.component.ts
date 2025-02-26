@@ -1,10 +1,17 @@
 import { Component } from '@angular/core';
+import { User } from '@angular/fire/auth';
 import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MAX_LENGTH, MIN_LENGTH } from '@app/constants/authentication';
 import { IMAGE_MAX_FILE_SIZE, PresetAvatar } from '@app/constants/image-constants';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { TranslocoService } from '@jsverse/transloco';
+import { update } from 'firebase/database';
+
+export enum Language {
+    FR = 'fr',
+    EN = 'en',
+}
 
 @Component({
     selector: 'app-user-edit-page',
@@ -12,11 +19,15 @@ import { TranslocoService } from '@jsverse/transloco';
     styleUrl: './user-edit-page.component.scss',
 })
 export class UserEditPageComponent {
+    currentUser: User | null;
     isPresetAvatar = true; // TODO: Determine if we consider an existing avatar to be "preset"
     minUsernameLength = MIN_LENGTH;
     maxUsernameLength = MAX_LENGTH;
 
     initialAvatarUrl = this.authenticationService.userAvatarUrl;
+
+    currentLang: Language;
+    availableLangs: string[];
 
     form = this.fb.group({
         email: [{ value: this.authenticationService.userEmail, disabled: true }],
@@ -31,8 +42,12 @@ export class UserEditPageComponent {
         public authenticationService: AuthenticationService,
         private fb: FormBuilder,
         public notificationService: NotificationService,
-        private readonly translocoService: TranslocoService,
-    ) {}
+        private translocoService: TranslocoService,
+    ) {
+        this.currentLang = this.stringToLang(this.translocoService.getDefaultLang());
+        this.availableLangs = this.translocoService.getAvailableLangs() as string[];
+        this.currentUser = this.authenticationService.currentUser;
+    }
 
     get username() {
         return this.form.controls['username'];
@@ -49,7 +64,7 @@ export class UserEditPageComponent {
     save() {
         this.form.markAllAsTouched();
         if (this.form.valid) {
-            if (!this.isPresetAvatar && (this.avatar.value as string) != this.initialAvatarUrl) {
+            if (!this.isPresetAvatar && (this.avatar.value as string) !== this.initialAvatarUrl) {
                 // TODO: TEMPORARY SOLUTION. Avatar should be uploaded in later commit.
                 this.setPresetAvatar(PresetAvatar.Default);
             }
@@ -81,6 +96,18 @@ export class UserEditPageComponent {
         this.form.get('avatar')?.setValue(presetAvatar);
     }
 
+    deleteUser() {
+        this.authenticationService.deleteUser();
+    }
+
+    onLanguageChange(language: Language) {
+        const uid = this.currentUser ? this.currentUser.uid : null;
+        this.translocoService.setActiveLang(language);
+        this.currentLang = language;
+        const langRef = this.authenticationService.getUserDatabaseRef(uid + '/lang');
+        update(langRef, { lang: language });
+    }
+
     // TODO : Put in username service
     // https://blog.angular-university.io/angular-custom-validators/
     private usernameValidator(): ValidatorFn {
@@ -99,7 +126,14 @@ export class UserEditPageComponent {
         };
     }
 
-    deleteUser() {
-        this.authenticationService.deleteUser();
+    private stringToLang(language: string) {
+        switch (language) {
+            case 'fr':
+                return Language.FR;
+            case 'en':
+                return Language.EN;
+            default:
+                return Language.FR;
+        }
     }
 }
