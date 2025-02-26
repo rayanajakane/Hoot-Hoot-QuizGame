@@ -84,13 +84,12 @@ fun SignupPage(
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .imePadding(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
+        modifier = Modifier .fillMaxSize().imePadding()
+
     ) {
         ElevatedCard(
+            modifier = Modifier.padding(16.dp),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
             )
@@ -100,7 +99,6 @@ fun SignupPage(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
                     .fillMaxWidth(0.5f)
-                    .padding(60.dp)
             ) {
                 Text(
                     text = DisplayAuthenticationText.SIGNUP_TITLE.value,
