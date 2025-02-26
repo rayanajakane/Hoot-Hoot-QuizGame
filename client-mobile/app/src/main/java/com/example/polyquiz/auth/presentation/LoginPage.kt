@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -88,12 +89,18 @@ fun LoginPage(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
+                    .padding(
+                        start = 128.dp,
+                        top = 32.dp,
+                        end = 128.dp,
+                        bottom = 32.dp
+                    )
                     .fillMaxWidth(0.5f)
-                    .padding(60.dp)
             ) {
                 Text(
                     text = DisplayAuthenticationText.LOGIN_TITLE.value,
                     fontSize = 35.sp,
+                    fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
