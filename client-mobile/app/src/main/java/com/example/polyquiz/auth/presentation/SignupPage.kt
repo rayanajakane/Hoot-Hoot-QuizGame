@@ -89,7 +89,6 @@ fun SignupPage(
 
     ) {
         ElevatedCard(
-            modifier = Modifier.padding(16.dp),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
             )
@@ -98,6 +97,7 @@ fun SignupPage(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
+                    .padding(16.dp)
                     .fillMaxWidth(0.5f)
             ) {
                 Text(
