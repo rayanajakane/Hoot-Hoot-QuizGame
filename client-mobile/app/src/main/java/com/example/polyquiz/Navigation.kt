@@ -57,7 +57,8 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                 },
                 authViewModel = authViewModel,
                 timeService = TimeService,
-                matchRoomService = MatchRoomService
+                matchRoomService = MatchRoomService,
+                matchContextService = MatchContextService
             )
         }
         composable<Route.Home> {

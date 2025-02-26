@@ -1,13 +1,23 @@
 package com.example.polyquiz.match.presentation
 
-import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,7 +28,6 @@ import com.example.polyquiz.constants.QuestionType
 import com.example.polyquiz.match.domain.Choice
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
-import com.example.polyquiz.match.domain.Player
 import com.example.polyquiz.match.domain.TimeService
 
 @Composable
@@ -27,16 +36,18 @@ fun QuestionArea(
     timeService: TimeService,
     matchContextService: MatchContextService,
     modifier: Modifier = Modifier,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    navigateToHome: () -> Unit
 ) {
     val question = matchRoomService.currentQuestion
     val questionText = question?.text ?: "Question inconnue"
     val questionPoints = question?.points ?: 0
+    var room by remember { mutableStateOf("") }
+    val username by remember { mutableStateOf(authViewModel.getUsername() )}
     val questionType = question?.type ?: QuestionType.MULTIPLE_CHOICE.value
 
     val score = 12
-    val timeRemaining = timeService.time
-    val timerProgress = (timeService.computeTimerProgress() / 100f).coerceIn(0f, 1f)
+//    val timeRemaining = timeService.time
 
     val currentContext = matchContextService.getContext()
 
@@ -48,20 +59,10 @@ fun QuestionArea(
     ) {
         Spacer(modifier = Modifier.height(24.dp))
 
-        Box(
-            modifier = Modifier.size(100.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(
-                progress = timerProgress,
-                strokeWidth = 8.dp,
-                modifier = Modifier.size(100.dp)
-            )
-            Text(
-                text = timeRemaining.toString(),
-                style = MaterialTheme.typography.titleMedium
-            )
-        }
+        TimerComponent(
+            modifier = Modifier.fillMaxWidth(),
+            timeService = timeService,
+        )
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -109,6 +110,7 @@ fun QuestionArea(
                 )
                 MultipleChoiceArea(choices = mockChoices, modifier = Modifier.fillMaxWidth(0.8f))
             }
+
             QuestionType.LONG_ANSWER.value -> {
                 LongAnswerArea(modifier = Modifier.fillMaxWidth(0.8f))
             }
@@ -116,9 +118,32 @@ fun QuestionArea(
 
         if (currentContext == MatchContext.HOSTVIEW) {
             Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = {  }) {
+            Button(onClick = { }) {
                 Text("QUESTION SUIVANTE")
             }
         }
+        TextField(
+            value = room,
+            onValueChange = { room = it },
+            label = { Text("Room ID") },
+            modifier = Modifier.fillMaxWidth(0.8f).padding(8.dp)
+        )
+        Button(
+            onClick = { navigateToHome() },
+            modifier = Modifier.fillMaxWidth(0.5f),
+            shape = RoundedCornerShape(8.dp)
+        )
+        {
+            Text("Page d'accueil")
+        }
+
+        Button(
+            onClick = { matchRoomService.joinRoom(room, username); timeService.handleTimer() },
+            modifier = Modifier.fillMaxWidth(0.5f),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Text("join")
+        }
     }
+
 }
