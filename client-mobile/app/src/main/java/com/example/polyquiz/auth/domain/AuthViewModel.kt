@@ -152,7 +152,6 @@ class AuthViewModel : ViewModel() {
                  _authState.value = AuthState.Error("Ce nom d'utilisateur est déjà pris.")
                  Log.e(TAG, "Nom d'utilisateur déjà pris.")
              } else {
-                 usernameRef.setValue(username.lowercase())
                  _authState.value = AuthState.Loading
                  auth.createUserWithEmailAndPassword(email, password)
                      .addOnCompleteListener { task ->
@@ -166,6 +165,7 @@ class AuthViewModel : ViewModel() {
                                      val userRef = task.result.user?.let { this.getUserDatabaseRef(it.uid) }
                                      userRef?.child("isOnline")?.setValue(true)
                                      userRef?.child("isOnline")?.onDisconnect()?.setValue(false)
+                                     usernameRef.setValue(username.lowercase())
                                      _authState.value = AuthState.Authenticated
                                      SocketHandler.connect()
                                  }

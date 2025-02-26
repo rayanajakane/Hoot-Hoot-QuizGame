@@ -57,7 +57,7 @@ export class AuthenticationService {
             if (databaseSnapshot.exists()) {
                 return Promise.reject(new AuthError('UsernameAlreadyExists', 'UsernameAlreadyExistsError'));
             } else {
-                set(usernameRef, username);
+                // Username will be saved in realtime database later when sign up succeeds.
                 return Promise.resolve(false);
             }
         });
@@ -111,6 +111,10 @@ export class AuthenticationService {
             onDisconnect(userRef).update({
                 isOnline: false,
             });
+
+            const usernameRef = this.getUsernameDatabaseRef(username.toLowerCase());
+            set(usernameRef, username.toLowerCase());
+
             this.connectToSocket();
             this.setUser(userCredential.user);
             this.router.navigateByUrl('/home');
