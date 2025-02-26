@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
@@ -97,13 +98,19 @@ fun SignupPage(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(
+                        start = 32.dp,
+                        top = 8.dp,
+                        end = 32.dp,
+                        bottom = 8.dp
+                    )
                     .fillMaxWidth(0.5f)
             ) {
                 Text(
                     text = DisplayAuthenticationText.SIGNUP_TITLE.value,
                     fontSize = 35.sp,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     Column(
