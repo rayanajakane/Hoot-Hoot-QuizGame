@@ -49,6 +49,7 @@
         "danger-zone": "Danger Zone",
         "forgot-password": "Forgot Password?",
         "reset-password": "Reset password",
-        "sent-email": "Sent reset password email!"
+        "sent-email": "Sent Email!",
+        "sent-email-extra-info": "If you already have an account, you will receive an email to reset your password."
     }
 }
