@@ -16,5 +16,5 @@ object Route {
     object ForgotPassword
 
     @Serializable
-    object ResetPasswordEmailSent
+    object ForgotPasswordFeedbackPage
 }

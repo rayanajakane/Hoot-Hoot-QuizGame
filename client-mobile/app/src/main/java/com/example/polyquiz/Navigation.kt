@@ -8,7 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.auth.presentation.ForgotPasswordPage
 import com.example.polyquiz.auth.presentation.LoginPage
-import com.example.polyquiz.auth.presentation.ResetPasswordEmailSentPage
+import com.example.polyquiz.auth.presentation.ForgotPasswordFeedbackPage
 import com.example.polyquiz.auth.presentation.SignupPage
 import com.example.polyquiz.chat.presentation.ChatPage
 import com.example.polyquiz.constants.Route
@@ -58,8 +58,8 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
 
         composable<Route.ForgotPassword> {
             ForgotPasswordPage(modifier,
-                navigateToResetPasswordEmailSent = {
-                    navController.navigate(Route.ResetPasswordEmailSent)
+                navigateToForgotPasswordFeedback = {
+                    navController.navigate(Route.ForgotPasswordFeedbackPage)
                 },
                 navigateToLogin = {
                     navController.navigate(Route.Login)
@@ -68,12 +68,13 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
             )
         }
 
-        composable<Route.ResetPasswordEmailSent> {
-            ResetPasswordEmailSentPage(
+        composable<Route.ForgotPasswordFeedbackPage> {
+            ForgotPasswordFeedbackPage(
                 modifier,
                 navigateToLogin = {
                     navController.navigate(Route.Login)
-                }
+                },
+                authViewModel = authViewModel
             )
         }
     }

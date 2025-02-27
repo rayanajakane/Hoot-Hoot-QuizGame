@@ -190,6 +190,16 @@ class AuthViewModel : ViewModel() {
         SocketHandler.disconnect()
     }
 
+    fun sendResetPasswordEmail(email: String) {
+        auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                _authState.value = AuthState.ResetPassword
+            } else {
+                _authState.value = AuthState.Error(AuthErrorText.INVALID_EMAIL.value)
+            }
+        }
+    }
+
     fun resetAuthState() {
         // This is to avoid the bug where an error state transfers from login to signup page.
         _authState.value = AuthState.Unauthenticated
@@ -276,4 +286,5 @@ sealed class AuthState {
     data object Unauthenticated : AuthState()
     data object Loading : AuthState()
     data class Error(val message: String) : AuthState()
+    data object ResetPassword: AuthState()
 }

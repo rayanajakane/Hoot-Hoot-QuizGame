@@ -8,17 +8,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -34,8 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,14 +35,13 @@ import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
-import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.DisplayAuthenticationText
 import kotlinx.coroutines.launch
 
 @Composable
 fun ForgotPasswordPage(
     modifier: Modifier,
-    navigateToResetPasswordEmailSent: () -> Unit,
+    navigateToForgotPasswordFeedback: () -> Unit,
     navigateToLogin: () -> Unit,
     authViewModel: AuthViewModel
 ) {
@@ -63,6 +54,9 @@ fun ForgotPasswordPage(
 
     LaunchedEffect(authState.value) {
         when(authState.value) {
+            is AuthState.ResetPassword -> {
+                navigateToForgotPasswordFeedback()
+            }
             is AuthState.Error -> {
                 scope.launch {
                     SnackbarController.sendEvent(
@@ -125,9 +119,10 @@ fun ForgotPasswordPage(
                 Button(
                     onClick =
                     {
-                        // TODO
-                        keyboardController?.hide()
-                        navigateToResetPasswordEmailSent()
+                        if (email.isNotEmpty()) {
+                            keyboardController?.hide()
+                            authViewModel.sendResetPasswordEmail(email);
+                        }
                     },
                     enabled = authState.value != AuthState.Loading
                 ) {
