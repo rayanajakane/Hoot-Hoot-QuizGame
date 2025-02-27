@@ -65,8 +65,6 @@ fun ForgotPasswordFeedbackPage(
                     textAlign = TextAlign.Center
                 )
 
-                // TODO: Add check icon
-
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ElevatedButton(

@@ -30,6 +30,8 @@ import { AdminEditPageComponent } from '@app/pages/admin-edit-page/admin-edit-pa
 import { AdminMainPageComponent } from '@app/pages/admin-main-page/admin-main-page.component';
 import { AdminQuestionBankComponent } from '@app/pages/admin-question-bank/admin-question-bank.component';
 import { AppComponent } from '@app/pages/app/app.component';
+import { ForgotPasswordFeedbackPageComponent } from '@app/pages/forgot-password-feedback-page/forgot-password-feedback-page.component';
+import { ForgotPasswordPageComponent } from '@app/pages/forgot-password-page/forgot-password-page.component';
 import { HomePageComponent } from '@app/pages/home-page/home-page.component';
 import { LoginPageComponent } from '@app/pages/login-page/login-page.component';
 import { MatchCreationPageComponent } from '@app/pages/match-creation-page/match-creation-page.component';
@@ -44,8 +46,6 @@ import { SortByScorePipe } from '@app/pipes/sort-by-score.pipe';
 import { SortHistoryPipe } from '@app/pipes/sort-history.pipe';
 import { SortPlayersPipe } from '@app/pipes/sort-players.pipe';
 import { TranslocoRootModule } from '@app/transloco-root.module';
-import { ForgotPasswordPageComponent } from './pages/forgot-password-page/forgot-password-page.component';
-import { ResetPasswordEmailSentPageComponent } from './pages/reset-password-email-sent-page/reset-password-email-sent-page.component';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -87,7 +87,7 @@ import { ResetPasswordEmailSentPageComponent } from './pages/reset-password-emai
         FilterByQuestionTypePipe,
         SortAnswersPipe,
         SortByLastModificationPipe,
-        ResetPasswordEmailSentPageComponent,
+        ForgotPasswordFeedbackPageComponent,
         SortByScorePipe,
         SortHistoryPipe,
         SortPlayersPipe,
