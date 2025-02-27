@@ -46,6 +46,9 @@
         "upload-avatar": "Upload Avatar",
         "avatar-choices": "Avatar prédéfinis",
         "delete-user": "Delete Profile",
-        "danger-zone": "Danger Zone"
+        "danger-zone": "Danger Zone",
+        "forgot-password": "Forgot Password?",
+        "reset-password": "Reset password",
+        "sent-email": "Sent reset password email!"
     }
 }

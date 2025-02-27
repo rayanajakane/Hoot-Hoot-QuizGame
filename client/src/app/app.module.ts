@@ -44,6 +44,8 @@ import { SortByScorePipe } from '@app/pipes/sort-by-score.pipe';
 import { SortHistoryPipe } from '@app/pipes/sort-history.pipe';
 import { SortPlayersPipe } from '@app/pipes/sort-players.pipe';
 import { TranslocoRootModule } from '@app/transloco-root.module';
+import { ForgotPasswordPageComponent } from './pages/forgot-password-page/forgot-password-page.component';
+import { ResetPasswordEmailSentPageComponent } from './pages/reset-password-email-sent-page/reset-password-email-sent-page.component';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -81,9 +83,11 @@ import { TranslocoRootModule } from '@app/transloco-root.module';
         ResultsPageComponent,
         WaitPageComponent,
         UserEditPageComponent,
+        ForgotPasswordPageComponent,
         FilterByQuestionTypePipe,
         SortAnswersPipe,
         SortByLastModificationPipe,
+        ResetPasswordEmailSentPageComponent,
         SortByScorePipe,
         SortHistoryPipe,
         SortPlayersPipe,
