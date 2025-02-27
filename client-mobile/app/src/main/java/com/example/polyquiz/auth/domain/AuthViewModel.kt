@@ -195,7 +195,7 @@ class AuthViewModel : ViewModel() {
             if (task.isSuccessful) {
                 _authState.value = AuthState.ResetPassword
             } else {
-                _authState.value = AuthState.Error(AuthErrorText.INVALID_EMAIL.value)
+                _authState.value = AuthState.Error(AuthErrorText.INVALID_EMAIL_WITH_EMOJI.value)
             }
         }
     }

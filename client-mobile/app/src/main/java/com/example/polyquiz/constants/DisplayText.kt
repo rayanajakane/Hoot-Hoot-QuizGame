@@ -31,6 +31,7 @@ enum class AuthErrorText (val value: String) {
     ALREADY_ONLINE("❌ Cet utilisateur est déjà connecté."),
     INVALID_USERNAME_PASSWORD("❌ Le courriel, le nom d'utilisateur et/ou le mot de passe sont invalides."),
     OTHER_ERROR("❌ Erreur"),
+    INVALID_EMAIL_WITH_EMOJI("❌ Adresse courriel invalide."),
     INVALID_EMAIL("Adresse courriel invalide."),
     SHORT_USERNAME("Nom d'utilisateur trop court. Min 3 caractères"),
     LONG_USERNAME("Nom d'utilisateur trop long. Max 20 caractères."),
