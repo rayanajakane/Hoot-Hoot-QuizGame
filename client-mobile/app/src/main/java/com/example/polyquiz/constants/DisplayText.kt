@@ -11,7 +11,11 @@ enum class DisplayAuthenticationText (val value: String) {
     RETURN_TO_LOGIN("Retourner à la page de connexion"),
     LOGOUT("Se déconnecter"),
     UPLOAD_AVATAR("Téléverser un avatar"),
-    PRESET_AVATARS("Avatars prédéfinis")
+    PRESET_AVATARS("Avatars prédéfinis"),
+    RESET_PASSWORD("Réinitialiser le mot de passe"),
+    SENT_EMAIL("Courriel envoyé !"),
+    SENT_EMAIL_EXTRA_INFO("Si vous avez déjà un compte, vous recevrez un courriel pour réinitialiser votre mot de passe."),
+    FORGOT_PASSWORD("Mot de passe oublié ?")
 }
 
 enum class DisplayChatText (val value: String) {
