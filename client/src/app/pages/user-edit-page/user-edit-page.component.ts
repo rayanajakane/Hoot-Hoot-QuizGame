@@ -53,6 +53,7 @@ export class UserEditPageComponent {
                 // TODO: TEMPORARY SOLUTION. Avatar should be uploaded in later commit.
                 this.setPresetAvatar(PresetAvatar.Default);
             }
+            // TODO: Consider adding the themes + languages options when they are ready
             this.authenticationService.editUserProfile(this.username.value as string, this.avatar.value as string);
         }
     }
