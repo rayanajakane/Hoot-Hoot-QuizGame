@@ -48,6 +48,13 @@ mat-form-field {
     border-radius: 100rem;
 }
 
+#main-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    border-radius: 100rem;
+}
+
 #avatar-choices-container {
     padding: 1rem;
 }

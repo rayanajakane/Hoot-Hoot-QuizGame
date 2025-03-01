@@ -35,6 +35,7 @@ export class SignupPageComponent implements OnInit {
                 ],
             },
         ],
+        avatar: [],
     });
 
     constructor(
@@ -78,6 +79,18 @@ export class SignupPageComponent implements OnInit {
 
     uploadAvatar() {
         // TODO
+    }
+
+    setImage(event: Event): void {
+        const eventTarget: HTMLInputElement | null = event.target as HTMLInputElement | null;
+        if (eventTarget?.files?.[0]) {
+            const file: File = eventTarget.files[0];
+            const reader = new FileReader();
+            reader.addEventListener('load', () => {
+                this.form.get('avatar')?.setValue(reader.result as null);
+            });
+            reader.readAsDataURL(file);
+        }
     }
 
     // TODO : Put in username service
