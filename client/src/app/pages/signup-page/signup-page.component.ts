@@ -35,7 +35,7 @@ export class SignupPageComponent implements OnInit {
                 ],
             },
         ],
-        avatar: [],
+        avatar: [''],
     });
 
     constructor(
@@ -85,6 +85,10 @@ export class SignupPageComponent implements OnInit {
         const eventTarget: HTMLInputElement | null = event.target as HTMLInputElement | null;
         if (eventTarget?.files?.[0]) {
             const file: File = eventTarget.files[0];
+            if (file.size > 1000000) {
+                console.log('TOO LARGE');
+                return;
+            }
             const reader = new FileReader();
             reader.addEventListener('load', () => {
                 this.form.get('avatar')?.setValue(reader.result as null);
