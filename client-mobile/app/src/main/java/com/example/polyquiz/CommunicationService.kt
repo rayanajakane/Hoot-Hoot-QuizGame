@@ -51,17 +51,16 @@ abstract class CommunicationService<T>(
         call.enqueue(createCallback(onSuccess, onError))
     }
 
-    fun add(payload: T, onSuccess: (T) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
+    fun add(payload: T, onSuccess: (Any) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
         val fullEndpoint = buildFullEndpoint(endpoint)
-        @Suppress("UNCHECKED_CAST")
-        val call: Call<T> = apiService.add(fullEndpoint, payload as Any) as Call<T>
+        val call: Call<Any> = apiService.add(fullEndpoint, payload as Any)
         call.enqueue(createCallback(onSuccess, onError))
     }
 
-    fun delete(id: String, onSuccess: (T) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
+    fun delete(id: String, onSuccess: (String) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
         val fullEndpoint = buildFullEndpoint(endpoint)
         @Suppress("UNCHECKED_CAST")
-        val call: Call<T> = apiService.delete("$fullEndpoint/$id") as Call<T>
+        val call: Call<String> = apiService.delete("$fullEndpoint/$id") as Call<String>
         call.enqueue(createCallback(onSuccess, onError))
     }
 
@@ -113,7 +112,6 @@ abstract class CommunicationService<T>(
         }
     }
 
-
     interface ApiService {
 
 //        @GET("{url}")
@@ -122,8 +120,8 @@ abstract class CommunicationService<T>(
         @GET
         fun getAll(@Url url: String): Call<List<Any>>
 
-        @GET("{url}")
-        fun getById(@Path("url") url: String): Call<Any>
+        @GET
+        fun getById(@Url url: String): Call<Any>
 
 //        @POST()
 //        fun add(@Url url: String) url: String, @Body payload: Any): Call<String>
@@ -132,8 +130,8 @@ abstract class CommunicationService<T>(
         fun add(@Url url: String, @Body payload: Any): Call<Any>
 
 
-        @DELETE("{url}")
-        fun delete(@Path("url") url: String): Call<Any>
+        @DELETE
+        fun delete(@Url url: String): Call<Any>
 
         @PATCH("{url}")
         fun update(@Path("url") url: String, @Body payload: Any): Call<Any>
