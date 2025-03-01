@@ -238,6 +238,7 @@ class AuthViewModel : ViewModel() {
         if (!(("(?=.*\\d)".toRegex()).containsMatchIn(password))) {
             _passwordError.value += AuthErrorText.PASSWORD_DIGIT.value + "\n"
         }
+        // REFERENCE: Firebase special characters: https://firebase.google.com/docs/auth/web/password-auth
         if (!(("(?=.*[\\^\\$\\*\\.\\[\\]\\{\\}\\(\\)\\?\"!@#%&/\\\\,><':;\\|_~])").toRegex()).containsMatchIn(password)) {
             _passwordError.value += AuthErrorText.PASSWORD_SPECIAL.value + "\n"
         }

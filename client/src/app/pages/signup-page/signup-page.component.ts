@@ -137,6 +137,7 @@ export class SignupPageComponent implements OnInit {
             if (!password) {
                 return null;
             }
+            // REFERENCE: Firebase special characters: https://firebase.google.com/docs/auth/web/password-auth
             const containsSpecial = /(?=.*[\^\$\*\.\[\]\{\}\(\)\?"!@#%&/\\,><':;\|_~])/.test(password);
             return containsSpecial ? null : { noSpecial: true };
         };
