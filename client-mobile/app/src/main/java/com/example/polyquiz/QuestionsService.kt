@@ -1,5 +1,9 @@
 package com.example.polyquiz
 
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
+
 class QuestionService : CommunicationService<Question>("questions") {
     override val apiService: ApiService = retrofit.create(QuestionsApiService::class.java)
 
@@ -7,20 +11,32 @@ class QuestionService : CommunicationService<Question>("questions") {
         getAll(onSuccess, onError)
     }
 
-    fun createQuestion(question: Question, onSuccess: (String) -> Unit, onError: (String) -> Unit) {
+    fun createQuestion(question: Question, onSuccess: (Question) -> Unit, onError: (String) -> Unit) {
         add(question, onSuccess, onError)
     }
 
-    fun deleteQuestion(questionId: String, onSuccess: (String) -> Unit, onError: (String) -> Unit) {
+    fun deleteQuestion(questionId: String, onSuccess: (Question) -> Unit, onError: (String) -> Unit) {
         delete(questionId, onSuccess, onError)
     }
 
-    fun verifyQuestion(question: Question, onSuccess: (String) -> Unit, onError: (String) -> Unit) {
+    fun verifyQuestion(question: Question, onSuccess: (Question) -> Unit, onError: (String) -> Unit) {
         add(question, onSuccess, onError, "validate-question")
     }
 
-    fun updateQuestion(modifiedQuestion: Question, onSuccess: (String) -> Unit, onError: (String) -> Unit) {
+    fun updateQuestion(modifiedQuestion: Question, onSuccess: (Question) -> Unit, onError: (String) -> Unit) {
         update(modifiedQuestion, modifiedQuestion.id, onSuccess, onError)
+    }
+
+    inline fun <reified T> convertToGenericType(data: Any): T? {
+        val gson = Gson()
+        val json = gson.toJson(data)
+        val type: Type = object : TypeToken<T>() {}.type
+        return try {
+            gson.fromJson(json, type)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 
     interface QuestionsApiService : ApiService {
