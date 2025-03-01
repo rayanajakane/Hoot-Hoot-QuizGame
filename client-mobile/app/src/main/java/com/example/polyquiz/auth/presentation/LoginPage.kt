@@ -14,6 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -21,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -32,6 +34,7 @@ import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.DisplayAuthenticationText
+import com.example.polyquiz.constants.SIZE_CONSTANTS
 import kotlinx.coroutines.launch
 
 @Composable
@@ -39,6 +42,7 @@ fun LoginPage(
     modifier: Modifier,
     navigateToSignup: () -> Unit,
     navigateToChat: () -> Unit,
+    navigateToForgotPassword: () -> Unit,
     authViewModel: AuthViewModel
 ) {
     var email by remember { mutableStateOf("") }
@@ -91,9 +95,9 @@ fun LoginPage(
                 modifier = Modifier
                     .padding(
                         start = 128.dp,
-                        top = 32.dp,
+                        top = 16.dp,
                         end = 128.dp,
-                        bottom = 32.dp
+                        bottom = 16.dp
                     )
                     .fillMaxWidth(0.5f)
             ) {
@@ -104,10 +108,9 @@ fun LoginPage(
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
-
                 TextField(
                     value = email,
-                    onValueChange = { email = it },
+                    onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) email = it },
                     singleLine = true,
                     label = { Text(DisplayAuthenticationText.EMAIL.value) },
                     modifier = Modifier.fillMaxWidth()
@@ -117,7 +120,7 @@ fun LoginPage(
 
                 TextField(
                     value = password,
-                    onValueChange = { password = it },
+                    onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) password = it },
                     singleLine = true,
                     label = { Text(DisplayAuthenticationText.PASSWORD.value) },
                     modifier = Modifier.fillMaxWidth(),
@@ -138,8 +141,15 @@ fun LoginPage(
                         }
                     },
                 )
-
-                Spacer(modifier = Modifier.height(16.dp))
+                TextButton(
+                    onClick = {
+                        navigateToForgotPassword()
+                    },
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Text(text = DisplayAuthenticationText.FORGOT_PASSWORD.value,
+                        fontStyle = FontStyle.Italic)
+                }
 
                 Button(
                     onClick =

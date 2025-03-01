@@ -2,7 +2,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
-import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
+import {
+    Auth,
+    createUserWithEmailAndPassword,
+    onAuthStateChanged,
+    sendPasswordResetEmail,
+    signInWithEmailAndPassword,
+    signOut,
+    updateProfile,
+} from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { AuthError } from '@app/services/authentication/auth-error';
 import { ChatService } from '@app/services/chat/chat.service';
@@ -217,6 +225,18 @@ export class AuthenticationService {
         this.setUser(null);
         this.router.navigateByUrl('/login');
         this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.delete'));
+    }
+
+    sendResetPasswordEmail(email: string) {
+        // TODO: Check if we need to use Firebase Admin SDK to getUserByEmail() from server (to only send emails to user that already have an account)
+        sendPasswordResetEmail(this.auth, email)
+            .then(() => {
+                this.router.navigateByUrl('reset-password-email-sent');
+            })
+            .catch((error) => {
+                console.log(error);
+                this.notificationService.displayErrorMessage(this.translocoService.translate('auth.error.invalid-email'));
+            });
     }
 
     private handleAuthErrorMessage(error: FirebaseError): string {

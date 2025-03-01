@@ -190,6 +190,16 @@ class AuthViewModel : ViewModel() {
         SocketHandler.disconnect()
     }
 
+    fun sendResetPasswordEmail(email: String) {
+        auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                _authState.value = AuthState.ResetPassword
+            } else {
+                _authState.value = AuthState.Error(AuthErrorText.INVALID_EMAIL_WITH_EMOJI.value)
+            }
+        }
+    }
+
     fun resetAuthState() {
         // This is to avoid the bug where an error state transfers from login to signup page.
         _authState.value = AuthState.Unauthenticated
@@ -219,16 +229,17 @@ class AuthViewModel : ViewModel() {
         if (password.length > 14) {
             _passwordError.value += AuthErrorText.PASSWORD_TOO_LONG.value + "\n"
         }
-        if (!(("(?=.*[a-z])".toRegex()).containsMatchIn(password))) {
+        if (!(("(?=.*[a-z\\u00E0-\\u00FC])".toRegex()).containsMatchIn(password))) {
             _passwordError.value += AuthErrorText.PASSWORD_LOWERCASE.value + "\n"
         }
-        if (!(("(?=.*[A-Z])".toRegex()).containsMatchIn(password))) {
+        if (!(("(?=.*[A-Z\\u00C0-\\u00DC])".toRegex()).containsMatchIn(password))) {
             _passwordError.value += AuthErrorText.PASSWORD_UPPERCASE.value + "\n"
         }
         if (!(("(?=.*\\d)".toRegex()).containsMatchIn(password))) {
             _passwordError.value += AuthErrorText.PASSWORD_DIGIT.value + "\n"
         }
-        if (!(("(?=.*[-+_!@#\$%^&*.,?])".toRegex()).containsMatchIn(password))) {
+        // REFERENCE: Firebase special characters: https://firebase.google.com/docs/auth/web/password-auth
+        if (!(("(?=.*[\\^\\$\\*\\.\\[\\]\\{\\}\\(\\)\\?\"!@#%&/\\\\,><':;\\|_~])").toRegex()).containsMatchIn(password)) {
             _passwordError.value += AuthErrorText.PASSWORD_SPECIAL.value + "\n"
         }
         if (_passwordError.value.isNotEmpty()) {
@@ -276,4 +287,5 @@ sealed class AuthState {
     data object Unauthenticated : AuthState()
     data object Loading : AuthState()
     data class Error(val message: String) : AuthState()
+    data object ResetPassword: AuthState()
 }

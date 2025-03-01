@@ -11,7 +11,11 @@ enum class DisplayAuthenticationText (val value: String) {
     RETURN_TO_LOGIN("Retourner à la page de connexion"),
     LOGOUT("Se déconnecter"),
     UPLOAD_AVATAR("Téléverser un avatar"),
-    PRESET_AVATARS("Avatars prédéfinis")
+    PRESET_AVATARS("Avatars prédéfinis"),
+    RESET_PASSWORD("Réinitialiser le mot de passe"),
+    SENT_EMAIL("Courriel envoyé !"),
+    SENT_EMAIL_EXTRA_INFO("Si vous avez déjà un compte, vous recevrez un courriel pour réinitialiser votre mot de passe."),
+    FORGOT_PASSWORD("Mot de passe oublié ?")
 }
 
 enum class DisplayChatText (val value: String) {
@@ -27,6 +31,7 @@ enum class AuthErrorText (val value: String) {
     ALREADY_ONLINE("❌ Cet utilisateur est déjà connecté."),
     INVALID_USERNAME_PASSWORD("❌ Le courriel, le nom d'utilisateur et/ou le mot de passe sont invalides."),
     OTHER_ERROR("❌ Erreur"),
+    INVALID_EMAIL_WITH_EMOJI("❌ Adresse courriel invalide."),
     INVALID_EMAIL("Adresse courriel invalide."),
     SHORT_USERNAME("Nom d'utilisateur trop court. Min 3 caractères"),
     LONG_USERNAME("Nom d'utilisateur trop long. Max 20 caractères."),

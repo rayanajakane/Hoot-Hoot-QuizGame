@@ -24,17 +24,16 @@
                 </div>
                 <div id="form">
                     <mat-form-field id="email">
-                        <!-- TODO: Disable -->
                         <mat-label>{{ t('page.email') }}</mat-label>
-                        <input matInput placeholder="" id="email-input" [(ngModel)]="email" />
+                        <input matInput placeholder="" id="email-input" [(ngModel)]="email" disabled />
                     </mat-form-field>
                     <mat-form-field id="username">
                         <mat-label>{{ t('page.username') }}</mat-label>
-                        <input matInput placeholder="" id="username-input" [(ngModel)]="username" />
+                        <input matInput placeholder="" id="username-input" maxlength="200" [(ngModel)]="username" />
                     </mat-form-field>
                     <mat-form-field id="password">
                         <mat-label>{{ t('page.password') }}</mat-label>
-                        <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="password" />
+                        <input matInput [type]="hide ? 'password' : 'text'" maxlength="200" [(ngModel)]="password" />
                         <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
                             <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
                         </button>
