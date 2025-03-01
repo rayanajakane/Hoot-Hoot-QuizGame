@@ -34,6 +34,7 @@ import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.DisplayAuthenticationText
+import com.example.polyquiz.constants.SIZE_CONSTANTS
 import kotlinx.coroutines.launch
 
 @Composable
@@ -109,7 +110,7 @@ fun LoginPage(
 
                 TextField(
                     value = email,
-                    onValueChange = { email = it },
+                    onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) email = it },
                     singleLine = true,
                     label = { Text(DisplayAuthenticationText.EMAIL.value) },
                     modifier = Modifier.fillMaxWidth()
@@ -119,7 +120,7 @@ fun LoginPage(
 
                 TextField(
                     value = password,
-                    onValueChange = { password = it },
+                    onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) password = it },
                     singleLine = true,
                     label = { Text(DisplayAuthenticationText.PASSWORD.value) },
                     modifier = Modifier.fillMaxWidth(),
