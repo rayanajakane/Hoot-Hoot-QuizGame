@@ -1,12 +1,14 @@
 package com.example.polyquiz
 
 import com.example.polyquiz.constants.Environment
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
+import java.lang.reflect.Type
 
 
 /*REFERENCES: https://square.github.io/retrofit/
@@ -14,7 +16,7 @@ import retrofit2.http.*
 * https://www.baeldung.com/retrofit
 */
 
-abstract class CommunicationService<T>(
+abstract class CommunicationService(
     private val baseUrl: String
 ) {
 
@@ -27,41 +29,43 @@ abstract class CommunicationService<T>(
 
     protected abstract val apiService: ApiService
 
-    fun getAll(onSuccess: (List<T>) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
+    fun getAll(onSuccess: (List<Any>) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
         val fullEndpoint = buildFullEndpoint(endpoint)
-        @Suppress("UNCHECKED_CAST")
-        val call: Call<List<T>> = apiService.getAll(fullEndpoint) as Call<List<T>>
+        val call = apiService.getAll(fullEndpoint)
         call.enqueue(createCallback(onSuccess, onError))
     }
 
-    fun getById(id: String, onSuccess: (T) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
+    fun getById(id: String, onSuccess: (Any) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
         val fullEndpoint = buildFullEndpoint(endpoint)
-        @Suppress("UNCHECKED_CAST")
-        val call: Call<T> = apiService.getById("$fullEndpoint/$id") as Call<T>
+        val call = apiService.getById("$fullEndpoint/$id")
         call.enqueue(createCallback(onSuccess, onError))
     }
 
-    fun add(payload: T, onSuccess: (String) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
+    fun add(payload: Any, onSuccess: (Any) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
         val fullEndpoint = buildFullEndpoint(endpoint)
-        val call = apiService.add(fullEndpoint, payload as Any)
+        val call = apiService.add(fullEndpoint, payload)
         call.enqueue(createCallback(onSuccess, onError))
     }
 
     fun delete(id: String, onSuccess: (String) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
         val fullEndpoint = buildFullEndpoint(endpoint)
-        val call = apiService.delete("$fullEndpoint/$id")
+        @Suppress("UNCHECKED_CAST")
+        val call = apiService.delete("$fullEndpoint/$id") as Call<String>
         call.enqueue(createCallback(onSuccess, onError))
     }
 
-    fun update(payload: T, id: String, onSuccess: (String) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
+    fun update(payload: Any, id: String, onSuccess: (String) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
         val fullEndpoint = buildFullEndpoint(endpoint)
-        val call = apiService.update("$fullEndpoint/$id", payload as Any)
+        println("API URL: $fullEndpoint/$id")
+        @Suppress("UNCHECKED_CAST")
+        val call = apiService.update("$fullEndpoint/$id", payload) as Call<String>
         call.enqueue(createCallback(onSuccess, onError))
     }
 
-    fun put(payload: T, id: String, onSuccess: (String) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
+    fun put(payload: Any, id: String, onSuccess: (String) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
         val fullEndpoint = buildFullEndpoint(endpoint)
-        val call = apiService.put("$fullEndpoint/$id", payload as Any)
+        @Suppress("UNCHECKED_CAST")
+        val call = apiService.put("$fullEndpoint/$id", payload) as Call<String>
         call.enqueue(createCallback(onSuccess, onError))
     }
 
@@ -78,8 +82,10 @@ abstract class CommunicationService<T>(
     private fun <R> createCallback(onSuccess: (R) -> Unit, onError: (String) -> Unit): Callback<R> {
         return object : Callback<R> {
             override fun onResponse(call: Call<R>, response: Response<R>) {
+                println("API Response: $response")
                 if (response.isSuccessful) {
                     val body = response.body()
+                    println("API Response: $body")
                     if (body != null) {
                         onSuccess(body)
                     } else {
@@ -91,29 +97,36 @@ abstract class CommunicationService<T>(
             }
 
             override fun onFailure(call: Call<R>, t: Throwable) {
-                onError("Network error: ${t.message}")
+                onError("Network error: ${t}")
+                t.printStackTrace()
             }
         }
     }
 
+    protected fun <T> convertJsonResponseToType(jsonResponse: Any, type: Type): T {
+        val gson = Gson()
+        val json = gson.toJson(jsonResponse)
+        return gson.fromJson(json, type)
+    }
+
     interface ApiService {
 
-        @GET("{url}")
-        fun getAll(@Path("url") url: String): Call<List<Any>>
+        @GET
+        fun getAll(@Url url: String): Call<List<Any>>
 
-        @GET("{url}")
-        fun getById(@Path("url") url: String): Call<Any>
+        @GET
+        fun getById(@Url url: String): Call<Any>
 
-        @POST("{url}")
-        fun add(@Path("url") url: String, @Body payload: Any): Call<String>
+        @POST
+        fun add(@Url url: String, @Body payload: Any): Call<Any>
 
-        @DELETE("{url}")
-        fun delete(@Path("url") url: String): Call<String>
+        @DELETE
+        fun delete(@Url url: String): Call<Any>
 
-        @PATCH("{url}")
-        fun update(@Path("url") url: String, @Body payload: Any): Call<String>
+        @PATCH
+        fun update(@Url url: String, @Body payload: Any): Call<Any>
 
-        @PUT("{url}")
-        fun put(@Path("url") url: String, @Body payload: Any): Call<String>
+        @PUT
+        fun put(@Url url: String, @Body payload: Any): Call<Any>
     }
 }

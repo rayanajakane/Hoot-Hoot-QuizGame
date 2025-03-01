@@ -29,8 +29,6 @@ import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.DisplayAuthenticationText
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 
 @Composable
@@ -41,14 +39,58 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
     val keyboardController = LocalSoftwareKeyboardController.current
     val questionService = QuestionService()
 
-    fun fetchQuestions() {
+    fun updateQuestion() {
+        questionService.updateQuestion(
+            modifiedQuestion = Question(id="15570586-86be-4a7d-9d92-d99b7b716760", type="QCM", text="noo mais est-ce que la vie???", points=80.0, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification=""),
+            onSuccess = { response ->
+                println("Response: $response")
+            },
+            onError = { errorMessage ->
+                println("Error: $errorMessage")
+            }
+        )
+    }
+
+    fun verifyQuestion() {
+        questionService.verifyQuestion(
+            question = Question(id="", type="QCM", text="noo mais est-ce que la vie?", points=80.0, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification=""),
+                onSuccess = { response ->
+                println("Response: $response")
+            },
+            onError = { errorMessage ->
+                println("Error: $errorMessage")
+            }
+        )
+    }
+
+    fun deleteQuestion() {
+        questionService.deleteQuestion(
+            questionId = "16803b0c-adf6-4540-87bb-c53f2297bf7a",
+            onSuccess = { response ->
+                println("Response: $response")
+            },
+            onError = { errorMessage ->
+                println("Error: $errorMessage")
+            }
+        )
+    }
+
+    fun addQuestion() {
+        val question = Question(id="", type="QCM", text="noo mais est-ce que la vie?", points=80.0, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification="")
+        questionService.createQuestion(question,
+            onSuccess = { response ->
+                println("Response: $response")
+            },
+            onError = { errorMessage ->
+                println("Error: $errorMessage")
+            }
+        )
+    }
+
+    fun fetchQuestion() {
         questionService.getAllQuestions(
             onSuccess = { questions ->
-                val gson = Gson()
-                val json = gson.toJson(questions)
-                val listType = object : TypeToken<List<Question>>() {}.type
-                val result: List<Question> = gson.fromJson(json, listType)
-                result.forEach { question ->
+                questions.forEach { question ->
                     println("Question: ${question.text}")
                 }
             },
@@ -56,6 +98,15 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
                 println("Error: $errorMessage")
             }
         )
+        /*questionService.getQuestionById(
+            questionId = "15570586-86be-4a7d-9d92-d99b7b716760",
+            onSuccess = { question ->
+                println("Question: ${question.text}")
+            },
+            onError = { errorMessage ->
+                println("Error: $errorMessage")
+            }
+        )*/
     }
 
     LaunchedEffect(authState.value) {
@@ -102,13 +153,53 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
         ) {
             Button(
                 onClick = {
-                    fetchQuestions()
+                    updateQuestion()
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary)
             ) {
-                Text(text = "Jouer")
+                Text(text = "Modifier une question")
+            }
+            Button(
+                onClick = {
+                    verifyQuestion()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary)
+            ) {
+                Text(text = "Vérifier une question")
+            }
+            Button(
+                onClick = {
+                    deleteQuestion()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary)
+            ) {
+                Text(text = "Supprimer une question")
+            }
+            Button(
+                onClick = {
+                    addQuestion()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary)
+            ) {
+                Text(text = "Ajouter une question")
+            }
+            Button(
+                onClick = {
+                    fetchQuestion()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary)
+            ) {
+                Text(text = "Obtenir une question")
             }
             Surface(
                 shadowElevation = 10.dp,
