@@ -1,5 +1,7 @@
 package com.example.polyquiz
 
+import java.util.Date
+
 data class Question(
     val id: String,
     val type: String,
@@ -7,7 +9,7 @@ data class Question(
     val points: Double,
     val choices: List<Choice>? = null,
     val answer: String? = null,
-    val lastModification: String
+    val lastModification: Date?,
 )
 
 data class Choice(
