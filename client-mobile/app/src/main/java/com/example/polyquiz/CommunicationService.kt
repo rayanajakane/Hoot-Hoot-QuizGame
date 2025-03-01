@@ -51,34 +51,36 @@ abstract class CommunicationService<T>(
         call.enqueue(createCallback(onSuccess, onError))
     }
 
-    fun add(payload: T, onSuccess: (String) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
+    fun add(payload: T, onSuccess: (T) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
         val fullEndpoint = buildFullEndpoint(endpoint)
-        val call = apiService.add(fullEndpoint, payload as Any)
-       call.enqueue(createCallback(onSuccess, onError))
-        println("add")
-    }
-
-    fun delete(id: String, onSuccess: (String) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
-        val fullEndpoint = buildFullEndpoint(endpoint)
-        val call = apiService.delete("$fullEndpoint/$id")
+        @Suppress("UNCHECKED_CAST")
+        val call: Call<T> = apiService.add(fullEndpoint, payload as Any) as Call<T>
         call.enqueue(createCallback(onSuccess, onError))
     }
 
-    fun update(payload: T, id: String, onSuccess: (String) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
+    fun delete(id: String, onSuccess: (T) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
         val fullEndpoint = buildFullEndpoint(endpoint)
-        val call = apiService.update("$fullEndpoint/$id", payload as Any)
+        @Suppress("UNCHECKED_CAST")
+        val call: Call<T> = apiService.delete("$fullEndpoint/$id") as Call<T>
         call.enqueue(createCallback(onSuccess, onError))
     }
 
-    fun put(payload: T, id: String, onSuccess: (String) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
+    fun update(payload: T, id: String, onSuccess: (T) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
         val fullEndpoint = buildFullEndpoint(endpoint)
-        val call = apiService.put("$fullEndpoint/$id", payload as Any)
+        @Suppress("UNCHECKED_CAST")
+        val call: Call<T> = apiService.update("$fullEndpoint/$id", payload as Any) as Call<T>
+        call.enqueue(createCallback(onSuccess, onError))
+    }
+
+    fun put(payload: T, id: String, onSuccess: (T) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
+        val fullEndpoint = buildFullEndpoint(endpoint)
+        @Suppress("UNCHECKED_CAST")
+        val call: Call<T> = apiService.put("$fullEndpoint/$id", payload as Any) as Call<T>
         call.enqueue(createCallback(onSuccess, onError))
     }
 
     // Helper method to build the full endpoint path in case of custom endpoints
     private fun buildFullEndpoint(endpoint: String): String {
-        //println("blahblah $baseUrl/$endpoint")
         return if (endpoint.isNotEmpty()) {
             "$baseUrl/$endpoint"
         } else {
@@ -93,15 +95,14 @@ abstract class CommunicationService<T>(
             override fun onResponse(call: Call<R>, response: Response<R>) {
                 if (response.isSuccessful) {
                     val body = response.body()
+                    println("API Response: $body")
                     if (body != null) {
-                        onSuccess(body)
-                        println(body)
+                        onSuccess(body) //this is what creashes rhe code
 
                     } else {
                         onError("Response body is null")
                     }
                 } else {
-                    println("thisistherror")
                     onError("Failed with HTTP code: ${response.code()} - ${response.message()}")
                 }
             }
@@ -111,6 +112,7 @@ abstract class CommunicationService<T>(
             }
         }
     }
+
 
     interface ApiService {
 
@@ -127,16 +129,16 @@ abstract class CommunicationService<T>(
 //        fun add(@Url url: String) url: String, @Body payload: Any): Call<String>
 
         @POST
-        fun add(@Url url: String, @Body payload: Any): Call<String>
+        fun add(@Url url: String, @Body payload: Any): Call<Any>
 
 
         @DELETE("{url}")
-        fun delete(@Path("url") url: String): Call<String>
+        fun delete(@Path("url") url: String): Call<Any>
 
         @PATCH("{url}")
-        fun update(@Path("url") url: String, @Body payload: Any): Call<String>
+        fun update(@Path("url") url: String, @Body payload: Any): Call<Any>
 
         @PUT("{url}")
-        fun put(@Path("url") url: String, @Body payload: Any): Call<String>
+        fun put(@Path("url") url: String, @Body payload: Any): Call<Any>
     }
 }
