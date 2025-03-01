@@ -104,7 +104,7 @@ export class SignupPageComponent implements OnInit {
             if (!password) {
                 return null;
             }
-            const containsLowercase = /(?=.*[a-z])/.test(password);
+            const containsLowercase = /(?=.*[a-z\u00E0-\u00FC])/.test(password);
             return containsLowercase ? null : { noLowercase: true };
         };
     }
@@ -115,7 +115,7 @@ export class SignupPageComponent implements OnInit {
             if (!password) {
                 return null;
             }
-            const containsUppercase = /(?=.*[A-Z])/.test(password);
+            const containsUppercase = /(?=.*[A-Z\u00C0-\u00DC])/.test(password);
             return containsUppercase ? null : { noUppercase: true };
         };
     }

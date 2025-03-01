@@ -229,10 +229,10 @@ class AuthViewModel : ViewModel() {
         if (password.length > 14) {
             _passwordError.value += AuthErrorText.PASSWORD_TOO_LONG.value + "\n"
         }
-        if (!(("(?=.*[a-z])".toRegex()).containsMatchIn(password))) {
+        if (!(("(?=.*[a-z\\u00E0-\\u00FC])".toRegex()).containsMatchIn(password))) {
             _passwordError.value += AuthErrorText.PASSWORD_LOWERCASE.value + "\n"
         }
-        if (!(("(?=.*[A-Z])".toRegex()).containsMatchIn(password))) {
+        if (!(("(?=.*[A-Z\\u00C0-\\u00DC])".toRegex()).containsMatchIn(password))) {
             _passwordError.value += AuthErrorText.PASSWORD_UPPERCASE.value + "\n"
         }
         if (!(("(?=.*\\d)".toRegex()).containsMatchIn(password))) {
