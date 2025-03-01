@@ -137,7 +137,7 @@ export class SignupPageComponent implements OnInit {
             if (!password) {
                 return null;
             }
-            const containsSpecial = /(?=.*[-+_!@#$%^&*.,?])/.test(password);
+            const containsSpecial = /(?=.*[\^\$\*\.\[\]\{\}\(\)\?"!@#%&/\\,><':;\|_~])/.test(password);
             return containsSpecial ? null : { noSpecial: true };
         };
     }

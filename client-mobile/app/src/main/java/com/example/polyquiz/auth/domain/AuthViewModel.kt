@@ -238,7 +238,7 @@ class AuthViewModel : ViewModel() {
         if (!(("(?=.*\\d)".toRegex()).containsMatchIn(password))) {
             _passwordError.value += AuthErrorText.PASSWORD_DIGIT.value + "\n"
         }
-        if (!(("(?=.*[-+_!@#\$%^&*.,?])".toRegex()).containsMatchIn(password))) {
+        if (!(("(?=.*[\\^\\$\\*\\.\\[\\]\\{\\}\\(\\)\\?\"!@#%&/\\\\,><':;\\|_~])").toRegex()).containsMatchIn(password)) {
             _passwordError.value += AuthErrorText.PASSWORD_SPECIAL.value + "\n"
         }
         if (_passwordError.value.isNotEmpty()) {
