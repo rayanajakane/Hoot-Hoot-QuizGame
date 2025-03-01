@@ -58,7 +58,7 @@ export class AuthenticationService {
         return this.currentUser?.displayName ?? '';
     }
 
-    get userPhotoUrl(): string {
+    get userAvatarUrl(): string {
         return this.currentUser?.photoURL ?? '';
     }
 
@@ -116,8 +116,8 @@ export class AuthenticationService {
         return uid ? ref(this.database, `users/${uid}`) : ref(this.database, 'users/');
     }
 
-    async completeUserProfileCreation(userCredential: UserCredential, username: string, photoURL: string) {
-        updateProfile(userCredential.user, { displayName: username, photoURL: photoURL }).then(() => {
+    async completeUserProfileCreation(userCredential: UserCredential, username: string, avatarUrl: string) {
+        updateProfile(userCredential.user, { displayName: username, photoURL: avatarUrl }).then(() => {
             const userRef = this.getUserDatabaseRef(userCredential.user.uid);
 
             set(userRef, {
@@ -137,7 +137,63 @@ export class AuthenticationService {
         });
     }
 
-    async signUp(email: string, username: string, password: string, avatarURL: string) {
+    async editUserProfile(username: string, avatarUrl: string) {
+        let isValidUsername: boolean = this.userDisplayName.toLowerCase() === username.toLowerCase();
+        let isValidAvatarUrl: boolean = this.userAvatarUrl === avatarUrl;
+        if (!isValidUsername) {
+            isValidUsername = await this.editUsername(username);
+        }
+        if (!isValidAvatarUrl) {
+            isValidAvatarUrl = this.editAvatarUrl(avatarUrl);
+        }
+        if (isValidUsername && isValidAvatarUrl) {
+            this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.edited'));
+        }
+    }
+
+    editAvatarUrl(avatarUrl: string) {
+        if (!this.currentUser) return false;
+        updateProfile(this.currentUser, { photoURL: avatarUrl })
+            .then(() => {
+                return true;
+            })
+            .catch((error: any) => {
+                console.log(error);
+                return false;
+            });
+        return true;
+    }
+
+    async editUsername(username: string) {
+        if (!this.currentUser) return false;
+        const formattedUsername = username.trim();
+        const oldUsername = this.userDisplayName;
+        try {
+            await this.checkUsername(formattedUsername.toLowerCase());
+            updateProfile(this.currentUser, { displayName: formattedUsername })
+                .then(() => {
+                    const usernameRef = this.getUsernameDatabaseRef(username.toLowerCase());
+                    set(usernameRef, username.toLowerCase());
+
+                    const oldUsernameRef = this.getUsernameDatabaseRef(oldUsername.toLowerCase());
+                    remove(oldUsernameRef);
+
+                    return true;
+                })
+                .catch((error: any) => {
+                    const errorMessage = this.handleAuthErrorMessage(error);
+                    this.notificationService.displayErrorMessage(errorMessage);
+                    return false;
+                });
+        } catch (error: any) {
+            const errorMessage = this.handleAuthErrorMessage(error);
+            this.notificationService.displayErrorMessage(errorMessage);
+            return false;
+        }
+        return true;
+    }
+
+    async signUp(email: string, username: string, password: string, avatarUrl: string) {
         const formattedUsername = username.trim();
         const formattedEmail = email.trim();
 
@@ -145,7 +201,7 @@ export class AuthenticationService {
             await this.checkUsername(formattedUsername.toLowerCase());
             createUserWithEmailAndPassword(this.auth, `${formattedEmail}`, password)
                 .then((userCredential) => {
-                    this.completeUserProfileCreation(userCredential, formattedUsername, avatarURL);
+                    this.completeUserProfileCreation(userCredential, formattedUsername, avatarUrl);
                 })
                 .catch((error) => {
                     const errorMessage = this.handleAuthErrorMessage(error);

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserEditPageComponent } from '@app/pages/user-edit-page/user-edit-page.component';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
+import { getTranslocoModule } from '@app/transloco-testing.module';
 
 describe('UserEditPageComponent', () => {
     let component: UserEditPageComponent;
@@ -9,6 +10,7 @@ describe('UserEditPageComponent', () => {
     beforeEach(async () => {
         const authenticationSpy = jasmine.createSpyObj('AuthenticationService', ['deleteUser']);
         await TestBed.configureTestingModule({
+            imports: [getTranslocoModule()],
             declarations: [UserEditPageComponent],
             providers: [{ provide: AuthenticationService, useValue: authenticationSpy }],
         }).compileComponents();

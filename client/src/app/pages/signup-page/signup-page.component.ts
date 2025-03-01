@@ -4,6 +4,7 @@ import { MAX_LENGTH, MIN_LENGTH, PW_MAX_LENGTH, PW_MIN_LENGTH } from '@app/const
 import { IMAGE_MAX_FILE_SIZE, PresetAvatar } from '@app/constants/image-constants';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { NotificationService } from '@app/services/notification/notification.service';
+import { TranslocoService } from '@jsverse/transloco';
 
 @Component({
     selector: 'app-signup-page',
@@ -45,6 +46,7 @@ export class SignupPageComponent implements OnInit {
         private readonly authenticationService: AuthenticationService,
         public notificationService: NotificationService,
         private fb: FormBuilder,
+        private readonly translocoService: TranslocoService,
     ) {}
 
     get email() {
@@ -103,7 +105,7 @@ export class SignupPageComponent implements OnInit {
         if (eventTarget?.files?.[0]) {
             const file: File = eventTarget.files[0];
             if (file.size > IMAGE_MAX_FILE_SIZE) {
-                this.notificationService.displayErrorMessage('TODO');
+                this.notificationService.displayErrorMessage(this.translocoService.translate('auth.error.file-too-large'));
                 return;
             }
             const reader = new FileReader();

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SignupPageComponent } from '@app/pages/signup-page/signup-page.component';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
+import { getTranslocoModule } from '@app/transloco-testing.module';
 // import SpyObj = jasmine.SpyObj;
 
 describe('SignupPageComponent', () => {
@@ -11,6 +12,7 @@ describe('SignupPageComponent', () => {
     beforeEach(() => {
         const authenticationSpy = jasmine.createSpyObj('AuthenticationService', ['signUp']);
         TestBed.configureTestingModule({
+            imports: [getTranslocoModule()],
             declarations: [SignupPageComponent],
             providers: [{ provide: AuthenticationService, useValue: authenticationSpy }],
         });

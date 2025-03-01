@@ -4,6 +4,7 @@ import { MAX_LENGTH, MIN_LENGTH } from '@app/constants/authentication';
 import { IMAGE_MAX_FILE_SIZE, PresetAvatar } from '@app/constants/image-constants';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { NotificationService } from '@app/services/notification/notification.service';
+import { TranslocoService } from '@jsverse/transloco';
 
 @Component({
     selector: 'app-user-edit-page',
@@ -15,7 +16,7 @@ export class UserEditPageComponent {
     minUsernameLength = MIN_LENGTH;
     maxUsernameLength = MAX_LENGTH;
 
-    initialAvatarUrl = this.authenticationService.userPhotoUrl;
+    initialAvatarUrl = this.authenticationService.userAvatarUrl;
 
     form = this.fb.group({
         email: [{ value: this.authenticationService.userEmail, disabled: true }],
@@ -23,13 +24,14 @@ export class UserEditPageComponent {
             this.authenticationService.userDisplayName,
             { validators: [Validators.required, Validators.minLength(MIN_LENGTH), Validators.maxLength(MAX_LENGTH), this.usernameValidator()] },
         ],
-        avatar: [this.authenticationService.userPhotoUrl],
+        avatar: [this.authenticationService.userAvatarUrl],
     });
 
     constructor(
         public authenticationService: AuthenticationService,
         private fb: FormBuilder,
         public notificationService: NotificationService,
+        private readonly translocoService: TranslocoService,
     ) {}
 
     get username() {
@@ -47,12 +49,11 @@ export class UserEditPageComponent {
     save() {
         this.form.markAllAsTouched();
         if (this.form.valid) {
-            if (!this.isPresetAvatar) {
+            if (!this.isPresetAvatar && (this.avatar.value as string) != this.initialAvatarUrl) {
                 // TODO: TEMPORARY SOLUTION. Avatar should be uploaded in later commit.
                 this.setPresetAvatar(PresetAvatar.Default);
             }
-            // TODO: Edit username and avatar if required
-            // TODO: CHeck if avatar URL is same as before to avoid re-uploading it
+            this.authenticationService.editUserProfile(this.username.value as string, this.avatar.value as string);
         }
     }
 
@@ -62,7 +63,7 @@ export class UserEditPageComponent {
         if (eventTarget?.files?.[0]) {
             const file: File = eventTarget.files[0];
             if (file.size > IMAGE_MAX_FILE_SIZE) {
-                this.notificationService.displayErrorMessage('TODO');
+                this.notificationService.displayErrorMessage(this.translocoService.translate('auth.error.file-too-large'));
                 return;
             }
             const reader = new FileReader();

@@ -18,13 +18,15 @@
             "password-uppercase": "Devrait contenir au moins 1 lettre majuscule.",
             "password-digit": "Devrait contenir au moins 1 chiffre.",
             "password-special": "Devrait contenir au moins 1 caractère spécial.",
-            "password-too-long": "Mot de passe trop long. Max {{length}} characters."
+            "password-too-long": "Mot de passe trop long. Max {{length}} characters.",
+            "file-too-large": "La taille du fichier est trop élevée."
         },
         "dialog-feedback": {
             "sign-in": "Connexion réussie !",
             "sign-up": "Inscription réussie !",
             "sign-out": "Déconnexion réussie !",
-            "delete": "Suppression du profil réussie !"
+            "delete": "Suppression du profil réussie !",
+            "edited": "Modifications enregistrées !"
         }
     },
     "page": {
