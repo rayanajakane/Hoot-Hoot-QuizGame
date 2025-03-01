@@ -16,6 +16,7 @@ export class SignupPageComponent implements OnInit {
     maxUsernameLength = MAX_LENGTH;
     passwordMinLength = PW_MIN_LENGTH;
     passwordMaxLength = PW_MAX_LENGTH;
+    isPresetAvatar = true;
 
     form = this.fb.group({
         email: ['', { validators: [Validators.required, Validators.email], updateOn: 'blur' }],
@@ -37,7 +38,7 @@ export class SignupPageComponent implements OnInit {
                 ],
             },
         ],
-        avatar: [''],
+        avatar: [PresetAvatar.Default],
     });
 
     constructor(
@@ -80,12 +81,9 @@ export class SignupPageComponent implements OnInit {
     signUp() {
         this.form.markAllAsTouched();
         if (this.form.valid) {
+            // TODO: Add avatar to signUp + boolean isPreset (to see if the image actually needs to be uploaded)
             this.authenticationService.signUp(this.email.value as string, this.username.value as string, this.password.value as string);
         }
-    }
-
-    uploadAvatar() {
-        // TODO
     }
 
     setCustomAvatar(event: Event): void {
