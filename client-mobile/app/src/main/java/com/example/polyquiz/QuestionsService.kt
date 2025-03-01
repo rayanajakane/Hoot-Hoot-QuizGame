@@ -11,7 +11,7 @@ class QuestionService : CommunicationService<Question>("questions") {
         getAll(onSuccess, onError)
     }
 
-    fun createQuestion(question: Question, onSuccess: (Question) -> Unit, onError: (String) -> Unit) {
+    fun createQuestion(question: Question, onSuccess: (Any) -> Unit, onError: (String) -> Unit) {
         add(question, onSuccess, onError)
     }
 

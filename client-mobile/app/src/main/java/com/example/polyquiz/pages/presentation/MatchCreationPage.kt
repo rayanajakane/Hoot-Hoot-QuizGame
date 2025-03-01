@@ -57,10 +57,11 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
     }
 
     fun createQuestion() {
-        val question = Question(id="", type="QCM", text="la question ??", points=80.0, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification="")
+        val question = Question(id="", type="QCM", text="ça marche?", points=80.0, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification="")
         questionService.createQuestion(question,
             onSuccess = { response ->
-                println("Response: $response")
+                val result = questionService.convertToGenericType<Question>(response)
+                println("Response: $result")
             },
             onError = { errorMessage ->
                 println("Error: $errorMessage")
