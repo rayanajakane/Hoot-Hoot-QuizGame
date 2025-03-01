@@ -50,9 +50,16 @@ export class AuthenticationService {
         });
     }
 
+    get userEmail(): string {
+        return this.currentUser?.email ?? '';
+    }
+
     get userDisplayName(): string {
-        const displayName: string = this.currentUser?.displayName ?? '';
-        return displayName;
+        return this.currentUser?.displayName ?? '';
+    }
+
+    get userPhotoUrl(): string {
+        return this.currentUser?.photoURL ?? '';
     }
 
     getUsernameDatabaseRef(username: string) {

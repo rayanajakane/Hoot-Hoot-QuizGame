@@ -111,10 +111,12 @@ export class SignupPageComponent implements OnInit {
                 this.form.get('avatar')?.setValue(reader.result as null);
             });
             reader.readAsDataURL(file);
+            this.isPresetAvatar = false;
         }
     }
 
     setPresetAvatar(presetAvatar: PresetAvatar) {
+        this.isPresetAvatar = true;
         this.form.get('avatar')?.setValue(presetAvatar);
     }
 
