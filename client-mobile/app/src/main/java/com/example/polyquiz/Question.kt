@@ -11,6 +11,6 @@ data class Question(
 )
 
 data class Choice(
-    val id: String,
+    val text: String,
     val isCorrect: Boolean? = null,
 )
