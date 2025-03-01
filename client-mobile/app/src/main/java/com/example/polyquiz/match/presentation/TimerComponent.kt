@@ -49,26 +49,4 @@ fun TimerComponent(
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = "${timer.value} s", style = MaterialTheme.typography.bodyLarge)
     }
-    Button(
-        onClick = {
-            Log.d("Timer", timer.toString())
-        },
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.surfaceBright,
-            contentColor = MaterialTheme.colorScheme.onSurface
-        )
-    ) {
-        Text(text = "Log timer")
-    }
-//    Button(
-//        onClick = {
-//            joinRoom("6450", "sami")
-//        },
-//        colors = ButtonDefaults.buttonColors(
-//            containerColor = MaterialTheme.colorScheme.surfaceBright,
-//            contentColor = MaterialTheme.colorScheme.onSurface
-//        )
-//    ) {
-//        Text(text = "JoinRoom")
-//    }
 }

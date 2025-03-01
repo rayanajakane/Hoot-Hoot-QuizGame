@@ -1,5 +1,6 @@
 package com.example.polyquiz.match.presentation
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,8 +15,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -23,33 +27,70 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.constants.AnswerCorrectness
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.constants.QuestionType
-import com.example.polyquiz.match.domain.Choice
+import com.example.polyquiz.match.domain.AnswerService
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.TimeService
+import androidx.compose.runtime.snapshotFlow
+import com.example.polyquiz.match.domain.Question
+
 
 @Composable
 fun QuestionArea(
     matchRoomService: MatchRoomService,
     timeService: TimeService,
     matchContextService: MatchContextService,
+    answerService : AnswerService,
     modifier: Modifier = Modifier,
     authViewModel: AuthViewModel,
     navigateToHome: () -> Unit
 ) {
-    val question = matchRoomService.currentQuestion
-    val questionText = question?.text ?: "Question inconnue"
-    val questionPoints = question?.points ?: 0
-    var room by remember { mutableStateOf("") }
+
+    fun goToNextQuestion(){
+        matchRoomService.goToNextQuestion();
+        answerService.isNextQuestionButtonEnabled = false;
+    }
+
+    fun resetStateForNewQuestion(){
+        answerService.resetStateForNewQuestion();
+    }
+
+    fun listenToGameEvents(){
+        timeService.listenToTimerEvents();
+        answerService.listenToAnswerEvents();
+    }
+
+
+    var room by remember { mutableStateOf(matchRoomService.getRoomCode()) }
     val username by remember { mutableStateOf(authViewModel.getUsername() )}
-    val questionType = question?.type ?: QuestionType.MULTIPLE_CHOICE.value
+    var context by remember { mutableStateOf(matchContextService.getContext()) }
+    var isFirstQuestion by remember { mutableStateOf(true) }
+    val question by matchRoomService::currentQuestion
 
-    val score = 12
-//    val timeRemaining = timeService.time
 
-    val currentContext = matchContextService.getContext()
+//    val answerOptions by remember { derivedStateOf { AnswerCorrectness } }
+
+//    val questionText = question?.text ?: "Question inconnue"
+//    val questionPoints = question?.points ?: 0
+//    val questionType = question?.type ?: QuestionType.MULTIPLE_CHOICE.value
+
+
+    val score = answerService.playerScore
+
+    LaunchedEffect(Unit) {
+        resetStateForNewQuestion()
+        listenToGameEvents()
+        matchRoomService.isQuitting = false
+        answerService.playerScore = 0
+        context = matchContextService.getContext()
+
+        if (isFirstQuestion) {
+            isFirstQuestion = false
+        }
+    }
 
     Column(
         modifier = modifier
@@ -64,7 +105,7 @@ fun QuestionArea(
             timeService = timeService,
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+//        Spacer(modifier = Modifier.height(24.dp))
 
         Box(
             modifier = Modifier
@@ -78,47 +119,84 @@ fun QuestionArea(
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = questionText,
+                    text = question?.text ?: "xx",
                     style = MaterialTheme.typography.titleLarge,
                     color = Color.White
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "$questionPoints points",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White
-                )
+                if (!matchRoomService.isCooldown){
+                    var questionPoints = question?.points
+
+                    Text(
+                        text = "$questionPoints points",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.White
+                    )
+                }
+
             }
         }
 
         Spacer(modifier = Modifier.height(12.dp))
+        if (context != MatchContext.HOSTVIEW){
+            Text(
+                text = "SCORE : $score",
+                style = MaterialTheme.typography.titleMedium
+            )
 
-        Text(
-            text = "SCORE : $score",
-            style = MaterialTheme.typography.titleMedium
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        when (questionType) {
-            QuestionType.MULTIPLE_CHOICE.value -> {
-                val mockChoices = listOf(
-                    Choice(text = "LOG3900"),
-                    Choice(text = "INF1040"),
-                    Choice(text = "LOG1810"),
-                    Choice(text = "INF2205")
-                )
-                MultipleChoiceArea(choices = mockChoices, modifier = Modifier.fillMaxWidth(0.8f))
+            if (answerService.showFeedback && context === MatchContext.PLAYERVIEW && !matchRoomService.isCooldown){
+                if (answerService.answerCorrectness == AnswerCorrectness.WRONG){
+                    Text(
+                        text = "\uD83D\uDE14 Mauvaise Réponse \uD83D\uDE14",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.Red
+                    )
+                }
+                else if(answerService.answerCorrectness == AnswerCorrectness.OK){
+                    val obtainedPoints = (question?.points ?: 0) / 2
+                    Text(
+                        text = "\uD83C\uDD97 Réponse partielle! Vous avez obtenu $obtainedPoints points \uD83C\uDD97",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.Yellow
+                    )
+                }
+                else if(answerService.answerCorrectness == AnswerCorrectness.GOOD){
+                    val obtainedPoints = question?.points
+                    Text(
+                        text = "\uD83C\uDD97 Réponse partielle! Vous avez obtenu $obtainedPoints points \uD83C\uDD97",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.Green
+                    )
+                }
+                if (answerService.bonusPoints > 0){
+                    var obtainedBonusPoints = answerService.bonusPoints
+                    Text(
+                        text = "✨ Vous avez obtenu un bonus de $obtainedBonusPoints points!✨",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.Green
+                    )
+                }
             }
 
-            QuestionType.LONG_ANSWER.value -> {
-                LongAnswerArea(modifier = Modifier.fillMaxWidth(0.8f))
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+
+        if (!matchRoomService.isCooldown){
+            when (question?.type) {
+                QuestionType.MULTIPLE_CHOICE.value -> {
+                    MultipleChoiceArea(choices = question?.choices ?: emptyList(), modifier = Modifier.fillMaxWidth(0.8f))
+                }
+
+                QuestionType.LONG_ANSWER.value -> {
+                    LongAnswerArea(modifier = Modifier.fillMaxWidth(0.8f))
+                }
             }
         }
 
-        if (currentContext == MatchContext.HOSTVIEW) {
+
+        if (context == MatchContext.HOSTVIEW) {
             Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { }) {
+            Button(onClick = { goToNextQuestion();}) {
                 Text("QUESTION SUIVANTE")
             }
         }
@@ -138,12 +216,13 @@ fun QuestionArea(
         }
 
         Button(
-            onClick = { matchRoomService.joinRoom(room, username); timeService.handleTimer() },
+            onClick = { matchRoomService.connect();matchRoomService.joinRoom(room, username); timeService.handleTimer() },
             modifier = Modifier.fillMaxWidth(0.5f),
             shape = RoundedCornerShape(8.dp)
         ) {
             Text("join")
         }
     }
+
 
 }

@@ -48,9 +48,6 @@ object AnswerService {
         }
     }
 
-
-
-
     fun onBonusPoints() {
         mSocket.on(AnswerEvents.BONUS.value) { args ->
             if (args.isNotEmpty() && args[0] != null) {
@@ -142,6 +139,4 @@ object AnswerService {
 
         MatchRoomService.sendPlayersData(MatchRoomService.getRoomCode())
     }
-
-
 }

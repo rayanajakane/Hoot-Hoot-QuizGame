@@ -8,10 +8,12 @@ import com.example.vanillaprototype.socket.SocketHandler
 import com.google.gson.Gson
 import io.socket.client.Ack
 import org.json.JSONObject
+import android.util.Log
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 object MatchRoomService {
-
-
     var players: List<Player> = emptyList()
     var messages: List<Message> = emptyList()
     var isMatchStarted = false
@@ -21,7 +23,7 @@ object MatchRoomService {
     var isPlaying = false
     var gameTitle: String = ""
     var gameDuration: Int = 0
-    var currentQuestion: Question? = null
+    var currentQuestion by mutableStateOf<Question?>(null)
     var isHostPlaying = true
     var isCooldown = false
     var isQuitting = false
@@ -107,16 +109,25 @@ object MatchRoomService {
             put("roomCode", roomCode)
             put("username", username)
         }
+        Log.d("JOIN_ROOM", "Sending roomCode=$roomCode, username=$username")
+
         socket.emit(MatchEvents.JOIN_ROOM.value, sentInfo, Ack { args ->
+            Log.d("JOIN_ROOM_ACK", "Received response: ${args.joinToString()}") // Log full response
+
             if (args.isNotEmpty()) {
                 val response = args[0] as JSONObject
                 matchRoomCode = response.getString("code")
                 this.username = response.getString("username")
-//                navigator.navigateTo("match-room")
+
+                Log.d("JOINED HIHIIIIIIIIIIIII", "${this.username} ${matchRoomCode}") // Log after setting values
+            } else {
+                Log.e("JOIN_ROOM_ACK", "No response received!")
             }
         })
+
         sendPlayersData(roomCode)
     }
+
 
     fun sendPlayersData(roomCode: String) {
         socket.emit(MatchEvents.SEND_PLAYERS_DATA.value, roomCode)
@@ -193,17 +204,34 @@ object MatchRoomService {
 
     fun onNextQuestion() {
         socket.on(MatchEvents.GO_TO_NEXT_QUESTION.value) { args ->
+            Log.d("NEXT_QUESTION", "Received event with args: ${args.joinToString()}") // Log entire response
+
             if (args.isNotEmpty()) {
                 isCooldown = false
-                val gson = Gson()
-                val question = gson.fromJson(
-                    (args[0] as JSONObject).toString(),
-                    Question::class.java
-                )
-                currentQuestion = question
+
+                val jsonString = (args[0] as? JSONObject)?.toString() ?: ""
+                Log.d("NEXT_QUESTION", "Raw JSON received: $jsonString")
+
+                if (jsonString.isNotEmpty()) {
+                    try {
+                        val gson = Gson()
+                        val question = gson.fromJson(jsonString, Question::class.java)
+
+                        Log.d("NEXT_QUESTION", "Parsed question: $question") // Log parsed object
+                        currentQuestion = question
+                        Log.d("NEXT_QUESTION", "Updated currentQuestion: $currentQuestion")
+                    } catch (e: Exception) {
+                        Log.e("NEXT_QUESTION", "Error parsing question JSON: ${e.message}")
+                    }
+                } else {
+                    Log.e("NEXT_QUESTION", "Empty JSON received")
+                }
+            } else {
+                Log.e("NEXT_QUESTION", "No arguments received!")
             }
         }
     }
+
 
     fun onFetchPlayersData() {
         socket.on(MatchEvents.FETCH_PLAYERS_DATA.value) { args ->
