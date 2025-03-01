@@ -109,8 +109,8 @@ export class AuthenticationService {
         return uid ? ref(this.database, `users/${uid}`) : ref(this.database, 'users/');
     }
 
-    async completeUserProfileCreation(userCredential: UserCredential, username: string) {
-        updateProfile(userCredential.user, { displayName: username }).then(() => {
+    async completeUserProfileCreation(userCredential: UserCredential, username: string, photoURL: string) {
+        updateProfile(userCredential.user, { displayName: username, photoURL: photoURL }).then(() => {
             const userRef = this.getUserDatabaseRef(userCredential.user.uid);
 
             set(userRef, {
@@ -130,7 +130,7 @@ export class AuthenticationService {
         });
     }
 
-    async signUp(email: string, username: string, password: string) {
+    async signUp(email: string, username: string, password: string, avatarURL: string) {
         const formattedUsername = username.trim();
         const formattedEmail = email.trim();
 
@@ -138,7 +138,7 @@ export class AuthenticationService {
             await this.checkUsername(formattedUsername.toLowerCase());
             createUserWithEmailAndPassword(this.auth, `${formattedEmail}`, password)
                 .then((userCredential) => {
-                    this.completeUserProfileCreation(userCredential, formattedUsername);
+                    this.completeUserProfileCreation(userCredential, formattedUsername, avatarURL);
                 })
                 .catch((error) => {
                     const errorMessage = this.handleAuthErrorMessage(error);

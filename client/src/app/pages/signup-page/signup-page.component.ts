@@ -59,6 +59,10 @@ export class SignupPageComponent implements OnInit {
         return this.form.controls['password'];
     }
 
+    get avatar() {
+        return this.form.controls['avatar'];
+    }
+
     get presetAvatar() {
         return PresetAvatar;
     }
@@ -81,8 +85,16 @@ export class SignupPageComponent implements OnInit {
     signUp() {
         this.form.markAllAsTouched();
         if (this.form.valid) {
-            // TODO: Add avatar to signUp + boolean isPreset (to see if the image actually needs to be uploaded)
-            this.authenticationService.signUp(this.email.value as string, this.username.value as string, this.password.value as string);
+            if (!this.isPresetAvatar) {
+                // TODO: TEMPORARY SOLUTION. Avatar should be uploaded in later commit.
+                this.setPresetAvatar(PresetAvatar.Default);
+            }
+            this.authenticationService.signUp(
+                this.email.value as string,
+                this.username.value as string,
+                this.password.value as string,
+                this.avatar.value as string,
+            );
         }
     }
 
