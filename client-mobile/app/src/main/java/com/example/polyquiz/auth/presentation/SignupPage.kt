@@ -35,6 +35,7 @@ import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.DisplayAuthenticationText
+import com.example.polyquiz.constants.SIZE_CONSTANTS
 import kotlinx.coroutines.launch
 
 @Composable
@@ -135,7 +136,7 @@ fun SignupPage(
                     Column() {
                         TextField(
                             value = email,
-                            onValueChange = { authViewModel.updateEmail(it) },
+                            onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.updateEmail(it) },
                             isError = emailError.isNotEmpty(),
                             singleLine = true,
                             label = { Text(DisplayAuthenticationText.EMAIL.value) },
@@ -150,7 +151,7 @@ fun SignupPage(
 
                         TextField(
                             value = username,
-                            onValueChange = { authViewModel.updateUsername(it) },
+                            onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.updateUsername(it) },
                             isError = usernameError.isNotEmpty(),
                             singleLine = true,
                             label = { Text(DisplayAuthenticationText.USERNAME.value) },
@@ -166,7 +167,7 @@ fun SignupPage(
 
                         TextField(
                             value = password,
-                            onValueChange = {authViewModel.updatePassword(it)},
+                            onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.updatePassword(it)},
                             singleLine = true,
                             keyboardActions = KeyboardActions(onDone = {
                                 authViewModel.signUp(email, username, password)

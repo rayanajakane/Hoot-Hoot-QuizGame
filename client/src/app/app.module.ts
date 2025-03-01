@@ -30,6 +30,8 @@ import { AdminEditPageComponent } from '@app/pages/admin-edit-page/admin-edit-pa
 import { AdminMainPageComponent } from '@app/pages/admin-main-page/admin-main-page.component';
 import { AdminQuestionBankComponent } from '@app/pages/admin-question-bank/admin-question-bank.component';
 import { AppComponent } from '@app/pages/app/app.component';
+import { ForgotPasswordFeedbackPageComponent } from '@app/pages/forgot-password-feedback-page/forgot-password-feedback-page.component';
+import { ForgotPasswordPageComponent } from '@app/pages/forgot-password-page/forgot-password-page.component';
 import { HomePageComponent } from '@app/pages/home-page/home-page.component';
 import { LoginPageComponent } from '@app/pages/login-page/login-page.component';
 import { MatchCreationPageComponent } from '@app/pages/match-creation-page/match-creation-page.component';
@@ -81,9 +83,11 @@ import { TranslocoRootModule } from '@app/transloco-root.module';
         ResultsPageComponent,
         WaitPageComponent,
         UserEditPageComponent,
+        ForgotPasswordPageComponent,
         FilterByQuestionTypePipe,
         SortAnswersPipe,
         SortByLastModificationPipe,
+        ForgotPasswordFeedbackPageComponent,
         SortByScorePipe,
         SortHistoryPipe,
         SortPlayersPipe,

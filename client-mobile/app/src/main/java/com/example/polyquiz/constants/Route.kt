@@ -11,4 +11,10 @@ object Route {
 
     @Serializable
     object Chat
+
+    @Serializable
+    object ForgotPassword
+
+    @Serializable
+    object ForgotPasswordFeedbackPage
 }

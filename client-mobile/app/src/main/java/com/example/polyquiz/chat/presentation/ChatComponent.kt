@@ -42,6 +42,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.chat.domain.Message
+import com.example.polyquiz.constants.SIZE_CONSTANTS
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -83,7 +84,7 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
             TextField(
                 modifier = Modifier.fillMaxWidth().padding(0.dp, 10.dp, 0.dp, 70.dp),
                 value = newMessageText,
-                onValueChange = { newText -> newMessageText = newText },
+                onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) newMessageText = it },
                 label = { Text(text = DisplayChatText.MESSAGE_LABEL.value) },
                 singleLine = true,
                 shape = RoundedCornerShape(0.dp),

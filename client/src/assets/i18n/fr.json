@@ -46,6 +46,10 @@
         "upload-avatar": "Téléverser un avatar",
         "avatar-choices": "Avatars prédéfinis",
         "delete-user": "Supprimer le profil",
-        "danger-zone": "Zone dangereuse"
+        "danger-zone": "Zone dangereuse",
+        "forgot-password": "Mot de passe oublié ?",
+        "reset-password": "Réinitialiser le mot de passe",
+        "sent-email": "Courriel envoyé !",
+        "sent-email-extra-info": "Si vous avez déjà un compte, vous recevrez un courriel pour réinitialiser votre mot de passe."
     }
 }
