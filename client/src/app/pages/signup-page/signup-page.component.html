@@ -9,17 +9,17 @@
                             <div id="main-avatar">
                                 <img *ngIf="form.get('avatar')!.value" [src]="form.get('avatar')!.value" />
                             </div>
-                            <input class="avatar" type="file" #avatar (change)="this.setImage($event)" accept="image/*" />
-                            <!--<button mat-raised-button color="primary" (click)="uploadAvatar()" id="upload-button">{{ t('page.upload-avatar') }}</button>>-->
+                            <input class="avatar" type="file" #avatar (change)="setCustomAvatar($event)" accept="image/png, image/jpeg" />
+                            <button mat-raised-button color="primary" (click)="avatar.click()">
+                                <mat-icon>upload</mat-icon>{{ t('page.upload-avatar') }}
+                            </button>
                         </div>
                         <div id="avatar-choices-container">
                             <p>{{ t('page.avatar-choices') }}</p>
                             <div id="avatar-choices">
-                                <div class="avatar-mini"></div>
-                                <div class="avatar-mini"></div>
-                                <div class="avatar-mini"></div>
-                                <div class="avatar-mini"></div>
-                                <div class="avatar-mini"></div>
+                                <div class="avatar-mini" *ngFor="let enum of presetAvatar | keyvalue" (click)="setPresetAvatar(enum.value)">
+                                    <img src="{{ enum.value }}" alt="" />
+                                </div>
                             </div>
                         </div>
                     </div>

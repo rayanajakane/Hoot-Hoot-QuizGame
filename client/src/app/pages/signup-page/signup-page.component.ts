@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MAX_LENGTH, MIN_LENGTH, PW_MAX_LENGTH, PW_MIN_LENGTH } from '@app/constants/authentication';
+import { IMAGE_MAX_FILE_SIZE, PresetAvatar } from '@app/constants/image-constants';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
+import { NotificationService } from '@app/services/notification/notification.service';
 
 @Component({
     selector: 'app-signup-page',
@@ -40,6 +42,7 @@ export class SignupPageComponent implements OnInit {
 
     constructor(
         private readonly authenticationService: AuthenticationService,
+        public notificationService: NotificationService,
         private fb: FormBuilder,
     ) {}
 
@@ -53,6 +56,10 @@ export class SignupPageComponent implements OnInit {
 
     get password() {
         return this.form.controls['password'];
+    }
+
+    get presetAvatar() {
+        return PresetAvatar;
     }
 
     ngOnInit() {
@@ -81,12 +88,12 @@ export class SignupPageComponent implements OnInit {
         // TODO
     }
 
-    setImage(event: Event): void {
+    setCustomAvatar(event: Event): void {
         const eventTarget: HTMLInputElement | null = event.target as HTMLInputElement | null;
         if (eventTarget?.files?.[0]) {
             const file: File = eventTarget.files[0];
-            if (file.size > 1000000) {
-                console.log('TOO LARGE');
+            if (file.size > IMAGE_MAX_FILE_SIZE) {
+                this.notificationService.displayErrorMessage('TODO');
                 return;
             }
             const reader = new FileReader();
@@ -95,6 +102,10 @@ export class SignupPageComponent implements OnInit {
             });
             reader.readAsDataURL(file);
         }
+    }
+
+    setPresetAvatar(presetAvatar: PresetAvatar) {
+        this.form.get('avatar')?.setValue(presetAvatar);
     }
 
     // TODO : Put in username service
