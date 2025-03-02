@@ -33,8 +33,10 @@ export class MultipleChoiceStrategy extends QuestionStrategy {
             if (this.isCorrectAnswer(player.answer as MultipleChoiceAnswer, correctAnswer)) {
                 player.answerCorrectness = AnswerCorrectness.GOOD;
                 player.score += currentQuestionPoints;
+                console.log('player', player.username, 'score', player.score);
                 correctPlayers.push(player);
                 if ((!fastestTime || player.answer.timestamp < fastestTime) && player.answer.timestamp !== Infinity)
+                    console.log('fastest time', player.answer.timestamp);
                     fastestTime = player.answer.timestamp;
             }
         });

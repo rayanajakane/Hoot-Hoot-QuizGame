@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -36,6 +37,7 @@ import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.TimeService
 import androidx.compose.runtime.snapshotFlow
 import com.example.polyquiz.constants.MatchStatus
+import com.example.polyquiz.constants.UserInfo
 import com.example.polyquiz.match.domain.Question
 
 
@@ -95,8 +97,6 @@ fun QuestionArea(
             timeService = timeService,
         )
 
-//        Spacer(modifier = Modifier.height(24.dp))
-
         Box(
             modifier = Modifier
                 .fillMaxWidth(0.8f)
@@ -108,7 +108,7 @@ fun QuestionArea(
             contentAlignment = Alignment.Center
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                val questionText = if (matchRoomService.isCooldown) MatchStatus.PREPARE.value else question?.text ?: "xx"
+                val questionText = if (matchRoomService.isCooldown) MatchStatus.PREPARE.value else question?.text ?: ""
 
                 Text(
                     text = questionText,
@@ -157,11 +157,12 @@ fun QuestionArea(
 
 
             if (answerService.bonusPoints > 0){
-                    Text(
-                        text = "✨ Vous avez obtenu un bonus de ${answerService.bonusPoints} points!✨",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = Color.Green
-                    )
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = "✨ Vous avez obtenu un bonus de ${answerService.bonusPoints} points!✨",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.Green
+                )
                 }
             }
 
@@ -181,12 +182,35 @@ fun QuestionArea(
         }
 
 
-        if (context == MatchContext.HOSTVIEW) {
+        if (context == MatchContext.HOSTVIEW && !answerService.isSelectionEnabled) {
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = { goToNextQuestion();}) {
                 Text("QUESTION SUIVANTE")
             }
         }
+
+        if (answerService.isSelectionEnabled && context === MatchContext.PLAYERVIEW) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentSize(Alignment.Center)
+            ) {
+                Button(
+                    onClick = {
+                        answerService.submitAnswer(
+                            UserInfo(
+                                username = matchRoomService.getUsername(),
+                                roomCode = matchRoomService.getRoomCode()
+                            )
+                        )
+                    }
+                ) {
+                    Text("Submit Answer")
+                }
+            }
+        }
+
+
         //TODO: REMOVE WHEN DONE
         if ( question == null){
             TextField(

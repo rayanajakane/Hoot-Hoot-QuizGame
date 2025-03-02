@@ -65,8 +65,6 @@ object AnswerService {
     }
 
 
-
-
     fun onBonusPoints() {
         mSocket.on(AnswerEvents.BONUS.value) { args ->
             if (args.isNotEmpty() && args[0] != null) {
@@ -74,6 +72,7 @@ object AnswerService {
             }
         }
     }
+
     fun onTimesUp() {
         mSocket.on(AnswerEvents.TIMES_UP.value) {
             isTimesUp = true
@@ -98,11 +97,6 @@ object AnswerService {
         mSocket.on(MatchEvents.GO_TO_NEXT_QUESTION.value) {
             resetStateForNewQuestion()
         }
-    }
-
-    fun submitAnswer(userInfo: UserInfo) {
-        isSelectionEnabled = false
-        mSocket.emit(AnswerEvents.SUBMIT_ANSWER.value, Gson().toJson(userInfo))
     }
 
     fun resetStateForNewQuestion() {
@@ -144,6 +138,12 @@ object AnswerService {
         mSocket.emit(AnswerEvents.DESELECT_CHOICE.value, choiceInfoJsonObject)
     }
 
+    fun submitAnswer(userInfo: UserInfo) {
+        isSelectionEnabled = false
+        val userInfoStringified = Gson().toJson(userInfo)
+        val userInfoJsonObject = JSONObject(userInfoStringified)
+        mSocket.emit(AnswerEvents.SUBMIT_ANSWER.value, userInfoJsonObject)
+    }
 
     fun updateLongAnswer() {
         if (!isSelectionEnabled) return
