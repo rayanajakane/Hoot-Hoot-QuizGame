@@ -1,6 +1,6 @@
 package com.example.polyquiz.http
 
-import com.example.polyquiz.Question
+import com.example.polyquiz.match.domain.Question
 import com.google.gson.reflect.TypeToken
 
 class QuestionService : CommunicationService("questions") {

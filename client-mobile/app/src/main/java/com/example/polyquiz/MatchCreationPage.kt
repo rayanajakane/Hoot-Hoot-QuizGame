@@ -30,7 +30,10 @@ import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.DisplayAuthenticationText
 import com.example.polyquiz.http.QuestionService
+import com.example.polyquiz.match.domain.Choice
+import com.example.polyquiz.match.domain.Question
 import kotlinx.coroutines.launch
+
 
 @Composable
 fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateToHome: () -> Unit, authViewModel: AuthViewModel) {
@@ -42,7 +45,8 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
 
     fun updateQuestion() {
         questionService.updateQuestion(
-            modifiedQuestion = Question(id="c7f6e692-d8f7-4c07-a45a-b33659e4ad68", type="QCM", text="noo mais est-ce que la vie???", points=80.0, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification=""),
+            modifiedQuestion = Question(id="c7f6e692-d8f7-4c07-a45a-b33659e4ad68", type="QCM", text="noo mais est-ce que la vie???", points=80, choices= listOf(
+                Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification=""),
             onSuccess = {
                 println("It worked")
             },
@@ -54,7 +58,7 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
 
     fun verifyQuestion() {
         questionService.verifyQuestion(
-            question = Question(id="", type="QCM", text="noo mais est-ce que la vie?", points=80.0, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification=""),
+            question = Question(id="", type="QCM", text="noo mais est-ce que la vie?", points=80, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification=""),
                 onSuccess = { response ->
                 println("Response: $response")
             },
@@ -77,7 +81,7 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
     }
 
     fun addQuestion() {
-        val question = Question(id="", type="QCM", text="noo mais est-ce que la vie?", points=80.0, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification="")
+        val question = Question(id="", type="QCM", text="noo mais est-ce que la vie?", points=80, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification="")
         questionService.createQuestion(question,
             onSuccess = { response ->
                 println("Response: $response")
