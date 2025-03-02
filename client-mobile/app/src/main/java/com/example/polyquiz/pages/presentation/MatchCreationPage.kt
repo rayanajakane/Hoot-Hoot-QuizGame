@@ -41,6 +41,42 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
     val keyboardController = LocalSoftwareKeyboardController.current
     val questionService = QuestionService()
 
+    fun getQuestionById(questionId: String) {
+        questionService.getQuestionById(questionId,
+            onSuccess = { question ->
+                println("Question: $question")
+                val result = questionService.convertToGenericType<Question>(question)
+                println("Result: $result")
+            },
+            onError = { errorMessage ->
+                println("Error: $errorMessage")
+            }
+        )
+    }
+
+    fun validateQuestion() {
+        val question = Question(id="", type="QCM", text="ça marche?", points=80.0, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification="")
+        questionService.verifyQuestion(question,
+            onSuccess = { response ->
+                println("Response: $response")
+            },
+            onError = { errorMessage ->
+                println("Error: $errorMessage")
+            }
+        )
+    }
+
+    fun deleteQuestion(questionId: String) {
+        questionService.deleteQuestion(questionId,
+            onSuccess = { response ->
+                println("Response: $response")
+            },
+            onError = { errorMessage ->
+                println("Error: $errorMessage")
+            }
+        )
+    }
+
     fun fetchQuestions() {
         questionService.getAllQuestions(
             onSuccess = { questions ->
@@ -57,10 +93,11 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
     }
 
     fun createQuestion() {
-        val question = Question(id="", type="QCM", text="la question ??", points=80.0, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification="")
+        val question = Question(id="", type="QCM", text="ça marche?", points=80.0, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification="")
         questionService.createQuestion(question,
             onSuccess = { response ->
-                println("Response: $response")
+                val result = questionService.convertToGenericType<Question>(response)
+                println("Response: $result")
             },
             onError = { errorMessage ->
                 println("Error: $errorMessage")
@@ -110,6 +147,36 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxHeight()
         ) {
+            Button(
+                onClick = {
+                    getQuestionById("b7a17fe8-dd3a-4751-a58d-b0b9d92a0173")
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary)
+            ) {
+                Text(text = "Obtenir la question")
+            }
+            Button(
+                onClick = {
+                    validateQuestion()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary)
+            ) {
+                Text(text = "Valider question")
+            }
+            Button(
+                onClick = {
+                    deleteQuestion("1c0fed78-4a04-4d96-a0d6-b486aa31fb7d")
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary)
+            ) {
+                Text(text = "Détruire question")
+            }
             Button(
                 onClick = {
                     fetchQuestions()

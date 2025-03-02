@@ -11,19 +11,23 @@ class QuestionService : CommunicationService<Question>("questions") {
         getAll(onSuccess, onError)
     }
 
-    fun createQuestion(question: Question, onSuccess: (Question) -> Unit, onError: (String) -> Unit) {
+    fun getQuestionById(questionId: String, onSuccess: (Any) -> Unit, onError: (String) -> Unit) {
+        getById(questionId, onSuccess, onError)
+    }
+
+    fun createQuestion(question: Question, onSuccess: (Any) -> Unit, onError: (String) -> Unit) {
         add(question, onSuccess, onError)
     }
 
-    fun deleteQuestion(questionId: String, onSuccess: (Question) -> Unit, onError: (String) -> Unit) {
+    fun deleteQuestion(questionId: String, onSuccess: (String) -> Unit, onError: (String) -> Unit) {
         delete(questionId, onSuccess, onError)
     }
 
-    fun verifyQuestion(question: Question, onSuccess: (Question) -> Unit, onError: (String) -> Unit) {
+    fun verifyQuestion(question: Question, onSuccess: (Any) -> Unit, onError: (String) -> Unit) {
         add(question, onSuccess, onError, "validate-question")
     }
 
-    fun updateQuestion(modifiedQuestion: Question, onSuccess: (Question) -> Unit, onError: (String) -> Unit) {
+    fun updateQuestion(modifiedQuestion: Question, onSuccess: (Any) -> Unit, onError: (String) -> Unit) {
         update(modifiedQuestion, modifiedQuestion.id, onSuccess, onError)
     }
 

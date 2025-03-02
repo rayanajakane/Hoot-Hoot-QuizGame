@@ -9,7 +9,7 @@ data class Question(
     val points: Double,
     val choices: List<Choice>? = null,
     val answer: String? = null,
-    val lastModification: Date?,
+    val lastModification: String?,
 )
 
 data class Choice(
