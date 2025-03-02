@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@angular/core';
 import { Language } from '@app/interfaces/language';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { TranslocoService } from '@jsverse/transloco';
-import { update } from 'firebase/database';
+import { DataSnapshot, get, update } from 'firebase/database';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -23,9 +23,27 @@ export class TranslationService {
     saveLanguageToDB(language: Language) {
         const user = this.authenticationService.currentUser;
         if (user) {
-            const userRef = this.authenticationService.getUserDatabaseRef(user.uid);
+            const userRef = this.authenticationService.getUserDatabaseRef(user.uid + '/configs');
             update(userRef, { lang: language });
         }
+    }
+
+    getLanguageFromDB(): Language {
+        const user = this.authenticationService.currentUser;
+        if (user) {
+            const userRef = this.authenticationService.getUserDatabaseRef(user.uid + '/configs/lang');
+            get(userRef)
+                .then((dataSnapshot: DataSnapshot) => {
+                    if (dataSnapshot.exists()) {
+                        return this.toLanguage(dataSnapshot.val());
+                    } else {
+                        return Language.FR;
+                    }
+                })
+                // eslint-disable-next-line no-console
+                .catch((error: unknown) => console.error(error));
+        }
+        return Language.FR;
     }
 
     getAllLanguages(): Language[] {
