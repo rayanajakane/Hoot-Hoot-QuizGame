@@ -27,7 +27,7 @@ object AnswerService {
     var isNextQuestionButtonEnabled by mutableStateOf(false)
     var isSelectionEnabled by mutableStateOf(false)
     var correctAnswer by mutableStateOf<List<String>>(emptyList())
-    var answerCorrectness by mutableIntStateOf(AnswerCorrectness.WRONG.ordinal)
+    var answerCorrectness by mutableStateOf(AnswerCorrectness.WRONG)
     var playerScore by mutableStateOf(0)
     var bonusPoints by mutableStateOf(0)
     var isTimesUp by mutableStateOf(false)
@@ -47,13 +47,25 @@ object AnswerService {
     fun onFeedback() {
         mSocket.on(AnswerEvents.FEEDBACK.value) { args ->
             if (args.isNotEmpty() && args[0] != null) {
-                feedback = Gson().fromJson(args[0].toString(), Feedback::class.java)
+                val jsonObject = JSONObject(args[0].toString())
+
+                val answerCorrectnessValue = jsonObject.optInt("answerCorrectness")
+                val mappedCorrectness = AnswerCorrectness.entries.find { it.value == answerCorrectnessValue }
+                    ?: AnswerCorrectness.WRONG
+
+                jsonObject.put("answerCorrectness", mappedCorrectness.name)
+
+                feedback = Gson().fromJson(jsonObject.toString(), Feedback::class.java)
+
                 showFeedback = true
                 isNextQuestionButtonEnabled = true
                 processFeedback(feedback)
             }
         }
     }
+
+
+
 
     fun onBonusPoints() {
         mSocket.on(AnswerEvents.BONUS.value) { args ->
@@ -100,7 +112,7 @@ object AnswerService {
         isGradingComplete = false
         showFeedback = false
         isSelectionEnabled = true
-        answerCorrectness = AnswerCorrectness.WRONG.ordinal
+        answerCorrectness = AnswerCorrectness.WRONG
         bonusPoints = 0
         isNextQuestionButtonEnabled = false
         isTimesUp = false
@@ -146,7 +158,7 @@ object AnswerService {
         }
 
         isSelectionEnabled = false
-//        answerCorrectness = feedback.answerCorrectness.ordinal
+        answerCorrectness = feedback.answerCorrectness
         playerScore = feedback.score
 
         MatchRoomService.sendPlayersData(MatchRoomService.getRoomCode())

@@ -67,11 +67,10 @@ fun QuestionArea(
 
     var room by remember { mutableStateOf(matchRoomService.getRoomCode()) }
     val username by remember { mutableStateOf(authViewModel.getUsername() )}
-    var context by remember { mutableStateOf(matchContextService.getContext()) }
+    var context = MatchContext.PLAYERVIEW
+//    var context by remember { mutableStateOf(matchContextService.getContext()) }
     val question by matchRoomService::currentQuestion
 
-
-//    val answerOptions by remember { derivedStateOf { AnswerCorrectness } }
 
     val score by answerService::playerScore;
 
@@ -138,11 +137,11 @@ fun QuestionArea(
 
             if (answerService.showFeedback && context === MatchContext.PLAYERVIEW && !matchRoomService.isCooldown) {
                 val (feedbackText, feedbackColor) = when (answerService.answerCorrectness) {
-                    AnswerCorrectness.WRONG.ordinal -> "\uD83D\uDE14 Mauvaise Réponse \uD83D\uDE14" to Color.Red
-                    AnswerCorrectness.OK.ordinal -> {
+                    AnswerCorrectness.WRONG -> "\uD83D\uDE14 Mauvaise Réponse \uD83D\uDE14" to Color.Red
+                    AnswerCorrectness.OK -> {
                         "\uD83C\uDD97 Réponse partielle! Vous avez obtenu ${(question?.points ?: 0) / 2} points \uD83C\uDD97" to Color.Yellow
                     }
-                    AnswerCorrectness.GOOD.ordinal -> {
+                    AnswerCorrectness.GOOD -> {
                         "\uD83C\uDD97 Réponse correcte! Vous avez obtenu ${question?.points} points \uD83C\uDD97" to Color.Green
                     }
                     else -> null to null
