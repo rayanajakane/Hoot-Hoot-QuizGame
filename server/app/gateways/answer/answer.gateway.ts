@@ -18,12 +18,11 @@ export class AnswerGateway {
 
     @SubscribeMessage(AnswerEvents.SelectChoice)
     selectChoice(@ConnectedSocket() socket: Socket, @MessageBody() choice: ChoiceInfo) {
-        console.log('selecting choice', choice);
         this.answerService.updateChoice(choice.choice, true, choice.userInfo.username, choice.userInfo.roomCode);
         this.playerRoomService.setState(socket.id, PlayerState.firstInteraction);
     }
 
-    
+
 
     @SubscribeMessage(AnswerEvents.DeselectChoice)
     deselectChoice(@ConnectedSocket() socket: Socket, @MessageBody() choice: ChoiceInfo) {

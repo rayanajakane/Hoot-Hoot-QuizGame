@@ -109,19 +109,12 @@ object MatchRoomService {
             put("roomCode", roomCode)
             put("username", username)
         }
-        Log.d("JOIN_ROOM", "Sending roomCode=$roomCode, username=$username")
 
         socket.emit(MatchEvents.JOIN_ROOM.value, sentInfo, Ack { args ->
-            Log.d("JOIN_ROOM_ACK", "Received response: ${args.joinToString()}") // Log full response
-
             if (args.isNotEmpty()) {
                 val response = args[0] as JSONObject
                 matchRoomCode = response.getString("code")
                 this.username = response.getString("username")
-
-                Log.d("JOINED HIHIIIIIIIIIIIII", "${this.username} ${matchRoomCode}") // Log after setting values
-            } else {
-                Log.e("JOIN_ROOM_ACK", "No response received!")
             }
         })
 
@@ -204,34 +197,18 @@ object MatchRoomService {
 
     fun onNextQuestion() {
         socket.on(MatchEvents.GO_TO_NEXT_QUESTION.value) { args ->
-            Log.d("NEXT_QUESTION", "Received event with args: ${args.joinToString()}") // Log entire response
-
             if (args.isNotEmpty()) {
                 isCooldown = false
 
                 val jsonString = (args[0] as? JSONObject)?.toString() ?: ""
-                Log.d("NEXT_QUESTION", "Raw JSON received: $jsonString")
 
                 if (jsonString.isNotEmpty()) {
-                    try {
-                        val gson = Gson()
-                        val question = gson.fromJson(jsonString, Question::class.java)
-
-                        Log.d("NEXT_QUESTION", "Parsed question: $question") // Log parsed object
-                        currentQuestion = question
-                        Log.d("NEXT_QUESTION", "Updated currentQuestion: $currentQuestion")
-                    } catch (e: Exception) {
-                        Log.e("NEXT_QUESTION", "Error parsing question JSON: ${e.message}")
-                    }
-                } else {
-                    Log.e("NEXT_QUESTION", "Empty JSON received")
+                    val gson = Gson()
+                    currentQuestion = gson.fromJson(jsonString, Question::class.java)
                 }
-            } else {
-                Log.e("NEXT_QUESTION", "No arguments received!")
             }
         }
     }
-
 
     fun onFetchPlayersData() {
         socket.on(MatchEvents.FETCH_PLAYERS_DATA.value) { args ->

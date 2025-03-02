@@ -50,7 +50,6 @@ export class AnswerService {
     updateChoice(choice: string, selection: boolean, username: string, roomCode: string) {
         const player: Player = this.playerService.getPlayerByUsername(roomCode, username);
         if (!player.answer.isSubmitted) {
-            console.log('updating choice', choice, selection);
             player.answer.updateChoice(choice, selection);
             player.answer.timestamp = Date.now();
         }
@@ -102,7 +101,6 @@ export class AnswerService {
         const players: Player[] = this.playerService.getPlayers(roomCode);
         players.forEach((player: Player) => {
             const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness, correctAnswer };
-            console.log('sending feedback', feedback);
             player.socket.emit(AnswerEvents.Feedback, feedback);
             player.answerCorrectness = AnswerCorrectness.WRONG;
         });
