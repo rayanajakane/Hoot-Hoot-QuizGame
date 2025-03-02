@@ -29,6 +29,7 @@ import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.DisplayAuthenticationText
+import com.example.polyquiz.http.QuestionService
 import kotlinx.coroutines.launch
 
 @Composable
@@ -37,6 +38,77 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+    val questionService = QuestionService()
+
+    fun updateQuestion() {
+        questionService.updateQuestion(
+            modifiedQuestion = Question(id="c7f6e692-d8f7-4c07-a45a-b33659e4ad68", type="QCM", text="noo mais est-ce que la vie???", points=80.0, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification=""),
+            onSuccess = {
+                println("It worked")
+            },
+            onError = { errorMessage ->
+                println("Error: $errorMessage")
+            }
+        )
+    }
+
+    fun verifyQuestion() {
+        questionService.verifyQuestion(
+            question = Question(id="", type="QCM", text="noo mais est-ce que la vie?", points=80.0, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification=""),
+                onSuccess = { response ->
+                println("Response: $response")
+            },
+            onError = { errorMessage ->
+                println("Error: $errorMessage")
+            }
+        )
+    }
+
+    fun deleteQuestion() {
+        questionService.deleteQuestion(
+            questionId = "322c6c04-76fe-49b6-8fc3-171dc4e7fb5f",
+            onSuccess = {
+                println("It worked")
+            },
+            onError = { errorMessage ->
+                println("Error: $errorMessage")
+            }
+        )
+    }
+
+    fun addQuestion() {
+        val question = Question(id="", type="QCM", text="noo mais est-ce que la vie?", points=80.0, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification="")
+        questionService.createQuestion(question,
+            onSuccess = { response ->
+                println("Response: $response")
+            },
+            onError = { errorMessage ->
+                println("Error: $errorMessage")
+            }
+        )
+    }
+
+    fun fetchQuestion() {
+        questionService.getAllQuestions(
+            onSuccess = { questions ->
+                questions.forEach { question ->
+                    println("Question: ${question.text}")
+                }
+            },
+            onError = { errorMessage ->
+                println("Error: $errorMessage")
+            }
+        )
+        /*questionService.getQuestionById(
+            questionId = "15570586-86be-4a7d-9d92-d99b7b716760",
+            onSuccess = { question ->
+                println("Question: ${question.text}")
+            },
+            onError = { errorMessage ->
+                println("Error: $errorMessage")
+            }
+        )*/
+    }
 
     LaunchedEffect(authState.value) {
         when(authState.value) {
@@ -65,7 +137,8 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
 
     Row (
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {
                     focusManager.clearFocus()
@@ -80,12 +153,54 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
             modifier = Modifier.fillMaxHeight()
         ) {
             Button(
-                onClick = { },
+                onClick = {
+                    updateQuestion()
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary)
             ) {
-                Text(text = "Jouer")
+                Text(text = "Modifier une question")
+            }
+            Button(
+                onClick = {
+                    verifyQuestion()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary)
+            ) {
+                Text(text = "Vérifier une question")
+            }
+            Button(
+                onClick = {
+                    deleteQuestion()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary)
+            ) {
+                Text(text = "Supprimer une question")
+            }
+            Button(
+                onClick = {
+                    addQuestion()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary)
+            ) {
+                Text(text = "Ajouter une question")
+            }
+            Button(
+                onClick = {
+                    fetchQuestion()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary)
+            ) {
+                Text(text = "Obtenir une question")
             }
             Surface(
                 shadowElevation = 10.dp,
