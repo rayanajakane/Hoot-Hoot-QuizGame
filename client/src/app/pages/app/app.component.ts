@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { TranslationService } from '@app/translation/translation.service';
-import { firstValueFrom, take } from 'rxjs';
 
 @Component({
     selector: 'app-root',
@@ -14,13 +13,13 @@ export class AppComponent implements OnInit {
         public authenticationService: AuthenticationService,
     ) {}
     ngOnInit(): void {
-        firstValueFrom(this.authenticationService.authenticatedUser$.pipe(take(1))).then((user) => {
+        this.authenticationService.authenticatedUser.subscribe(async (user) => {
             if (user) {
-                // load and set configs from DB
-                const currentLang = this.translationService.getLanguageFromDB();
-                this.translationService.setLanguage(currentLang);
+                const currentLangugage = await this.translationService.getLanguageFromDB();
+                this.translationService.setLanguage(currentLangugage);
             } else {
-                // load default translation stuff?
+                // Fallback language in case user is not authenticated
+                this.translationService.initLanguageFR();
             }
         });
     }

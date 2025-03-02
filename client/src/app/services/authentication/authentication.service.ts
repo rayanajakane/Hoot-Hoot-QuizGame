@@ -1,16 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
-import {
-    Auth,
-    authState,
-    createUserWithEmailAndPassword,
-    onAuthStateChanged,
-    sendPasswordResetEmail,
-    signInWithEmailAndPassword,
-    signOut,
-    updateProfile,
-} from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { AuthError } from '@app/services/authentication/auth-error';
 import { ChatService } from '@app/services/chat/chat.service';
@@ -19,9 +10,9 @@ import { NotificationService } from '@app/services/notification/notification.ser
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { ChatEvents } from '@common/events/chat.events';
 import { TranslocoService } from '@jsverse/transloco';
-import { browserSessionPersistence, setPersistence, User, UserCredential } from 'firebase/auth';
+import { browserSessionPersistence, sendPasswordResetEmail, setPersistence, User, UserCredential } from 'firebase/auth';
 import { DataSnapshot, get, getDatabase, onDisconnect, ref, remove, set, update } from 'firebase/database';
-import { map, Observable, of } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -30,8 +21,7 @@ export class AuthenticationService {
     currentUser: User | null;
     database = getDatabase();
 
-    authenticatedUser$: Observable<User | null>;
-    isAuthenticated$: Observable<boolean>;
+    authenticatedUser = new BehaviorSubject<User | null>(null);
 
     // eslint-disable-next-line max-params
     constructor(
@@ -44,10 +34,7 @@ export class AuthenticationService {
         private auth: Auth,
     ) {
         setPersistence(this.auth, browserSessionPersistence);
-        if (auth) {
-            this.authenticatedUser$ = authState(this.auth);
-            this.isAuthenticated$ = this.authenticatedUser$.pipe(map((user) => !!user));
-        }
+
         onAuthStateChanged(this.auth, (user) => {
             if (user) {
                 this.setUser(user);
@@ -92,7 +79,7 @@ export class AuthenticationService {
 
     setUser(user: User | null) {
         this.currentUser = user;
-        this.authenticatedUser$ = of(this.currentUser);
+        this.authenticatedUser.next(this.currentUser);
     }
 
     isUserAuthenticated(): boolean {

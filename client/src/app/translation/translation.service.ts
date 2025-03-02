@@ -29,22 +29,29 @@ export class TranslationService {
         }
     }
 
-    getLanguageFromDB(): Language {
+    // TODO : error handling
+    async getLanguageFromDB(): Promise<Language> {
         const user = this.authenticationService.currentUser;
         if (user) {
             const userRef = this.authenticationService.getUserDatabaseRef(user.uid + '/configs/lang');
-            get(userRef)
-                .then((dataSnapshot: DataSnapshot) => {
-                    if (dataSnapshot.exists()) {
-                        return this.toLanguage(dataSnapshot.val());
-                    } else {
+            return (
+                get(userRef)
+                    .then((dataSnapshot: DataSnapshot) => {
+                        if (dataSnapshot.exists()) {
+                            return this.toLanguage(dataSnapshot.val());
+                        }
                         return Language.FR;
-                    }
-                })
-                // eslint-disable-next-line no-console
-                .catch((error: unknown) => console.error(error));
+                    })
+                    // eslint-disable-next-line no-console
+                    // TODO
+                    .catch((error: unknown) => {
+                        console.error(error);
+                        return Language.FR;
+                    })
+            );
+        } else {
+            return Language.FR;
         }
-        return Language.FR;
     }
 
     getAllLanguages(): Language[] {
@@ -53,6 +60,12 @@ export class TranslationService {
 
     getCurrentLanguage(): Language {
         return this.toLanguage(this.translocoService.getActiveLang());
+    }
+
+    initLanguageFR() {
+        this.currentLangugage = Language.FR;
+        this.setDocumentLanguage(Language.FR);
+        this.translocoService.setActiveLang(Language.FR);
     }
 
     setLanguage(language: string) {
