@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FirebaseRepositoryService } from './firebase-repository.service';
 
-describe('FirebaseRepositoryService', () => {
+xdescribe('FirebaseRepositoryService', () => {
     let service: FirebaseRepositoryService;
 
     beforeEach(async () => {

@@ -1,7 +1,14 @@
 import { Message } from '@app/model/schema/message.schema';
 import { ChatStateInfo } from '@common/interfaces/message-info';
 
-export const MOCK_MESSAGE: Message = { id: '', text: 'Test Text', authorId: 'User', authorUsername: '', photoUrl: '', date: new Date() };
+export const MOCK_MESSAGE: Message = {
+    id: 'abc',
+    text: 'Test Text',
+    authorId: 'User',
+    authorUsername: 'User',
+    photoUrl: 'abc',
+    date: new Date(),
+};
 export const MOCK_ROOM_CODE = '1234';
 
 export const MOCK_CHAT_STATE_DATA: ChatStateInfo = {
