@@ -1,7 +1,8 @@
+import { FirebaseAuthService } from '@app/modules/firebase/firebase-auth/firebase-auth.service';
+import { FirebaseRepositoryService } from '@app/modules/firebase/firebase-repository/firebase-repository.service';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as admin from 'firebase-admin';
-import { FirebaseRepository } from './firebase-repository/firebase-repository.service';
 
 // REFERENCE: https://medium.com/@elangoram1998/getting-started-with-firebase-admin-in-nest-js-71f676e73e6
 const firebaseProvider = {
@@ -32,7 +33,7 @@ const firebaseProvider = {
 
 @Module({
     imports: [ConfigModule],
-    providers: [firebaseProvider, FirebaseRepository],
-    exports: [FirebaseRepository],
+    providers: [firebaseProvider, FirebaseRepositoryService, FirebaseAuthService],
+    exports: [FirebaseRepositoryService, FirebaseAuthService],
 })
 export class FirebaseModule {}
