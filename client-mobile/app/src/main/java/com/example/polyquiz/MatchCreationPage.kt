@@ -41,9 +41,9 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
 
     fun updateQuestion() {
         questionService.updateQuestion(
-            modifiedQuestion = Question(id="15570586-86be-4a7d-9d92-d99b7b716760", type="QCM", text="noo mais est-ce que la vie???", points=80.0, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification=""),
-            onSuccess = { response ->
-                println("Response: $response")
+            modifiedQuestion = Question(id="c7f6e692-d8f7-4c07-a45a-b33659e4ad68", type="QCM", text="noo mais est-ce que la vie???", points=80.0, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification=""),
+            onSuccess = {
+                println("It worked")
             },
             onError = { errorMessage ->
                 println("Error: $errorMessage")
@@ -65,9 +65,9 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
 
     fun deleteQuestion() {
         questionService.deleteQuestion(
-            questionId = "16803b0c-adf6-4540-87bb-c53f2297bf7a",
-            onSuccess = { response ->
-                println("Response: $response")
+            questionId = "322c6c04-76fe-49b6-8fc3-171dc4e7fb5f",
+            onSuccess = {
+                println("It worked")
             },
             onError = { errorMessage ->
                 println("Error: $errorMessage")

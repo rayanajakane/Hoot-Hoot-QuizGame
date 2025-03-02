@@ -47,19 +47,16 @@ abstract class CommunicationService(
         call.enqueue(createCallback(onSuccess, onError))
     }
 
-    fun delete(id: String, onSuccess: (String) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
+    fun delete(id: String, onSuccess: () -> Unit, onError: (String) -> Unit, endpoint: String = "") {
         val fullEndpoint = buildFullEndpoint(endpoint)
-        @Suppress("UNCHECKED_CAST")
-        val call = apiService.delete("$fullEndpoint/$id") as Call<String>
-        call.enqueue(createCallback(onSuccess, onError))
+        val call = apiService.delete("$fullEndpoint/$id")
+        call.enqueue(createVoidCallback(onSuccess, onError))
     }
 
-    fun update(payload: Any, id: String, onSuccess: (String) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
+    fun update(payload: Any, id: String, onSuccess: () -> Unit, onError: (String) -> Unit, endpoint: String = "") {
         val fullEndpoint = buildFullEndpoint(endpoint)
-        println("API URL: $fullEndpoint/$id")
-        @Suppress("UNCHECKED_CAST")
-        val call = apiService.update("$fullEndpoint/$id", payload) as Call<String>
-        call.enqueue(createCallback(onSuccess, onError))
+        val call = apiService.update("$fullEndpoint/$id", payload)
+        call.enqueue(createVoidCallback(onSuccess, onError))
     }
 
     fun put(payload: Any, id: String, onSuccess: (String) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
@@ -82,10 +79,8 @@ abstract class CommunicationService(
     private fun <R> createCallback(onSuccess: (R) -> Unit, onError: (String) -> Unit): Callback<R> {
         return object : Callback<R> {
             override fun onResponse(call: Call<R>, response: Response<R>) {
-                println("API Response: $response")
                 if (response.isSuccessful) {
                     val body = response.body()
-                    println("API Response: $body")
                     if (body != null) {
                         onSuccess(body)
                     } else {
@@ -97,6 +92,23 @@ abstract class CommunicationService(
             }
 
             override fun onFailure(call: Call<R>, t: Throwable) {
+                onError("Network error: ${t}")
+                t.printStackTrace()
+            }
+        }
+    }
+
+    private fun createVoidCallback(onSuccess: () -> Unit, onError: (String) -> Unit): Callback<Void> {
+        return object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    onSuccess()
+                } else {
+                    onError("Failed with HTTP code: ${response.code()} - ${response.message()}")
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
                 onError("Network error: ${t}")
                 t.printStackTrace()
             }
@@ -121,10 +133,10 @@ abstract class CommunicationService(
         fun add(@Url url: String, @Body payload: Any): Call<Any>
 
         @DELETE
-        fun delete(@Url url: String): Call<Any>
+        fun delete(@Url url: String): Call<Void>
 
         @PATCH
-        fun update(@Url url: String, @Body payload: Any): Call<Any>
+        fun update(@Url url: String, @Body payload: Any): Call<Void>
 
         @PUT
         fun put(@Url url: String, @Body payload: Any): Call<Any>
