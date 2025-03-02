@@ -1,9 +1,9 @@
-/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
 import {
     Auth,
+    authState,
     createUserWithEmailAndPassword,
     onAuthStateChanged,
     sendPasswordResetEmail,
@@ -21,6 +21,7 @@ import { ChatEvents } from '@common/events/chat.events';
 import { TranslocoService } from '@jsverse/transloco';
 import { browserSessionPersistence, setPersistence, User, UserCredential } from 'firebase/auth';
 import { DataSnapshot, get, getDatabase, onDisconnect, ref, remove, set, update } from 'firebase/database';
+import { map, Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -28,6 +29,9 @@ import { DataSnapshot, get, getDatabase, onDisconnect, ref, remove, set, update 
 export class AuthenticationService {
     currentUser: User | null;
     database = getDatabase();
+
+    authenticatedUser$: Observable<User | null>;
+    isAuthenticated$: Observable<boolean>;
 
     // eslint-disable-next-line max-params
     constructor(
@@ -40,6 +44,10 @@ export class AuthenticationService {
         private auth: Auth,
     ) {
         setPersistence(this.auth, browserSessionPersistence);
+        if (auth) {
+            this.authenticatedUser$ = authState(this.auth);
+            this.isAuthenticated$ = this.authenticatedUser$.pipe(map((user) => !!user));
+        }
         onAuthStateChanged(this.auth, (user) => {
             if (user) {
                 this.setUser(user);
@@ -109,9 +117,8 @@ export class AuthenticationService {
                     return Promise.resolve(true);
                 }
             })
-            .catch(async (error: unknown) => {
+            .catch(async () => {
                 this.setUser(null);
-                console.log(error);
                 return Promise.resolve(false);
             });
     }
@@ -275,7 +282,7 @@ export class AuthenticationService {
             });
     }
 
-    public deleteUser() {
+    deleteUser() {
         const user = this.auth.currentUser;
         if (!user) {
             return;
@@ -324,7 +331,6 @@ export class AuthenticationService {
                 return this.translocoService.translate('auth.error.invalid-username-password');
             }
             default: {
-                console.log(error);
                 return this.translocoService.translate('auth.error.other-error');
             }
         }

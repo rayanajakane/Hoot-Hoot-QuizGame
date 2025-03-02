@@ -1,0 +1,62 @@
+import { DOCUMENT } from '@angular/common';
+import { Inject, Injectable } from '@angular/core';
+import { Language } from '@app/interfaces/language';
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
+import { TranslocoService } from '@jsverse/transloco';
+import { update } from 'firebase/database';
+import { Observable } from 'rxjs';
+
+@Injectable({
+    providedIn: 'root',
+})
+export class TranslationService {
+    languageChanges$: Observable<string>;
+
+    constructor(
+        @Inject(DOCUMENT) private document: Document,
+        private translocoService: TranslocoService,
+        private authenticationService: AuthenticationService,
+    ) {
+        this.languageChanges$ = this.translocoService.langChanges$;
+    }
+
+    saveLanguageToDB(language: Language) {
+        const user = this.authenticationService.currentUser;
+        if (user) {
+            const userRef = this.authenticationService.getUserDatabaseRef(user.uid);
+            update(userRef, { lang: language });
+        }
+    }
+
+    getAllLanguages(): Language[] {
+        return (this.translocoService.getAvailableLangs() as string[]).map((l) => this.toLanguage(l));
+    }
+
+    getCurrentLanguage(): Language {
+        return this.toLanguage(this.translocoService.getActiveLang());
+    }
+
+    setLanguage(language: string) {
+        this.changeLanguage(this.toLanguage(language));
+    }
+
+    changeLanguage(language: Language) {
+        this.setDocumentLanguage(language);
+        this.translocoService.setActiveLang(language);
+        this.saveLanguageToDB(language);
+    }
+
+    private setDocumentLanguage(language: Language) {
+        this.document.documentElement.lang = language;
+    }
+
+    private toLanguage(language: string): Language {
+        switch (language) {
+            case 'fr':
+                return Language.FR;
+            case 'en':
+            default:
+                return Language.EN;
+        }
+    }
+}
