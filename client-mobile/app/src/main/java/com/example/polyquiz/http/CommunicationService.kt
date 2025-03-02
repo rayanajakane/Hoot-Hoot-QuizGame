@@ -47,6 +47,12 @@ abstract class CommunicationService(
         call.enqueue(createCallback(onSuccess, onError))
     }
 
+    fun check(payload: Any, onSuccess: () -> Unit, onError: (String) -> Unit, endpoint: String = "") {
+        val fullEndpoint = buildFullEndpoint(endpoint)
+        val call = apiService.check(fullEndpoint, payload)
+        call.enqueue(createVoidCallback(onSuccess, onError))
+    }
+
     fun delete(id: String, onSuccess: () -> Unit, onError: (String) -> Unit, endpoint: String = "") {
         val fullEndpoint = buildFullEndpoint(endpoint)
         val call = apiService.delete("$fullEndpoint/$id")
@@ -130,6 +136,9 @@ abstract class CommunicationService(
 
         @POST
         fun add(@Url url: String, @Body payload: Any): Call<Any>
+
+        @POST
+        fun check(@Url url: String, @Body payload: Any): Call<Void>
 
         @DELETE
         fun delete(@Url url: String): Call<Void>

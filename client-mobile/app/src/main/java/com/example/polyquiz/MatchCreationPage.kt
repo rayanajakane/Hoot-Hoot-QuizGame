@@ -41,10 +41,9 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    val questionService = QuestionService()
 
     fun updateQuestion() {
-        questionService.updateQuestion(
+        QuestionService.updateQuestion(
             modifiedQuestion = Question(id="c7f6e692-d8f7-4c07-a45a-b33659e4ad68", type="QCM", text="noo mais est-ce que la vie???", points=80, choices= listOf(
                 Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification=""),
             onSuccess = {
@@ -57,7 +56,7 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
     }
 
     fun verifyQuestion() {
-        questionService.verifyQuestion(
+        QuestionService.verifyQuestion(
             question = Question(id="", type="QCM", text="noo mais est-ce que la vie?", points=80, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification=""),
                 onSuccess = { response ->
                 println("Response: $response")
@@ -69,7 +68,7 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
     }
 
     fun deleteQuestion() {
-        questionService.deleteQuestion(
+        QuestionService.deleteQuestion(
             questionId = "322c6c04-76fe-49b6-8fc3-171dc4e7fb5f",
             onSuccess = {
                 println("It worked")
@@ -82,7 +81,7 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
 
     fun addQuestion() {
         val question = Question(id="", type="QCM", text="noo mais est-ce que la vie?", points=80, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification="")
-        questionService.createQuestion(question,
+        QuestionService.createQuestion(question,
             onSuccess = { response ->
                 println("Response: $response")
             },
@@ -93,7 +92,7 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
     }
 
     fun fetchQuestion() {
-        questionService.getAllQuestions(
+        QuestionService.getAllQuestions(
             onSuccess = { questions ->
                 questions.forEach { question ->
                     println("Question: ${question.text}")

@@ -3,7 +3,7 @@ package com.example.polyquiz.http
 import com.example.polyquiz.match.domain.Question
 import com.google.gson.reflect.TypeToken
 
-class QuestionService : CommunicationService("questions") {
+object QuestionService : CommunicationService("questions") {
     override val apiService: ApiService = retrofit.create(QuestionsApiService::class.java)
 
     fun getAllQuestions(onSuccess: (List<Question>) -> Unit, onError: (String) -> Unit) {
