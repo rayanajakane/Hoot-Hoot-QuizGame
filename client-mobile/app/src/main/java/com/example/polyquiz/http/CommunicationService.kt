@@ -1,4 +1,4 @@
-package com.example.polyquiz
+package com.example.polyquiz.http
 
 import com.example.polyquiz.constants.Environment
 import com.google.gson.Gson
