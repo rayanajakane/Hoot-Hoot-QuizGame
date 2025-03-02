@@ -25,6 +25,8 @@ import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MongooseModule } from '@nestjs/mongoose';
+import { FirebaseModule } from './modules/firebase/firebase.module';
+import { UserService } from './services/user/user.service';
 
 @Module({
     imports: [
@@ -39,6 +41,7 @@ import { MongooseModule } from '@nestjs/mongoose';
         MongooseModule.forFeature([{ name: Game.name, schema: gameSchema }]),
         MongooseModule.forFeature([{ name: Question.name, schema: questionSchema }]),
         EventEmitterModule.forRoot(),
+        FirebaseModule,
     ],
     controllers: [GameController, QuestionController, MatchController, BackupController],
     providers: [
@@ -60,6 +63,7 @@ import { MongooseModule } from '@nestjs/mongoose';
         QuestionStrategyContext,
         MultipleChoiceStrategy,
         LongAnswerStrategy,
+        UserService,
     ],
 })
 export class AppModule {}
