@@ -14,19 +14,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
 object MatchRoomService {
-    var players: List<Player> = emptyList()
-    var messages: List<Message> = emptyList()
-    var isMatchStarted = false
-    var isResults = false
-    var isWaitOver = false
-    var isBanned = false
-    var isPlaying = false
+    var players by mutableStateOf<List<Player>>(emptyList())
+    var messages by mutableStateOf<List<Message>>(emptyList())
+    var isMatchStarted by mutableStateOf(false)
+    var isResults by mutableStateOf(false)
+    var isWaitOver by mutableStateOf(false)
+    var isBanned by mutableStateOf(false)
+    var isPlaying by mutableStateOf(false)
     var gameTitle: String = ""
     var gameDuration: Int = 0
     var currentQuestion by mutableStateOf<Question?>(null)
-    var isHostPlaying = true
-    var isCooldown = false
-    var isQuitting = false
+    var isHostPlaying by mutableStateOf(true)
+    var isCooldown by mutableStateOf(false)
+    var isQuitting by mutableStateOf(false)
 
     private var matchRoomCode: String = ""
     private var username: String = ""

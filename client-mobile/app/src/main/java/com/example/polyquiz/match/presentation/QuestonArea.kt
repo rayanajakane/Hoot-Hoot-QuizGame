@@ -35,6 +35,7 @@ import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.TimeService
 import androidx.compose.runtime.snapshotFlow
+import com.example.polyquiz.constants.MatchStatus
 import com.example.polyquiz.match.domain.Question
 
 
@@ -67,18 +68,12 @@ fun QuestionArea(
     var room by remember { mutableStateOf(matchRoomService.getRoomCode()) }
     val username by remember { mutableStateOf(authViewModel.getUsername() )}
     var context by remember { mutableStateOf(matchContextService.getContext()) }
-    var isFirstQuestion by remember { mutableStateOf(true) }
     val question by matchRoomService::currentQuestion
 
 
 //    val answerOptions by remember { derivedStateOf { AnswerCorrectness } }
 
-//    val questionText = question?.text ?: "Question inconnue"
-//    val questionPoints = question?.points ?: 0
-//    val questionType = question?.type ?: QuestionType.MULTIPLE_CHOICE.value
-
-
-    val score = answerService.playerScore
+    val score by answerService::playerScore;
 
     LaunchedEffect(Unit) {
         resetStateForNewQuestion()
@@ -86,10 +81,6 @@ fun QuestionArea(
         matchRoomService.isQuitting = false
         answerService.playerScore = 0
         context = matchContextService.getContext()
-
-        if (isFirstQuestion) {
-            isFirstQuestion = false
-        }
     }
 
     Column(
@@ -118,17 +109,18 @@ fun QuestionArea(
             contentAlignment = Alignment.Center
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                val questionText = if (matchRoomService.isCooldown) MatchStatus.PREPARE.value else question?.text ?: "xx"
+
                 Text(
-                    text = question?.text ?: "xx",
+                    text = questionText,
                     style = MaterialTheme.typography.titleLarge,
                     color = Color.White
                 )
+
                 Spacer(modifier = Modifier.height(4.dp))
                 if (!matchRoomService.isCooldown){
-                    var questionPoints = question?.points
-
                     Text(
-                        text = "$questionPoints points",
+                        text = "${question?.points} points",
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.White
                     )
@@ -144,34 +136,30 @@ fun QuestionArea(
                 style = MaterialTheme.typography.titleMedium
             )
 
-            if (answerService.showFeedback && context === MatchContext.PLAYERVIEW && !matchRoomService.isCooldown){
-                if (answerService.answerCorrectness == AnswerCorrectness.WRONG){
+            if (answerService.showFeedback && context === MatchContext.PLAYERVIEW && !matchRoomService.isCooldown) {
+                val (feedbackText, feedbackColor) = when (answerService.answerCorrectness) {
+                    AnswerCorrectness.WRONG.ordinal -> "\uD83D\uDE14 Mauvaise Réponse \uD83D\uDE14" to Color.Red
+                    AnswerCorrectness.OK.ordinal -> {
+                        "\uD83C\uDD97 Réponse partielle! Vous avez obtenu ${(question?.points ?: 0) / 2} points \uD83C\uDD97" to Color.Yellow
+                    }
+                    AnswerCorrectness.GOOD.ordinal -> {
+                        "\uD83C\uDD97 Réponse correcte! Vous avez obtenu ${question?.points} points \uD83C\uDD97" to Color.Green
+                    }
+                    else -> null to null
+                }
+
+                if (feedbackText != null && feedbackColor != null) {
                     Text(
-                        text = "\uD83D\uDE14 Mauvaise Réponse \uD83D\uDE14",
+                        text = feedbackText,
                         style = MaterialTheme.typography.titleMedium,
-                        color = Color.Red
+                        color = feedbackColor
                     )
                 }
-                else if(answerService.answerCorrectness == AnswerCorrectness.OK){
-                    val obtainedPoints = (question?.points ?: 0) / 2
+
+
+            if (answerService.bonusPoints > 0){
                     Text(
-                        text = "\uD83C\uDD97 Réponse partielle! Vous avez obtenu $obtainedPoints points \uD83C\uDD97",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = Color.Yellow
-                    )
-                }
-                else if(answerService.answerCorrectness == AnswerCorrectness.GOOD){
-                    val obtainedPoints = question?.points
-                    Text(
-                        text = "\uD83C\uDD97 Réponse partielle! Vous avez obtenu $obtainedPoints points \uD83C\uDD97",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = Color.Green
-                    )
-                }
-                if (answerService.bonusPoints > 0){
-                    var obtainedBonusPoints = answerService.bonusPoints
-                    Text(
-                        text = "✨ Vous avez obtenu un bonus de $obtainedBonusPoints points!✨",
+                        text = "✨ Vous avez obtenu un bonus de ${answerService.bonusPoints} points!✨",
                         style = MaterialTheme.typography.titleMedium,
                         color = Color.Green
                     )
@@ -184,7 +172,7 @@ fun QuestionArea(
         if (!matchRoomService.isCooldown){
             when (question?.type) {
                 QuestionType.MULTIPLE_CHOICE.value -> {
-                    MultipleChoiceArea(choices = question?.choices ?: emptyList(), modifier = Modifier.fillMaxWidth(0.8f))
+                    MultipleChoiceArea(choices = question?.choices ?: emptyList(), answerService, matchRoomService, context, modifier = Modifier.fillMaxWidth(0.8f))
                 }
 
                 QuestionType.LONG_ANSWER.value -> {
@@ -200,29 +188,32 @@ fun QuestionArea(
                 Text("QUESTION SUIVANTE")
             }
         }
-        TextField(
-            value = room,
-            onValueChange = { room = it },
-            label = { Text("Room ID") },
-            modifier = Modifier.fillMaxWidth(0.8f).padding(8.dp)
-        )
-        Button(
-            onClick = { navigateToHome() },
-            modifier = Modifier.fillMaxWidth(0.5f),
-            shape = RoundedCornerShape(8.dp)
-        )
-        {
-            Text("Page d'accueil")
+        //TODO: REMOVE WHEN DONE
+        if ( question == null){
+            TextField(
+                value = room,
+                onValueChange = { room = it },
+                label = { Text("Room ID") },
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .padding(8.dp)
+            )
+            Button(
+                onClick = { navigateToHome() },
+                modifier = Modifier.fillMaxWidth(0.5f),
+                shape = RoundedCornerShape(8.dp)
+            )
+            {
+                Text("Page d'accueil")
+            }
+
+            Button(
+                onClick = { matchRoomService.connect();matchRoomService.joinRoom(room, username); timeService.handleTimer() },
+                modifier = Modifier.fillMaxWidth(0.5f),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text("join")
+            }
         }
-
-        Button(
-            onClick = { matchRoomService.connect();matchRoomService.joinRoom(room, username); timeService.handleTimer() },
-            modifier = Modifier.fillMaxWidth(0.5f),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text("join")
         }
-    }
-
-
 }

@@ -50,6 +50,7 @@ export class AnswerService {
     updateChoice(choice: string, selection: boolean, username: string, roomCode: string) {
         const player: Player = this.playerService.getPlayerByUsername(roomCode, username);
         if (!player.answer.isSubmitted) {
+            console.log('updating choice', choice, selection);
             player.answer.updateChoice(choice, selection);
             player.answer.timestamp = Date.now();
         }
