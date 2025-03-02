@@ -5,8 +5,8 @@ import { MAX_LENGTH, MIN_LENGTH } from '@app/constants/authentication';
 import { IMAGE_MAX_FILE_SIZE, PresetAvatar } from '@app/constants/image-constants';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { NotificationService } from '@app/services/notification/notification.service';
+import { TranslationService } from '@app/translation/translation.service';
 import { TranslocoService } from '@jsverse/transloco';
-import { update } from 'firebase/database';
 
 export enum Language {
     FR = 'fr',
@@ -43,6 +43,7 @@ export class UserEditPageComponent {
         private fb: FormBuilder,
         public notificationService: NotificationService,
         private translocoService: TranslocoService,
+        private translationService: TranslationService,
     ) {
         this.currentLang = this.stringToLang(this.translocoService.getDefaultLang());
         this.availableLangs = this.translocoService.getAvailableLangs() as string[];
@@ -101,11 +102,7 @@ export class UserEditPageComponent {
     }
 
     onLanguageChange(language: Language) {
-        const uid = this.currentUser ? this.currentUser.uid : null;
-        this.translocoService.setActiveLang(language);
-        this.currentLang = language;
-        const langRef = this.authenticationService.getUserDatabaseRef(uid + '/configs');
-        update(langRef, { lang: language });
+        this.translationService.setLanguage(language);
     }
 
     // TODO : Put in username service

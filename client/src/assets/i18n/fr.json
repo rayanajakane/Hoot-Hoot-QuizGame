@@ -53,5 +53,8 @@
         "reset-password": "Réinitialiser le mot de passe",
         "sent-email": "Courriel envoyé !",
         "sent-email-extra-info": "Si vous avez déjà un compte, vous recevrez un courriel pour réinitialiser votre mot de passe."
-    }
+    },
+    "nav": {
+        "main-page": "Page principale"
+    },
 }

@@ -17,6 +17,7 @@ export class AppComponent implements OnInit {
         firstValueFrom(this.authenticationService.authenticatedUser$.pipe(take(1))).then((user) => {
             if (user) {
                 // load configs from DB then set language?
+                console.log(user.uid);
                 const currentLang = this.translationService.getLanguageFromDB();
                 this.translationService.setLanguage(currentLang);
             } else {

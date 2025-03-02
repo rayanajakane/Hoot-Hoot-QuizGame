@@ -46,12 +46,15 @@
         "theme": "Visual Theme",
         "language": "Language",
         "upload-avatar": "Upload Avatar",
-        "avatar-choices": "Avatar prédéfinis",
+        "avatar-choices": "Predefined avatars",
         "delete-user": "Delete Profile",
         "danger-zone": "Danger Zone",
         "forgot-password": "Forgot Password?",
         "reset-password": "Reset password",
         "sent-email": "Sent Email!",
         "sent-email-extra-info": "If you already have an account, you will receive an email to reset your password."
+    },
+    "nav": {
+        "main-page": "Main page"
     }
 }

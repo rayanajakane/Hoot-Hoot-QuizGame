@@ -21,7 +21,7 @@ import { ChatEvents } from '@common/events/chat.events';
 import { TranslocoService } from '@jsverse/transloco';
 import { browserSessionPersistence, setPersistence, User, UserCredential } from 'firebase/auth';
 import { DataSnapshot, get, getDatabase, onDisconnect, ref, remove, set, update } from 'firebase/database';
-import { map, Observable } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -52,7 +52,7 @@ export class AuthenticationService {
             if (user) {
                 this.setUser(user);
             } else {
-                this.currentUser = null;
+                this.setUser(null);
                 this.router.navigateByUrl('/login');
             }
         });
@@ -92,6 +92,7 @@ export class AuthenticationService {
 
     setUser(user: User | null) {
         this.currentUser = user;
+        this.authenticatedUser$ = of(this.currentUser);
     }
 
     isUserAuthenticated(): boolean {
