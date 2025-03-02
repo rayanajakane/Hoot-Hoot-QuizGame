@@ -16,30 +16,32 @@
         <div
             *ngFor="let message of this.messages"
             class="message-container"
-            [ngClass]="message.author === this.authenticationService.userDisplayName ? 'right-message' : 'left-message'"
+            [ngClass]="message.authorId === this.authenticationService.userId ? 'right-message' : 'left-message'"
         >
             <div class="two-columns-container">
-                <div *ngIf="message.author !== this.authenticationService.userDisplayName" class="avatar-container">
-                    <div class="avatar"><!--TODO: AVATAR--></div>
+                <div *ngIf="message.authorId !== this.authenticationService.userId" class="avatar-container">
+                    <div class="avatar">
+                        <img src="{{ message.photoUrl }}" alt="" />
+                    </div>
                 </div>
                 <div class="message-text-info-container">
                     <div class="message-info-container">
-                        <p class="message-author">{{ message.author }}</p>
+                        <p class="message-author">{{ message.authorUsername }}</p>
                         <p>{{ message.date | date: 'HH:mm:ss' }}</p>
                     </div>
                     <div
                         class="message-text-container"
                         [ngClass]="[
-                            message.author === this.authenticationService.userDisplayName ? 'own-message' : 'received-message',
-                            message.author === 'Organisateur' ? 'host-message' : '',
-                            message.author === '' ? 'player-quit-message' : ''
+                            message.authorId === this.authenticationService.userDisplayName ? 'own-message' : 'received-message',
+                            message.authorUsername === 'Organisateur' ? 'host-message' : '',
+                            message.authorId === '' ? 'player-quit-message' : ''
                         ]"
                     >
                         <p>{{ message.text }}</p>
                     </div>
                 </div>
-                <div *ngIf="message.author === this.authenticationService.userDisplayName" class="avatar-container">
-                    <div class="avatar"><!--TODO: AVATAR--></div>
+                <div *ngIf="message.authorId === this.authenticationService.userId" class="avatar-container">
+                    <div class="avatar"><img src="{{ message.photoUrl }}" alt="" /></div>
                 </div>
             </div>
         </div>

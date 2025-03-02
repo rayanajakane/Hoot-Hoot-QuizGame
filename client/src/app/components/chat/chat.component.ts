@@ -48,8 +48,11 @@ export class ChatComponent implements AfterViewChecked {
             return;
         }
         const newMessage: Message = {
+            id: '',
             text: messageText,
-            author: this.authenticationService.userDisplayName,
+            authorId: this.authenticationService.userId,
+            authorUsername: this.authenticationService.userDisplayName,
+            photoUrl: this.authenticationService.userAvatarUrl,
             date: new Date(),
         };
         this.chatService.sendMessage(newMessage, this.matchRoomService.getRoomCode());

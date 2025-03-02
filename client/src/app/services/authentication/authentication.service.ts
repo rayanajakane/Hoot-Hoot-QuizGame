@@ -50,6 +50,10 @@ export class AuthenticationService {
         });
     }
 
+    get userId(): string {
+        return this.currentUser?.uid ?? '';
+    }
+
     get userEmail(): string {
         return this.currentUser?.email ?? '';
     }
