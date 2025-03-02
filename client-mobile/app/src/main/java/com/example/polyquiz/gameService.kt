@@ -20,7 +20,7 @@ class GameService : CommunicationService<Game>(base_url) {
         getById(id, onSuccess, onError)
     }
 
-    fun modifyGame(id: String, newGame: Game, onSuccess: () -> Unit, onError: (String) -> Unit){
+    fun modifyGame(id: String, newGame: Game, onSuccess: (Game) -> Unit, onError: (String) -> Unit){
         put(newGame, id, onSuccess, onError);
     }
 
