@@ -120,12 +120,7 @@ fun QuestionArea(
                 Text("QUESTION SUIVANTE")
             }
         }
-        TextField(
-            value = room,
-            onValueChange = { room = it },
-            label = { Text("Room ID") },
-            modifier = Modifier.fillMaxWidth(0.8f).padding(8.dp)
-        )
+
         Button(
             onClick = { navigateToHome() },
             modifier = Modifier.fillMaxWidth(0.5f),
@@ -135,13 +130,7 @@ fun QuestionArea(
             Text("Page d'accueil")
         }
 
-        Button(
-            onClick = { MatchRoomService.joinRoom(room, username); TimeService.handleTimer() },
-            modifier = Modifier.fillMaxWidth(0.5f),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text("join")
-        }
+
     }
 
 }

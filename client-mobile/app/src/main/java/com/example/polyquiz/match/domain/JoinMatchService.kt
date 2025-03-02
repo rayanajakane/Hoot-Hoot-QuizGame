@@ -2,9 +2,8 @@ package com.example.polyquiz.match.domain
 
 import com.example.polyquiz.http.CommunicationService
 
-data class UserData(val matchRoomCode: String, val username: String)
-
 object JoinMatchService : CommunicationService("match") {
+    data class UserData(val matchRoomCode: String, val username: String)
     var matchRoomCode: String = ""
 
     override val apiService: ApiService = retrofit.create(JoinMatchApiService::class.java)

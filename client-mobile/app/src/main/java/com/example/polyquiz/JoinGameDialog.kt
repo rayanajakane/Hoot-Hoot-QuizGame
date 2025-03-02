@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.match.domain.JoinMatchService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.TimeService
 
@@ -28,9 +29,26 @@ fun JoinGameDialog(
     authViewModel: AuthViewModel,
     navigateToMatchRoom: () -> Unit
 
+
 ) {
     var room by remember { mutableStateOf("") }
     val username by remember { mutableStateOf(authViewModel.getUsername() )}
+
+    fun submitCode(matchRoomCode: String) {
+        JoinMatchService.matchRoomCode = "";
+        JoinMatchService.validateMatchRoomCode(
+            matchRoomCode,
+            onSuccess = {
+                JoinMatchService.matchRoomCode = matchRoomCode
+                JoinMatchService.validateUsername(username)
+            },
+            onError = { errorMessage ->
+                println("Error: $errorMessage")
+                JoinMatchService.matchRoomCode = ""
+            }
+        )
+    }
+
 
 
     if (isOpen) {
@@ -56,7 +74,7 @@ fun JoinGameDialog(
             confirmButton = {
                 TextButton(onClick = {
                     if (room.isNotBlank()) {
-                        MatchRoomService.joinRoom(room, username)
+                        submitCode(room)
                         TimeService.handleTimer()
                         navigateToMatchRoom()
                         room = ""

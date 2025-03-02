@@ -112,6 +112,8 @@ object MatchRoomService {
                 val response = args[0] as JSONObject
                 matchRoomCode = response.getString("code")
                 this.username = response.getString("username")
+                navigateToMatchRoom()
+
 //                navigator.navigateTo("match-room")
             }
         })
