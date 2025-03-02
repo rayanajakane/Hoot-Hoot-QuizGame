@@ -57,4 +57,11 @@
     "nav": {
         "main-page": "Page principale"
     },
+    "main-page": {
+        "join-game": "Joindre une partie",
+        "host-game": "Créer une partie",
+        "admin-game": "Administrer les jeux",
+        "edit-profile": "Modifier le profil",
+        "team-name": "Équipe 201"
+    }
 }

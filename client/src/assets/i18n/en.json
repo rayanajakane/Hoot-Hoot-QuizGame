@@ -56,5 +56,12 @@
     },
     "nav": {
         "main-page": "Main page"
+    },
+    "main-page": {
+        "join-game": "Join a game",
+        "host-game": "Host a game",
+        "admin-game": "Manage games",
+        "edit-profile": "Edit profile",
+        "team-name": "Team 201"
     }
 }
