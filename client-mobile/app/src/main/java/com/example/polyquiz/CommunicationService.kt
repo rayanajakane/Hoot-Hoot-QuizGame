@@ -59,11 +59,10 @@ abstract class CommunicationService(
         call.enqueue(createVoidCallback(onSuccess, onError))
     }
 
-    fun put(payload: Any, id: String, onSuccess: (String) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
+    fun put(payload: Any, id: String, onSuccess: () -> Unit, onError: (String) -> Unit, endpoint: String = "") {
         val fullEndpoint = buildFullEndpoint(endpoint)
-        @Suppress("UNCHECKED_CAST")
-        val call = apiService.put("$fullEndpoint/$id", payload) as Call<String>
-        call.enqueue(createCallback(onSuccess, onError))
+        val call = apiService.put("$fullEndpoint/$id", payload)
+        call.enqueue(createVoidCallback(onSuccess, onError))
     }
 
     // Helper method to build the full endpoint path in case of custom endpoints
@@ -139,6 +138,6 @@ abstract class CommunicationService(
         fun update(@Url url: String, @Body payload: Any): Call<Void>
 
         @PUT
-        fun put(@Url url: String, @Body payload: Any): Call<Any>
+        fun put(@Url url: String, @Body payload: Any): Call<Void>
     }
 }
