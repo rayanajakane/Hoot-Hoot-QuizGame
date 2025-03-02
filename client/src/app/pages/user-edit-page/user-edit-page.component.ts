@@ -3,16 +3,17 @@ import { User } from '@angular/fire/auth';
 import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MAX_LENGTH, MIN_LENGTH } from '@app/constants/authentication';
 import { IMAGE_MAX_FILE_SIZE, PresetAvatar } from '@app/constants/image-constants';
+import { Language } from '@app/interfaces/language';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { TranslationService } from '@app/translation/translation.service';
 import { TranslocoService } from '@jsverse/transloco';
 
-export enum Language {
-    FR = 'fr',
-    EN = 'en',
+export interface UserEditData {
+    email: string;
+    username: string;
+    currentLang: string;
 }
-
 @Component({
     selector: 'app-user-edit-page',
     templateUrl: './user-edit-page.component.html',
@@ -36,8 +37,10 @@ export class UserEditPageComponent {
             { validators: [Validators.required, Validators.minLength(MIN_LENGTH), Validators.maxLength(MAX_LENGTH), this.usernameValidator()] },
         ],
         avatar: [this.authenticationService.userAvatarUrl ? this.authenticationService.userAvatarUrl : PresetAvatar.Default],
+        currentLang: [this.translationService.currentLangugage],
     });
 
+    // eslint-disable-next-line max-params
     constructor(
         public authenticationService: AuthenticationService,
         private fb: FormBuilder,
@@ -45,7 +48,6 @@ export class UserEditPageComponent {
         private translocoService: TranslocoService,
         private translationService: TranslationService,
     ) {
-        this.currentLang = this.stringToLang(this.translocoService.getDefaultLang());
         this.availableLangs = this.translocoService.getAvailableLangs() as string[];
         this.currentUser = this.authenticationService.currentUser;
     }
@@ -62,6 +64,18 @@ export class UserEditPageComponent {
         return PresetAvatar;
     }
 
+    static isEmptyData(userEditData: UserEditData | undefined): boolean {
+        return userEditData?.email === '' && userEditData.username === '' && userEditData.currentLang === null;
+    }
+
+    getUserEditRecord(): UserEditData {
+        return {
+            email: this.form.get('email')?.value || '',
+            username: this.form.get('username')?.value || '',
+            currentLang: this.form.get('currentLang')?.value || Language.FR,
+        };
+    }
+
     save() {
         this.form.markAllAsTouched();
         if (this.form.valid) {
@@ -69,7 +83,11 @@ export class UserEditPageComponent {
                 // TODO: TEMPORARY SOLUTION. Avatar should be uploaded in later commit.
                 this.setPresetAvatar(PresetAvatar.Default);
             }
-            // TODO: Consider adding the themes + languages options when they are ready
+            // TODO: Consider adding the themes
+            const userEditData = this.getUserEditRecord();
+            if (userEditData) {
+                this.translationService.setLanguage(userEditData.currentLang);
+            }
             this.authenticationService.editUserProfile(this.username.value as string, this.avatar.value as string);
         }
     }
@@ -121,16 +139,5 @@ export class UserEditPageComponent {
 
             return null;
         };
-    }
-
-    private stringToLang(language: string) {
-        switch (language) {
-            case 'fr':
-                return Language.FR;
-            case 'en':
-                return Language.EN;
-            default:
-                return Language.FR;
-        }
     }
 }

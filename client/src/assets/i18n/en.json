@@ -58,8 +58,8 @@
         "main-page": "Main page"
     },
     "main-page": {
-        "join-game": "Join a game",
-        "host-game": "Host a game",
+        "join-game": "Join a match",
+        "host-game": "Host a match",
         "admin-game": "Manage games",
         "edit-profile": "Edit profile",
         "team-name": "Team 201"

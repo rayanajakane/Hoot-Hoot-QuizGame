@@ -11,6 +11,7 @@ import { Observable } from 'rxjs';
 })
 export class TranslationService {
     languageChanges$: Observable<string>;
+    currentLangugage: Language;
 
     constructor(
         @Inject(DOCUMENT) private document: Document,
@@ -58,7 +59,8 @@ export class TranslationService {
         this.changeLanguage(this.toLanguage(language));
     }
 
-    changeLanguage(language: Language) {
+    private changeLanguage(language: Language) {
+        this.currentLangugage = language;
         this.setDocumentLanguage(language);
         this.translocoService.setActiveLang(language);
         this.saveLanguageToDB(language);
