@@ -58,10 +58,29 @@
         "main-page": "Main page"
     },
     "main-page": {
-        "join-game": "Join a match",
-        "host-game": "Host a match",
+        "join-match": "Join a match",
+        "host-match": "Host a match",
         "admin-game": "Manage games",
         "edit-profile": "Edit profile",
-        "team-name": "Team 201"
+        "team-name": "Team 201",
+        "access-code": "Access code"
+    },
+    "match-creation-page": {
+        "games-list": "Games list",
+        "game-details": "Game details ",
+        "select-game": "Select a game from the games list",
+        "time-per-QCM": "Time per QCM:"
+    },
+    "admin-main-page": {
+        "admin-games": "Manage games",
+        "create-new-game": "Create new game",
+        "question-bank": "Question bank",
+        "existing-games-list": "Existing games list",
+        "game-title": "Game title",
+        "last-modification": "Last modification"
+    },
+    "common": {
+        "cancel": "Cancel",
+        "play": "Play"
     }
 }
