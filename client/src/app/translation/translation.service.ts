@@ -1,6 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { Language } from '@app/interfaces/language';
+import { AuthError } from '@app/services/authentication/auth-error';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { TranslocoService } from '@jsverse/transloco';
 import { DataSnapshot, get, update } from 'firebase/database';
@@ -26,36 +27,34 @@ export class TranslationService {
         if (user) {
             const userRef = this.authenticationService.getUserDatabaseRef(user.uid + '/configs');
             update(userRef, { lang: language });
+        } else {
+            throw new AuthError('UserUndefined', 'user is undefined');
         }
     }
 
-    // TODO : error handling
     async getLanguageFromDB(): Promise<Language> {
         const user = this.authenticationService.currentUser;
         if (user) {
             const userRef = this.authenticationService.getUserDatabaseRef(user.uid + '/configs/lang');
-            return (
-                get(userRef)
-                    .then((dataSnapshot: DataSnapshot) => {
-                        if (dataSnapshot.exists()) {
-                            return this.toLanguage(dataSnapshot.val());
-                        }
-                        return Language.FR;
-                    })
+            return get(userRef)
+                .then((dataSnapshot: DataSnapshot) => {
+                    if (dataSnapshot.exists()) {
+                        return this.toLanguage(dataSnapshot.val());
+                    }
+                    return Language.FR;
+                })
+                .catch((error: unknown) => {
                     // eslint-disable-next-line no-console
-                    // TODO
-                    .catch((error: unknown) => {
-                        console.error(error);
-                        return Language.FR;
-                    })
-            );
+                    console.error(error);
+                    return Language.FR;
+                });
         } else {
             return Language.FR;
         }
     }
 
     getAllLanguages(): Language[] {
-        return (this.translocoService.getAvailableLangs() as string[]).map((l) => this.toLanguage(l));
+        return (this.translocoService.getAvailableLangs() as string[]).map((language) => this.toLanguage(language));
     }
 
     getCurrentLanguage(): Language {
