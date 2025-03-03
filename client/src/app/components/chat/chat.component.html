@@ -21,7 +21,7 @@
             <div class="two-columns-container">
                 <div *ngIf="message.authorId !== this.authenticationService.userId" class="avatar-container">
                     <div class="avatar">
-                        <img src="{{ message.photoUrl }}" alt="" />
+                        <img src="{{ message.photoUrl ? message.photoUrl : defaultAvatar }}" alt="" />
                     </div>
                 </div>
                 <div class="message-text-info-container">
@@ -32,7 +32,7 @@
                     <div
                         class="message-text-container"
                         [ngClass]="[
-                            message.authorId === this.authenticationService.userDisplayName ? 'own-message' : 'received-message',
+                            message.authorId === this.authenticationService.userId ? 'own-message' : 'received-message',
                             message.authorUsername === 'Organisateur' ? 'host-message' : '',
                             message.authorId === '' ? 'player-quit-message' : ''
                         ]"
@@ -41,7 +41,7 @@
                     </div>
                 </div>
                 <div *ngIf="message.authorId === this.authenticationService.userId" class="avatar-container">
-                    <div class="avatar"><img src="{{ message.photoUrl }}" alt="" /></div>
+                    <div class="avatar"><img src="{{ message.photoUrl ? message.photoUrl : defaultAvatar }}" alt="" /></div>
                 </div>
             </div>
         </div>

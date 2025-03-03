@@ -24,7 +24,7 @@ export class UserEditPageComponent {
             this.authenticationService.userDisplayName,
             { validators: [Validators.required, Validators.minLength(MIN_LENGTH), Validators.maxLength(MAX_LENGTH), this.usernameValidator()] },
         ],
-        avatar: [this.authenticationService.userAvatarUrl],
+        avatar: [this.authenticationService.userAvatarUrl ? this.authenticationService.userAvatarUrl : PresetAvatar.Default],
     });
 
     constructor(
