@@ -36,18 +36,10 @@ export class MatchController {
 
     @Post('validate-code')
     validateMatchRoomCode(@Body() data: MatchRoomCodeInfo, @Res() response: Response) {
-        console.log('premier log dans validate match room');
-
         const errors = this.matchRoomService.getRoomCodeErrors(data.matchRoomCode);
-        console.log('dexuieme log dans validate match room');
-
         if (!errors) {
-            console.log("pas d'erreur");
-
             response.status(HttpStatus.OK).send();
         } else {
-            console.log('erreur');
-
             response.status(HttpStatus.FORBIDDEN).send({ message: errors });
         }
     }
@@ -56,6 +48,7 @@ export class MatchController {
     validateUsername(@Body() data: MatchUsernameInfo, @Res() response: Response) {
         const errors = this.playerRoomService.getUsernameErrors(data.matchRoomCode, data.username);
         if (!errors) {
+            console.log('No errors');
             response.status(HttpStatus.OK).send();
         } else {
             response.status(HttpStatus.FORBIDDEN).send({ message: errors });

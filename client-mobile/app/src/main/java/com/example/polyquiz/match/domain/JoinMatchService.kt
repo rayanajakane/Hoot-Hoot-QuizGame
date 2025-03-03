@@ -4,13 +4,14 @@ import com.example.polyquiz.http.CommunicationService
 
 object JoinMatchService : CommunicationService("match") {
     data class UserData(val matchRoomCode: String, val username: String)
+    data class MatchRoomData(val matchRoomCode: String)
     var matchRoomCode: String = ""
 
     override val apiService: ApiService = retrofit.create(JoinMatchApiService::class.java)
 
     fun validateMatchRoomCode(matchRoomCode: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
         check(
-            matchRoomCode,
+            MatchRoomData(matchRoomCode),
             onSuccess,
             onError,
             "validate-code",
