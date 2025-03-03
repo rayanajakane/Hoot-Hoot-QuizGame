@@ -149,7 +149,9 @@ object AnswerService {
         if (!isSelectionEnabled) return
         val userInfo = UserInfo(username = MatchRoomService.getUsername(), roomCode = MatchRoomService.getRoomCode())
         val choiceInfo = ChoiceInfo(currentLongAnswer, userInfo)
-        mSocket.emit(AnswerEvents.UPDATE_LONG_ANSWER.value, Gson().toJson(choiceInfo))
+        val choiceInfoStringified = Gson().toJson(choiceInfo)
+        val choiceInfoJsonObject = JSONObject(choiceInfoStringified)
+        mSocket.emit(AnswerEvents.UPDATE_LONG_ANSWER.value, choiceInfoJsonObject)
     }
 
     private fun processFeedback(feedback: Feedback) {

@@ -145,12 +145,12 @@ fun QuestionArea(
 
                 if (answerService.showFeedback && context === MatchContext.PLAYERVIEW && !matchRoomService.isCooldown) {
                     val (feedbackText, feedbackColor) = when (answerService.answerCorrectness) {
-                        AnswerCorrectness.WRONG -> "\uD83D\uDE14 Mauvaise Réponse \uD83D\uDE14" to Color.Red
+                        AnswerCorrectness.WRONG -> "\uD83D\uDE14 Mauvaise Réponse \uD83D\uDE14" to Color(0xFFe91b0c)
                         AnswerCorrectness.OK -> {
-                            "\uD83C\uDD97 Réponse partielle! Vous avez obtenu ${(question?.points ?: 0) / 2} points \uD83C\uDD97" to Color.Yellow
+                            "\uD83C\uDD97 Réponse partielle! Vous avez obtenu ${(question?.points ?: 0) / 2} points \uD83C\uDD97" to Color(0xFFf6c811)
                         }
                         AnswerCorrectness.GOOD -> {
-                            "\uD83C\uDD97 Réponse correcte! Vous avez obtenu ${question?.points} points \uD83C\uDD97" to Color.Green
+                            "\uD83C\uDD97 Réponse correcte! Vous avez obtenu ${question?.points} points \uD83C\uDD97" to Color(0xFF4caf50)
                         }
                         else -> null to null
                     }
@@ -191,7 +191,7 @@ fun QuestionArea(
                     }
 
                     QuestionType.LONG_ANSWER.value -> {
-                        LongAnswerArea(modifier = Modifier.fillMaxWidth(0.8f))
+                        LongAnswerArea(answerService, context, modifier = Modifier.fillMaxWidth(0.8f))
                     }
                 }
             }
@@ -229,12 +229,19 @@ fun QuestionArea(
                 modifier = Modifier.width(250.dp).fillMaxHeight(),
                 extraContent = {
                     Spacer(modifier = Modifier.height(16.dp))
-                    if (context == MatchContext.HOSTVIEW && !answerService.isSelectionEnabled) {
+                    if (context == MatchContext.HOSTVIEW &&
+                        question?.type != null &&
+                        (
+                            (!answerService.isSelectionEnabled && question?.type == QuestionType.MULTIPLE_CHOICE.value) ||
+                                (answerService.isGradingComplete && question?.type == QuestionType.LONG_ANSWER.value)
+                            )
+                    ) {
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(onClick = { matchRoomService.goToNextQuestion() }) {
                             Text("QUESTION SUIVANTE")
                         }
                     }
+
                     Button(
                         onClick = {
                             matchRoomService.isQuitting = true
