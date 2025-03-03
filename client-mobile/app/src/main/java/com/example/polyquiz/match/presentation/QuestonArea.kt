@@ -219,34 +219,6 @@ fun QuestionArea(
                 }
             }
 
-            if (question == null) {
-                TextField(
-                    value = room,
-                    onValueChange = { room = it },
-                    label = { Text("Room ID") },
-                    modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .padding(8.dp)
-                )
-                Button(
-                    onClick = { navigateToHome() },
-                    modifier = Modifier.fillMaxWidth(0.5f),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text("Page d'accueil")
-                }
-                Button(
-                    onClick = {
-                        matchRoomService.connect()
-                        matchRoomService.joinRoom(room, username)
-                        timeService.handleTimer()
-                    },
-                    modifier = Modifier.fillMaxWidth(0.5f),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text("join")
-                }
-            }
         }
         if(matchRoomService.isMatchStarted)
         {
@@ -267,6 +239,7 @@ fun QuestionArea(
                         onClick = {
                             matchRoomService.isQuitting = true
                             matchRoomService.disconnectFromRoom()
+                            navigateToHome()
                         }
                     ) {
                         Text("Quitter")
