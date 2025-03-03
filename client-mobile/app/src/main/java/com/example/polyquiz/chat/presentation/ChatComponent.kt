@@ -42,6 +42,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.chat.domain.Message
+import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.constants.SIZE_CONSTANTS
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -95,14 +96,14 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                 ),
                 keyboardActions = KeyboardActions(onDone = {
                     // TODO: Change to actual user avatar
-                    ChatService.sendMessage(newMessageText, userId, username, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT18iwsdCCbBfpa50-5BmNa_m_BX087_x1oWQ&s")
+                    ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value)
                     newMessageText = ""
                 }),
                 trailingIcon = {
                     val image = Icons.AutoMirrored.Filled.Send;
                     IconButton(onClick = {
                         // TODO: Change to actual user avatar
-                        ChatService.sendMessage(newMessageText, userId, username, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT18iwsdCCbBfpa50-5BmNa_m_BX087_x1oWQ&s")
+                        ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value)
                         newMessageText = ""
                     }) {
                         Icon(imageVector = image, "send")
