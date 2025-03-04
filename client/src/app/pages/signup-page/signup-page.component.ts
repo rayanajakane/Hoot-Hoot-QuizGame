@@ -18,6 +18,7 @@ export class SignupPageComponent implements OnInit {
     passwordMinLength = PW_MIN_LENGTH;
     passwordMaxLength = PW_MAX_LENGTH;
     isPresetAvatar = true;
+    loadedImageFile: File | null = null;
 
     form = this.fb.group({
         email: ['', { validators: [Validators.required, Validators.email], updateOn: 'blur' }],
@@ -87,15 +88,13 @@ export class SignupPageComponent implements OnInit {
     signUp() {
         this.form.markAllAsTouched();
         if (this.form.valid) {
-            if (!this.isPresetAvatar) {
-                // TODO: TEMPORARY SOLUTION. Avatar should be uploaded in later commit.
-                this.setPresetAvatar(PresetAvatar.Default);
-            }
             this.authenticationService.signUp(
                 this.email.value as string,
                 this.username.value as string,
                 this.password.value as string,
+                this.isPresetAvatar,
                 this.avatar.value as string,
+                this.loadedImageFile,
             );
         }
     }
@@ -111,6 +110,7 @@ export class SignupPageComponent implements OnInit {
             const reader = new FileReader();
             reader.addEventListener('load', () => {
                 this.form.get('avatar')?.setValue(reader.result as null);
+                this.loadedImageFile = file;
             });
             reader.readAsDataURL(file);
             this.isPresetAvatar = false;
