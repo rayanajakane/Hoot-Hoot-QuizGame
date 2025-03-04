@@ -8,22 +8,25 @@ import com.example.vanillaprototype.socket.SocketHandler
 import com.google.gson.Gson
 import io.socket.client.Ack
 import org.json.JSONObject
+import android.util.Log
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 object MatchRoomService {
-
-    var players: List<Player> = emptyList()
-    var messages: List<Message> = emptyList()
-    var isMatchStarted = false
-    var isResults = false
-    var isWaitOver = false
-    var isBanned = false
-    var isPlaying = false
+    var players by mutableStateOf<List<Player>>(emptyList())
+    var messages by mutableStateOf<List<Message>>(emptyList())
+    var isMatchStarted by mutableStateOf(false)
+    var isResults by mutableStateOf(false)
+    var isWaitOver by mutableStateOf(false)
+    var isBanned by mutableStateOf(false)
+    var isPlaying by mutableStateOf(false)
     var gameTitle: String = ""
     var gameDuration: Int = 0
-    var currentQuestion: Question? = null
-    var isHostPlaying = true
-    var isCooldown = false
-    var isQuitting = false
+    var currentQuestion by mutableStateOf<Question?>(null)
+    var isHostPlaying by mutableStateOf(true)
+    var isCooldown by mutableStateOf(false)
+    var isQuitting by mutableStateOf(false)
 
     private var matchRoomCode: String = ""
     private var username: String = ""
@@ -37,29 +40,26 @@ object MatchRoomService {
     fun getRoomCode(): String = matchRoomCode
     fun getUsername(): String = username
 
-    fun connect(
-        navigateToHome: () -> Unit,
-        navigateToMatchPage: () -> Unit
-    ) {
+    fun connect() {
         if (!hasEnteredRoom) {
             hasEnteredRoom = true
             resetMatchValues()
-            onRedirectAfterDisconnection(navigateToHome)
+            onRedirectAfterDisconnection()
             onFetchPlayersData()
             onMatchStarted()
-            onBeginQuiz(navigateToMatchPage)
+            onBeginQuiz()
             onNextQuestion()
             onStartCooldown()
-            onHostQuit(navigateToHome)
-            onPlayerKick(navigateToHome)
+            onHostQuit()
+            onPlayerKick()
             handleError()
 //            onPlayerChatStateToggle()
-            onRouteToResultsPage(navigateToHome)
+            onRouteToResultsPage()
         }
     }
 
-    fun disconnectFromRoom(navigateToHome: () -> Unit) {
-
+    fun disconnectFromRoom() {
+//        navigator.navigateTo("home")
         hasEnteredRoom = false
         socket.off(MatchEvents.FETCH_PLAYERS_DATA.value)
         socket.off(MatchEvents.MATCH_STARTING.value)
@@ -72,10 +72,9 @@ object MatchRoomService {
         socket.off(MatchEvents.ROUTE_TO_RESULTS_PAGE.value)
         socket.emit(MatchEvents.DISCONNECT.value)
         MatchContextService.resetContext()
-        navigateToHome()
     }
 
-    fun createRoom(gameId: String, isClassicMode: Boolean = true, navigateToWaitPage: () -> Unit) {
+    fun createRoom(gameId: String, isClassicMode: Boolean = true) {
         val data = JSONObject().apply {
             put("gameId", gameId)
             put("isClassicMode", isClassicMode)
@@ -86,7 +85,7 @@ object MatchRoomService {
                 matchRoomCode = response.getString("code")
                 username = HOST_USERNAME
                 sendPlayersData(matchRoomCode)
-                navigateToWaitPage()
+//                navigator.navigateTo("match-room")
             }
         })
     }
@@ -105,26 +104,23 @@ object MatchRoomService {
 //        }
 //    }
 
-    //                navigator.navigateTo("match-room")
-//                navigator.navigateTo("match-room")
-    fun joinRoom(roomCode: String, username: String, navigateToWaitPage: () -> Unit) {
+    fun joinRoom(roomCode: String, username: String) {
         val sentInfo = JSONObject().apply {
             put("roomCode", roomCode)
             put("username", username)
         }
+
         socket.emit(MatchEvents.JOIN_ROOM.value, sentInfo, Ack { args ->
             if (args.isNotEmpty()) {
                 val response = args[0] as JSONObject
                 matchRoomCode = response.getString("code")
                 this.username = response.getString("username")
-                println("Joined room with code: $matchRoomCode")
-            //navigateToMatchRoom()
-                navigateToWaitPage()
-//                navigator.navigateTo("match-room")
             }
         })
+
         sendPlayersData(roomCode)
     }
+
 
     fun sendPlayersData(roomCode: String) {
         socket.emit(MatchEvents.SEND_PLAYERS_DATA.value, roomCode)
@@ -168,7 +164,7 @@ object MatchRoomService {
         }
     }
 
-    fun onBeginQuiz(navigateToMatchPage: () -> Unit) {
+    fun onBeginQuiz() {
         socket.on(MatchEvents.BEGIN_QUIZ.value) { args ->
             if (args.isNotEmpty()) {
                 val data = args[0] as JSONObject
@@ -180,7 +176,7 @@ object MatchRoomService {
                 )
                 currentQuestion = firstQuestion
                 gameDuration = data.getInt("gameDuration")
-                navigateToMatchPage()
+//                navigator.navigateTo("play-match", mapOf("question" to firstQuestion, "duration" to gameDuration))
             }
         }
     }
@@ -203,12 +199,13 @@ object MatchRoomService {
         socket.on(MatchEvents.GO_TO_NEXT_QUESTION.value) { args ->
             if (args.isNotEmpty()) {
                 isCooldown = false
-                val gson = Gson()
-                val question = gson.fromJson(
-                    (args[0] as JSONObject).toString(),
-                    Question::class.java
-                )
-                currentQuestion = question
+
+                val jsonString = (args[0] as? JSONObject)?.toString() ?: ""
+
+                if (jsonString.isNotEmpty()) {
+                    val gson = Gson()
+                    currentQuestion = gson.fromJson(jsonString, Question::class.java)
+                }
             }
         }
     }
@@ -224,21 +221,17 @@ object MatchRoomService {
         }
     }
 
-    fun onHostQuit(
-        navigateToHome: () -> Unit
-
-    ) {
+    fun onHostQuit() {
         socket.on(MatchEvents.HOST_QUIT_MATCH.value) { _ ->
             isHostPlaying = false
-            disconnectFromRoom(navigateToHome)
+            disconnectFromRoom()
         }
     }
 
-    fun onRedirectAfterDisconnection(navigateToHome: () -> Unit) {
+    fun onRedirectAfterDisconnection() {
         socket.on(MatchEvents.DISCONNECT.value) { _ ->
 //            navigator.navigateTo("home")
             resetMatchValues()
-            navigateToHome()
         }
     }
 
@@ -257,24 +250,17 @@ object MatchRoomService {
         socket.emit(MatchEvents.ROUTE_TO_RESULTS_PAGE.value, matchRoomCode)
     }
 
-    fun onRouteToResultsPage(
-        navigateToHome: () -> Unit
-
-    ) {
+    fun onRouteToResultsPage() {
         socket.on(MatchEvents.ROUTE_TO_RESULTS_PAGE.value) { _ ->
             isResults = true
 //            navigator.navigateTo("results")
-            navigateToHome()
         }
     }
 
-    fun onPlayerKick(
-        navigateToHome: () -> Unit
-
-    ) {
+    fun onPlayerKick() {
         socket.on(MatchEvents.KICK_PLAYER.value) { _ ->
             isBanned = true
-            disconnectFromRoom(navigateToHome)
+            disconnectFromRoom()
         }
     }
 

@@ -1,5 +1,6 @@
 package com.example.polyquiz.match.presentation
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,11 +18,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.polyquiz.constants.MatchContext
+import com.example.polyquiz.constants.UserInfo
+import com.example.polyquiz.match.domain.AnswerService
 import com.example.polyquiz.match.domain.Choice
+import com.example.polyquiz.match.domain.MatchContextService
+import com.example.polyquiz.match.domain.MatchRoomService
 
 @Composable
 fun MultipleChoiceArea(
     choices: List<Choice>,
+    answerService: AnswerService,
+    matchRoomService : MatchRoomService,
+    matchContext: MatchContext,
     modifier: Modifier = Modifier
 ) {
     val selectedStates = remember { mutableStateListOf<Boolean>().apply { addAll(List(choices.size) { false }) } }
@@ -29,57 +38,74 @@ fun MultipleChoiceArea(
 
     Column(modifier = modifier) {
         for (rowIndex in 0 until rows) {
+            val firstIndex = rowIndex * 2
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                val firstIndex = rowIndex * 2
-                if (firstIndex < choices.size) {
-                    Button(
-                        onClick = {
-                            selectedStates[firstIndex] = !selectedStates[firstIndex]
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = if (selectedStates[firstIndex])
-                                Color(0xFFA9A9A9)
-                            else
-                                Color(0xFFD3D3D3)
-                        ),
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(100.dp)
-                            .padding(8.dp)
-                    ) {
-                        Text(
-                            text = "${firstIndex + 1}. ${choices[firstIndex].text}",
-                            color = if (!selectedStates[firstIndex]) Color.Black else Color.Unspecified
-                        )
-                    }
-                }
+                ChoiceButton(firstIndex, choices, selectedStates, answerService, matchRoomService, Modifier.weight(1f))
+
                 if (firstIndex + 1 < choices.size) {
-                    Button(
-                        onClick = {
-                            selectedStates[firstIndex + 1] = !selectedStates[firstIndex + 1]
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = if (selectedStates[firstIndex + 1])
-                                Color(0xFFA9A9A9)
-                            else
-                                Color(0xFFD3D3D3)
-                        ),
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(100.dp)
-                            .padding(8.dp)
-                    ) {
-                        Text(
-                            text = "${firstIndex + 2}. ${choices[firstIndex + 1].text}",
-                            color = if (!selectedStates[firstIndex + 1]) Color.Black else Color.Unspecified
-                        )
-                    }
+                    ChoiceButton(firstIndex + 1, choices, selectedStates, answerService, matchRoomService, Modifier.weight(1f))
                 } else {
                     Spacer(modifier = Modifier.weight(1f))
                 }
             }
-        }}    }
+        }
+    }
+}
 
+@Composable
+fun ChoiceButton(
+    index: Int,
+    choices: List<Choice>,
+    selectedStates: MutableList<Boolean>,
+    answerService: AnswerService,
+    matchRoomService: MatchRoomService,
+    modifier: Modifier = Modifier
+) {
+    val showFeedback by answerService::showFeedback;
+    val feedback by answerService::feedback;
+    if (index < choices.size) {
+        val choice = choices[index]
+        val buttonColor = when {
+            showFeedback && feedback.correctAnswer.orEmpty().contains(choice.text) -> Color(0xFF4caf50)
+            showFeedback && selectedStates[index] && !feedback.correctAnswer.orEmpty().contains(choice.text) -> Color(0xFFf44336)
+            selectedStates[index] && !showFeedback -> Color(0xFFA9A9A9)
+            else -> Color(0xFFD3D3D3)
+        }
+
+        Button(
+            onClick = {
+                if (answerService.isSelectionEnabled) {
+                    selectedStates[index] = !selectedStates[index]
+                    val userInfo = UserInfo(
+                        username = matchRoomService.getUsername(),
+                        roomCode = matchRoomService.getRoomCode()
+                    )
+                    if (selectedStates[index]) {
+                        answerService.selectChoice(choice.text, userInfo)
+                    } else {
+                        answerService.deselectChoice(choice.text, userInfo)
+                    }
+                }
+            },
+            enabled = answerService.isSelectionEnabled,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = buttonColor,
+                disabledContainerColor = buttonColor,
+                disabledContentColor = Color.Black
+            ),
+            modifier = modifier
+                .height(100.dp)
+                .padding(8.dp)
+        ) {
+            Text(
+                text = "${index + 1}. ${choice.text}",
+                color = if (!selectedStates[index]) Color.Black else Color.Unspecified
+            )
+        }
+    }
+
+}

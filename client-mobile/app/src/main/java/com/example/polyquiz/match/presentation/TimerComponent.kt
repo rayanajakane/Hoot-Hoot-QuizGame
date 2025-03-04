@@ -22,12 +22,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.TimeService
+import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.draw.drawBehind
 
 @Composable
 fun TimerComponent(
     modifier: Modifier = Modifier,
     timeService: TimeService,
-
 ) {
     val timer = remember { mutableIntStateOf(timeService.time) }
     val progress = timeService.computeTimerProgress() / 100f
@@ -36,39 +37,19 @@ fun TimerComponent(
         timer.value = timeService.time
     }
 
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier.size(90.dp)
     ) {
         CircularProgressIndicator(
             progress = { progress },
             modifier = Modifier.size(90.dp),
             strokeWidth = 8.dp,
         )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "${timer.value} s", style = MaterialTheme.typography.bodyLarge)
-    }
-    Button(
-        onClick = {
-            Log.d("Timer", timer.toString())
-        },
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.surfaceBright,
-            contentColor = MaterialTheme.colorScheme.onSurface
+
+        Text(
+            text = "${timer.value}",
+            style = MaterialTheme.typography.bodyLarge
         )
-    ) {
-        Text(text = "Log timer")
     }
-//    Button(
-//        onClick = {
-//            joinRoom("6450", "sami")
-//        },
-//        colors = ButtonDefaults.buttonColors(
-//            containerColor = MaterialTheme.colorScheme.surfaceBright,
-//            contentColor = MaterialTheme.colorScheme.onSurface
-//        )
-//    ) {
-//        Text(text = "JoinRoom")
-//    }
 }
