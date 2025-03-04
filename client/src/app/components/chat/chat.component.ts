@@ -57,6 +57,9 @@ export class ChatComponent implements AfterViewChecked {
             authorUsername: this.authenticationService.userDisplayName,
             photoUrl: this.authenticationService.userAvatarUrl,
             date: new Date(),
+            userLikes: [],
+            userLoves: [],
+            userDislikes: [],
         };
         this.chatService.sendMessage(newMessage, this.matchRoomService.getRoomCode());
     }

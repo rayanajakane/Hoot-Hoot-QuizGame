@@ -8,6 +8,9 @@ export const MOCK_MESSAGE: Message = {
     authorUsername: 'User',
     photoUrl: 'abc',
     date: new Date(),
+    userLikes: [],
+    userLoves: [],
+    userDislikes: [],
 };
 export const MOCK_ROOM_CODE = '1234';
 

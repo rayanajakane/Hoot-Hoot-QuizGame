@@ -12,6 +12,9 @@ export const MOCK_MESSAGE: Message = {
     authorUsername: 'User',
     photoUrl: 'abc',
     date: MOCK_DATE,
+    userLikes: [],
+    userLoves: [],
+    userDislikes: [],
 };
 
 export const MOCK_MESSAGES: Message[] = [MOCK_MESSAGE];
