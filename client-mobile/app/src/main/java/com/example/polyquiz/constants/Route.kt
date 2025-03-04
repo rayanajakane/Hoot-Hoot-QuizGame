@@ -17,4 +17,7 @@ object Route {
 
     @Serializable
     object MatchCreation
+
+    @Serializable
+    object WaitPage
 }

@@ -27,8 +27,9 @@ fun JoinGameDialog(
     onDismiss: () -> Unit,
     onJoin: (String) -> Unit,
     authViewModel: AuthViewModel,
-    navigateToMatchRoom: () -> Unit
-
+    navigateToHome: () -> Unit,
+    navigateToMatchPage: () -> Unit,
+    navigateToWaitPage: () -> Unit,
 
 ) {
     var room by remember { mutableStateOf("") }
@@ -40,7 +41,7 @@ fun JoinGameDialog(
             matchRoomCode,
             onSuccess = {
                 JoinMatchService.matchRoomCode = matchRoomCode
-                JoinMatchService.validateUsername(username)
+                JoinMatchService.validateUsername(username, navigateToHome, navigateToWaitPage, navigateToMatchPage)
             },
             onError = { errorMessage ->
                 println("Error: $errorMessage")
@@ -75,8 +76,8 @@ fun JoinGameDialog(
                 TextButton(onClick = {
                     if (room.isNotBlank()) {
                         submitCode(room)
-                        TimeService.handleTimer()
-                        navigateToMatchRoom()
+                        //TimeService.handleTimer()
+                        //navigateToMatchRoom()
                         room = ""
                         onJoin(room)
 

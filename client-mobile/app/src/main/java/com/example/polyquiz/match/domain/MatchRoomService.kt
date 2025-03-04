@@ -11,7 +11,6 @@ import org.json.JSONObject
 
 object MatchRoomService {
 
-
     var players: List<Player> = emptyList()
     var messages: List<Message> = emptyList()
     var isMatchStarted = false
@@ -38,26 +37,29 @@ object MatchRoomService {
     fun getRoomCode(): String = matchRoomCode
     fun getUsername(): String = username
 
-    fun connect() {
+    fun connect(
+        navigateToHome: () -> Unit,
+        navigateToMatchPage: () -> Unit
+    ) {
         if (!hasEnteredRoom) {
             hasEnteredRoom = true
             resetMatchValues()
-            onRedirectAfterDisconnection()
+            onRedirectAfterDisconnection(navigateToHome)
             onFetchPlayersData()
             onMatchStarted()
-            onBeginQuiz()
+            onBeginQuiz(navigateToMatchPage)
             onNextQuestion()
             onStartCooldown()
-            onHostQuit()
-            onPlayerKick()
+            onHostQuit(navigateToHome)
+            onPlayerKick(navigateToHome)
             handleError()
 //            onPlayerChatStateToggle()
-            onRouteToResultsPage()
+            onRouteToResultsPage(navigateToHome)
         }
     }
 
-    fun disconnectFromRoom() {
-//        navigator.navigateTo("home")
+    fun disconnectFromRoom(navigateToHome: () -> Unit) {
+
         hasEnteredRoom = false
         socket.off(MatchEvents.FETCH_PLAYERS_DATA.value)
         socket.off(MatchEvents.MATCH_STARTING.value)
@@ -70,9 +72,10 @@ object MatchRoomService {
         socket.off(MatchEvents.ROUTE_TO_RESULTS_PAGE.value)
         socket.emit(MatchEvents.DISCONNECT.value)
         MatchContextService.resetContext()
+        navigateToHome()
     }
 
-    fun createRoom(gameId: String, isClassicMode: Boolean = true) {
+    fun createRoom(gameId: String, isClassicMode: Boolean = true, navigateToWaitPage: () -> Unit) {
         val data = JSONObject().apply {
             put("gameId", gameId)
             put("isClassicMode", isClassicMode)
@@ -83,7 +86,7 @@ object MatchRoomService {
                 matchRoomCode = response.getString("code")
                 username = HOST_USERNAME
                 sendPlayersData(matchRoomCode)
-//                navigator.navigateTo("match-room")
+                navigateToWaitPage()
             }
         })
     }
@@ -102,7 +105,9 @@ object MatchRoomService {
 //        }
 //    }
 
-    fun joinRoom(roomCode: String, username: String) {
+    //                navigator.navigateTo("match-room")
+//                navigator.navigateTo("match-room")
+    fun joinRoom(roomCode: String, username: String, navigateToWaitPage: () -> Unit) {
         val sentInfo = JSONObject().apply {
             put("roomCode", roomCode)
             put("username", username)
@@ -114,7 +119,7 @@ object MatchRoomService {
                 this.username = response.getString("username")
                 println("Joined room with code: $matchRoomCode")
             //navigateToMatchRoom()
-
+                navigateToWaitPage()
 //                navigator.navigateTo("match-room")
             }
         })
@@ -163,7 +168,7 @@ object MatchRoomService {
         }
     }
 
-    fun onBeginQuiz() {
+    fun onBeginQuiz(navigateToMatchPage: () -> Unit) {
         socket.on(MatchEvents.BEGIN_QUIZ.value) { args ->
             if (args.isNotEmpty()) {
                 val data = args[0] as JSONObject
@@ -175,7 +180,7 @@ object MatchRoomService {
                 )
                 currentQuestion = firstQuestion
                 gameDuration = data.getInt("gameDuration")
-//                navigator.navigateTo("play-match", mapOf("question" to firstQuestion, "duration" to gameDuration))
+                navigateToMatchPage()
             }
         }
     }
@@ -219,17 +224,21 @@ object MatchRoomService {
         }
     }
 
-    fun onHostQuit() {
+    fun onHostQuit(
+        navigateToHome: () -> Unit
+
+    ) {
         socket.on(MatchEvents.HOST_QUIT_MATCH.value) { _ ->
             isHostPlaying = false
-            disconnectFromRoom()
+            disconnectFromRoom(navigateToHome)
         }
     }
 
-    fun onRedirectAfterDisconnection() {
+    fun onRedirectAfterDisconnection(navigateToHome: () -> Unit) {
         socket.on(MatchEvents.DISCONNECT.value) { _ ->
 //            navigator.navigateTo("home")
             resetMatchValues()
+            navigateToHome()
         }
     }
 
@@ -248,17 +257,24 @@ object MatchRoomService {
         socket.emit(MatchEvents.ROUTE_TO_RESULTS_PAGE.value, matchRoomCode)
     }
 
-    fun onRouteToResultsPage() {
+    fun onRouteToResultsPage(
+        navigateToHome: () -> Unit
+
+    ) {
         socket.on(MatchEvents.ROUTE_TO_RESULTS_PAGE.value) { _ ->
             isResults = true
 //            navigator.navigateTo("results")
+            navigateToHome()
         }
     }
 
-    fun onPlayerKick() {
+    fun onPlayerKick(
+        navigateToHome: () -> Unit
+
+    ) {
         socket.on(MatchEvents.KICK_PLAYER.value) { _ ->
             isBanned = true
-            disconnectFromRoom()
+            disconnectFromRoom(navigateToHome)
         }
     }
 

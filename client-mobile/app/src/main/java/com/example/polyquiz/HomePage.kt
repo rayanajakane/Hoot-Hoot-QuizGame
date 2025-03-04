@@ -34,9 +34,17 @@ import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.DisplayAuthenticationText
 import kotlinx.coroutines.launch
+import kotlin.jvm.internal.Intrinsics.Kotlin
 
 @Composable
-fun HomePage(modifier: Modifier, navigateToLogin: () -> Unit, navigateToMatchRoom: () -> Unit, navigateToCreate: () -> Unit, authViewModel: AuthViewModel) {
+fun HomePage(
+    modifier: Modifier,
+    navigateToLogin: () -> Unit,
+    navigateToHome: () -> Unit,
+    navigateToCreate: () -> Unit,
+    navigateToWaitPage: () -> Unit,
+    authViewModel: AuthViewModel
+) {
     val authState = authViewModel.authState.observeAsState()
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
@@ -104,7 +112,9 @@ fun HomePage(modifier: Modifier, navigateToLogin: () -> Unit, navigateToMatchRoo
                     showDialog = false
                 },
                 authViewModel = authViewModel,
-                navigateToMatchRoom = navigateToMatchRoom
+                navigateToHome = navigateToHome,
+                navigateToMatchPage = navigateToWaitPage,
+                navigateToWaitPage = navigateToWaitPage
             )
             Button(
                 onClick = {
