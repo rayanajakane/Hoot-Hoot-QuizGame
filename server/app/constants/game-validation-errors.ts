@@ -18,16 +18,24 @@ const ERROR_EMPTY_DESCRIPTION = 'La description du jeu est vide.';
 const ERROR_DURATION = `La durée doit être entre ${MIN_DURATION} et ${MAX_DURATION} secondes.`;
 const ERROR_QUESTIONS_NUMBER = 'Le jeu doit avoir au moins une question.';
 const ERROR_QUESTION_TYPE = 'Le type de la question doit être QCM ou QRL';
+const ERROR_ANSWER_NOT_INTEGER = 'La réponse doit être un entier.';
+const ERROR_LOWER_BOUND_NOT_INTEGER = 'La borne inférieure doit être un entier.';
+const ERROR_UPPER_BOUND_NOT_INTEGER = 'La borne supérieure doit être un entier.';
+const ERROR_MARGIN_NOT_INTEGER = 'La marge doit être un entier.';
 
 export {
+    ERROR_ANSWER_NOT_INTEGER,
     ERROR_CHOICES_NUMBER,
     ERROR_CHOICES_RATIO,
     ERROR_DURATION,
     ERROR_EMPTY_DESCRIPTION,
     ERROR_EMPTY_QUESTION,
     ERROR_EMPTY_TITLE,
+    ERROR_LOWER_BOUND_NOT_INTEGER,
+    ERROR_MARGIN_NOT_INTEGER,
     ERROR_POINTS,
-    ERROR_QUESTIONS_NUMBER,
     ERROR_QUESTION_TYPE,
+    ERROR_QUESTIONS_NUMBER,
     ERROR_REPEAT_CHOICES,
+    ERROR_UPPER_BOUND_NOT_INTEGER,
 };

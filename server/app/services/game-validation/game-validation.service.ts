@@ -9,16 +9,20 @@ import {
     STEP_POINTS,
 } from '@app/constants/game-validation-constraints';
 import {
+    ERROR_ANSWER_NOT_INTEGER,
     ERROR_CHOICES_NUMBER,
     ERROR_CHOICES_RATIO,
     ERROR_DURATION,
     ERROR_EMPTY_DESCRIPTION,
     ERROR_EMPTY_QUESTION,
     ERROR_EMPTY_TITLE,
+    ERROR_LOWER_BOUND_NOT_INTEGER,
+    ERROR_MARGIN_NOT_INTEGER,
     ERROR_POINTS,
     ERROR_QUESTIONS_NUMBER,
     ERROR_QUESTION_TYPE,
     ERROR_REPEAT_CHOICES,
+    ERROR_UPPER_BOUND_NOT_INTEGER,
 } from '@app/constants/game-validation-errors';
 import { QuestionType } from '@app/constants/question-types';
 import { Choice } from '@app/model/database/choice';
@@ -31,6 +35,14 @@ import { Injectable } from '@nestjs/common';
 export class GameValidationService {
     isValidString(text: string): boolean {
         return text && text.trim() !== '';
+    }
+
+    isValidInteger(number: number): boolean {
+        return Number.isInteger(number);
+    }
+
+    isValidEstimatedInterval() {
+        return;
     }
 
     isValidChoicesRatio(question: CreateQuestionDto): boolean {
@@ -88,9 +100,10 @@ export class GameValidationService {
         const errorMessages: string[] = this.findGeneralQuestionErrors(question);
 
         const errorConditions: Map<string, boolean> = new Map([
-            [ERROR_CHOICES_NUMBER, !this.isValidRange(question.choices.length, MIN_CHOICES_NUMBER, MAX_CHOICES_NUMBER)],
-            [ERROR_REPEAT_CHOICES, !this.isUniqueChoices(question.choices)],
-            [ERROR_CHOICES_RATIO, !this.isValidChoicesRatio(question)],
+            [ERROR_ANSWER_NOT_INTEGER, !this.isValidInteger(question.estimatedParameters.correctAnswer)],
+            [ERROR_LOWER_BOUND_NOT_INTEGER, !this.isValidInteger(question.estimatedParameters.lowerBound)],
+            [ERROR_UPPER_BOUND_NOT_INTEGER, !this.isValidInteger(question.estimatedParameters.upperBound)],
+            [ERROR_MARGIN_NOT_INTEGER, !this.isValidInteger(question.estimatedParameters.margin)],
         ]);
         return this.checkErrors(errorConditions, errorMessages);
     }
@@ -119,7 +132,7 @@ export class GameValidationService {
         if (question.type === QuestionType.MultipleChoice) {
             return this.findChoicesQuestionErrors(question);
         } else if (question.type === QuestionType.EstimatedAnswer) {
-            return;
+            return this.findEstimatedQuestionErrors(question);
         } else {
             return this.findGeneralQuestionErrors(question);
         }
