@@ -27,7 +27,6 @@ export class UserEditPageComponent {
 
     initialAvatarUrl = this.authenticationService.userAvatarUrl;
 
-    currentLang: Language;
     availableLangs: string[];
 
     form = this.fb.group({
@@ -60,20 +59,16 @@ export class UserEditPageComponent {
         return this.form.controls['avatar'];
     }
 
+    get currentLang() {
+        return this.form.controls['currentLang'];
+    }
+
     get presetAvatar() {
         return PresetAvatar;
     }
 
     static isEmptyData(userEditData: UserEditData | undefined): boolean {
         return userEditData?.email === '' && userEditData.username === '' && userEditData.currentLang === null;
-    }
-
-    getUserEditRecord(): UserEditData {
-        return {
-            email: this.form.get('email')?.value || '',
-            username: this.form.get('username')?.value || '',
-            currentLang: this.form.get('currentLang')?.value || Language.FR,
-        };
     }
 
     save() {
@@ -84,11 +79,10 @@ export class UserEditPageComponent {
                 this.setPresetAvatar(PresetAvatar.Default);
             }
             // TODO: Consider adding the themes
-            const userEditData = this.getUserEditRecord();
-            if (userEditData) {
-                this.translationService.setLanguage(userEditData.currentLang);
-            }
+            this.translationService.setLanguage(this.currentLang.value as string);
+
             this.authenticationService.editUserProfile(this.username.value as string, this.avatar.value as string);
+            this.form.markAsPristine();
         }
     }
 
