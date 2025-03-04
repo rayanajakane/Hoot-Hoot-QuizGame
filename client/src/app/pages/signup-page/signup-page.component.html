@@ -2,25 +2,28 @@
     <div id="main-container" (keyup.enter)="signUp()">
         <mat-card id="main-card">
             <h1>{{ t('page.signup-title') }}</h1>
-            <div class="two-columns-container">
-                <div id="avatars-container">
-                    <div id="main-avatar-container">
-                        <div id="main-avatar"><!--TODO: AVATAR--></div>
-                        <button mat-raised-button color="primary" (click)="uploadAvatar()" id="upload-button">{{ t('page.upload-avatar') }}</button>
-                    </div>
-                    <div id="avatar-choices-container">
-                        <p>{{ t('page.avatar-choices') }}</p>
-                        <div id="avatar-choices">
-                            <div class="avatar-mini"></div>
-                            <div class="avatar-mini"></div>
-                            <div class="avatar-mini"></div>
-                            <div class="avatar-mini"></div>
-                            <div class="avatar-mini"></div>
+            <form id="form" [formGroup]="form">
+                <div class="two-columns-container">
+                    <div id="avatars-container">
+                        <div id="main-avatar-container">
+                            <div id="main-avatar">
+                                <img *ngIf="form.get('avatar')!.value" [src]="form.get('avatar')!.value" />
+                            </div>
+                            <input class="avatar" type="file" #avatar (change)="setCustomAvatar($event)" accept="image/png, image/jpeg" />
+                            <button mat-raised-button color="primary" (click)="avatar.click()">
+                                <mat-icon>upload</mat-icon>{{ t('page.upload-avatar') }}
+                            </button>
+                        </div>
+                        <div id="avatar-choices-container">
+                            <p>{{ t('page.avatar-choices') }}</p>
+                            <div id="avatar-choices">
+                                <div class="avatar-mini" *ngFor="let enum of presetAvatar | keyvalue" (click)="setPresetAvatar(enum.value)">
+                                    <img src="{{ enum.value }}" alt="" />
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div>
-                    <form id="form" [formGroup]="form">
+                    <div>
                         <mat-form-field id="email">
                             <mat-label>{{ t('page.email') }}</mat-label>
                             <input
@@ -80,13 +83,13 @@
                                 <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
                             </button>
                         </mat-form-field>
-                    </form>
+                    </div>
                 </div>
-            </div>
-            <div id="buttons-container">
-                <button mat-raised-button routerLink="/login">{{ t('page.return-to-login') }}</button>
-                <button mat-raised-button color="primary" (click)="signUp()" id="signup-button">{{ t('page.signup-action') }}</button>
-            </div>
+                <div id="buttons-container">
+                    <button mat-raised-button routerLink="/login">{{ t('page.return-to-login') }}</button>
+                    <button mat-raised-button color="primary" (click)="signUp()" id="signup-button">{{ t('page.signup-action') }}</button>
+                </div>
+            </form>
         </mat-card>
     </div>
 </ng-container>

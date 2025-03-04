@@ -95,6 +95,10 @@ class AuthViewModel : ViewModel() {
         return auth.currentUser?.displayName ?: ""
     }
 
+    fun getUserId(): String {
+        return auth.currentUser?.uid ?: ""
+    }
+
     private fun checkAuthStatus() {
         if (auth.currentUser == null) {
             _authState.value = AuthState.Unauthenticated

@@ -1,6 +1,13 @@
-<button mat-raised-button id="logout-button" *ngIf="this.authenticationService.isUserAuthenticated()" (click)="this.authenticationService.signOut()">
-    Se déconnecter
-</button>
+<div *transloco="let t">
+    <button
+        mat-raised-button
+        id="logout-button"
+        *ngIf="this.authenticationService.isUserAuthenticated()"
+        (click)="this.authenticationService.signOut()"
+    >
+        {{ t('page.logout-action') }}
+    </button>
+</div>
 <div [ngClass]="this.authenticationService.isUserAuthenticated() ? 'two-columns-layout' : ''">
     <app-chat *ngIf="this.authenticationService.isUserAuthenticated()"> </app-chat>
     <div [ngClass]="this.authenticationService.isUserAuthenticated() ? 'second-column' : ''">
