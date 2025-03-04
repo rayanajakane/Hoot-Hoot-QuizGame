@@ -42,12 +42,12 @@ export class MultipleChoiceStrategy extends QuestionStrategy {
         if (fastestTime) this.computeFastestPlayerBonus(currentQuestionPoints, fastestTime, correctPlayers);
     }
 
-    buildHistogram(matchRoom: MatchRoom, choice: string, selection: boolean): MultipleChoiceHistogram {
-        const choiceTracker = matchRoom.choiceTracker;
-        if (selection) choiceTracker.incrementCount(choice);
-        else choiceTracker.decrementCount(choice);
-        return this.convertToHistogram(choiceTracker);
-    }
+    // buildHistogram(matchRoom: MatchRoom, choice: string, selection: boolean): MultipleChoiceHistogram {
+    //     const choiceTracker = matchRoom.choiceTracker;
+    //     if (selection) choiceTracker.incrementCount(choice);
+    //     else choiceTracker.decrementCount(choice);
+    //     return this.convertToHistogram(choiceTracker);
+    // }
 
     private isCorrectAnswer(playerAnswer: MultipleChoiceAnswer, correctAnswer: string[]) {
         const playerChoices = this.filterSelectedChoices(playerAnswer);

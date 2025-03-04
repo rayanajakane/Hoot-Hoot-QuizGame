@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { Choice, choiceSchema } from './choice';
+import { EstimatedParameters, estimatedParametersSchema } from './estimated-parameters';
 
 export type QuestionDocument = Question & Document;
 
@@ -20,6 +21,9 @@ export class Question {
 
     @Prop({ type: [choiceSchema], default: [], required: true })
     choices: Choice[];
+
+    @Prop({ type: [estimatedParametersSchema], default: {}, required: true })
+    estimatedParameters: EstimatedParameters;
 
     @Prop({ required: false })
     lastModification: Date;

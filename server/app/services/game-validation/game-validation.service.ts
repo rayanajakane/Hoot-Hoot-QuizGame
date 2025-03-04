@@ -64,13 +64,29 @@ export class GameValidationService {
         const errorConditions: Map<string, boolean> = new Map([
             [ERROR_POINTS, !this.isValidRange(question.points, MIN_POINTS, MAX_POINTS) || question.points % STEP_POINTS !== 0],
             [ERROR_EMPTY_QUESTION, !this.isValidString(question.text)],
-            [ERROR_QUESTION_TYPE, question.type !== QuestionType.MultipleChoice && question.type !== QuestionType.LongAnswer],
+            [
+                ERROR_QUESTION_TYPE,
+                question.type !== QuestionType.MultipleChoice &&
+                    question.type !== QuestionType.LongAnswer &&
+                    question.type !== QuestionType.EstimatedAnswer,
+            ],
         ]);
         return this.checkErrors(errorConditions, []);
     }
 
     findChoicesQuestionErrors(question: CreateQuestionDto): string[] {
         const errorMessages: string[] = this.findGeneralQuestionErrors(question);
+        const errorConditions: Map<string, boolean> = new Map([
+            [ERROR_CHOICES_NUMBER, !this.isValidRange(question.choices.length, MIN_CHOICES_NUMBER, MAX_CHOICES_NUMBER)],
+            [ERROR_REPEAT_CHOICES, !this.isUniqueChoices(question.choices)],
+            [ERROR_CHOICES_RATIO, !this.isValidChoicesRatio(question)],
+        ]);
+        return this.checkErrors(errorConditions, errorMessages);
+    }
+
+    findEstimatedQuestionErrors(question: CreateQuestionDto): string[] {
+        const errorMessages: string[] = this.findGeneralQuestionErrors(question);
+
         const errorConditions: Map<string, boolean> = new Map([
             [ERROR_CHOICES_NUMBER, !this.isValidRange(question.choices.length, MIN_CHOICES_NUMBER, MAX_CHOICES_NUMBER)],
             [ERROR_REPEAT_CHOICES, !this.isUniqueChoices(question.choices)],
@@ -100,6 +116,12 @@ export class GameValidationService {
     }
 
     findQuestionErrors(question: Question): string[] {
-        return question.type === QuestionType.MultipleChoice ? this.findChoicesQuestionErrors(question) : this.findGeneralQuestionErrors(question);
+        if (question.type === QuestionType.MultipleChoice) {
+            return this.findChoicesQuestionErrors(question);
+        } else if (question.type === QuestionType.EstimatedAnswer) {
+            return;
+        } else {
+            return this.findGeneralQuestionErrors(question);
+        }
     }
 }
