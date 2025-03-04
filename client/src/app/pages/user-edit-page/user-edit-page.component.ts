@@ -77,6 +77,9 @@ export class UserEditPageComponent {
             if (!this.isPresetAvatar && (this.avatar.value as string) !== this.authenticationService.userAvatarUrl) {
                 const resultUrl = await this.authenticationService.uploadUserAvatar(this.authenticationService.userId, this.loadedImageFile);
                 url = resultUrl !== '' ? resultUrl : this.authenticationService.userAvatarUrl;
+            } else if (this.isPresetAvatar) {
+                // Frees Firebase Storage space if user no longer needs uploaded avatar.
+                this.authenticationService.deleteUserAvatar(this.authenticationService.userId);
             }
             // TODO: Consider adding the themes
             this.translationService.setLanguage(this.currentLang.value as string);
