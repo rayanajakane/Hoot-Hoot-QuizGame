@@ -10,6 +10,7 @@ import {
 } from '@app/constants/game-validation-constraints';
 import {
     ERROR_ANSWER_NOT_INTEGER,
+    ERROR_ANSWER_OUT_OF_BOUNDS,
     ERROR_CHOICES_NUMBER,
     ERROR_CHOICES_RATIO,
     ERROR_DURATION,
@@ -18,6 +19,7 @@ import {
     ERROR_EMPTY_TITLE,
     ERROR_LOWER_BOUND_NOT_INTEGER,
     ERROR_MARGIN_NOT_INTEGER,
+    ERROR_MARGIN_TOO_BIG,
     ERROR_POINTS,
     ERROR_QUESTIONS_NUMBER,
     ERROR_QUESTION_TYPE,
@@ -39,10 +41,6 @@ export class GameValidationService {
 
     isValidInteger(number: number): boolean {
         return Number.isInteger(number);
-    }
-
-    isValidEstimatedInterval() {
-        return;
     }
 
     isValidChoicesRatio(question: CreateQuestionDto): boolean {
@@ -113,13 +111,12 @@ export class GameValidationService {
         const questionAnswer = question.estimatedParameters.correctAnswer;
 
         const errorConditions: Map<string, boolean> = new Map([
-            [ERROR_CHOICES_NUMBER, !this.isValidRange(question.choices.length, MIN_CHOICES_NUMBER, MAX_CHOICES_NUMBER)],
-            [ERROR_REPEAT_CHOICES, !this.isUniqueChoices(question.choices)],
+            [ERROR_MARGIN_TOO_BIG, !this.isValidMargin(questionMargin, questionLowerBound, questionUpperBound)],
             [ERROR_ANSWER_NOT_INTEGER, !this.isValidInteger(question.estimatedParameters.correctAnswer)],
-            [ERROR_LOWER_BOUND_NOT_INTEGER, !this.isValidInteger(question.estimatedParameters.lowerBound)],
-            [ERROR_UPPER_BOUND_NOT_INTEGER, !this.isValidInteger(question.estimatedParameters.upperBound)],
-            [ERROR_MARGIN_NOT_INTEGER, !this.isValidInteger(question.estimatedParameters.margin)],
-            [ERROR_CHOICES_RATIO, !this.isValidChoicesRatio(question)],
+            [ERROR_LOWER_BOUND_NOT_INTEGER, !this.isValidInteger(questionLowerBound)],
+            [ERROR_UPPER_BOUND_NOT_INTEGER, !this.isValidInteger(questionLowerBound)],
+            [ERROR_MARGIN_NOT_INTEGER, !this.isValidInteger(questionMargin)],
+            [ERROR_ANSWER_OUT_OF_BOUNDS, !this.isAnswerInBounds(questionAnswer, questionLowerBound, questionUpperBound)],
         ]);
         return this.checkErrors(errorConditions, errorMessages);
     }
