@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ChatChannel } from '@app/constants/chat-channels';
+import { MOCK_MESSAGE } from '@app/constants/chat-mocks';
 import { MatchContext } from '@app/constants/states';
 import { ChatService } from '@app/services/chat/chat.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
@@ -26,11 +27,7 @@ describe('ChatService', () => {
         socketHandlerSpy = TestBed.inject(SocketHandlerService) as jasmine.SpyObj<SocketHandlerService>;
     });
 
-    const mockMessage = {
-        text: 'mock',
-        author: '',
-        date: new Date(),
-    };
+    const mockMessage = MOCK_MESSAGE;
 
     it('should be created', () => {
         expect(service).toBeTruthy();

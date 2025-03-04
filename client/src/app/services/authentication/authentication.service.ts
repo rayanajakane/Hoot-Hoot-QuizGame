@@ -1,16 +1,7 @@
-/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
-import {
-    Auth,
-    createUserWithEmailAndPassword,
-    onAuthStateChanged,
-    sendPasswordResetEmail,
-    signInWithEmailAndPassword,
-    signOut,
-    updateProfile,
-} from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { AuthError } from '@app/services/authentication/auth-error';
 import { ChatService } from '@app/services/chat/chat.service';
@@ -19,15 +10,18 @@ import { NotificationService } from '@app/services/notification/notification.ser
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { ChatEvents } from '@common/events/chat.events';
 import { TranslocoService } from '@jsverse/transloco';
-import { browserSessionPersistence, setPersistence, User, UserCredential } from 'firebase/auth';
+import { browserSessionPersistence, sendPasswordResetEmail, setPersistence, User, UserCredential } from 'firebase/auth';
 import { DataSnapshot, get, getDatabase, onDisconnect, ref, remove, set, update } from 'firebase/database';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
 })
 export class AuthenticationService {
-    private currentUser: User | null;
-    private database = getDatabase();
+    currentUser: User | null;
+    database = getDatabase();
+
+    authenticatedUser = new BehaviorSubject<User | null>(null);
 
     // eslint-disable-next-line max-params
     constructor(
@@ -40,19 +34,31 @@ export class AuthenticationService {
         private auth: Auth,
     ) {
         setPersistence(this.auth, browserSessionPersistence);
+
         onAuthStateChanged(this.auth, (user) => {
             if (user) {
                 this.setUser(user);
             } else {
-                this.currentUser = null;
+                this.setUser(null);
                 this.router.navigateByUrl('/login');
             }
         });
     }
 
+    get userId(): string {
+        return this.currentUser?.uid ?? '';
+    }
+
+    get userEmail(): string {
+        return this.currentUser?.email ?? '';
+    }
+
     get userDisplayName(): string {
-        const displayName: string = this.currentUser?.displayName ?? '';
-        return displayName;
+        return this.currentUser?.displayName ?? '';
+    }
+
+    get userAvatarUrl(): string {
+        return this.currentUser?.photoURL ?? '';
     }
 
     getUsernameDatabaseRef(username: string) {
@@ -73,6 +79,7 @@ export class AuthenticationService {
 
     setUser(user: User | null) {
         this.currentUser = user;
+        this.authenticatedUser.next(this.currentUser);
     }
 
     isUserAuthenticated(): boolean {
@@ -98,9 +105,8 @@ export class AuthenticationService {
                     return Promise.resolve(true);
                 }
             })
-            .catch(async (error: unknown) => {
+            .catch(async () => {
                 this.setUser(null);
-                console.log(error);
                 return Promise.resolve(false);
             });
     }
@@ -109,8 +115,8 @@ export class AuthenticationService {
         return uid ? ref(this.database, `users/${uid}`) : ref(this.database, 'users/');
     }
 
-    async completeUserProfileCreation(userCredential: UserCredential, username: string) {
-        updateProfile(userCredential.user, { displayName: username }).then(() => {
+    async completeUserProfileCreation(userCredential: UserCredential, username: string, avatarUrl: string) {
+        updateProfile(userCredential.user, { displayName: username, photoURL: avatarUrl }).then(() => {
             const userRef = this.getUserDatabaseRef(userCredential.user.uid);
 
             set(userRef, {
@@ -130,7 +136,63 @@ export class AuthenticationService {
         });
     }
 
-    async signUp(email: string, username: string, password: string) {
+    async editUserProfile(username: string, avatarUrl: string) {
+        let isValidUsername: boolean = this.userDisplayName.toLowerCase() === username.toLowerCase();
+        let isValidAvatarUrl: boolean = this.userAvatarUrl === avatarUrl;
+        if (!isValidUsername) {
+            isValidUsername = await this.editUsername(username);
+        }
+        if (!isValidAvatarUrl) {
+            isValidAvatarUrl = this.editAvatarUrl(avatarUrl);
+        }
+        if (isValidUsername && isValidAvatarUrl) {
+            this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.edited'));
+        }
+    }
+
+    editAvatarUrl(avatarUrl: string) {
+        if (!this.currentUser) return false;
+        updateProfile(this.currentUser, { photoURL: avatarUrl })
+            .then(() => {
+                return true;
+            })
+            .catch((error: any) => {
+                console.log(error);
+                return false;
+            });
+        return true;
+    }
+
+    async editUsername(username: string) {
+        if (!this.currentUser) return false;
+        const formattedUsername = username.trim();
+        const oldUsername = this.userDisplayName;
+        try {
+            await this.checkUsername(formattedUsername.toLowerCase());
+            updateProfile(this.currentUser, { displayName: formattedUsername })
+                .then(() => {
+                    const usernameRef = this.getUsernameDatabaseRef(username.toLowerCase());
+                    set(usernameRef, username.toLowerCase());
+
+                    const oldUsernameRef = this.getUsernameDatabaseRef(oldUsername.toLowerCase());
+                    remove(oldUsernameRef);
+
+                    return true;
+                })
+                .catch((error: any) => {
+                    const errorMessage = this.handleAuthErrorMessage(error);
+                    this.notificationService.displayErrorMessage(errorMessage);
+                    return false;
+                });
+        } catch (error: any) {
+            const errorMessage = this.handleAuthErrorMessage(error);
+            this.notificationService.displayErrorMessage(errorMessage);
+            return false;
+        }
+        return true;
+    }
+
+    async signUp(email: string, username: string, password: string, avatarUrl: string) {
         const formattedUsername = username.trim();
         const formattedEmail = email.trim();
 
@@ -138,7 +200,7 @@ export class AuthenticationService {
             await this.checkUsername(formattedUsername.toLowerCase());
             createUserWithEmailAndPassword(this.auth, `${formattedEmail}`, password)
                 .then((userCredential) => {
-                    this.completeUserProfileCreation(userCredential, formattedUsername);
+                    this.completeUserProfileCreation(userCredential, formattedUsername, avatarUrl);
                 })
                 .catch((error) => {
                     const errorMessage = this.handleAuthErrorMessage(error);
@@ -208,7 +270,7 @@ export class AuthenticationService {
             });
     }
 
-    public deleteUser() {
+    deleteUser() {
         const user = this.auth.currentUser;
         if (!user) {
             return;
@@ -257,7 +319,6 @@ export class AuthenticationService {
                 return this.translocoService.translate('auth.error.invalid-username-password');
             }
             default: {
-                console.log(error);
                 return this.translocoService.translate('auth.error.other-error');
             }
         }

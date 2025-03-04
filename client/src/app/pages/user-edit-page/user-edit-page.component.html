@@ -5,56 +5,73 @@
             <button mat-raised-button routerLink="/home"><mat-icon>home</mat-icon>Page principale</button>
         </div>
         <div class="content-container">
-            <mat-card class="two-columns-container card">
-                <div id="avatars-container">
-                    <div id="main-avatar-container">
-                        <div id="main-avatar"><!--TODO: AVATAR--></div>
-                        <button mat-raised-button color="primary" (click)="uploadAvatar()" id="upload-button">{{ t('page.upload-avatar') }}</button>
-                    </div>
-                    <div id="avatar-choices-container">
-                        <p>{{ t('page.avatar-choices') }}</p>
-                        <div id="avatar-choices">
-                            <div class="avatar-mini"></div>
-                            <div class="avatar-mini"></div>
-                            <div class="avatar-mini"></div>
-                            <div class="avatar-mini"></div>
-                            <div class="avatar-mini"></div>
+            <form id="form" [formGroup]="form">
+                <mat-card class="two-columns-container card">
+                    <div id="avatars-container">
+                        <div id="main-avatar-container">
+                            <div id="main-avatar">
+                                <img *ngIf="form.get('avatar')!.value" [src]="form.get('avatar')!.value" />
+                            </div>
+                            <input class="avatar" type="file" #avatar (change)="setCustomAvatar($event)" accept="image/png, image/jpeg" />
+                            <button mat-raised-button color="primary" (click)="avatar.click()">
+                                <mat-icon>upload</mat-icon>{{ t('page.upload-avatar') }}
+                            </button>
+                        </div>
+                        <div id="avatar-choices-container">
+                            <p>{{ t('page.avatar-choices') }}</p>
+                            <div id="avatar-choices">
+                                <div class="avatar-mini" *ngFor="let enum of presetAvatar | keyvalue" (click)="setPresetAvatar(enum.value)">
+                                    <img src="{{ enum.value }}" alt="" />
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div id="form">
-                    <mat-form-field id="email">
-                        <mat-label>{{ t('page.email') }}</mat-label>
-                        <input matInput placeholder="" id="email-input" [(ngModel)]="email" disabled />
-                    </mat-form-field>
-                    <mat-form-field id="username">
-                        <mat-label>{{ t('page.username') }}</mat-label>
-                        <input matInput placeholder="" id="username-input" maxlength="200" [(ngModel)]="username" />
-                    </mat-form-field>
-                    <mat-form-field id="password">
-                        <mat-label>{{ t('page.password') }}</mat-label>
-                        <input matInput [type]="hide ? 'password' : 'text'" maxlength="200" [(ngModel)]="password" />
-                        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-                            <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
-                        </button>
-                    </mat-form-field>
-                    <mat-form-field id="theme">
-                        <mat-label>{{ t('page.theme') }}</mat-label>
-                        <mat-select>
-                            <mat-option value="option1">Option 1</mat-option>
-                            <mat-option value="option2">Option 2</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <mat-form-field id="language">
-                        <mat-label>{{ t('page.language') }}</mat-label>
-                        <mat-select>
-                            <mat-option value="option1">Option 1</mat-option>
-                            <mat-option value="option2">Option 2</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <button mat-raised-button color="primary" (click)="save()" id="save-button">{{ t('page.save') }}</button>
-                </div>
-            </mat-card>
+                    <div id="form-fields">
+                        <mat-form-field id="email">
+                            <mat-label>{{ t('page.email') }}</mat-label>
+                            <input matInput type="email" name="email" placeholder="" formControlName="email" maxlength="200" />
+                        </mat-form-field>
+                        <mat-form-field
+                            id="username"
+                            [ngClass]="{ 'mat-form-field-invalid': form.get('username')?.invalid && form.get('username')?.touched }"
+                        >
+                            <mat-label>{{ t('page.username') }}</mat-label>
+                            <input
+                                matInput
+                                type="username"
+                                name="username"
+                                formControlName="username"
+                                maxlength="200"
+                                placeholder=""
+                                id="username-input"
+                            />
+                            <mat-error *ngIf="form.get('username')?.hasError('containsSpecialChar')"
+                                >{{ t('auth.error.username-special-char') }}
+                            </mat-error>
+                            <mat-error *ngIf="form.get('username')?.hasError('minlength')"
+                                >{{ t('auth.error.username-too-short', { length: minUsernameLength }) }}
+                            </mat-error>
+                            <mat-error *ngIf="form.get('username')?.hasError('maxlength')"
+                                >{{ t('auth.error.username-too-long', { length: maxUsernameLength }) }}
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field id="theme">
+                            <mat-label>{{ t('page.theme') }}</mat-label>
+                            <mat-select>
+                                <mat-option value="option1">Option 1</mat-option>
+                                <mat-option value="option2">Option 2</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field id="language">
+                            <mat-label>{{ t('page.language') }}</mat-label>
+                            <mat-select formControlName="currentLang" data-testid="language-select-test-id">
+                                <mat-option *ngFor="let lang of availableLangs" [value]="lang">{{ lang }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <button mat-raised-button color="primary" (click)="save()" id="save-button">{{ t('page.save') }}</button>
+                    </div>
+                </mat-card>
+            </form>
             <h2>{{ t('page.danger-zone') }}</h2>
             <button mat-raised-button color="accent" (click)="deleteUser()" id="delete-button">{{ t('page.delete-user') }}</button>
         </div>

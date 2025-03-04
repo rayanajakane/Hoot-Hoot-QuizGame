@@ -34,9 +34,9 @@ object ChatService {
         _messages.postValue(emptyList())
     }
 
-    fun sendMessage(text: String, username: String) {
+    fun sendMessage(text: String, userId: String, username: String, photoUrl: String) {
         if (text.filterNot { it.isWhitespace() }.isNotEmpty()) {
-            val newMessage = Message(text.trim(), username, Date.from(
+            val newMessage = Message("", text.trim(), userId, username, photoUrl, Date.from(
                 Instant.now()))
             val newMessageStringified = Gson().toJson(newMessage)
             val newMessageJsonObject = JSONObject(newMessageStringified)

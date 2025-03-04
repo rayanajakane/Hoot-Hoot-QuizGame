@@ -48,6 +48,13 @@ mat-form-field {
     border-radius: 100rem;
 }
 
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    border-radius: 100rem;
+}
+
 #avatar-choices-container {
     padding: 1rem;
 }
@@ -63,6 +70,7 @@ mat-form-field {
     width: 2rem;
     height: 2rem;
     border-radius: 100rem;
+    cursor: pointer;
 }
 
 .two-columns-container {
@@ -83,4 +91,8 @@ mat-form-field {
     align-items: center;
     justify-content: center;
     gap: 1rem;
+}
+
+input[type='file'] {
+    display: none;
 }

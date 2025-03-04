@@ -44,7 +44,7 @@ describe('GameCreationService', () => {
     });
     it('generateId() should generate an ID for game and its questions', () => {
         // Reference: https://stackoverflow.com/questions/51383177/how-to-mock-uuid-with-jest
-        const uuidSpy = jest.spyOn(uuid, 'v4').mockReturnValue('mockedValue');
+        const uuidSpy = jest.spyOn(uuid, 'v4').mockReturnThis();
         const mockGame = getMockGame();
         const updatedGame = service.generateId(mockGame);
         expect(uuidSpy).toHaveBeenCalledTimes(1 + updatedGame.questions.length);

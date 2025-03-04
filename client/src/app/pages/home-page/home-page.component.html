@@ -1,4 +1,4 @@
-<div class="main-container justified mat-typography">
+<div class="main-container justified mat-typography" *transloco="let t; read: 'main-page'">
     <div class="header-container">
         <i class="material-icons" id="game-logo">flutter_dash</i>
         <h1 class="header-item">Hoot Hoot</h1>
@@ -7,19 +7,19 @@
     <div class="match-buttons">
         <button mat-raised-button (click)="openJoinDialog()" color="primary" class="match-button" id="join-button">
             <mat-icon>play_circle</mat-icon>
-            Joindre une partie
+            {{ t('join-match') }}
         </button>
         <button mat-raised-button color="primary" routerLink="/host" class="match-button" id="host-button">
             <mat-icon>add_circle</mat-icon>
-            Créer une partie
+            {{ t('host-match') }}
         </button>
     </div>
 
-    <button mat-raised-button color="basic" routerLink="/admin/games" class="match-button" id="admin-button">Administrer les jeux</button>
-    <button mat-raised-button color="basic" routerLink="/edit-profile" class="match-button" id="profile-button">Modifier le profil</button>
+    <button mat-raised-button color="basic" routerLink="/admin/games" class="match-button" id="admin-button">{{ t('admin-game') }}</button>
+    <button mat-raised-button color="basic" routerLink="/edit-profile" class="match-button" id="profile-button">{{ t('edit-profile') }}</button>
 
     <footer class="footer-container">
-        <h4 class="team-name">Équipe 201</h4>
+        <h4 class="team-name">{{ t('team-name') }}</h4>
         <p></p>
     </footer>
 </div>
