@@ -1,5 +1,7 @@
 package com.example.polyquiz.pages.presentation
 
+import android.annotation.SuppressLint
+import android.service.autofill.FieldClassification.Match
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +14,9 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -25,11 +30,11 @@ import com.example.polyquiz.match.domain.MatchRoomService.players
 import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.match.presentation.TimerComponent
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
-fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: AuthViewModel) {
-    var isLocked : Boolean = false
-    var isHostPlaying: Boolean
-    var isTimeToNavigate: Boolean = false
+fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: AuthViewModel, navigateToMatchRoom: () -> Unit) {
+    var isLocked: Boolean = false
+    var isHostPlaying: Boolean = false
 
     fun resetWaitPage() {
         isLocked = false
@@ -58,7 +63,17 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
         } else {
                 MatchContextService.setContext(MatchContext.PLAYERVIEW)
             }
+        when (MatchRoomService.isTimeToNavigate) {
+            true -> {
+                MatchRoomService.isTimeToNavigate = false
+                navigateToMatchRoom()
+            }
+
+            false -> {
+                //MatchRoomService.connect()
+            }
         }
+    }
     fun toggleLock() {
         MatchRoomService.toggleLock()
     }
@@ -70,12 +85,9 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
         MatchRoomService.startMatch()
     }
     fun quitMatch() { //originellement quitGame sur le client lourd
-        MatchRoomService.disconnectFromRoom(navigateToHome)
+        MatchRoomService.disconnectFromRoom()
     }
 
-    fun getToGame() {
-
-    }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -89,7 +101,6 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
         }
 
         if (MatchRoomService.isMatchStarted) {
-            getToGame()
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(text = "Le jeu $gameTitle commence dans..", style = MaterialTheme.typography.headlineMedium)
                 TimerComponent(
@@ -122,6 +133,7 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
                 }
             }
         }
+
     }
 
 }

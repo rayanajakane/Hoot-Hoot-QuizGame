@@ -20,7 +20,9 @@ object MatchRoomService {
     var isResults by mutableStateOf(false)
     var isWaitOver by mutableStateOf(false)
     var isBanned by mutableStateOf(false)
+    var timeToGoToWaitPage by mutableStateOf(false)
     var isPlaying by mutableStateOf(false)
+    var isTimeToNavigate by mutableStateOf(false)
     var gameTitle: String = ""
     var gameDuration: Int = 0
     var currentQuestion by mutableStateOf<Question?>(null)
@@ -117,7 +119,7 @@ object MatchRoomService {
                 this.username = response.getString("username")
             }
         })
-
+        timeToGoToWaitPage = true
         sendPlayersData(roomCode)
     }
 
@@ -176,6 +178,7 @@ object MatchRoomService {
                 )
                 currentQuestion = firstQuestion
                 gameDuration = data.getInt("gameDuration")
+                isTimeToNavigate = true
 //                navigator.navigateTo("play-match", mapOf("question" to firstQuestion, "duration" to gameDuration))
             }
         }

@@ -76,8 +76,8 @@ fun JoinGameDialog(
                 TextButton(onClick = {
                     if (room.isNotBlank()) {
                         submitCode(room)
-                        //TimeService.handleTimer()
-                        //navigateToMatchRoom()
+                        TimeService.handleTimer()
+                        navigateToWaitPage()
                         room = ""
                         onJoin(room)
 

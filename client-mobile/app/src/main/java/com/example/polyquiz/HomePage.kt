@@ -33,6 +33,7 @@ import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.DisplayAuthenticationText
+import com.example.polyquiz.match.domain.MatchRoomService
 import kotlinx.coroutines.launch
 import kotlin.jvm.internal.Intrinsics.Kotlin
 
@@ -52,7 +53,7 @@ fun HomePage(
     var showDialog by remember { mutableStateOf(false) }
 
 
-    LaunchedEffect(authState.value) {
+    LaunchedEffect(authState.value, MatchRoomService.isTimeToNavigate) {
         when(authState.value) {
             is AuthState.Unauthenticated -> {
                 scope.launch {
@@ -72,6 +73,13 @@ fun HomePage(
                         )
                     )
                 }
+            }
+            else -> Unit
+        }
+        when(MatchRoomService.timeToGoToWaitPage) {
+            true -> {
+                MatchRoomService.timeToGoToWaitPage = false
+                navigateToWaitPage()
             }
             else -> Unit
         }

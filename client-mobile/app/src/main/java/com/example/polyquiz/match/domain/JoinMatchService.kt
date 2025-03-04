@@ -41,8 +41,8 @@ object JoinMatchService : CommunicationService("match") {
     }
 
     fun addPlayerToMatchRoom(matchRoomCode: String, username: String, navigateToHome: () -> Unit, navigateToWaitPage: () -> Unit, navigateToMatchPage: () -> Unit) {
-        MatchRoomService.connect(navigateToHome, navigateToMatchPage)
-        MatchRoomService.joinRoom(matchRoomCode, username, navigateToWaitPage)
+        MatchRoomService.connect()
+        MatchRoomService.joinRoom(matchRoomCode, username)
     }
 
     interface JoinMatchApiService : ApiService {}

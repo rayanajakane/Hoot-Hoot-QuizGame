@@ -11,6 +11,7 @@ import com.example.polyquiz.auth.presentation.SignupPage
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.Route
+import com.example.polyquiz.match.domain.AnswerService
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.presentation.QuestionArea
@@ -31,6 +32,9 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                 navigateToHome = {
                     navController.navigate(Route.Home)
                 },
+                navigateToMatchRoom = {
+                    navController.navigate(Route.MatchRoom)
+                }
             )
         }
         composable<Route.Login> {
@@ -66,7 +70,10 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                     navController.navigate(Route.Home)
                 },
                 authViewModel = authViewModel,
-                matchContextService = MatchContextService
+                matchContextService = MatchContextService,
+                matchRoomService = MatchRoomService,
+                timeService = TimeService,
+                answerService = AnswerService
             )
         }
         composable<Route.Home> {
