@@ -46,6 +46,7 @@ import { SortByScorePipe } from '@app/pipes/sort-by-score.pipe';
 import { SortHistoryPipe } from '@app/pipes/sort-history.pipe';
 import { SortPlayersPipe } from '@app/pipes/sort-players.pipe';
 import { TranslocoRootModule } from '@app/transloco-root.module';
+import { FIREBASE_CONFIG } from 'src/environments/firebase-config';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -106,17 +107,7 @@ import { TranslocoRootModule } from '@app/transloco-root.module';
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [
         { provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: tooltipOptions },
-        provideFirebaseApp(() =>
-            initializeApp({
-                projectId: 'log3900-201-7daa3',
-                appId: '1:4479204095:web:3b704c8df42da16ac2eaca',
-                databaseURL: 'https://log3900-201-7daa3-default-rtdb.firebaseio.com',
-                storageBucket: 'log3900-201-7daa3.firebasestorage.app',
-                apiKey: 'AIzaSyBylwnS_bSV6_M5PORmlyS1vjgVr62Tr-s',
-                authDomain: 'log3900-201-7daa3.firebaseapp.com',
-                messagingSenderId: '4479204095',
-            }),
-        ),
+        provideFirebaseApp(() => initializeApp(FIREBASE_CONFIG)),
         provideAuth(() => getAuth()),
     ],
     exports: [],

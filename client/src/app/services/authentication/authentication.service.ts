@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
 import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { PresetAvatar } from '@app/constants/image-constants';
 import { AuthError } from '@app/services/authentication/auth-error';
 import { ChatService } from '@app/services/chat/chat.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
@@ -11,7 +12,8 @@ import { SocketHandlerService } from '@app/services/socket-handler/socket-handle
 import { ChatEvents } from '@common/events/chat.events';
 import { TranslocoService } from '@jsverse/transloco';
 import { browserSessionPersistence, sendPasswordResetEmail, setPersistence, User, UserCredential } from 'firebase/auth';
-import { DataSnapshot, get, getDatabase, onDisconnect, ref, remove, set, update } from 'firebase/database';
+import { Database, DataSnapshot, get, getDatabase, onDisconnect, ref, remove, set, update } from 'firebase/database';
+import { deleteObject, FirebaseStorage, ref as firebaseStorageRef, getDownloadURL, getStorage, uploadBytes } from 'firebase/storage';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -19,7 +21,8 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class AuthenticationService {
     currentUser: User | null;
-    database = getDatabase();
+    database: Database = getDatabase(); // Realtime Database
+    storage: FirebaseStorage = getStorage(); // Firebase Storage: For images
 
     authenticatedUser = new BehaviorSubject<User | null>(null);
 
@@ -192,14 +195,19 @@ export class AuthenticationService {
         return true;
     }
 
-    async signUp(email: string, username: string, password: string, avatarUrl: string) {
+    async signUp(email: string, username: string, password: string, isPresetAvatar: boolean, avatarUrl: string, avatarFile: File | null) {
         const formattedUsername = username.trim();
         const formattedEmail = email.trim();
 
         try {
             await this.checkUsername(formattedUsername.toLowerCase());
             createUserWithEmailAndPassword(this.auth, `${formattedEmail}`, password)
-                .then((userCredential) => {
+                .then(async (userCredential) => {
+                    if (!isPresetAvatar && avatarFile) {
+                        avatarUrl = await this.uploadUserAvatar(userCredential.user.uid, avatarFile);
+                    } else if (!isPresetAvatar && !avatarFile) {
+                        avatarUrl = PresetAvatar.Default;
+                    }
                     this.completeUserProfileCreation(userCredential, formattedUsername, avatarUrl);
                 })
                 .catch((error) => {
@@ -275,13 +283,13 @@ export class AuthenticationService {
         if (!user) {
             return;
         }
-        // Delete user from Realtime database (TODO: Delete profile picture too?)
         const userRef = this.getUserDatabaseRef(user.uid);
         remove(userRef);
         if (user.displayName) {
             const usernameRef = this.getUsernameDatabaseRef(user.displayName.toLowerCase());
             remove(usernameRef);
         }
+        this.deleteUserAvatar(user.uid);
         this.disconnectSocket();
         user.delete();
         this.setUser(null);
@@ -322,5 +330,42 @@ export class AuthenticationService {
                 return this.translocoService.translate('auth.error.other-error');
             }
         }
+    }
+
+    // FIREBASE STORAGE -- Consider refactoring it in its own service
+    async uploadUserAvatar(userId: string | undefined, file: any): Promise<string> {
+        if (!userId || userId === '') return '';
+        const url: string = await this.uploadImage(`avatars/${userId}`, file);
+        return url;
+    }
+
+    async uploadImage(path: string, file: any): Promise<string> {
+        const storageRef = firebaseStorageRef(this.storage, path);
+        const uploadTask = uploadBytes(storageRef, file);
+
+        // REFERENCE: https://firebase.google.com/docs/storage/web/upload-files?hl=fr
+        return uploadTask
+            .then(async () => {
+                // Handle successful uploads on complete
+                const downloadURL = getDownloadURL((await uploadTask).ref);
+                console.log('File available at', downloadURL);
+                return downloadURL;
+            })
+            .catch(() => {
+                // Handle unsuccessful uploads
+                this.notificationService.displayErrorMessage('TODO');
+                return '';
+            });
+    }
+
+    async deleteUserAvatar(userId: string) {
+        this.deleteImage(`avatars/${userId}`);
+    }
+
+    async deleteImage(path: string) {
+        const storageRef = firebaseStorageRef(this.storage, path);
+        deleteObject(storageRef)
+            .then(() => {})
+            .catch((error: Error) => {});
     }
 }

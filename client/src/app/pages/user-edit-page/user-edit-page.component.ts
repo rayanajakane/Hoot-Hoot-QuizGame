@@ -24,8 +24,7 @@ export class UserEditPageComponent {
     isPresetAvatar = true; // TODO: Determine if we consider an existing avatar to be "preset"
     minUsernameLength = MIN_LENGTH;
     maxUsernameLength = MAX_LENGTH;
-
-    initialAvatarUrl = this.authenticationService.userAvatarUrl;
+    loadedImageFile: File | null = null;
 
     availableLangs: string[];
 
@@ -71,17 +70,18 @@ export class UserEditPageComponent {
         return userEditData?.email === '' && userEditData.username === '' && userEditData.currentLang === null;
     }
 
-    save() {
+    async save() {
         this.form.markAllAsTouched();
         if (this.form.valid) {
-            if (!this.isPresetAvatar && (this.avatar.value as string) !== this.initialAvatarUrl) {
-                // TODO: TEMPORARY SOLUTION. Avatar should be uploaded in later commit.
-                this.setPresetAvatar(PresetAvatar.Default);
+            var url: string = this.avatar.value as string;
+            if (!this.isPresetAvatar && (this.avatar.value as string) !== this.authenticationService.userAvatarUrl) {
+                const resultUrl = await this.authenticationService.uploadUserAvatar(this.authenticationService.userId, this.loadedImageFile);
+                url = resultUrl !== '' ? resultUrl : this.authenticationService.userAvatarUrl;
             }
             // TODO: Consider adding the themes
             this.translationService.setLanguage(this.currentLang.value as string);
 
-            this.authenticationService.editUserProfile(this.username.value as string, this.avatar.value as string);
+            this.authenticationService.editUserProfile(this.username.value as string, url);
             this.form.markAsPristine();
         }
     }
@@ -98,6 +98,7 @@ export class UserEditPageComponent {
             const reader = new FileReader();
             reader.addEventListener('load', () => {
                 this.form.get('avatar')?.setValue(reader.result as null);
+                this.loadedImageFile = file;
             });
             reader.readAsDataURL(file);
             this.isPresetAvatar = false;
