@@ -44,7 +44,6 @@ import kotlinx.coroutines.launch
 fun LoginPage(
     modifier: Modifier,
     navigateToSignup: () -> Unit,
-    navigateToChat: () -> Unit,
     navigateToForgotPassword: () -> Unit,
     navigateToHome: () -> Unit,
     authViewModel: AuthViewModel
