@@ -9,6 +9,7 @@ import { ChatService } from '@app/services/chat/chat.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { ChatEmoji } from '@common/constants/chat-emojis';
+import { UserIdName } from '@common/interfaces/user-id-name';
 
 @Component({
     selector: 'app-chat',
@@ -78,5 +79,14 @@ export class ChatComponent implements AfterViewChecked {
             this.authenticationService.userDisplayName,
             this.matchRoomService.getRoomCode(),
         );
+    }
+
+    // REFERENCE: https://stackoverflow.com/questions/67600158/how-to-display-multiple-values-in-angular-material-tool-tip
+    public getReactionsToolTip(userReactions: UserIdName[]) {
+        let toolTip = '';
+        for (let i = 0; i < userReactions.length; i++) {
+            toolTip = toolTip + '\n' + userReactions[i].name;
+        }
+        return toolTip;
     }
 }
