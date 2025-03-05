@@ -26,35 +26,86 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.example.polyquiz.Game
-import com.example.polyquiz.GameService
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.PointerEventType
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
+import com.example.polyquiz.constants.MatchContext
+import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService.createRoom
+import com.example.polyquiz.match.domain.MatchService
+import com.example.polyquiz.match.domain.MatchService.currentGame
 
 
 @Composable
 fun GameList(modifier: Modifier) {
     val gameService = GameService()
+    val matchService = MatchService
     var games by remember { mutableStateOf<List<Game>>(emptyList()) }
     var selectedGame by remember { mutableStateOf<Game?>(null) }
+    var gamesIsValid by remember { mutableStateOf(false) }
+    var isLoadingSelectedGame by remember { mutableStateOf(false) }
+
+    val contextService = MatchContextService
+   // var gamesIsValid: Boolean
 
     LaunchedEffect(Unit) {
+       // matchService.getAllGames()
         gameService.getGames(
             onSuccess = { fetchedGames ->
                 val gson = Gson()
                 val json = gson.toJson(fetchedGames)
+                //println("fetched$fetchedGames")
                 val listType = object : TypeToken<List<Game>>() {}.type
                 games = gson.fromJson(json, listType)
             },
             onError = { errorMessage -> println("Error: $errorMessage") }
         )
     }
+    fun validateGame(selectedGame: Game){
+        if(selectedGame.isVisible!!){
+            gamesIsValid = true
+        }
+    }
 
+    fun revalidateGame(){
+        if(selectedGame?.isVisible!!){
+            gamesIsValid = true
+            matchService.currentGame = selectedGame
+            matchService.saveBackupGame(selectedGame!!.id!!)
+            matchService.createMatch()
+        }
+    }
+
+    fun reloadAllGames(){
+        //islo
+        matchService.getAllGames()
+    }
+
+    fun loadSelectedGame(currentGame: Game){
+        isLoadingSelectedGame =true
+        gameService.getGameById(currentGame.id!!, onSuccess = {
+            response ->
+            val gson = Gson()
+            val game = gson.fromJson(gson.toJson(response), Game::class.java)
+            selectedGame = game
+            validateGame(selectedGame!!)
+        }, onError = {})
+    }
+
+    fun reloadSelectedGame(){
+        gameService.getGameById(selectedGame?.id!!, onSuccess = {
+            response ->
+            val gson = Gson()
+            val game = gson.fromJson(gson.toJson(response), Game::class.java)
+            selectedGame = game
+            println(selectedGame)
+            revalidateGame()
+        }, onError = {})
+
+    }
+
+    fun createMatch(context: MatchContext){
+        contextService.setContext(context)
+        reloadSelectedGame()
+    }
 
     Row(
         modifier = Modifier
@@ -92,6 +143,8 @@ fun GameList(modifier: Modifier) {
                 .padding(16.dp)
         ) {
             if (selectedGame != null) {
+                loadSelectedGame(selectedGame!!)
+                matchService.currentGame = selectedGame
                 Text("Détails du jeu:  ${selectedGame!!.title}", modifier = Modifier.padding(8.dp), fontWeight = FontWeight.Bold)
                 Row(modifier = Modifier.padding(8.dp)) {
                     Text(
@@ -124,9 +177,12 @@ fun GameList(modifier: Modifier) {
                 Button(
                     onClick = {
                         // fetchGames()
-                        if(selectedGame?.id != null) {
-                            createRoom(selectedGame!!.id!!, true)
-                        }
+                        createMatch(MatchContext.HOSTVIEW)
+//                        if(selectedGame?.id != null) {
+//                            createRoom(selectedGame!!.id!!, true)
+//                            println("id${selectedGame?.id}")
+//                            matchService.createMatch()
+//                        }
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
@@ -145,6 +201,7 @@ fun GameList(modifier: Modifier) {
 
 
         }
+
 
     }
 }

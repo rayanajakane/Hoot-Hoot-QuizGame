@@ -14,7 +14,7 @@ class GameService : CommunicationService(BASE_URL) {
 
     override val apiService: ApiService = retrofit.create(GameApiService::class.java)
 
-    fun getGames(onSuccess: (List<Game>) -> Unit, onError: (String) -> Unit) {
+    fun getGames(onSuccess: (List<Game>) -> Unit, onError: (String) -> Unit, endpoint: String="") {
         getAll(
             { response ->
                 onSuccess(
@@ -26,8 +26,9 @@ class GameService : CommunicationService(BASE_URL) {
             },
             onError
         )
+    }
 
-        fun getGameById(id: String, onSuccess: (Any) -> Unit, onError: (String) -> Unit) {
+        fun getGameById(id: String, onSuccess: (Any) -> Unit, onError: (String) -> Unit, endpoint: String="") {
             getById(
                 id,
                 { response ->
@@ -40,7 +41,7 @@ class GameService : CommunicationService(BASE_URL) {
             )
         }
 
-        fun addGame(newGame: Game, onSuccess: (Any) -> Unit, onError: ErrorCallback) {
+        fun addGame(newGame: Game, onSuccess: (Any) -> Unit, onError: ErrorCallback, endpoint: String = "") {
             add(newGame,
                 { response ->
                     onSuccess(convertJsonResponseToType(
@@ -48,7 +49,7 @@ class GameService : CommunicationService(BASE_URL) {
                         Game::class.java)
                     )
                 },
-                onError
+                onError, endpoint
             )
         }
 
@@ -60,8 +61,6 @@ class GameService : CommunicationService(BASE_URL) {
         fun deleteGame(id: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
             delete(id, onSuccess, onError)
         }
-    }
-
 
     interface GameApiService : ApiService {
     }

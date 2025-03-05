@@ -6,7 +6,7 @@ data class Game(
     //TODO: add mode
     val title: String,
     val description: String,
-    val questions: List<Question>? = null,
+    val questions: List<Question>,
     val lastModification: String?,
     val isVisible: Boolean?,
     val duration: Number,
