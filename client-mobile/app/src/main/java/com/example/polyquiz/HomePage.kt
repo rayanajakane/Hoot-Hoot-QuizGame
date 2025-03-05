@@ -32,7 +32,7 @@ import com.example.polyquiz.constants.DisplayAuthenticationText
 import kotlinx.coroutines.launch
 
 @Composable
-fun HomePage(modifier: Modifier, navigateToLogin: () -> Unit, navigateToCreate: () -> Unit, authViewModel: AuthViewModel) {
+fun HomePage(modifier: Modifier, navigateToLogin: () -> Unit, navigateToMatchRoom: () -> Unit, navigateToCreate: () -> Unit, authViewModel: AuthViewModel) {
     val authState = authViewModel.authState.observeAsState()
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
@@ -80,7 +80,7 @@ fun HomePage(modifier: Modifier, navigateToLogin: () -> Unit, navigateToCreate: 
             modifier = Modifier.fillMaxHeight()
         ) {
             Button(
-                onClick = { },
+                onClick = {navigateToMatchRoom()},
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary)

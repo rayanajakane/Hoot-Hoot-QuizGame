@@ -8,7 +8,14 @@ import androidx.navigation.compose.rememberNavController
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.auth.presentation.LoginPage
 import com.example.polyquiz.auth.presentation.SignupPage
+import com.example.polyquiz.constants.MatchContext
+import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.Route
+import com.example.polyquiz.match.domain.AnswerService
+import com.example.polyquiz.match.domain.MatchContextService
+import com.example.polyquiz.match.domain.MatchRoomService
+import com.example.polyquiz.match.presentation.QuestionArea
+import com.example.polyquiz.pages.presentation.MatchCreationPage
 
 // References: https://youtu.be/AIC_OFQ1r3k  and  https://youtu.be/lv1raAvwcgI
 @Composable
@@ -42,6 +49,21 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                 authViewModel = authViewModel
             )
         }
+        composable<Route.MatchRoom> {
+            //val matchContextService = MatchContextService()
+            //matchContextService.setContext(MatchContext.PLAYERVIEW)
+            QuestionArea(
+                modifier = modifier,
+                navigateToHome = {
+                    navController.navigate(Route.Home)
+                },
+                authViewModel = authViewModel,
+                timeService = TimeService,
+                matchRoomService = MatchRoomService,
+                matchContextService = MatchContextService,
+                answerService = AnswerService
+            )
+        }
         composable<Route.Home> {
             HomePage(modifier,
                 navigateToLogin = {
@@ -49,6 +71,9 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                 },
                 navigateToCreate = {
                     navController.navigate(Route.MatchCreation)
+                },
+                navigateToMatchRoom = {
+                    navController.navigate(Route.MatchRoom)
                 },
                 authViewModel = authViewModel
             )
