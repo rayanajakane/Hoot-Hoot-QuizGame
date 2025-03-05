@@ -163,27 +163,32 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         );
 
         this.questionForm.statusChanges.subscribe((status) => {
-            if (status === 'INVALID' && this.questionForm.get('text')?.invalid) {
-                if (!this.notificationShown) {
-                    this.openSnackBar('Le champ de la question est requis !', SNACK_BAR_DISPLAY_TIME);
-                    this.notificationShown = true;
+            if (status === 'INVALID') {
+                if (this.questionForm.get('text')?.invalid) {
+                    return this.showNotification('Le champ de la question est requis !');
                 }
-            } else if (this.questionForm.invalid && this.questionForm.get('choices')?.invalid && this.questionForm.hasError('invalidChoicesLength')) {
-                if (!this.notificationShown) {
-                    this.openSnackBar('Il faut au moins une réponse correcte et une incorrecte !', SNACK_BAR_DISPLAY_TIME);
-                    this.notificationShown = true;
+
+                if (this.questionForm.get('choices')?.invalid && this.questionForm.hasError('invalidChoicesLength')) {
+                    return this.showNotification('Il faut au moins une réponse correcte et une incorrecte !');
                 }
-            } else if (
-                this.questionForm.invalid &&
-                this.questionForm.get('estimatedParameters')?.invalid &&
-                (this.questionForm.hasError('validateEstimationBounds') || this.questionForm.hasError('validateMargin'))
-            ) {
-                if (!this.notificationShown) {
-                    this.openSnackBar("Les paramètres d'estimation sont invalides !", SNACK_BAR_DISPLAY_TIME);
-                    this.notificationShown = true;
+
+                if (this.questionForm.get('estimatedParameters')?.invalid) {
+                    const errors = this.questionForm.get('estimatedParameters')?.errors;
+                    console.log(errors);
+                    const errorMessages: { [key: string]: string } = {
+                        invalidBounds: 'La borne inférieure doit être inférieure à la borne supérieure !',
+                        invalidMargin: 'La marge est trop grande ! Elle ne doit représenter que 25% de l`intervalle !',
+                        invalidType: 'Les paramètres doivent être des nombres entiers !',
+                        negativeMargin: 'La marge ne peut pas être négative !',
+                        correctAnswerOutOfBounds: 'La réponse correcte doit être entre les bornes !',
+                    };
+
+                    for (const error in errorMessages) {
+                        if (errors?.[error]) {
+                            return this.showNotification(errorMessages[error]);
+                        }
+                    }
                 }
-            } else {
-                this.notificationShown = false;
             }
         });
 
@@ -224,13 +229,19 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
                                 correctAnswer: ['', Validators.required],
                                 margin: ['', [Validators.required, Validators.min(0)]],
                             },
-                            { validators: [this.validateEstimationBounds, this.validateMargin] },
+                            {
+                                validators: [
+                                    this.validateEstimationBounds,
+                                    this.validateMargin,
+                                    this.validateParametersType,
+                                    this.validateCorrectAnswer,
+                                ],
+                            },
                         ),
                     );
 
                     break;
                 }
-                // No default
             }
         });
     }
@@ -261,7 +272,46 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
                 return { invalidMargin: true };
             }
         }
+
+        if (margin < 0) {
+            return { negativeMargin: true };
+        }
         return null;
+    }
+
+    private validateParametersType(group: FormGroup) {
+        const fields = ['lowerBound', 'upperBound', 'correctAnswer', 'margin'];
+
+        if (fields.some((field) => group.get(field)?.value === '')) {
+            return null;
+        }
+
+        if (fields.some((field) => !Number.isInteger(group.get(field)?.value))) {
+            return { invalidType: true };
+        }
+
+        return null;
+    }
+
+    private validateCorrectAnswer(group: FormGroup) {
+        const lowerBound = group.get('lowerBound')?.value;
+        const upperBound = group.get('upperBound')?.value;
+        const correctAnswer = group.get('correctAnswer')?.value;
+
+        if (correctAnswer && lowerBound && upperBound) {
+            if (correctAnswer < lowerBound || correctAnswer > upperBound) {
+                return { correctAnswerOutOfBounds: true };
+            }
+        }
+        return null;
+    }
+
+    private showNotification(message: string) {
+        console.log('showNotification', message);
+        // if (!this.notificationShown) {
+        this.openSnackBar(message, SNACK_BAR_DISPLAY_TIME);
+        this.notificationShown = true;
+        // }
     }
 
     private updateFormValues(): void {
