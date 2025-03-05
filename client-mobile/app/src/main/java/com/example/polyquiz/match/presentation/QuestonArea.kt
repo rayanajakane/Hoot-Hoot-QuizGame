@@ -63,7 +63,6 @@ fun QuestionArea(
 
         when (MatchRoomService.hasBeenKickedOut) {
             true -> {
-                println("MatchRoomService.isTimeToNavigate is true")
                 MatchRoomService.hasBeenKickedOut = false
                 navigateToHome()
             }
