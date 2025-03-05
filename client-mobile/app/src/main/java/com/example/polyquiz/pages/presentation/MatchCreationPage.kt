@@ -4,7 +4,6 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -45,8 +44,6 @@ import com.example.polyquiz.http.QuestionService
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 
 @Composable
@@ -57,10 +54,6 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
     val keyboardController = LocalSoftwareKeyboardController.current
     val questionService = QuestionService()
     val gameService = GameService()
-    var games by remember { mutableStateOf<List<Game>>(emptyList()) }
-    var message by remember { mutableStateOf("") }
-    var isLoading by remember { mutableStateOf(false) }
-
 
     fun fetchGames() {
         gameService.getGames(
