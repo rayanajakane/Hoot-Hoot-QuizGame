@@ -17,6 +17,7 @@ import {
     ERROR_EMPTY_DESCRIPTION,
     ERROR_EMPTY_QUESTION,
     ERROR_EMPTY_TITLE,
+    ERROR_INVALID_BOUNDS,
     ERROR_LOWER_BOUND_NOT_INTEGER,
     ERROR_MARGIN_NOT_INTEGER,
     ERROR_MARGIN_TOO_BIG,
@@ -56,7 +57,11 @@ export class GameValidationService {
     }
 
     isValidMargin(margin: number, lowerBound: number, upperBound: number): boolean {
-        return margin > 0 && margin < (upperBound - lowerBound) / 4;
+        return margin >= 0 && margin <= (upperBound - lowerBound) / 4;
+    }
+
+    isValidBounds(lowerBound: number, upperBound: number): boolean {
+        return lowerBound < upperBound;
     }
 
     isAnswerInBounds(answer: number, lowerBound: number, upperBound: number): boolean {
@@ -111,6 +116,7 @@ export class GameValidationService {
         const questionAnswer = question.estimatedParameters.correctAnswer;
 
         const errorConditions: Map<string, boolean> = new Map([
+            [ERROR_INVALID_BOUNDS, !this.isValidBounds(questionLowerBound, questionUpperBound)],
             [ERROR_MARGIN_TOO_BIG, !this.isValidMargin(questionMargin, questionLowerBound, questionUpperBound)],
             [ERROR_ANSWER_NOT_INTEGER, !this.isValidInteger(question.estimatedParameters.correctAnswer)],
             [ERROR_LOWER_BOUND_NOT_INTEGER, !this.isValidInteger(questionLowerBound)],

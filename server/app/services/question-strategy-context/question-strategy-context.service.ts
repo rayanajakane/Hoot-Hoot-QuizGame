@@ -1,5 +1,5 @@
 import { QuestionType } from '@app/constants/question-types';
-import { EstimatedAnswer } from '@app/model/answer-types/estimated-answer/estimated-choice-answer';
+import { EstimatedAnswer } from '@app/model/answer-types/estimated-choice-answer/estimated-choice-answer';
 import { LongAnswer } from '@app/model/answer-types/long-answer/long-answer';
 import { MultipleChoiceAnswer } from '@app/model/answer-types/multiple-choice-answer/multiple-choice-answer';
 import { MatchRoom } from '@app/model/schema/match-room.schema';

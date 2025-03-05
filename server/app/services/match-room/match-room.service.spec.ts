@@ -10,6 +10,7 @@ import { FAKE_ROOM_ID } from '@app/constants/time-mocks';
 import { PlayerInfo } from '@app/model/schema/answer.schema';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
 import { ChoiceTracker } from '@app/model/tally-trackers/choice-tracker/choice-tracker';
+import { EstimatedAnswerStrategy } from '@app/question-strategies/estimated-answer-strategy/estimated-answer-strategy';
 import { LongAnswerStrategy } from '@app/question-strategies/long-answer-strategy/long-answer-strategy';
 import { MultipleChoiceStrategy } from '@app/question-strategies/multiple-choice-strategy/multiple-choice-strategy';
 import { QuestionStrategyContext } from '@app/services/question-strategy-context/question-strategy-context.service';
@@ -39,7 +40,15 @@ describe('MatchRoomService', () => {
     beforeEach(async () => {
         socket = createStubInstance<Socket>(Socket);
         const module: TestingModule = await Test.createTestingModule({
-            providers: [MatchRoomService, TimeService, EventEmitter2, QuestionStrategyContext, MultipleChoiceStrategy, LongAnswerStrategy],
+            providers: [
+                MatchRoomService,
+                TimeService,
+                EventEmitter2,
+                QuestionStrategyContext,
+                MultipleChoiceStrategy,
+                LongAnswerStrategy,
+                EstimatedAnswerStrategy,
+            ],
         }).compile();
 
         service = module.get<MatchRoomService>(MatchRoomService);

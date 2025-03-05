@@ -1,7 +1,7 @@
 import { GradingEvents } from '@app/constants/grading-events';
 import { PanicThresholdTime } from '@app/constants/panic-threasholds-time';
 import { QuestionType } from '@app/constants/question-types';
-import { EstimatedAnswer } from '@app/model/answer-types/estimated-answer/estimated-choice-answer';
+import { EstimatedAnswer } from '@app/model/answer-types/estimated-choice-answer/estimated-choice-answer';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
 import { Player } from '@app/model/schema/player.schema';
 import { QuestionStrategy } from '@app/question-strategies/question-strategy';

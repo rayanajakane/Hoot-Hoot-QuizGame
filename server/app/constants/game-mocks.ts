@@ -1,7 +1,7 @@
+import { Choice } from '@app/model/database/choice';
 import { Game } from '@app/model/database/game';
 import { VALID_QUESTION } from './question-mocks';
-import { getRandomString } from './test-utils';
-import { Choice } from '@app/model/database/choice';
+import { getRandomNumber, getRandomString } from './test-utils';
 
 const gameYear = 2020;
 
@@ -28,6 +28,12 @@ const getMockGame = (): Game => ({
                     isCorrect: false,
                 },
             ],
+            estimatedParameters: {
+                lowerBound: getRandomNumber(1, 2),
+                upperBound: getRandomNumber(3, 4),
+                margin: 1,
+                correctAnswer: getRandomNumber(2, 3),
+            },
             lastModification: new Date(gameYear, 1, 1),
         },
     ],
@@ -65,6 +71,12 @@ const GAME_WITH_IS_CORRECT_FIELD: Game = {
                     isCorrect: false,
                 },
             ],
+            estimatedParameters: {
+                lowerBound: 0,
+                upperBound: 1,
+                margin: 0,
+                correctAnswer: 0,
+            },
         },
         {
             id: '1',
@@ -82,6 +94,12 @@ const GAME_WITH_IS_CORRECT_FIELD: Game = {
                     isCorrect: false,
                 },
             ],
+            estimatedParameters: {
+                lowerBound: 0,
+                upperBound: 1,
+                margin: 0,
+                correctAnswer: 0,
+            },
         },
     ],
 };
@@ -108,6 +126,12 @@ const GAME_WITHOUT_IS_CORRECT_FIELD: Game = {
                     text: '',
                 },
             ],
+            estimatedParameters: {
+                lowerBound: 0,
+                upperBound: 1,
+                margin: 0,
+                correctAnswer: 0,
+            },
         },
         {
             id: '1',
@@ -123,8 +147,14 @@ const GAME_WITHOUT_IS_CORRECT_FIELD: Game = {
                     text: '',
                 },
             ],
+            estimatedParameters: {
+                lowerBound: 0,
+                upperBound: 1,
+                margin: 0,
+                correctAnswer: 0,
+            },
         },
     ],
 };
 
-export { GAME_VALID_QUESTION, GAME_WITHOUT_IS_CORRECT_FIELD, GAME_WITH_IS_CORRECT_FIELD, MOCK_CHOICES, getMockGame };
+export { GAME_VALID_QUESTION, GAME_WITH_IS_CORRECT_FIELD, GAME_WITHOUT_IS_CORRECT_FIELD, getMockGame, MOCK_CHOICES };

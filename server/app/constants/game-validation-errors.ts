@@ -20,6 +20,7 @@ const ERROR_DURATION = `La durée doit être entre ${MIN_DURATION} et ${MAX_DURA
 const ERROR_QUESTIONS_NUMBER = 'Le jeu doit avoir au moins une question.';
 const ERROR_QUESTION_TYPE = 'Le type de la question doit être QCM ou QRL';
 const ERROR_ANSWER_NOT_INTEGER = 'La réponse doit être un entier.';
+const ERROR_INVALID_BOUNDS = 'La borne inférieure doit être inférieure à la borne supérieure.';
 const ERROR_LOWER_BOUND_NOT_INTEGER = 'La borne inférieure doit être un entier.';
 const ERROR_UPPER_BOUND_NOT_INTEGER = 'La borne supérieure doit être un entier.';
 const ERROR_MARGIN_NOT_INTEGER = 'La marge doit être un entier.';
@@ -34,6 +35,7 @@ export {
     ERROR_EMPTY_DESCRIPTION,
     ERROR_EMPTY_QUESTION,
     ERROR_EMPTY_TITLE,
+    ERROR_INVALID_BOUNDS,
     ERROR_LOWER_BOUND_NOT_INTEGER,
     ERROR_MARGIN_NOT_INTEGER,
     ERROR_MARGIN_TOO_BIG,
