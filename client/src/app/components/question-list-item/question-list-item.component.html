@@ -1,4 +1,12 @@
-<mat-expansion-panel class="question-card" *ngIf="question" [ngClass]="question.type === 'QRL' ? 'color-variant' : ''" [expanded]="isExpanded">
+<mat-expansion-panel
+    class="question-card"
+    *ngIf="question"
+    [ngClass]="{
+        'color-variant': question.type === 'QRL',
+        'color-variant-2': question.type === 'QRE'
+    }"
+    [expanded]="isExpanded"
+>
     <mat-expansion-panel-header>
         <mat-panel-title class="question-text">
             <p class="question-text">{{ index }} {{ question.text }}</p>
@@ -10,6 +18,8 @@
                 <p *ngIf="question.type === 'QCM'" class="question-type">QCM</p>
                 <i *ngIf="question.type === 'QRL'" class="material-icons">article</i>
                 <p *ngIf="question.type === 'QRL'" class="question-type">QRL</p>
+                <i *ngIf="question.type === 'QRE'" class="material-icons">balance</i>
+                <p *ngIf="question.type === 'QRE'" class="question-type">QRE</p>
             </div>
             <p>{{ question.lastModification | date: 'YYYY-MM-dd hh:mm' }}</p>
             <div class="question-buttons-container">
