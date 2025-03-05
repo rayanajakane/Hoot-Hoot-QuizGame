@@ -22,7 +22,13 @@ const ERROR_QUESTION_TYPE = 'Le type de la question doit être QCM ou QRL';
 const ERROR_INVALID_BOUNDS = 'La borne inférieure doit être inférieure à la borne supérieure.';
 const ERROR_MARGIN_TOO_BIG = `La marge doit est positive et ne doit representer que le ${MAX_MARGIN}% de l'intervalle`;
 const ERROR_ANSWER_OUT_OF_BOUNDS = 'La réponse doit être entre les deux bornes.';
+const ERROR_ANSWER_NOT_INTEGER = 'La réponse doit être un entier.';
+const ERROR_LOWER_BOUND_NOT_INTEGER = 'La borne inférieure doit être un entier.';
+const ERROR_UPPER_BOUND_NOT_INTEGER = 'La borne supérieure doit être un entier.';
+const ERROR_MARGIN_NOT_INTEGER = 'La marge doit être un entier.';
+
 export {
+    ERROR_ANSWER_NOT_INTEGER,
     ERROR_ANSWER_OUT_OF_BOUNDS,
     ERROR_CHOICES_NUMBER,
     ERROR_CHOICES_RATIO,
@@ -31,9 +37,12 @@ export {
     ERROR_EMPTY_QUESTION,
     ERROR_EMPTY_TITLE,
     ERROR_INVALID_BOUNDS,
+    ERROR_LOWER_BOUND_NOT_INTEGER,
+    ERROR_MARGIN_NOT_INTEGER,
     ERROR_MARGIN_TOO_BIG,
     ERROR_POINTS,
     ERROR_QUESTION_TYPE,
     ERROR_QUESTIONS_NUMBER,
     ERROR_REPEAT_CHOICES,
+    ERROR_UPPER_BOUND_NOT_INTEGER,
 };

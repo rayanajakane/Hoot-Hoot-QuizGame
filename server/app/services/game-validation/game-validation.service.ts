@@ -9,6 +9,7 @@ import {
     STEP_POINTS,
 } from '@app/constants/game-validation-constraints';
 import {
+    ERROR_ANSWER_NOT_INTEGER,
     ERROR_ANSWER_OUT_OF_BOUNDS,
     ERROR_CHOICES_NUMBER,
     ERROR_CHOICES_RATIO,
@@ -17,11 +18,14 @@ import {
     ERROR_EMPTY_QUESTION,
     ERROR_EMPTY_TITLE,
     ERROR_INVALID_BOUNDS,
+    ERROR_LOWER_BOUND_NOT_INTEGER,
+    ERROR_MARGIN_NOT_INTEGER,
     ERROR_MARGIN_TOO_BIG,
     ERROR_POINTS,
     ERROR_QUESTIONS_NUMBER,
     ERROR_QUESTION_TYPE,
     ERROR_REPEAT_CHOICES,
+    ERROR_UPPER_BOUND_NOT_INTEGER,
 } from '@app/constants/game-validation-errors';
 import { QuestionType } from '@app/constants/question-types';
 import { Choice } from '@app/model/database/choice';
@@ -113,6 +117,10 @@ export class GameValidationService {
             [ERROR_INVALID_BOUNDS, !this.isValidBounds(questionLowerBound, questionUpperBound)],
             [ERROR_MARGIN_TOO_BIG, !this.isValidMargin(questionMargin, questionLowerBound, questionUpperBound)],
             [ERROR_ANSWER_OUT_OF_BOUNDS, !this.isAnswerInBounds(questionAnswer, questionLowerBound, questionUpperBound)],
+            [ERROR_ANSWER_NOT_INTEGER, !this.isValidInteger(questionAnswer)],
+            [ERROR_LOWER_BOUND_NOT_INTEGER, !this.isValidInteger(questionLowerBound)],
+            [ERROR_UPPER_BOUND_NOT_INTEGER, !this.isValidInteger(questionUpperBound)],
+            [ERROR_MARGIN_NOT_INTEGER, !this.isValidInteger(questionMargin)],
         ]);
         return this.checkErrors(errorConditions, errorMessages);
     }
