@@ -214,4 +214,11 @@ body {
 mat-tool-tip {
     white-space: pre-line !important;
     height: auto;
+    display: flex;
+}
+
+.mat-tool-tip *,
+.tooltip-multiline *,
+mat-tool-tip * {
+    text-align: left;
 }
