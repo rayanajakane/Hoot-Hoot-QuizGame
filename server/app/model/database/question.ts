@@ -22,7 +22,7 @@ export class Question {
     @Prop({ type: [choiceSchema], default: [], required: true })
     choices: Choice[];
 
-    @Prop({ type: [estimatedParametersSchema], default: {}, required: true })
+    @Prop({ type: estimatedParametersSchema, default: {}, required: true })
     estimatedParameters: EstimatedParameters;
 
     @Prop({ required: false })

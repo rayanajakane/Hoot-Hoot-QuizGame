@@ -29,7 +29,7 @@ export class GameCreationService {
     }
 
     completeIsCorrectChoice(question: Question): Question {
-        if (question.type == QuestionType.MultipleChoice) {
+        if (question.type === QuestionType.MultipleChoice) {
             question.choices.forEach((choice: Choice) => {
                 choice.isCorrect = !!choice.isCorrect;
             });
