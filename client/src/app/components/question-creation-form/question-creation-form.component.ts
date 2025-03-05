@@ -173,7 +173,11 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
                     this.openSnackBar('Il faut au moins une réponse correcte et une incorrecte !', SNACK_BAR_DISPLAY_TIME);
                     this.notificationShown = true;
                 }
-            } else if (this.questionForm.invalid && this.questionForm.get('estimatedParameters')?.invalid) {
+            } else if (
+                this.questionForm.invalid &&
+                this.questionForm.get('estimatedParameters')?.invalid &&
+                (this.questionForm.hasError('validateEstimationBounds') || this.questionForm.hasError('validateMargin'))
+            ) {
                 if (!this.notificationShown) {
                     this.openSnackBar("Les paramètres d'estimation sont invalides !", SNACK_BAR_DISPLAY_TIME);
                     this.notificationShown = true;
@@ -286,8 +290,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
             const estimatedParameters = this.questionForm.get('estimatedParameters') as FormGroup;
             if (!estimatedParameters) return;
             estimatedParameters.reset();
-            this.formBuilder.group({
-                // or use estimationParams.patchValue
+            estimatedParameters.patchValue({
                 lowerBound: this.question.estimatedParameters?.lowerBound,
                 upperBound: this.question.estimatedParameters?.upperBound,
                 correctAnswer: this.question.estimatedParameters?.correctAnswer,
