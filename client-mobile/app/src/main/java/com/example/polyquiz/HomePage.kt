@@ -21,6 +21,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +35,7 @@ import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.DisplayAuthenticationText
 import com.example.polyquiz.match.domain.MatchRoomService
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.jvm.internal.Intrinsics.Kotlin
 
@@ -51,9 +53,9 @@ fun HomePage(
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     var showDialog by remember { mutableStateOf(false) }
+    val shouldNavigate = rememberUpdatedState(MatchRoomService.timeToGoToWaitPage)
 
-
-    LaunchedEffect(authState.value, MatchRoomService.isTimeToNavigate) {
+    LaunchedEffect(authState.value, MatchRoomService.timeToGoToWaitPage) {
         when(authState.value) {
             is AuthState.Unauthenticated -> {
                 scope.launch {
@@ -76,7 +78,7 @@ fun HomePage(
             }
             else -> Unit
         }
-        when(MatchRoomService.timeToGoToWaitPage) {
+        when(shouldNavigate.value) {
             true -> {
                 MatchRoomService.timeToGoToWaitPage = false
                 navigateToWaitPage()
@@ -84,6 +86,7 @@ fun HomePage(
             else -> Unit
         }
     }
+
 
     Row (
         horizontalArrangement = Arrangement.SpaceBetween,

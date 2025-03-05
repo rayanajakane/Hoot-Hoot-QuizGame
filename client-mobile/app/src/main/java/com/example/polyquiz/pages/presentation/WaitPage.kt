@@ -5,10 +5,13 @@ import android.service.autofill.FieldClassification.Match
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -19,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.HOST_USERNAME
@@ -53,7 +57,7 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
 //        return MatchService.currentGame()
 //    }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(Unit, MatchRoomService.isTimeToNavigate, MatchRoomService.hasBeenKickedOut) {
         resetWaitPage()
         TimeService.handleTimer() //pour l'organisateur, il faudrait un listenToTimerEvents()
 
@@ -65,13 +69,19 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
             }
         when (MatchRoomService.isTimeToNavigate) {
             true -> {
+                println("MatchRoomService.isTimeToNavigate is true")
                 MatchRoomService.isTimeToNavigate = false
                 navigateToMatchRoom()
             }
-
-            false -> {
-                //MatchRoomService.connect()
+            else -> Unit
+        }
+        when (MatchRoomService.hasBeenKickedOut) {
+            true -> {
+                println("MatchRoomService.isTimeToNavigate is true")
+                MatchRoomService.hasBeenKickedOut = false
+                navigateToHome()
             }
+            else -> Unit
         }
     }
     fun toggleLock() {
@@ -90,50 +100,79 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
 
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        verticalArrangement = Arrangement.Center
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
-        Button(
-            onClick = { quitMatch(); navigateToHome() },
-            modifier = Modifier.fillMaxWidth()
+        // Top Right "Quitter" Button
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
         ) {
-            Text("QUITTER")
+            Button(
+                onClick = { quitMatch(); navigateToHome() },
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+            ) {
+                Text("Quitter")
+            }
         }
 
-        if (MatchRoomService.isMatchStarted) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = "Le jeu $gameTitle commence dans..", style = MaterialTheme.typography.headlineMedium)
-                TimerComponent(
-                    modifier = Modifier.fillMaxWidth(),
-                    timeService = TimeService
-                )
-            }
-        } else {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = "La partie va bientôt commencer...", style = MaterialTheme.typography.headlineMedium)
-                if (isHost()) {
-                    Text(text = "Code d'accès: ${MatchRoomService.getRoomCode()}")
-                    Switch(checked = isLocked, onCheckedChange = { toggleLock() })
-                    Button(
-                        onClick = {startMatch()},
-                        enabled = isLocked && players.isNotEmpty()
-                    ) {
-                        Text("Commencer la partie")
-                    }
+        Spacer(modifier = Modifier.weight(1f)) // Push content to the center
+
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            if (MatchRoomService.isMatchStarted) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "Le jeu $gameTitle commence dans..",
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                    TimerComponent(
+                        modifier = Modifier.fillMaxWidth(),
+                        timeService = TimeService
+                    )
                 }
-                players.forEach { player ->
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text(player.username)
-                        if (isHost() && player.username != "Organisateur") {
-                            Button(onClick = { banPlayerUsername(player.username) }) {
-                                Text("Bannir")
+            } else {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "La partie va bientôt commencer...",
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                    if (isHost()) {
+                        Text(text = "Code d'accès: ${MatchRoomService.getRoomCode()}")
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("Verrouiller la partie")
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Switch(checked = isLocked, onCheckedChange = { toggleLock() })
+                        }
+                        Button(
+                            onClick = { startMatch() },
+                            enabled = isLocked && players.isNotEmpty()
+                        ) {
+                            Text("Commencer la partie")
+                        }
+                    }
+                    players.forEach { player ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(player.username)
+                            if (isHost() && player.username != "Organisateur") {
+                                Button(onClick = { banPlayerUsername(player.username) }) {
+                                    Text("Bannir")
+                                }
                             }
                         }
                     }
                 }
             }
         }
-
+        Spacer(modifier = Modifier.weight(1f)) // Push content to the center
     }
 
 }

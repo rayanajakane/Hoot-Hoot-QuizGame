@@ -54,13 +54,22 @@ fun QuestionArea(
     val question by matchRoomService::currentQuestion
     val score by answerService::playerScore
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(Unit, MatchRoomService.hasBeenKickedOut) {
         answerService.resetStateForNewQuestion()
         timeService.listenToTimerEvents()
         answerService.listenToAnswerEvents()
         matchRoomService.isQuitting = false
         answerService.playerScore = 0
         context = matchContextService.getContext()
+
+        when (MatchRoomService.hasBeenKickedOut) {
+            true -> {
+                println("MatchRoomService.isTimeToNavigate is true")
+                MatchRoomService.hasBeenKickedOut = false
+                navigateToHome()
+            }
+            else -> Unit
+        }
     }
 
     Row(modifier = Modifier.fillMaxSize()) {
