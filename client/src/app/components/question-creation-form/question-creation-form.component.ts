@@ -184,38 +184,49 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         });
 
         this.questionForm.get('type')?.valueChanges.subscribe((type: string) => {
-            if (type === QuestionType.MultipleChoice) {
-                this.questionForm.addControl(
-                    'choices',
-                    this.formBuilder.array([
-                        this.formBuilder.group({
-                            text: ['', Validators.required],
-                            isCorrect: [true, Validators.required],
-                        }),
-                        this.formBuilder.group({
-                            text: ['', Validators.required],
-                            isCorrect: [false, Validators.required],
-                        }),
-                    ]),
-                );
-                this.questionForm.removeControl('estimatedParameters');
-            } else if (type === QuestionType.LongAnswer) {
-                this.questionForm.removeControl('choices');
-                this.questionForm.removeControl('estimatedParameters');
-            } else if (type === QuestionType.EstimatedAnswer) {
-                this.questionForm.removeControl('choices');
-                this.questionForm.addControl(
-                    'estimatedParameters',
-                    this.formBuilder.group(
-                        {
-                            lowerBound: ['', [Validators.required, Validators.min(Number.MIN_SAFE_INTEGER)]],
-                            upperBound: ['', [Validators.required, Validators.max(Number.MAX_SAFE_INTEGER)]],
-                            correctAnswer: ['', Validators.required],
-                            margin: ['', [Validators.required, Validators.min(0)]],
-                        },
-                        { validators: [this.validateEstimationBounds, this.validateMargin] },
-                    ),
-                );
+            switch (type) {
+                case QuestionType.MultipleChoice: {
+                    this.questionForm.addControl(
+                        'choices',
+                        this.formBuilder.array([
+                            this.formBuilder.group({
+                                text: ['', Validators.required],
+                                isCorrect: [true, Validators.required],
+                            }),
+                            this.formBuilder.group({
+                                text: ['', Validators.required],
+                                isCorrect: [false, Validators.required],
+                            }),
+                        ]),
+                    );
+                    this.questionForm.removeControl('estimatedParameters');
+
+                    break;
+                }
+                case QuestionType.LongAnswer: {
+                    this.questionForm.removeControl('choices');
+                    this.questionForm.removeControl('estimatedParameters');
+
+                    break;
+                }
+                case QuestionType.EstimatedAnswer: {
+                    this.questionForm.removeControl('choices');
+                    this.questionForm.addControl(
+                        'estimatedParameters',
+                        this.formBuilder.group(
+                            {
+                                lowerBound: ['', [Validators.required, Validators.min(Number.MIN_SAFE_INTEGER)]],
+                                upperBound: ['', [Validators.required, Validators.max(Number.MAX_SAFE_INTEGER)]],
+                                correctAnswer: ['', Validators.required],
+                                margin: ['', [Validators.required, Validators.min(0)]],
+                            },
+                            { validators: [this.validateEstimationBounds, this.validateMargin] },
+                        ),
+                    );
+
+                    break;
+                }
+                // No default
             }
         });
     }

@@ -34,14 +34,7 @@
                 </div>
 
                 <div>
-                    <button
-                        *ngIf="this.isActiveSubmit()"
-                        mat-raised-button
-                        color="primary"
-                        type="submit"
-                        class="submit-button"
-                        [disabled]="!questionForm.valid"
-                    >
+                    <button mat-raised-button color="primary" type="submit" class="submit-button" [disabled]="!questionForm.valid">
                         <mat-icon>check</mat-icon>
                         {{ getButtonText() }}
                     </button>
