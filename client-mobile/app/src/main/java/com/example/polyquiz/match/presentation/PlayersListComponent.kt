@@ -19,14 +19,12 @@ import com.example.polyquiz.match.domain.Player
 @Composable
 fun PlayersListComponent(
     matchRoomService: MatchRoomService,
-    matchContextService: MatchContextService,
+    context: MatchContext,
     players: List<Player>,
     modifier: Modifier = Modifier,
     extraContent: @Composable () -> Unit = {}
 ) {
     val username = matchRoomService.getUsername()
-    val context = matchContextService.getContext()
-
     var sortBy by remember { mutableStateOf("score") }
     var sortOrder by remember { mutableStateOf("descending") }
 
@@ -148,3 +146,4 @@ fun ButtonGroup(options: List<Pair<String, String>>, selected: String, onSelecte
         }
     }
 }
+

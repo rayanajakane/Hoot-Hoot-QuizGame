@@ -48,7 +48,6 @@ fun QuestionArea(
     modifier: Modifier
 ) {
 
-    var room by remember { mutableStateOf(matchRoomService.getRoomCode()) }
     val username by remember { mutableStateOf(authViewModel.getUsername()) }
     var context = MatchContext.PLAYERVIEW
     val question by matchRoomService::currentQuestion
@@ -60,7 +59,7 @@ fun QuestionArea(
         answerService.listenToAnswerEvents()
         matchRoomService.isQuitting = false
         answerService.playerScore = 0
-        context = matchContextService.getContext()
+//        context = matchContextService.getContext()
 
         when (MatchRoomService.hasBeenKickedOut) {
             true -> {
@@ -72,35 +71,8 @@ fun QuestionArea(
         }
     }
 
-    Row(modifier = Modifier.fillMaxSize()) {
-        //TODO: REMOVE WHEN DONE
-        if ( question == null){
-            TextField(
-                value = room,
-                onValueChange = { room = it },
-                label = { Text("Room ID") },
-                modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .padding(8.dp)
-            )
-            Button(
-                onClick = { navigateToHome() },
-                modifier = Modifier.fillMaxWidth(0.5f),
-                shape = RoundedCornerShape(8.dp)
-            )
-            {
-                Text("Page d'accueil")
-            }
 
-            Button(
-                onClick = { matchRoomService.connect();matchRoomService.joinRoom(room, username); timeService.handleTimer() },
-                modifier = Modifier.fillMaxWidth(0.5f),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Text("join")
-            }
-        }
-        //////////////////////////////////////////////////////////
+    Row(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -185,7 +157,7 @@ fun QuestionArea(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-        }
+            }
 
             if (!matchRoomService.isCooldown) {
                 when (question?.type) {
@@ -229,11 +201,9 @@ fun QuestionArea(
             }
 
         }
-        if(matchRoomService.isMatchStarted)
-        {
             PlayersListComponent(
                 matchRoomService = matchRoomService,
-                matchContextService = matchContextService,
+                context = context,
                 players = matchRoomService.players,
                 modifier = Modifier.width(250.dp).fillMaxHeight(),
                 extraContent = {
@@ -265,5 +235,5 @@ fun QuestionArea(
         }
 
 
-        }
-}
+    }
+
