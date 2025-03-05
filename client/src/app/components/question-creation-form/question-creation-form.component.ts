@@ -123,7 +123,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
                 this.question.points = formValue?.points;
                 this.question.lastModification = new Date().toLocaleDateString();
                 this.question.choices = formValue?.choices;
-                this.question.estimatedParameters = formValue?.estimatedParameters;
+                // this.question.estimatedParameters = formValue?.estimatedParameters;
             });
         }
     }
