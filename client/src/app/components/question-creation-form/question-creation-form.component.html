@@ -95,7 +95,7 @@
                 </div>
                 <div *ngIf="questionForm.get('type')?.value === 'QRL'"></div>
                 <div *ngIf="questionForm.get('type')?.value === 'QRE'">
-                    <div class="estimation-container" formGroupName="estimationParams">
+                    <div class="estimation-container" formGroupName="estimatedParameters">
                         <mat-form-field>
                             <mat-label>Borne inférieure</mat-label>
                             <input matInput formControlName="lowerBound" placeholder="Valeur de la borne inférieure" type="number" />
@@ -113,7 +113,7 @@
 
                         <mat-form-field>
                             <mat-label>Marge de tolérance</mat-label>
-                            <input matInput formControlName="tolerance" placeholder="Valeur de la marge de tolérance" type="number" min="0" />
+                            <input matInput formControlName="margin" placeholder="Valeur de la marge de tolérance" type="number" min="0" />
                         </mat-form-field>
                     </div>
                 </div>

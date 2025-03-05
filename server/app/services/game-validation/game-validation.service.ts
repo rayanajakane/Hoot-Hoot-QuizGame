@@ -9,7 +9,6 @@ import {
     STEP_POINTS,
 } from '@app/constants/game-validation-constraints';
 import {
-    ERROR_ANSWER_NOT_INTEGER,
     ERROR_ANSWER_OUT_OF_BOUNDS,
     ERROR_CHOICES_NUMBER,
     ERROR_CHOICES_RATIO,
@@ -18,14 +17,11 @@ import {
     ERROR_EMPTY_QUESTION,
     ERROR_EMPTY_TITLE,
     ERROR_INVALID_BOUNDS,
-    ERROR_LOWER_BOUND_NOT_INTEGER,
-    ERROR_MARGIN_NOT_INTEGER,
     ERROR_MARGIN_TOO_BIG,
     ERROR_POINTS,
     ERROR_QUESTIONS_NUMBER,
     ERROR_QUESTION_TYPE,
     ERROR_REPEAT_CHOICES,
-    ERROR_UPPER_BOUND_NOT_INTEGER,
 } from '@app/constants/game-validation-errors';
 import { QuestionType } from '@app/constants/question-types';
 import { Choice } from '@app/model/database/choice';
@@ -109,19 +105,13 @@ export class GameValidationService {
 
     findEstimatedQuestionErrors(question: CreateQuestionDto): string[] {
         const errorMessages: string[] = this.findGeneralQuestionErrors(question);
-
-        const questionLowerBound = question.estimatedParameters.lowerBound;
-        const questionUpperBound = question.estimatedParameters.upperBound;
-        const questionMargin = question.estimatedParameters.margin;
-        const questionAnswer = question.estimatedParameters.correctAnswer;
-
+        const questionLowerBound = question.estimatedParameters?.lowerBound;
+        const questionUpperBound = question.estimatedParameters?.upperBound;
+        const questionMargin = question.estimatedParameters?.margin;
+        const questionAnswer = question.estimatedParameters?.correctAnswer;
         const errorConditions: Map<string, boolean> = new Map([
             [ERROR_INVALID_BOUNDS, !this.isValidBounds(questionLowerBound, questionUpperBound)],
             [ERROR_MARGIN_TOO_BIG, !this.isValidMargin(questionMargin, questionLowerBound, questionUpperBound)],
-            [ERROR_ANSWER_NOT_INTEGER, !this.isValidInteger(question.estimatedParameters.correctAnswer)],
-            [ERROR_LOWER_BOUND_NOT_INTEGER, !this.isValidInteger(questionLowerBound)],
-            [ERROR_UPPER_BOUND_NOT_INTEGER, !this.isValidInteger(questionLowerBound)],
-            [ERROR_MARGIN_NOT_INTEGER, !this.isValidInteger(questionMargin)],
             [ERROR_ANSWER_OUT_OF_BOUNDS, !this.isAnswerInBounds(questionAnswer, questionLowerBound, questionUpperBound)],
         ]);
         return this.checkErrors(errorConditions, errorMessages);

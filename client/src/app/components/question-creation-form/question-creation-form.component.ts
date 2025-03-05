@@ -87,7 +87,6 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
     onSubmit() {
         if (this.questionForm.valid) {
             const newQuestion: Question = this.questionForm.value;
-            console.log(newQuestion);
             newQuestion.lastModification = new Date().toLocaleDateString();
             if (this.modificationState === ManagementState.BankModify) {
                 this.modifyQuestionEvent.emit(newQuestion);
@@ -174,7 +173,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
                     this.openSnackBar('Il faut au moins une réponse correcte et une incorrecte !', SNACK_BAR_DISPLAY_TIME);
                     this.notificationShown = true;
                 }
-            } else if (this.questionForm.invalid && this.questionForm.get('estimationParams')?.invalid) {
+            } else if (this.questionForm.invalid && this.questionForm.get('estimatedParameters')?.invalid) {
                 if (!this.notificationShown) {
                     this.openSnackBar("Les paramètres d'estimation sont invalides !", SNACK_BAR_DISPLAY_TIME);
                     this.notificationShown = true;
@@ -186,7 +185,6 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
 
         this.questionForm.get('type')?.valueChanges.subscribe((type: string) => {
             if (type === QuestionType.MultipleChoice) {
-                this.questionForm.removeControl('estimationParams');
                 this.questionForm.addControl(
                     'choices',
                     this.formBuilder.array([
@@ -200,19 +198,20 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
                         }),
                     ]),
                 );
+                this.questionForm.removeControl('estimatedParameters');
             } else if (type === QuestionType.LongAnswer) {
                 this.questionForm.removeControl('choices');
-                this.questionForm.removeControl('estimationParams');
+                this.questionForm.removeControl('estimatedParameters');
             } else if (type === QuestionType.EstimatedAnswer) {
                 this.questionForm.removeControl('choices');
                 this.questionForm.addControl(
-                    'estimationParams',
+                    'estimatedParameters',
                     this.formBuilder.group(
                         {
                             lowerBound: ['', [Validators.required, Validators.min(Number.MIN_SAFE_INTEGER)]],
                             upperBound: ['', [Validators.required, Validators.max(Number.MAX_SAFE_INTEGER)]],
                             correctAnswer: ['', Validators.required],
-                            tolerance: ['', [Validators.required, Validators.min(0)]],
+                            margin: ['', [Validators.required, Validators.min(0)]],
                         },
                         { validators: [this.validateEstimationBounds, this.validateMargin] },
                     ),
@@ -238,12 +237,12 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
     }
 
     private validateMargin(group: FormGroup) {
-        const tolerance = group.get('tolerance')?.value;
+        const margin = group.get('margin')?.value;
         const upperBound = group.get('upperBound')?.value;
         const lowerBound = group.get('lowerBound')?.value;
 
-        if (tolerance && upperBound && lowerBound) {
-            if (tolerance > (upperBound - lowerBound) / 4) {
+        if (margin && upperBound && lowerBound) {
+            if (margin > (upperBound - lowerBound) / 4) {
                 return { invalidMargin: true };
             }
         }
@@ -257,7 +256,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
             type: this.question?.type,
             lastModification: this.question?.lastModification,
         });
-        if (this.question.type === QuestionType.MultipleChoice) {
+        if (this.questionForm.get('type')?.value === QuestionType.MultipleChoice) {
             const choicesArray = this.questionForm.get('choices') as FormArray;
             if (!choicesArray) return;
             choicesArray.clear();
@@ -271,18 +270,18 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
                     );
                 }
             });
-        } else if (this.question.type === QuestionType.EstimatedAnswer) {
-            const estimationParams = this.questionForm.get('estimationParams') as FormGroup;
-            if (!estimationParams) return;
-            estimationParams.reset();
+        }
+        if (this.questionForm.get('type')?.value === QuestionType.EstimatedAnswer) {
+            const estimatedParameters = this.questionForm.get('estimatedParameters') as FormGroup;
+            if (!estimatedParameters) return;
+            estimatedParameters.reset();
             this.formBuilder.group({
                 // or use estimationParams.patchValue
                 lowerBound: this.question.estimatedParameters?.lowerBound,
                 upperBound: this.question.estimatedParameters?.upperBound,
                 correctAnswer: this.question.estimatedParameters?.correctAnswer,
-                tolerance: this.question.estimatedParameters?.margin,
+                margin: this.question.estimatedParameters?.margin,
             });
-            // console.log(this.question.)
         }
     }
 }
