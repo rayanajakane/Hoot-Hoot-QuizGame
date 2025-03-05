@@ -26,9 +26,10 @@ object TimeService {
             counter.value = newTime
         }
 
-    fun listenToTimerEvents(){
-        handleTimer();
+    fun listenToTimerEvents() {
+        handleTimer()
     }
+
     fun handleTimer() {
         mSocket.on(TimerEvents.TIMER.value) { args ->
             if (args.isNotEmpty() && args[0] != null) {

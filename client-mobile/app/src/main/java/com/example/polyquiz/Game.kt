@@ -1,5 +1,7 @@
 package com.example.polyquiz
 
+import com.example.polyquiz.match.domain.Question
+
 data class Game(
     val id: String? ="",
     // en cours ou en attente

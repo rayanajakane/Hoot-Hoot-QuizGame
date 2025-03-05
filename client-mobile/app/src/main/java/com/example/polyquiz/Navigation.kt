@@ -16,6 +16,7 @@ import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.presentation.QuestionArea
 import com.example.polyquiz.pages.presentation.MatchCreationPage
+import com.example.polyquiz.pages.presentation.WaitPage
 
 // References: https://youtu.be/AIC_OFQ1r3k  and  https://youtu.be/lv1raAvwcgI
 @Composable
@@ -25,6 +26,18 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
         navController = navController,
         startDestination = Route.Login
     ) {
+        composable<Route.WaitPage> {
+            WaitPage(
+                modifier = modifier,
+                authViewModel = authViewModel,
+                navigateToHome = {
+                    navController.navigate(Route.Home)
+                },
+                navigateToMatchRoom = {
+                    navController.navigate(Route.MatchRoom)
+                }
+            )
+        }
         composable<Route.Login> {
             LoginPage(
                 modifier = modifier,
@@ -58,24 +71,28 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                     navController.navigate(Route.Home)
                 },
                 authViewModel = authViewModel,
-                timeService = TimeService,
-                matchRoomService = MatchRoomService,
                 matchContextService = MatchContextService,
+                matchRoomService = MatchRoomService,
+                timeService = TimeService,
                 answerService = AnswerService
             )
         }
         composable<Route.Home> {
-            HomePage(modifier,
+            HomePage(
+                modifier,
                 navigateToLogin = {
                     navController.navigate(Route.Login)
                 },
                 navigateToCreate = {
                     navController.navigate(Route.MatchCreation)
                 },
-                navigateToMatchRoom = {
-                    navController.navigate(Route.MatchRoom)
+                authViewModel = authViewModel,
+                navigateToHome = {
+                    navController.navigate(Route.Home)
                 },
-                authViewModel = authViewModel
+                navigateToWaitPage = {
+                    navController.navigate(Route.WaitPage)
+                }
             )
         }
         composable<Route.MatchCreation> {
@@ -86,7 +103,8 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                 navigateToHome = {
                     navController.navigate(Route.Home)
                 },
-                authViewModel = authViewModel
+                authViewModel = authViewModel,
+                navigateToWaitPage = {navController.navigate(Route.WaitPage)}
             )
         }
     }

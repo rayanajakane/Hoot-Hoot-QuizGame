@@ -16,23 +16,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
-import com.example.polyquiz.Choice
-import com.example.polyquiz.Game
-import com.example.polyquiz.GameList
-import com.example.polyquiz.GameService
-import com.example.polyquiz.Question
 import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthState
@@ -44,11 +35,12 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateToHome: () -> Unit, authViewModel: AuthViewModel) {
+fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateToHome: () -> Unit, authViewModel: AuthViewModel, navigateToWaitPage: () -> Unit) {
     val authState = authViewModel.authState.observeAsState()
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+
 
     LaunchedEffect(authState.value) {
         when (authState.value) {
@@ -124,7 +116,7 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
             ) {
                 Text(text = DisplayAuthenticationText.LOGOUT.value)
             }
-            GameList(modifier = modifier.weight(1f).fillMaxHeight(0.2f))
+            GameList(modifier = modifier.weight(1f).fillMaxHeight(0.2f), navigateToWaitPage)
         }
     }
 }

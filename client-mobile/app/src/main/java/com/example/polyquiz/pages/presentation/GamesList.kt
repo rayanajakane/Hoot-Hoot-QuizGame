@@ -1,41 +1,31 @@
-package com.example.polyquiz
+package com.example.polyquiz.pages.presentation
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ButtonDefaults.shape
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import androidx.compose.ui.text.font.FontWeight
+import com.example.polyquiz.Game
 import com.example.polyquiz.constants.MatchContext
+import com.example.polyquiz.http.GameService
 import com.example.polyquiz.match.domain.MatchContextService
-import com.example.polyquiz.match.domain.MatchRoomService.createRoom
 import com.example.polyquiz.match.domain.MatchService
-import com.example.polyquiz.match.domain.MatchService.currentGame
+
 
 
 @Composable
-fun GameList(modifier: Modifier) {
+fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit) {
+
     val gameService = GameService()
     val matchService = MatchService
     var games by remember { mutableStateOf<List<Game>>(emptyList()) }
@@ -44,7 +34,6 @@ fun GameList(modifier: Modifier) {
     var isLoadingSelectedGame by remember { mutableStateOf(false) }
 
     val contextService = MatchContextService
-   // var gamesIsValid: Boolean
 
     LaunchedEffect(Unit) {
        // matchService.getAllGames()
@@ -52,7 +41,6 @@ fun GameList(modifier: Modifier) {
             onSuccess = { fetchedGames ->
                 val gson = Gson()
                 val json = gson.toJson(fetchedGames)
-                //println("fetched$fetchedGames")
                 val listType = object : TypeToken<List<Game>>() {}.type
                 games = gson.fromJson(json, listType)
             },
@@ -72,11 +60,6 @@ fun GameList(modifier: Modifier) {
             matchService.saveBackupGame(selectedGame!!.id!!)
             matchService.createMatch()
         }
-    }
-
-    fun reloadAllGames(){
-        //islo
-        matchService.getAllGames()
     }
 
     fun loadSelectedGame(currentGame: Game){
@@ -176,13 +159,8 @@ fun GameList(modifier: Modifier) {
 
                 Button(
                     onClick = {
-                        // fetchGames()
                         createMatch(MatchContext.HOSTVIEW)
-//                        if(selectedGame?.id != null) {
-//                            createRoom(selectedGame!!.id!!, true)
-//                            println("id${selectedGame?.id}")
-//                            matchService.createMatch()
-//                        }
+                        navigateToWaitPage()
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
@@ -191,7 +169,8 @@ fun GameList(modifier: Modifier) {
                     modifier = Modifier
                         .padding(16.dp)
                 ) {
-                    Text(text = "Jouer")
+                        Text(text = "Jouer")
+
                 }
 
             } else {
@@ -199,9 +178,6 @@ fun GameList(modifier: Modifier) {
             }
             Spacer(modifier = Modifier.height(16.dp))
 
-
         }
-
-
     }
 }

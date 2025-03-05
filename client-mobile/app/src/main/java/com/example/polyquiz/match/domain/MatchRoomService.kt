@@ -20,7 +20,10 @@ object MatchRoomService {
     var isResults by mutableStateOf(false)
     var isWaitOver by mutableStateOf(false)
     var isBanned by mutableStateOf(false)
+    var timeToGoToWaitPage by mutableStateOf(false)
     var isPlaying by mutableStateOf(false)
+    var isTimeToNavigate by mutableStateOf(false)
+    var hasBeenKickedOut by mutableStateOf(false)
     var gameTitle: String = ""
     var gameDuration: Int = 0
     var currentQuestion by mutableStateOf<Question?>(null)
@@ -55,6 +58,8 @@ object MatchRoomService {
             handleError()
 //            onPlayerChatStateToggle()
             onRouteToResultsPage()
+            println("we just set time to go to wait page to true")
+            timeToGoToWaitPage = true
         }
     }
 
@@ -72,6 +77,7 @@ object MatchRoomService {
         socket.off(MatchEvents.ROUTE_TO_RESULTS_PAGE.value)
         socket.emit(MatchEvents.DISCONNECT.value)
         MatchContextService.resetContext()
+        hasBeenKickedOut = true
     }
 
     fun createRoom(gameId: String, isClassicMode: Boolean = true) {
@@ -105,6 +111,7 @@ object MatchRoomService {
 //    }
 
     fun joinRoom(roomCode: String, username: String) {
+
         val sentInfo = JSONObject().apply {
             put("roomCode", roomCode)
             put("username", username)
@@ -117,7 +124,6 @@ object MatchRoomService {
                 this.username = response.getString("username")
             }
         })
-
         sendPlayersData(roomCode)
     }
 
@@ -176,6 +182,7 @@ object MatchRoomService {
                 )
                 currentQuestion = firstQuestion
                 gameDuration = data.getInt("gameDuration")
+                isTimeToNavigate = true
 //                navigator.navigateTo("play-match", mapOf("question" to firstQuestion, "duration" to gameDuration))
             }
         }

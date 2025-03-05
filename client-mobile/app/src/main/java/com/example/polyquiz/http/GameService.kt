@@ -1,11 +1,7 @@
-package com.example.polyquiz
+package com.example.polyquiz.http
 
-import android.net.http.UrlRequest
-import com.example.polyquiz.http.CommunicationService
-import com.google.android.gms.common.api.Response
-import com.google.gson.Gson
+import com.example.polyquiz.Game
 import com.google.gson.reflect.TypeToken
-import retrofit2.Call
 
 val BASE_URL: String = "admin/games"
 typealias ErrorCallback = (String) -> Unit

@@ -2,13 +2,11 @@ package com.example.polyquiz.match.domain
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.polyquiz.Game
-import com.example.polyquiz.GameService
+import com.example.polyquiz.http.GameService
 import com.example.polyquiz.http.CommunicationService
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 object MatchService {
     val gameService = GameService()

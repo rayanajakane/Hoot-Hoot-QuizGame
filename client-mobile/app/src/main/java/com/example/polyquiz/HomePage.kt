@@ -1,7 +1,6 @@
 package com.example.polyquiz
 
 import androidx.compose.foundation.gestures.detectTapGestures
-import com.example.polyquiz.chat.presentation.ChatComponent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,8 +16,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -27,18 +31,31 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.DisplayAuthenticationText
+import com.example.polyquiz.match.domain.MatchRoomService
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.jvm.internal.Intrinsics.Kotlin
 
 @Composable
-fun HomePage(modifier: Modifier, navigateToLogin: () -> Unit, navigateToMatchRoom: () -> Unit, navigateToCreate: () -> Unit, authViewModel: AuthViewModel) {
+fun HomePage(
+    modifier: Modifier,
+    navigateToLogin: () -> Unit,
+    navigateToHome: () -> Unit,
+    navigateToCreate: () -> Unit,
+    navigateToWaitPage: () -> Unit,
+    authViewModel: AuthViewModel
+) {
     val authState = authViewModel.authState.observeAsState()
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+    var showDialog by remember { mutableStateOf(false) }
+    val shouldNavigate = rememberUpdatedState(MatchRoomService.timeToGoToWaitPage)
 
-    LaunchedEffect(authState.value) {
+    LaunchedEffect(authState.value, MatchRoomService.timeToGoToWaitPage) {
         when(authState.value) {
             is AuthState.Unauthenticated -> {
                 scope.launch {
@@ -61,7 +78,15 @@ fun HomePage(modifier: Modifier, navigateToLogin: () -> Unit, navigateToMatchRoo
             }
             else -> Unit
         }
+        when(shouldNavigate.value) {
+            true -> {
+                MatchRoomService.timeToGoToWaitPage = false
+                navigateToWaitPage()
+            }
+            else -> Unit
+        }
     }
+
 
     Row (
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -79,14 +104,29 @@ fun HomePage(modifier: Modifier, navigateToLogin: () -> Unit, navigateToMatchRoo
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxHeight()
         ) {
-            Button(
-                onClick = {navigateToMatchRoom()},
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary)
-            ) {
-                Text(text = "Joindre une partie")
+//            Button(
+//                onClick = {joinGameDialog()},
+//                colors = ButtonDefaults.buttonColors(
+//                    containerColor = MaterialTheme.colorScheme.primary,
+//                    contentColor = MaterialTheme.colorScheme.onPrimary)
+//            ) {
+//                Text(text = "Joindre une partie")
+//            }
+            Button(onClick = { showDialog = true }) {
+                Text("Joindre une partie")
             }
+
+            JoinGameDialog(
+                isOpen = showDialog,
+                onDismiss = { showDialog = false },
+                onJoin = {
+                    showDialog = false
+                },
+                authViewModel = authViewModel,
+                navigateToHome = navigateToHome,
+                navigateToMatchPage = navigateToWaitPage,
+                navigateToWaitPage = navigateToWaitPage
+            )
             Button(
                 onClick = {
                     println("Create")
