@@ -208,3 +208,10 @@ body {
 .controls-container button {
     width: 15vw;
 }
+
+.mat-tool-tip,
+.tooltip-multiline,
+mat-tool-tip {
+    white-space: pre-line !important;
+    height: auto;
+}
