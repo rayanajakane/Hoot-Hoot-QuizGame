@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -24,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -54,12 +56,16 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     val messages by ChatService.messages.observeAsState()
     var newMessageText by remember{ mutableStateOf("") }
 
+    val listState = rememberLazyListState()
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         ),
         shape = RoundedCornerShape(0.dp),
-        modifier = Modifier.size(width = 300.dp, height = 1000.dp).fillMaxHeight().imePadding()
+        modifier = Modifier
+            .size(width = 300.dp, height = 1000.dp)
+            .fillMaxHeight()
+            .imePadding()
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceAround,
@@ -70,21 +76,34 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
             // To handle the situation where there would be no message to display.
             messages?.let {
                 LazyColumn(
+                    state = listState,
                     verticalArrangement = Arrangement.spacedBy(10.dp),
-                    modifier = Modifier.weight(1f).padding(20.dp, 20.dp, 20.dp, 0.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(20.dp, 20.dp, 20.dp, 0.dp),
                 ) {
                     itemsIndexed(it) { _: Int, message: Message ->
                         MessageContainer(message, userId)
                     }
                 }
+            LaunchedEffect(messages?.size) {
+                if (messages!!.isNotEmpty()) {
+                    listState.scrollToItem(messages!!.size - 1)
+                }
+            }
+
             } ?: LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
-                modifier = Modifier.weight(1f).padding(20.dp, 20.dp, 20.dp, 0.dp)
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(20.dp, 20.dp, 20.dp, 0.dp)
             ) {
 
             }
             TextField(
-                modifier = Modifier.fillMaxWidth().padding(0.dp, 10.dp, 0.dp, 70.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(0.dp, 10.dp, 0.dp, 70.dp),
                 value = newMessageText,
                 onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) newMessageText = it },
                 label = { Text(text = DisplayChatText.MESSAGE_LABEL.value) },
