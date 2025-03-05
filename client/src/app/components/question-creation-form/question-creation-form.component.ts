@@ -307,11 +307,8 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
     }
 
     private showNotification(message: string) {
-        console.log('showNotification', message);
-        // if (!this.notificationShown) {
         this.openSnackBar(message, SNACK_BAR_DISPLAY_TIME);
         this.notificationShown = true;
-        // }
     }
 
     private updateFormValues(): void {
