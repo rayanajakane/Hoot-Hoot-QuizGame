@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
+import com.example.polyquiz.match.domain.MatchRoomService.createRoom
 
 
 @Composable
@@ -52,7 +53,6 @@ fun GameList(modifier: Modifier) {
             },
             onError = { errorMessage -> println("Error: $errorMessage") }
         )
-
     }
 
 
@@ -99,7 +99,7 @@ fun GameList(modifier: Modifier) {
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "${selectedGame!!.description}",
+                        text = selectedGame!!.description,
                     )
                 }
 
@@ -119,10 +119,32 @@ fun GameList(modifier: Modifier) {
                     Text("${index + 1}. ${question.text}", modifier = Modifier.padding(8.dp))
                 }
                 Spacer(modifier = Modifier.height(16.dp))
+
+
+                Button(
+                    onClick = {
+                        // fetchGames()
+                        if(selectedGame?.id != null) {
+                            createRoom(selectedGame!!.id!!, true)
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    ),
+                    modifier = Modifier
+                        .padding(16.dp)
+                ) {
+                    Text(text = "Jouer")
+                }
+
             } else {
                 Text("Sélectionner un jeu dans la liste des jeux", modifier = Modifier.padding(8.dp))
             }
             Spacer(modifier = Modifier.height(16.dp))
+
+
         }
+
     }
 }

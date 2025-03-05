@@ -40,9 +40,6 @@ import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.DisplayAuthenticationText
-import com.example.polyquiz.http.QuestionService
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 
 
@@ -52,32 +49,6 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    val questionService = QuestionService()
-    val gameService = GameService()
-
-    fun fetchGames() {
-        gameService.getGames(
-            onSuccess = { games ->
-                val gson = Gson()
-                val json = gson.toJson(games)
-                val listType = object : TypeToken<List<Game>>() {}.type
-                val result: List<Game> = gson.fromJson(json, listType)
-
-                result.forEach { game ->
-                    println("Game: ${game.title}")
-                }
-
-            },
-            onError = { errorMessage -> println("Error: $errorMessage") }
-        )
-    }
-
-    fun loadGames(service: GameService, onLoad: (List<Game>) -> Unit) {
-        service.getGames(
-            onSuccess = { onLoad(it) },
-            onError = { println("Erreur de chargement: $it") }
-        )
-    }
 
     LaunchedEffect(authState.value) {
         when (authState.value) {
@@ -118,7 +89,6 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
     ) {
         ChatComponent(modifier = modifier.weight(1f), authViewModel = authViewModel)
 
-
         Column(
            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Bottom,
@@ -126,19 +96,6 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
                 .weight(1f)
                 .padding(bottom = 10.dp)
         ) {
-            Button(
-                onClick = {
-                    fetchGames()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                ),
-                modifier = Modifier
-                    .padding(16.dp)
-            ) {
-                Text(text = "Jouer")
-            }
 
             Surface(
                 shadowElevation = 10.dp,
@@ -169,7 +126,5 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
             }
             GameList(modifier = modifier.weight(1f).fillMaxHeight(0.2f))
         }
-
     }
-
 }
