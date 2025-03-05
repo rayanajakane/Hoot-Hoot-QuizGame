@@ -7,13 +7,19 @@
     overflow-y: auto;
 }
 
-#current-username {
-    margin-left: 1rem;
+.header-row {
     position: fixed;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 20vw;
+}
+
+#header-title {
+    margin-left: 1rem;
 }
 
 #messages-container {
-    position: fixed;
     top: 10vh;
     height: 75vh;
     width: 20vw;
@@ -22,6 +28,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    position: fixed;
 }
 
 @keyframes slideUp {
@@ -53,6 +60,10 @@
     background-color: #fff;
     border-radius: 0.5rem;
     padding: 0.5rem;
+}
+
+.message-text-info-container {
+    width: 15vw;
 }
 
 .message-author {
@@ -120,4 +131,28 @@ input[matInput] {
     transform: translateY(-50%);
     font-size: 24px;
     cursor: pointer;
+}
+
+.avatar-container {
+    display: flex;
+    align-items: flex-end;
+}
+
+.avatar {
+    background-color: grey;
+    border-radius: 100rem;
+    width: 3rem;
+    height: 3rem;
+}
+
+.two-columns-container {
+    display: flex;
+    gap: 1rem;
+}
+
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    border-radius: 100rem;
 }

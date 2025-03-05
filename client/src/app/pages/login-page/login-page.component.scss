@@ -27,3 +27,19 @@ button {
 mat-form-field {
     width: 30vw;
 }
+
+#email {
+    width: 30vw;
+}
+
+#password-container {
+    display: flex;
+    flex-direction: column;
+    width: 30vw;
+    align-items: flex-end;
+    gap: 0;
+}
+
+#password-container button {
+    font-style: italic;
+}

@@ -7,11 +7,14 @@ import { matchLoginGuard } from '@app/guards/match-login/match-login.guard';
 import { AdminEditPageComponent } from '@app/pages/admin-edit-page/admin-edit-page.component';
 import { AdminMainPageComponent } from '@app/pages/admin-main-page/admin-main-page.component';
 import { AdminQuestionBankComponent } from '@app/pages/admin-question-bank/admin-question-bank.component';
+import { ForgotPasswordFeedbackPageComponent } from '@app/pages/forgot-password-feedback-page/forgot-password-feedback-page.component';
+import { ForgotPasswordPageComponent } from '@app/pages/forgot-password-page/forgot-password-page.component';
 import { HomePageComponent } from '@app/pages/home-page/home-page.component';
 import { LoginPageComponent } from '@app/pages/login-page/login-page.component';
 import { MatchCreationPageComponent } from '@app/pages/match-creation-page/match-creation-page.component';
 import { ResultsPageComponent } from '@app/pages/results-page/results-page.component';
 import { SignupPageComponent } from '@app/pages/signup-page/signup-page.component';
+import { UserEditPageComponent } from '@app/pages/user-edit-page/user-edit-page.component';
 import { WaitPageComponent } from '@app/pages/wait-page/wait-page.component';
 
 const routes: Routes = [
@@ -19,6 +22,7 @@ const routes: Routes = [
     { path: 'home', component: HomePageComponent, canActivate: [authenticationGuard] },
     { path: 'login', component: LoginPageComponent },
     { path: 'signup', component: SignupPageComponent },
+    { path: 'forgot-password', component: ForgotPasswordPageComponent },
     {
         path: 'admin',
         canActivate: [authenticationGuard],
@@ -41,6 +45,8 @@ const routes: Routes = [
     { path: 'match-room', canActivate: [matchLoginGuard], component: WaitPageComponent },
     { path: 'play-match', canActivate: [matchLoginGuard], component: QuestionAreaComponent },
     { path: 'results', canActivate: [matchLoginGuard], component: ResultsPageComponent },
+    { path: 'edit-profile', component: UserEditPageComponent, canActivate: [authenticationGuard] },
+    { path: 'reset-password-email-sent', component: ForgotPasswordFeedbackPageComponent },
 ];
 
 @NgModule({

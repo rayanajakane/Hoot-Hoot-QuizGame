@@ -5,6 +5,7 @@ import { DialogTextInputComponent } from '@app/components/dialog-text-input/dial
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { JoinMatchService } from '@app/services/join-match/join-match.service';
 import { NotificationService } from '@app/services/notification/notification.service';
+import { TranslocoService } from '@jsverse/transloco';
 
 @Component({
     selector: 'app-home-page',
@@ -21,11 +22,16 @@ export class HomePageComponent {
         private readonly joinMatchService: JoinMatchService,
         private readonly notificationService: NotificationService,
         private readonly authenticationService: AuthenticationService,
+        private readonly translocoService: TranslocoService,
     ) {}
 
     openJoinDialog(): void {
         const dialogRef = this.dialog.open(DialogTextInputComponent, {
-            data: { input: this.input, title: 'Joindre une partie', placeholder: "Code d'accès" },
+            data: {
+                input: this.input,
+                title: this.translocoService.translate('main-page.join-match'),
+                placeholder: this.translocoService.translate('main-page.access-code'),
+            },
         });
 
         dialogRef.afterClosed().subscribe((result: string) => {

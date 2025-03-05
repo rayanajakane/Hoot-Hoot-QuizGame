@@ -4,11 +4,11 @@ import { Player } from '@app/model/schema/player.schema';
 import { ChoiceTracker } from '@app/model/tally-trackers/choice-tracker/choice-tracker';
 import { AnswerCorrectness } from '@common/constants/answer-correctness';
 import { PlayerState } from '@common/constants/player-states';
+import { MOCK_MESSAGE } from './chat-mocks';
 import { getMockGame } from './game-mocks';
 import { getMockQuestion } from './question-mocks';
 
 const MOCK_USER_INFO = { roomCode: '', username: '' };
-const MOCK_MESSAGE = { text: 'Text', author: '', date: new Date() };
 const MOCK_MESSAGE_INFO = { roomCode: '', message: MOCK_MESSAGE };
 const MOCK_PLAYER: Player = {
     username: '',

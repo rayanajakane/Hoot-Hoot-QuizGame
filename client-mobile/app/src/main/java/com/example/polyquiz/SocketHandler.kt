@@ -36,7 +36,7 @@ object SocketHandler {
 
     @Synchronized
     fun disconnect() {
-        mSocket.off(ChatEvents.SENT_PROTOTYPE_MESSAGE.value)
+        mSocket.off(ChatEvents.SENT_GENERAL_MESSAGE.value)
         ChatService.deleteMessages()
         mSocket.disconnect()
     }

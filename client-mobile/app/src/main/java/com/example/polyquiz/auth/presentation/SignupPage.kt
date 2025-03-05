@@ -1,7 +1,8 @@
 package com.example.polyquiz.auth.presentation
 
-import android.widget.Toast
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -20,10 +21,12 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.polyquiz.SnackbarController
@@ -32,6 +35,8 @@ import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.DisplayAuthenticationText
+import com.example.polyquiz.constants.PresetAvatar
+import com.example.polyquiz.constants.SIZE_CONSTANTS
 import kotlinx.coroutines.launch
 
 @Composable
@@ -41,8 +46,14 @@ fun SignupPage(
     navigateToLogin: () -> Unit,
     authViewModel: AuthViewModel
 ) {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val email by authViewModel.email.collectAsState()
+    val username by authViewModel.username.collectAsState()
+    val password by authViewModel.password.collectAsState()
+
+    val emailError by authViewModel.emailError.collectAsState()
+    val usernameError by authViewModel.usernameError.collectAsState()
+    val passwordError by authViewModel.passwordError.collectAsState()
+
     var passwordVisible by remember { mutableStateOf(false) }
 
     val authState = authViewModel.authState.observeAsState()
@@ -76,10 +87,9 @@ fun SignupPage(
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
+        modifier = Modifier .fillMaxSize().imePadding()
+
     ) {
         ElevatedCard(
             colors = CardDefaults.cardColors(
@@ -88,79 +98,151 @@ fun SignupPage(
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
+                    .padding(
+                        start = 32.dp,
+                        top = 8.dp,
+                        end = 32.dp,
+                        bottom = 8.dp
+                    )
                     .fillMaxWidth(0.5f)
-                    .padding(60.dp)
-                    .imePadding()
             ) {
                 Text(
                     text = DisplayAuthenticationText.SIGNUP_TITLE.value,
                     fontSize = 35.sp,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 8.dp)
                 )
-
-                TextField(
-                    value = username,
-                    onValueChange = { username = it },
-                    singleLine = true,
-                    label = { Text(DisplayAuthenticationText.USERNAME.value) },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                TextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    singleLine = true,
-                    keyboardActions = KeyboardActions(onDone = {
-                        authViewModel.signUp(username, password)
-                        keyboardController?.hide()
-                    }),
-                    label = { Text(DisplayAuthenticationText.PASSWORD.value) },
-                    modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    trailingIcon = {
-                        val image = if (passwordVisible)
-                            Icons.Filled.Visibility
-                        else Icons.Filled.VisibilityOff
-
-                        val description = if (passwordVisible) "Hide password" else "Show password"
-
-                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                            Icon(imageVector = image, description)
+                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        // TODO: Select avatar
+                        AvatarPlaceholder(128.dp, PresetAvatar.DEFAULT.value)
+                        Button(
+                            onClick =
+                            {
+                                // TODO
+                            },
+                        ) { Text(DisplayAuthenticationText.UPLOAD_AVATAR.value) }
+                        Text(DisplayAuthenticationText.PRESET_AVATARS.value)
+                        Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                            AvatarPlaceholder(32.dp, PresetAvatar.A.value)
+                            AvatarPlaceholder(32.dp, PresetAvatar.B.value)
+                            AvatarPlaceholder(32.dp, PresetAvatar.C.value)
+                            AvatarPlaceholder(32.dp, PresetAvatar.D.value)
+                            AvatarPlaceholder(32.dp, PresetAvatar.DEFAULT.value)
                         }
-                    },
-                )
+                    }
+                    Column() {
+                        TextField(
+                            value = email,
+                            onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.updateEmail(it) },
+                            isError = emailError.isNotEmpty(),
+                            singleLine = true,
+                            label = { Text(DisplayAuthenticationText.EMAIL.value) },
+                            modifier = Modifier.fillMaxWidth()
+                        )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                        if(emailError.isNotEmpty()) {
+                            Text(text = emailError, color = Color.Red)
+                        }
 
-                Button(
-                    onClick =
-                    {
-                        authViewModel.signUp(username, password)
-                        keyboardController?.hide()
-                    },
-                    enabled = authState.value != AuthState.Loading
-                ) {
-                    Text(DisplayAuthenticationText.SIGNUP_ACTION.value)
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        TextField(
+                            value = username,
+                            onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.updateUsername(it) },
+                            isError = usernameError.isNotEmpty(),
+                            singleLine = true,
+                            label = { Text(DisplayAuthenticationText.USERNAME.value) },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        // TODO : See if can make less ugly later
+                        if(usernameError.isNotEmpty()) {
+                            Text(text = usernameError, color = Color.Red)
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        TextField(
+                            value = password,
+                            onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.updatePassword(it)},
+                            singleLine = true,
+                            keyboardActions = KeyboardActions(onDone = {
+                                authViewModel.signUp(email, username, password)
+                                keyboardController?.hide()
+                            }),
+                            label = { Text(DisplayAuthenticationText.PASSWORD.value) },
+                            isError = passwordError.isNotEmpty(),
+                            modifier = Modifier.fillMaxWidth(),
+                            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                            trailingIcon = {
+                                val image = if (passwordVisible)
+                                    Icons.Filled.Visibility
+                                else Icons.Filled.VisibilityOff
+
+                                val description = if (passwordVisible) "Hide password" else "Show password"
+
+                                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                    Icon(imageVector = image, description)
+                                }
+                            },
+                        )
+
+                        if(passwordError.isNotEmpty()) {
+                            Text(text = passwordError, color = Color.Red)
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
                 }
+                Row() {
+                    ElevatedButton(
+                        onClick =
+                        {
+                            navigateToLogin()
+                            authViewModel.resetSignUpFields()
+                            authViewModel.resetAuthState()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceBright,
+                            contentColor = MaterialTheme.colorScheme.onSurface
 
-                ElevatedButton(
-                    onClick =
-                    {
-                        navigateToLogin()
-                        authViewModel.resetAuthState()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceBright,
-                        contentColor = MaterialTheme.colorScheme.onSurface
-
-                    )
-                ) {
-                    Text(DisplayAuthenticationText.RETURN_TO_LOGIN.value)
+                        )
+                    ) {
+                        Text(DisplayAuthenticationText.RETURN_TO_LOGIN.value)
+                    }
+                    Button(
+                        onClick =
+                        {
+                            authViewModel.signUp(email, username, password)
+                            keyboardController?.hide()
+                        },
+                        enabled = authState.value != AuthState.Loading
+                    ) {
+                        Text(DisplayAuthenticationText.SIGNUP_ACTION.value)
+                    }
                 }
             }
         }
+    }
+}
+
+@Composable()
+fun AvatarPlaceholder(avatarSize: Dp, imageUrl: String) {
+    Box(
+        contentAlignment= Alignment.Center,
+        modifier = Modifier
+            .size(avatarSize)
+            .border(
+                width = 2.dp,
+                color = MaterialTheme.colorScheme.primary,
+                shape = CircleShape
+            )
+    ){
+        // TODO: Add image
     }
 }

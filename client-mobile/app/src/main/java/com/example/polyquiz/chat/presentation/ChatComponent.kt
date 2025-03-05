@@ -42,12 +42,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.chat.domain.Message
+import com.example.polyquiz.constants.PresetAvatar
+import com.example.polyquiz.constants.SIZE_CONSTANTS
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
 fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     val username by remember { mutableStateOf(authViewModel.getUsername() )}
+    val userId by remember { mutableStateOf(authViewModel.getUserId() )}
     val messages by ChatService.messages.observeAsState()
     var newMessageText by remember{ mutableStateOf("") }
 
@@ -71,7 +74,7 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                     modifier = Modifier.weight(1f).padding(20.dp, 20.dp, 20.dp, 0.dp),
                 ) {
                     itemsIndexed(it) { _: Int, message: Message ->
-                        MessageContainer(message, username)
+                        MessageContainer(message, userId)
                     }
                 }
             } ?: LazyColumn(
@@ -83,7 +86,7 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
             TextField(
                 modifier = Modifier.fillMaxWidth().padding(0.dp, 10.dp, 0.dp, 70.dp),
                 value = newMessageText,
-                onValueChange = { newText -> newMessageText = newText },
+                onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) newMessageText = it },
                 label = { Text(text = DisplayChatText.MESSAGE_LABEL.value) },
                 singleLine = true,
                 shape = RoundedCornerShape(0.dp),
@@ -92,13 +95,15 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                     imeAction = ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions(onDone = {
-                    ChatService.sendMessage(newMessageText, username)
+                    // TODO: Change to actual user avatar
+                    ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value)
                     newMessageText = ""
                 }),
                 trailingIcon = {
                     val image = Icons.AutoMirrored.Filled.Send;
                     IconButton(onClick = {
-                        ChatService.sendMessage(newMessageText, username)
+                        // TODO: Change to actual user avatar
+                        ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value)
                         newMessageText = ""
                     }) {
                         Icon(imageVector = image, "send")
@@ -110,13 +115,13 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
 }
 
 @Composable
-fun MessageContainer(message: Message, username: String) {
+fun MessageContainer(message: Message, currentUserId: String) {
     val containerWidth = 225.dp
     val containerAlignment: Alignment.Horizontal
     val containerCorner: RoundedCornerShape
     val containerColor: Color
 
-    if (message.author != username) {
+    if (message.authorId != currentUserId) {
         containerColor = MaterialTheme.colorScheme.surfaceBright
         containerAlignment = Alignment.Start
         containerCorner = RoundedCornerShape(topStart=10.dp, topEnd=10.dp, bottomEnd=10.dp, bottomStart=0.dp)
@@ -134,7 +139,7 @@ fun MessageContainer(message: Message, username: String) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.width(containerWidth)
             ) {
-                Text(text = message.author, fontWeight = FontWeight(600))
+                Text(text = message.authorUsername, fontWeight = FontWeight(600))
                 Text(text = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(message.date).toString())
             }
             Card(

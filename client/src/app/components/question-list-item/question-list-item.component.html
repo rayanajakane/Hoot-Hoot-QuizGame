@@ -4,10 +4,14 @@
             <p class="question-text">{{ index }} {{ question.text }}</p>
         </mat-panel-title>
         <mat-panel-description class="question-options">
-            <p>{{ question.points }} points</p>
-            <p *ngIf="question.type === 'QCM'" class="question-type">QCM<i class="material-icons">widgets</i></p>
-            <p *ngIf="question.type === 'QRL'" class="question-type">QRL<i class="material-icons">article</i></p>
-            <p>Dernière modification: {{ question.lastModification | date: 'dd/MM/yyyy, hh:mm' }}</p>
+            <p>{{ question.points }} pts</p>
+            <div class="question-type-container">
+                <i *ngIf="question.type === 'QCM'" class="material-icons">widgets</i>
+                <p *ngIf="question.type === 'QCM'" class="question-type">QCM</p>
+                <i *ngIf="question.type === 'QRL'" class="material-icons">article</i>
+                <p *ngIf="question.type === 'QRL'" class="question-type">QRL</p>
+            </div>
+            <p>{{ question.lastModification | date: 'YYYY-MM-dd hh:mm' }}</p>
             <div class="question-buttons-container">
                 <button
                     mat-icon-button
