@@ -57,9 +57,8 @@
                         </mat-form-field>
                         <mat-form-field id="theme">
                             <mat-label>{{ t('page.theme') }}</mat-label>
-                            <mat-select>
-                                <mat-option value="option1">Option 1</mat-option>
-                                <mat-option value="option2">Option 2</mat-option>
+                            <mat-select formControlName="currentTheme" data-testid="theme-select-test-id">
+                                <mat-option *ngFor="let theme of availableThemes" [value]="theme">{{ theme }}</mat-option>
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field id="language">

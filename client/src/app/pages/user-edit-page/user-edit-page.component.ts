@@ -6,6 +6,7 @@ import { IMAGE_MAX_FILE_SIZE, PresetAvatar } from '@app/constants/image-constant
 import { Language } from '@app/interfaces/language';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { NotificationService } from '@app/services/notification/notification.service';
+import { Theme, ThemeService } from '@app/services/theme/theme.service';
 import { TranslationService } from '@app/translation/translation.service';
 import { TranslocoService } from '@jsverse/transloco';
 
@@ -28,6 +29,7 @@ export class UserEditPageComponent {
     initialAvatarUrl = this.authenticationService.userAvatarUrl;
 
     availableLangs: string[];
+    availableThemes: Theme[];
 
     form = this.fb.group({
         email: [{ value: this.authenticationService.userEmail, disabled: true }],
@@ -36,6 +38,7 @@ export class UserEditPageComponent {
             { validators: [Validators.required, Validators.minLength(MIN_LENGTH), Validators.maxLength(MAX_LENGTH), this.usernameValidator()] },
         ],
         avatar: [this.authenticationService.userAvatarUrl ? this.authenticationService.userAvatarUrl : PresetAvatar.Default],
+        currentTheme: [this.themeService.currentTheme],
         currentLang: [this.translationService.currentLangugage],
     });
 
@@ -46,8 +49,10 @@ export class UserEditPageComponent {
         public notificationService: NotificationService,
         private translocoService: TranslocoService,
         private translationService: TranslationService,
+        private themeService: ThemeService,
     ) {
         this.availableLangs = this.translocoService.getAvailableLangs() as string[];
+        this.availableThemes = this.themeService.getAvailableThemes() as Theme[];
         this.currentUser = this.authenticationService.currentUser;
     }
 
@@ -61,6 +66,10 @@ export class UserEditPageComponent {
 
     get currentLang() {
         return this.form.controls['currentLang'];
+    }
+
+    get currentTheme() {
+        return this.form.controls['currentTheme'];
     }
 
     get presetAvatar() {
@@ -78,8 +87,8 @@ export class UserEditPageComponent {
                 // TODO: TEMPORARY SOLUTION. Avatar should be uploaded in later commit.
                 this.setPresetAvatar(PresetAvatar.Default);
             }
-            // TODO: Consider adding the themes
             this.translationService.setLanguage(this.currentLang.value as string);
+            this.themeService.setTheme(this.currentTheme.value as Theme);
 
             this.authenticationService.editUserProfile(this.username.value as string, this.avatar.value as string);
             this.form.markAsPristine();

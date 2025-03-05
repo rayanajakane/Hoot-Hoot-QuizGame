@@ -1,12 +1,22 @@
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming¸¸
 @use '@angular/material' as mat;
+@use './styles/palettes/light.scss' as light-palettes;
+@use './styles/palettes/dark.scss' as dark-palettes;
 // Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
 @include mat.core();
+
+$my-primary: mat.define-palette(light-palettes.$m2-primary);
+$my-accent: mat.define-palette(light-palettes.$m2-accent, A200, A100, A400);
+$my-warn: mat.define-palette(light-palettes.$m2-error);
+
+$my-primary-dark: mat.define-palette(dark-palettes.$m2-primary);
+$my-accent-dark: mat.define-palette(dark-palettes.$m2-accent, A200, A100, A400);
+$my-warn-dark: mat.define-palette(dark-palettes.$m2-error);
 
 $main-theme: mat.define-light-theme(
     (
@@ -18,10 +28,42 @@ $main-theme: mat.define-light-theme(
     )
 );
 
+$light-theme: mat.define-light-theme(
+    (
+        color: (
+            primary: $my-primary,
+            accent: $my-accent,
+            warn: $my-warn,
+        ),
+        typography: mat.define-typography-config(),
+        density: 0,
+    )
+);
+
+$dark-theme: mat.define-dark-theme(
+    (
+        color: (
+            primary: $my-primary-dark,
+            accent: $my-accent-dark,
+            warn: $my-warn-dark,
+        ),
+    )
+);
+
+.light-theme {
+    @include mat.all-component-themes($main-theme);
+}
+
+.dark-theme {
+    @include mat.all-component-colors($dark-theme);
+    background-color: mat.get-theme-color($dark-theme, background, background);
+    color: white;
+}
+
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include mat.all-component-themes($main-theme);
+// @include mat.all-component-themes($dark-theme);
 
 /* You can add global styles to this file, and also import other style files */
 
