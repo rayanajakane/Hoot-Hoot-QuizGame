@@ -25,6 +25,7 @@ import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MongooseModule } from '@nestjs/mongoose';
+import { EstimatedAnswerStrategy } from './question-strategies/estimated-answer-strategy/estimated-answer-strategy';
 
 @Module({
     imports: [
@@ -60,6 +61,7 @@ import { MongooseModule } from '@nestjs/mongoose';
         QuestionStrategyContext,
         MultipleChoiceStrategy,
         LongAnswerStrategy,
+        EstimatedAnswerStrategy,
     ],
 })
 export class AppModule {}

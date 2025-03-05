@@ -11,7 +11,7 @@
                     <mat-label>{{ this.isActiveSubmit() ? ' Type de Question' : questionForm.get('type')?.value }}</mat-label>
                     <mat-select formControlName="type">
                         <span *ngIf="this.isActiveSubmit()">
-                            <mat-option *ngFor="let type of ['QCM', 'QRL']" [value]="type">{{ type }}</mat-option>
+                            <mat-option *ngFor="let type of ['QCM', 'QRL', 'QRE']" [value]="type">{{ type }}</mat-option>
                         </span>
                     </mat-select>
                 </mat-form-field>
@@ -48,7 +48,7 @@
                 </div>
             </div>
             <div class="question-properties">
-                <div *ngIf="questionForm.get('type')?.value !== 'QCM'" class="empty-container">
+                <div *ngIf="questionForm.get('type')?.value === 'QRL'" class="empty-container">
                     <i class="material-icons empty-icon">flutter_dash</i>
                 </div>
                 <div cdkDropList (cdkDropListDropped)="dropChoice($event)" *ngIf="questionForm.get('type')?.value === 'QCM'">
@@ -94,6 +94,29 @@
                     </button>
                 </div>
                 <div *ngIf="questionForm.get('type')?.value === 'QRL'"></div>
+                <div *ngIf="questionForm.get('type')?.value === 'QRE'">
+                    <div class="estimation-container" formGroupName="estimationParams">
+                        <mat-form-field>
+                            <mat-label>Borne inférieure</mat-label>
+                            <input matInput formControlName="lowerBound" placeholder="Valeur de la borne inférieure" type="number" />
+                        </mat-form-field>
+
+                        <mat-form-field>
+                            <mat-label>Borne supérieure</mat-label>
+                            <input matInput formControlName="upperBound" placeholder="Valeur de la borne supérieure" type="number" />
+                        </mat-form-field>
+
+                        <mat-form-field>
+                            <mat-label>Bonne réponse</mat-label>
+                            <input matInput formControlName="correctAnswer" placeholder="Valeur de la bonne réponse à la question" type="number" />
+                        </mat-form-field>
+
+                        <mat-form-field>
+                            <mat-label>Marge de tolérance</mat-label>
+                            <input matInput formControlName="tolerance" placeholder="Valeur de la marge de tolérance" type="number" min="0" />
+                        </mat-form-field>
+                    </div>
+                </div>
             </div>
         </div>
     </form>
