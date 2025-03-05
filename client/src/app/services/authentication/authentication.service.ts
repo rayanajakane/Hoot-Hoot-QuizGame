@@ -241,6 +241,8 @@ export class AuthenticationService {
             this.socketHandler.connect();
             this.chatService.handleReceivedMessages();
             this.chatService.handleRoomMessages();
+            this.chatService.handleGeneralEmoji();
+            this.chatService.handleRoomEmoji();
         }
     }
 

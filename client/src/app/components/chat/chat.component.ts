@@ -8,6 +8,7 @@ import { AuthenticationService } from '@app/services/authentication/authenticati
 import { ChatService } from '@app/services/chat/chat.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
+import { ChatEmoji } from '@common/constants/chat-emojis';
 
 @Component({
     selector: 'app-chat',
@@ -18,6 +19,7 @@ export class ChatComponent implements AfterViewChecked {
     @ViewChild('messagesContainer', { static: true }) messagesContainer: ElementRef;
 
     defaultAvatar = PresetAvatar.Default;
+    emoji = ChatEmoji;
 
     // Allow more constructor parameters to decouple services
     // eslint-disable-next-line max-params
@@ -66,5 +68,15 @@ export class ChatComponent implements AfterViewChecked {
 
     private scrollToBottom(): void {
         this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
+    }
+
+    public reactToMessage(messageId: string, chatEmoji: ChatEmoji) {
+        this.chatService.reactToMessage(
+            messageId,
+            chatEmoji,
+            this.authenticationService.userId,
+            this.authenticationService.userDisplayName,
+            this.matchRoomService.getRoomCode(),
+        );
     }
 }

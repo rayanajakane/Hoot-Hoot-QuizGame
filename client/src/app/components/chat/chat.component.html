@@ -39,6 +39,11 @@
                     >
                         <p>{{ message.text }}</p>
                     </div>
+                    <div class="emojis-container">
+                        <button mat-raised-button (click)="reactToMessage(message.id, emoji.LIKE)">👍{{ message.userLikes.length }}</button>
+                        <button mat-raised-button (click)="reactToMessage(message.id, emoji.LOVE)">❤️{{ message.userLoves.length }}</button>
+                        <button mat-raised-button (click)="reactToMessage(message.id, emoji.DISLIKE)">👎{{ message.userDislikes.length }}</button>
+                    </div>
                 </div>
                 <div *ngIf="message.authorId === this.authenticationService.userId" class="avatar-container">
                     <div class="avatar"><img src="{{ message.photoUrl ? message.photoUrl : defaultAvatar }}" alt="" /></div>
