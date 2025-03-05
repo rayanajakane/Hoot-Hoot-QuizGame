@@ -284,7 +284,6 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         if (fields.some((field) => group.get(field)?.value === '')) {
             return null;
         }
-        // const value = group.get('margin')?.value;
         if (fields.some((field) => !Number.isInteger(group.get(field)?.value))) {
             return { invalidType: true };
         }
