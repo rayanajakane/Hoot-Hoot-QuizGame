@@ -36,6 +36,10 @@ import com.example.polyquiz.constants.MatchStatus
 import com.example.polyquiz.constants.UserInfo
 import androidx.compose.foundation.layout.*
 import com.example.polyquiz.constants.AnswerCorrectness
+import com.example.polyquiz.ui.theme.AndroidGreen
+import com.example.polyquiz.ui.theme.BrightRed
+import com.example.polyquiz.ui.theme.RedAnswerWrong
+import com.example.polyquiz.ui.theme.GoldenYellow
 
 @Composable
 fun QuestionArea(
@@ -125,12 +129,12 @@ fun QuestionArea(
 
                 if (answerService.showFeedback && context === MatchContext.PLAYERVIEW && !matchRoomService.isCooldown) {
                     val (feedbackText, feedbackColor) = when (answerService.answerCorrectness) {
-                        AnswerCorrectness.WRONG -> "\uD83D\uDE14 Mauvaise Réponse \uD83D\uDE14" to Color(0xFFe91b0c)
+                        AnswerCorrectness.WRONG -> "\uD83D\uDE14 Mauvaise Réponse \uD83D\uDE14" to BrightRed
                         AnswerCorrectness.OK -> {
-                            "\uD83C\uDD97 Réponse partielle! Vous avez obtenu ${(question?.points ?: 0) / 2} points \uD83C\uDD97" to Color(0xFFf6c811)
+                            "\uD83C\uDD97 Réponse partielle! Vous avez obtenu ${(question?.points ?: 0) / 2} points \uD83C\uDD97" to GoldenYellow
                         }
                         AnswerCorrectness.GOOD -> {
-                            "\uD83C\uDD97 Réponse correcte! Vous avez obtenu ${question?.points} points \uD83C\uDD97" to Color(0xFF4caf50)
+                            "\uD83C\uDD97 Réponse correcte! Vous avez obtenu ${question?.points} points \uD83C\uDD97" to AndroidGreen
                         }
                         else -> null to null
                     }
