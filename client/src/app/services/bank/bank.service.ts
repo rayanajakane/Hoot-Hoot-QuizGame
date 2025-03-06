@@ -62,14 +62,19 @@ export class BankService {
         });
     }
 
-    async uploadQuestionPicture(newQuestion: Question, pictureFile: File, isModificationPageQuestion: boolean) {
+    async uploadQuestionPicture(newQuestion: Question, pictureFile: File, isModificationPageQuestion: boolean = false, isNewQuestion = true) {
         const pictureUrl = await this.authenticationService.uploadBankQuestionPicture(newQuestion.id, pictureFile);
         newQuestion.pictureUrl = pictureUrl;
         this.questionService.updateQuestion(newQuestion).subscribe({
             next: (response: HttpResponse<string>) => {
                 if (response.body) {
                     newQuestion = JSON.parse(response.body);
-                    this.addQuestionToLocalBank(newQuestion, isModificationPageQuestion);
+                    if (isNewQuestion) {
+                        this.addQuestionToLocalBank(newQuestion, isModificationPageQuestion);
+                    } else {
+                        const index = this.questions.findIndex((it: Question) => newQuestion.id === it.id);
+                        this.questions[index] = newQuestion;
+                    }
                 }
             },
             error: (error: HttpErrorResponse) => this.notificationService.displayErrorMessage(`${BankStatus.FAILURE}\n ${error.message}`),
@@ -86,16 +91,29 @@ export class BankService {
     }
 
     updateQuestion(newQuestion: Question): void {
-        if (!this.isDuplicateQuestion(newQuestion, this.questions)) {
-            this.questionService.updateQuestion(newQuestion).subscribe({
-                next: () => {
-                    this.notificationService.displaySuccessMessage(BankStatus.MODIFIED);
-                },
-                error: (error: HttpErrorResponse) => this.notificationService.displayErrorMessage(`${BankStatus.UNMODIFIED} \n ${error.message}`),
-            });
-        } else {
+        if (this.isDuplicateQuestion(newQuestion, this.questions)) {
             this.notificationService.displayErrorMessage(BankStatus.DUPLICATE);
+            return;
         }
+        const pictureFile = newQuestion.pictureFile;
+        const isImageToReupload = newQuestion.pictureUrl.startsWith('data:image/');
+
+        // Reset URL if new image is uploaded
+        if (isImageToReupload) newQuestion.pictureUrl = '';
+
+        newQuestion.pictureFile = null;
+        delete newQuestion['pictureFile'];
+
+        this.questionService.updateQuestion(newQuestion).subscribe({
+            next: async () => {
+                if (isImageToReupload && pictureFile) {
+                    await this.uploadQuestionPicture(newQuestion, pictureFile, false, false);
+                    console.log(newQuestion);
+                }
+                this.notificationService.displaySuccessMessage(BankStatus.MODIFIED);
+            },
+            error: (error: HttpErrorResponse) => this.notificationService.displayErrorMessage(`${BankStatus.UNMODIFIED} \n ${error.message}`),
+        });
     }
 
     private isDuplicateQuestion(newQuestion: Question, questionList: Question[]): boolean {

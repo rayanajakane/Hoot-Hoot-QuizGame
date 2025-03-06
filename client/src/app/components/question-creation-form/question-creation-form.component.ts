@@ -126,6 +126,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
                 this.question.type = formValue?.type;
                 this.question.points = formValue?.points;
                 this.question.pictureUrl = formValue?.pictureUrl;
+                this.question.pictureFile = formValue?.pictureFile;
                 this.question.lastModification = new Date().toLocaleDateString();
                 if (this.question.type === QuestionType.MultipleChoice) {
                     this.question.choices = formValue?.choices;
@@ -168,6 +169,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
                 points: ['', Validators.required],
                 type: ['', Validators.required],
                 pictureUrl: [''],
+                pictureFile: [],
             },
             { validators: this.questionService.validateChoicesLength },
         );
@@ -364,6 +366,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
             const reader = new FileReader();
             reader.addEventListener('load', () => {
                 this.questionForm.get('pictureUrl')?.setValue(reader.result as null);
+                this.questionForm.get('pictureFile')?.setValue(file);
                 this.loadedImageFile = file; // TODO: This file needs to somehow be transferred to AdminEditPage and stuff
             });
             reader.readAsDataURL(file);
@@ -372,6 +375,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
 
     public removePicture() {
         this.questionForm.get('pictureUrl')?.setValue('');
+        this.questionForm.get('pictureFile')?.setValue(null);
         this.loadedImageFile = null;
     }
 }
