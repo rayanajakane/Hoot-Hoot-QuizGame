@@ -5,17 +5,17 @@ export type EstimatedParametersDocument = EstimatedParameters & Document;
 
 @Schema()
 export class EstimatedParameters {
-    @Prop({ required: true })
-    correctAnswer: number;
+    @Prop({ required: false })
+    correctAnswer?: number;
 
-    @Prop({ required: true })
-    lowerBound: number;
+    @Prop({ required: false })
+    lowerBound?: number;
 
-    @Prop({ required: true })
-    upperBound: number;
+    @Prop({ required: false })
+    upperBound?: number;
 
-    @Prop({ required: true })
-    margin: number;
+    @Prop({ required: false })
+    margin?: number;
 }
 
 export const estimatedParametersSchema = SchemaFactory.createForClass(EstimatedParameters);

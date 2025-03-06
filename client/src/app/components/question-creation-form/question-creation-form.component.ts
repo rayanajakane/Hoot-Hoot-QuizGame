@@ -88,6 +88,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         if (this.questionForm.valid) {
             const newQuestion: Question = this.questionForm.value;
             newQuestion.lastModification = new Date().toLocaleDateString();
+
             if (this.modificationState === ManagementState.BankModify) {
                 this.modifyQuestionEvent.emit(newQuestion);
             } else {
@@ -122,7 +123,11 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
                 this.question.type = formValue?.type;
                 this.question.points = formValue?.points;
                 this.question.lastModification = new Date().toLocaleDateString();
-                this.question.choices = formValue?.choices;
+                if (this.question.type === QuestionType.MultipleChoice) {
+                    this.question.choices = formValue?.choices;
+                } else if (this.question.type === QuestionType.EstimatedAnswer) {
+                    this.question.estimatedParameters = formValue?.estimatedParameters;
+                }
             });
         }
     }
