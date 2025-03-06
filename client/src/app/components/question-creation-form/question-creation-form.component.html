@@ -1,5 +1,5 @@
 <div class="form-container">
-    <form [formGroup]="questionForm" class="question-form" (ngSubmit)="onSubmit()">
+    <form [formGroup]="questionForm" class="question-form">
         <mat-form-field class="question-text-container">
             <mat-label>Question</mat-label>
             <input class="question-input" matInput formControlName="text" placeholder="Texte de la question" />
@@ -26,12 +26,9 @@
                 <div class="upload-image-container">
                     <!-- TODO: Transloco -->
                     <button mat-raised-button color="primary" (click)="picture.click()"><mat-icon>upload</mat-icon>Téléverser une image</button>
-                    <button mat-raised-button (click)="removePicture()">Retirer l'image</button>
+                    <button mat-raised-button [disabled]="!questionForm.get('picture')!.value" (click)="removePicture()">Retirer l'image</button>
                     <div class="main-image">
-                        <img
-                            src="https://preview.redd.it/y1jqr8m0fv531.jpg?width=2580&format=pjpg&auto=webp&s=2f377181d98a5629682394e29c687679a49bfef1"
-                            alt=""
-                        />
+                        <img *ngIf="questionForm.get('picture')!.value" [src]="questionForm.get('picture')!.value" />
                     </div>
                     <input type="file" class="picture" #picture (change)="setPicture($event)" accept="image/png, image/jpeg" />
                 </div>
@@ -54,6 +51,7 @@
                         color="primary"
                         type="submit"
                         class="submit-button"
+                        (click)="submitForm()"
                         [disabled]="!questionForm.valid"
                     >
                         <mat-icon>check</mat-icon>

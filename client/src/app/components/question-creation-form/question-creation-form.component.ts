@@ -3,6 +3,7 @@ import { Component, EventEmitter, Inject, Input, OnChanges, OnInit, Optional, Ou
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { IMAGE_MAX_FILE_SIZE } from '@app/constants/image-constants';
 import { MAX_CHOICES, MIN_CHOICES, SNACK_BAR_DISPLAY_TIME, VALID_MARGIN_FRACTION } from '@app/constants/question-creation';
 import { ManagementState } from '@app/constants/states';
 import { Question } from '@app/interfaces/question';
@@ -31,6 +32,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
     checked: boolean;
     disabled: boolean;
     notificationShown: boolean = false;
+    loadedImageFile: File | null = null;
 
     // Allow more constructor parameters to reduce logic in the component
     // eslint-disable-next-line max-params
@@ -84,7 +86,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         }
     }
 
-    onSubmit() {
+    submitForm() {
         if (this.questionForm.valid) {
             const newQuestion: Question = this.questionForm.value;
             newQuestion.lastModification = new Date().toLocaleDateString();
@@ -163,6 +165,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
                 text: ['', Validators.required],
                 points: ['', Validators.required],
                 type: ['', Validators.required],
+                picture: [''],
             },
             { validators: this.questionService.validateChoicesLength },
         );
@@ -346,7 +349,26 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         }
     }
 
-    public setPicture(event: Event) {}
+    public setPicture(event: Event) {
+        const eventTarget: HTMLInputElement | null = event.target as HTMLInputElement | null;
+        if (eventTarget?.files?.[0]) {
+            const file: File = eventTarget.files[0];
+            if (file.size > IMAGE_MAX_FILE_SIZE) {
+                // TODO: Transloco
+                this.openSnackBar('Le fichier est trop grand.', SNACK_BAR_DISPLAY_TIME);
+                return;
+            }
+            const reader = new FileReader();
+            reader.addEventListener('load', () => {
+                this.questionForm.get('picture')?.setValue(reader.result as null);
+                this.loadedImageFile = file;
+            });
+            reader.readAsDataURL(file);
+        }
+    }
 
-    public removePicture() {}
+    public removePicture() {
+        this.questionForm.get('picture')?.setValue(null);
+        this.loadedImageFile = null;
+    }
 }
