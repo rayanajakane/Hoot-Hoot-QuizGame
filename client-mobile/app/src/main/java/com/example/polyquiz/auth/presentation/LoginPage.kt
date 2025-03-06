@@ -22,18 +22,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.polyquiz.R
 import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.AuthFeedbackText
-import com.example.polyquiz.constants.DisplayAuthenticationText
 import com.example.polyquiz.constants.SIZE_CONSTANTS
 import kotlinx.coroutines.launch
 
@@ -60,6 +61,7 @@ fun LoginPage(
                 scope.launch {
                     SnackbarController.sendEvent(
                         event = SnackbarEvent(
+                            // TODO : Find out how to set message outside of composable context
                             message = AuthFeedbackText.SIGN_IN.value,
                         )
                     )
@@ -102,7 +104,7 @@ fun LoginPage(
                     .fillMaxWidth(0.5f)
             ) {
                 Text(
-                    text = DisplayAuthenticationText.LOGIN_TITLE.value,
+                    text = stringResource(R.string.login_title),
                     fontSize = 35.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 16.dp)
@@ -112,7 +114,7 @@ fun LoginPage(
                     value = email,
                     onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) email = it },
                     singleLine = true,
-                    label = { Text(DisplayAuthenticationText.EMAIL.value) },
+                    label = { Text(stringResource(R.string.email)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -122,7 +124,7 @@ fun LoginPage(
                     value = password,
                     onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) password = it },
                     singleLine = true,
-                    label = { Text(DisplayAuthenticationText.PASSWORD.value) },
+                    label = { Text(stringResource(R.string.password),) },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardActions = KeyboardActions(onDone = {
                         authViewModel.signIn(email, password)
@@ -147,7 +149,7 @@ fun LoginPage(
                     },
                     modifier = Modifier.align(Alignment.End)
                 ) {
-                    Text(text = DisplayAuthenticationText.FORGOT_PASSWORD.value,
+                    Text(text = stringResource(R.string.forgot_password),
                         fontStyle = FontStyle.Italic)
                 }
 
@@ -159,7 +161,7 @@ fun LoginPage(
                     },
                     enabled = authState.value != AuthState.Loading
                 ) {
-                    Text(DisplayAuthenticationText.LOGIN_ACTION.value)
+                    Text(text = stringResource(R.string.login_action))
                 }
 
                 ElevatedButton(
@@ -174,7 +176,7 @@ fun LoginPage(
 
                     )
                 ) {
-                    Text(DisplayAuthenticationText.SIGNUP_ACTION.value)
+                    Text(text = stringResource(R.string.signup_action))
                 }
             }
         }

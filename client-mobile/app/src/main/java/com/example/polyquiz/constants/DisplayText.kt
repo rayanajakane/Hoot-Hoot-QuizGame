@@ -1,27 +1,5 @@
 package com.example.polyquiz.constants
 
-enum class DisplayAuthenticationText (val value: String) {
-    EMAIL("Courriel"),
-    USERNAME("Nom d'utilisateur"),
-    PASSWORD("Mot de passe"),
-    LOGIN_TITLE("Connexion"),
-    SIGNUP_TITLE("Nouveau compte"),
-    LOGIN_ACTION("Se connecter"),
-    SIGNUP_ACTION("S'inscrire"),
-    RETURN_TO_LOGIN("Retourner à la page de connexion"),
-    LOGOUT("Se déconnecter"),
-    UPLOAD_AVATAR("Téléverser un avatar"),
-    PRESET_AVATARS("Avatars prédéfinis"),
-    RESET_PASSWORD("Réinitialiser le mot de passe"),
-    SENT_EMAIL("Courriel envoyé !"),
-    SENT_EMAIL_EXTRA_INFO("Si vous avez déjà un compte, vous recevrez un courriel pour réinitialiser votre mot de passe."),
-    FORGOT_PASSWORD("Mot de passe oublié ?")
-}
-
-enum class DisplayChatText (val value: String) {
-    MESSAGE_LABEL("Message"),
-    DISABLED_LABEL("Désactivé")
-}
 
 enum class AuthErrorText (val value: String) {
     EMPTY_USERNAME_PASSWORD("❌ Le courriel, le nom d'utilisateur et/ou le mot de passe sont vides"),

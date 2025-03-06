@@ -3,9 +3,12 @@ package com.example.polyquiz.auth.domain
 import android.text.TextUtils
 import android.util.Log
 import android.util.Patterns
+import androidx.compose.ui.res.stringResource
+import androidx.core.content.ContextCompat.getString
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.polyquiz.R
 import com.example.polyquiz.constants.AuthErrorText
 import com.example.vanillaprototype.socket.SocketHandler
 import com.google.android.gms.tasks.Task

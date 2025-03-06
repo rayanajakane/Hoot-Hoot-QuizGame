@@ -23,18 +23,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.polyquiz.R
 import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.AuthFeedbackText
-import com.example.polyquiz.constants.DisplayAuthenticationText
 import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.constants.SIZE_CONSTANTS
 import kotlinx.coroutines.launch
@@ -109,7 +110,7 @@ fun SignupPage(
                     .fillMaxWidth(0.5f)
             ) {
                 Text(
-                    text = DisplayAuthenticationText.SIGNUP_TITLE.value,
+                    text = stringResource(R.string.signup_title),
                     fontSize = 35.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 8.dp)
@@ -125,8 +126,8 @@ fun SignupPage(
                             {
                                 // TODO
                             },
-                        ) { Text(DisplayAuthenticationText.UPLOAD_AVATAR.value) }
-                        Text(DisplayAuthenticationText.PRESET_AVATARS.value)
+                        ) { Text(stringResource(R.string.upload_avatar),) }
+                        Text(stringResource(R.string.preset_avatars),)
                         Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                             AvatarPlaceholder(32.dp, PresetAvatar.A.value)
                             AvatarPlaceholder(32.dp, PresetAvatar.B.value)
@@ -141,7 +142,7 @@ fun SignupPage(
                             onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.updateEmail(it) },
                             isError = emailError.isNotEmpty(),
                             singleLine = true,
-                            label = { Text(DisplayAuthenticationText.EMAIL.value) },
+                            label = { Text(stringResource(R.string.email)) },
                             modifier = Modifier.fillMaxWidth()
                         )
 
@@ -156,11 +157,10 @@ fun SignupPage(
                             onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.updateUsername(it) },
                             isError = usernameError.isNotEmpty(),
                             singleLine = true,
-                            label = { Text(DisplayAuthenticationText.USERNAME.value) },
+                            label = { Text(stringResource(R.string.username)) },
                             modifier = Modifier.fillMaxWidth()
                         )
 
-                        // TODO : See if can make less ugly later
                         if(usernameError.isNotEmpty()) {
                             Text(text = usernameError, color = Color.Red)
                         }
@@ -175,7 +175,7 @@ fun SignupPage(
                                 authViewModel.signUp(email, username, password)
                                 keyboardController?.hide()
                             }),
-                            label = { Text(DisplayAuthenticationText.PASSWORD.value) },
+                            label = { Text(stringResource(R.string.password)) },
                             isError = passwordError.isNotEmpty(),
                             modifier = Modifier.fillMaxWidth(),
                             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -213,7 +213,7 @@ fun SignupPage(
 
                         )
                     ) {
-                        Text(DisplayAuthenticationText.RETURN_TO_LOGIN.value)
+                        Text(stringResource(R.string.return_to_login))
                     }
                     Button(
                         onClick =
@@ -223,7 +223,7 @@ fun SignupPage(
                         },
                         enabled = authState.value != AuthState.Loading
                     ) {
-                        Text(DisplayAuthenticationText.SIGNUP_ACTION.value)
+                        Text(stringResource(R.string.signup_action))
                     }
                 }
             }
