@@ -22,6 +22,20 @@
                         <mat-option *ngFor="let point of [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]" [value]="point">{{ point }}</mat-option>
                     </mat-select>
                 </mat-form-field>
+
+                <div class="upload-image-container">
+                    <!-- TODO: Transloco -->
+                    <button mat-raised-button color="primary" (click)="picture.click()"><mat-icon>upload</mat-icon>Téléverser une image</button>
+                    <button mat-raised-button (click)="removePicture()">Retirer l'image</button>
+                    <div class="main-image">
+                        <img
+                            src="https://preview.redd.it/y1jqr8m0fv531.jpg?width=2580&format=pjpg&auto=webp&s=2f377181d98a5629682394e29c687679a49bfef1"
+                            alt=""
+                        />
+                    </div>
+                    <input type="file" class="picture" #picture (change)="setPicture($event)" accept="image/png, image/jpeg" />
+                </div>
+
                 <div *ngIf="modificationState === managementState.GameCreate">
                     <mat-slide-toggle
                         [ngModelOptions]="{ standalone: true }"

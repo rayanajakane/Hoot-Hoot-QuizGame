@@ -70,3 +70,13 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
 }
+
+.upload-image-container input {
+    display: none;
+}
+
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+}

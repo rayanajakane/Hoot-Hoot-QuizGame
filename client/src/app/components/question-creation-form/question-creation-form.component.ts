@@ -345,4 +345,8 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
             });
         }
     }
+
+    public setPicture(event: Event) {}
+
+    public removePicture() {}
 }
