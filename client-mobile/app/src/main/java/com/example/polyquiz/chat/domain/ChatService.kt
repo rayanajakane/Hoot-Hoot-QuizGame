@@ -2,6 +2,7 @@ package com.example.polyquiz.chat.domain
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.polyquiz.auth.domain.UserIdName
 import com.example.polyquiz.constants.ChatEvents
 import com.example.vanillaprototype.socket.SocketHandler
 import com.google.gson.Gson
@@ -37,7 +38,7 @@ object ChatService {
     fun sendMessage(text: String, userId: String, username: String, photoUrl: String) {
         if (text.filterNot { it.isWhitespace() }.isNotEmpty()) {
             val newMessage = Message("", text.trim(), userId, username, photoUrl, Date.from(
-                Instant.now()))
+                Instant.now()), listOf(), listOf(), listOf())
             val newMessageStringified = Gson().toJson(newMessage)
             val newMessageJsonObject = JSONObject(newMessageStringified)
             mSocket.emit(ChatEvents.GENERAL_MESSAGE.value, newMessageJsonObject);

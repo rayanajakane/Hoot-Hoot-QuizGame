@@ -1,8 +1,10 @@
 /* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { MOCK_MESSAGE_EMOJI_INFO } from '@app/constants/chat-mocks';
 import { MOCK_MESSAGE, MOCK_MESSAGE_INFO } from '@app/constants/match-mocks';
 import { ChatService } from '@app/services/chat/chat.service';
 import { ChatEvents } from '@common/events/chat.events';
+import { Message } from '@common/interfaces/message';
 import { Test, TestingModule } from '@nestjs/testing';
 import { SinonStubbedInstance, createStubInstance, stub } from 'sinon';
 import { BroadcastOperator, Server, Socket } from 'socket.io';
@@ -87,5 +89,35 @@ describe('MatchGateway', () => {
         const emitSpy = jest.spyOn(server, 'emit').mockReturnThis();
         gateway.sendGeneralMessage(MOCK_MESSAGE);
         expect(emitSpy).toHaveBeenCalledWith(ChatEvents.SentGeneralMessage, MOCK_MESSAGE);
+    });
+
+    it('handleGeneralEmoji() should react to message in general channel', () => {
+        const reactSpy = jest.spyOn(chatSpy, 'reactToGeneralMessage').mockReturnValue(MOCK_MESSAGE);
+        const sendSpy = jest.spyOn(gateway, 'sendGeneralEmoji');
+        gateway.handleGeneralEmoji(socket, MOCK_MESSAGE_EMOJI_INFO);
+        expect(reactSpy).toHaveBeenCalled();
+        expect(sendSpy).toHaveBeenCalledWith(MOCK_MESSAGE);
+    });
+    it('handleRoomEmoji() should react to room message', () => {
+        const reactSpy = jest.spyOn(chatSpy, 'reactToRoomMessage').mockReturnValue(MOCK_MESSAGE);
+        const sendSpy = jest.spyOn(gateway, 'sendRoomEmoji').mockReturnThis();
+        gateway.handleRoomEmoji(socket, MOCK_MESSAGE_EMOJI_INFO);
+        expect(reactSpy).toHaveBeenCalled();
+        expect(sendSpy).toHaveBeenCalledWith(MOCK_MESSAGE, MOCK_MESSAGE_EMOJI_INFO.roomCode);
+    });
+    it('sendRoomEmoji() should emit updated message to room', () => {
+        const toSpy = jest.spyOn(server, 'to').mockReturnValue({
+            emit: (event: string, message: Message) => {
+                expect(event).toEqual(ChatEvents.SentRoomEmoji);
+                expect(message).toEqual(MOCK_MESSAGE);
+            },
+        } as unknown as BroadcastOperator<DefaultEventsMap, unknown>);
+        gateway.sendRoomEmoji(MOCK_MESSAGE, MOCK_MESSAGE_EMOJI_INFO.roomCode);
+        expect(toSpy).toHaveBeenCalledWith(MOCK_MESSAGE_EMOJI_INFO.roomCode);
+    });
+    it('sendGeneralEmoji() should emit updated message to all users', () => {
+        const emitSpy = jest.spyOn(server, 'emit').mockReturnThis();
+        gateway.sendGeneralEmoji(MOCK_MESSAGE);
+        expect(emitSpy).toHaveBeenCalledWith(ChatEvents.SentGeneralEmoji, MOCK_MESSAGE);
     });
 });

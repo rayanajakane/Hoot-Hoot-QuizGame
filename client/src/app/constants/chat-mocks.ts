@@ -2,6 +2,7 @@
 
 import { Player } from '@app/interfaces/player';
 import { Message } from '@common/interfaces/message';
+import { UserIdName } from '@common/interfaces/user-id-name';
 
 export const MOCK_DATE = new Date(2024, 1, 1);
 
@@ -12,7 +13,17 @@ export const MOCK_MESSAGE: Message = {
     authorUsername: 'User',
     photoUrl: 'abc',
     date: MOCK_DATE,
+    userLikes: [],
+    userLoves: [],
+    userDislikes: [],
 };
+
+export const MOCK_USER_ID_NAME: UserIdName = {
+    id: '1234',
+    name: 'mock',
+};
+
+export const MOCK_USER_ID_NAME_2: UserIdName = { id: 'abc', name: 'test' };
 
 export const MOCK_MESSAGES: Message[] = [MOCK_MESSAGE];
 

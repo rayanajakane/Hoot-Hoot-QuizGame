@@ -9,4 +9,8 @@ export enum ChatEvents {
     ChatReactivated = 'chatReactivated',
     GeneralMessage = 'generalMessage',
     SentGeneralMessage = 'sentGeneralMessage',
+    GeneralEmoji = 'generalEmoji',
+    RoomEmoji = 'roomEmoji',
+    SentGeneralEmoji = 'sentGeneralEmoji',
+    SentRoomEmoji = 'sentRoomEmoji',
 }

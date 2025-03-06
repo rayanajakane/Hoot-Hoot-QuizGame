@@ -156,3 +156,14 @@ img {
     object-fit: fill;
     border-radius: 100rem;
 }
+
+.emojis-container {
+    display: flex;
+    flex-direction: row;
+    gap: 0.25rem;
+    margin-top: -0.5rem;
+}
+
+.emojis-container button {
+    border-radius: 100rem;
+}
