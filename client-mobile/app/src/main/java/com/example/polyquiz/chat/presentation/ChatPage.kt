@@ -20,7 +20,6 @@ import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
-import com.example.polyquiz.constants.AuthFeedbackText
 import kotlinx.coroutines.launch
 
 @Composable
@@ -34,7 +33,7 @@ fun ChatPage(modifier: Modifier, navigateToLogin: () -> Unit, authViewModel: Aut
                 scope.launch {
                     SnackbarController.sendEvent(
                         event = SnackbarEvent(
-                            message = AuthFeedbackText.SIGN_OUT.value,
+                            message = StringValue.StringResource(R.string.sign_out_feedback)
                         )
                     )
                 }

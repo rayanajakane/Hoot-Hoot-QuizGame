@@ -1,5 +1,7 @@
 package com.example.polyquiz.auth.domain
 
+import StringValue
+import android.content.Context
 import android.text.TextUtils
 import android.util.Log
 import android.util.Patterns
@@ -9,7 +11,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.polyquiz.R
-import com.example.polyquiz.constants.AuthErrorText
 import com.example.vanillaprototype.socket.SocketHandler
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
@@ -62,6 +63,10 @@ class AuthViewModel : ViewModel() {
         }
     }
 
+    fun addPasswordError(translatedMessage: String) {
+        _passwordError.value += translatedMessage + "\n"
+    }
+
     fun getUserDatabaseRef(uid: String): DatabaseReference {
         return database.getReference("users/${uid}")
     }
@@ -70,19 +75,19 @@ class AuthViewModel : ViewModel() {
         return database.getReference("usernames/${username}")
     }
 
-    fun updateEmail(newEmail: String) {
+    fun updateEmail(newEmail: String, context: Context) {
         _email.value = newEmail
-        validateEmail(newEmail)
+        validateEmail(newEmail, context)
     }
 
-    fun updateUsername(newUsername : String) {
+    fun updateUsername(newUsername : String, context: Context) {
         _username.value = newUsername
-        validateUsername(newUsername)
+        validateUsername(newUsername, context)
     }
 
-    fun updatePassword(newPassword: String) {
+    fun updatePassword(newPassword: String, context: Context) {
         _password.value = newPassword
-        validatePassword(newPassword)
+        validatePassword(newPassword, context)
     }
 
     fun resetSignUpFields() {
@@ -110,9 +115,9 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    fun signIn(email: String, password: String) {
+    fun signIn(email: String, password: String, context: Context) {
         if (email.isEmpty() || password.isEmpty()) {
-            _authState.value = AuthState.Error(AuthErrorText.EMPTY_USERNAME_PASSWORD.value)
+            _authState.value = AuthState.Error(StringValue.StringResource(R.string.empty_username_password))
             return
         }
 
@@ -125,7 +130,7 @@ class AuthViewModel : ViewModel() {
                         val isOnline: Boolean = dataSnapshot.value as Boolean
                         if (isOnline) {
                             auth.signOut()
-                            _authState.value = AuthState.Error(AuthErrorText.ALREADY_ONLINE.value)
+                            _authState.value = AuthState.Error(StringValue.StringResource(R.string.already_online))
                             return@addOnSuccessListener
                         }
                         userRef.child("isOnline").setValue(true)
@@ -136,18 +141,18 @@ class AuthViewModel : ViewModel() {
                         Log.d(TAG, "signInWithEmail:success")
                     }
                 } else {
-                    handleAuthError(task)
+                    handleAuthError(task, context)
                 }
             }
     }
 
-     fun signUp(email: String, username: String, password: String) {
+     fun signUp(email: String, username: String, password: String, context: Context) {
         if (email.isEmpty() || username.isEmpty() || password.isEmpty()) {
-            _authState.value = AuthState.Error(AuthErrorText.EMPTY_USERNAME_PASSWORD.value)
+            _authState.value = AuthState.Error(StringValue.StringResource(R.string.empty_username_password))
             return
         }
         if (emailError.value.isNotEmpty() || passwordError.value.isNotEmpty() || usernameError.value.isNotEmpty()) {
-            _authState.value = AuthState.Error(AuthErrorText.INVALID_USERNAME_PASSWORD.value)
+            _authState.value = AuthState.Error(StringValue.StringResource(R.string.invalid_username_password))
             return
         }
          // TODO: Replace spaces? (or simply forbid them?)
@@ -155,8 +160,8 @@ class AuthViewModel : ViewModel() {
          usernameRef.get().addOnSuccessListener { databaseSnapshot: DataSnapshot ->
              if(databaseSnapshot.exists()) {
                  // TODO : Make new error text
-                 _authState.value = AuthState.Error("Ce nom d'utilisateur est déjà pris.")
-                 Log.e(TAG, "Nom d'utilisateur déjà pris.")
+                 _authState.value = AuthState.Error(StringValue.StringResource(R.string.username_already_exists))
+                 Log.e(TAG, StringValue.StringResource(R.string.username_already_exists).toString())
              } else {
                  _authState.value = AuthState.Loading
                  auth.createUserWithEmailAndPassword(email, password)
@@ -178,7 +183,7 @@ class AuthViewModel : ViewModel() {
                                  Log.d(TAG, "createUserWithEmail:success")
                              }
                          } else {
-                             handleAuthError(task)
+                             handleAuthError(task, context)
                          }
                      }
              }
@@ -202,7 +207,7 @@ class AuthViewModel : ViewModel() {
             if (task.isSuccessful) {
                 _authState.value = AuthState.ResetPassword
             } else {
-                _authState.value = AuthState.Error(AuthErrorText.INVALID_EMAIL_WITH_EMOJI.value)
+                _authState.value = AuthState.Error(StringValue.StringResource(R.string.invalid_email_with_emoji))
             }
         }
     }
@@ -212,67 +217,69 @@ class AuthViewModel : ViewModel() {
         _authState.value = AuthState.Unauthenticated
     }
 
-    private fun handleAuthError(task: Task<AuthResult>) {
+    private fun handleAuthError(task: Task<AuthResult>, context: Context) {
         val errorMessage = try {
             throw task.exception!!
         } catch(e: FirebaseAuthUserCollisionException) {
-            AuthErrorText.USER_ALREADY_EXISTS.value
+            StringValue.StringResource(R.string.user_already_exists)
         } catch(e: FirebaseAuthWeakPasswordException) {
-            AuthErrorText.PASSWORD_TOO_SHORT.value
+            StringValue.StringResource(R.string.password_too_short)
         } catch(e: FirebaseAuthInvalidCredentialsException) {
-           AuthErrorText.INVALID_USERNAME_PASSWORD.value
+            StringValue.StringResource(R.string.invalid_username_password)
         } catch (e: Exception) {
-            e.message ?: AuthErrorText.OTHER_ERROR.value
+            StringValue.StringResource(R.string.other_error)
         }
-        _authState.value = AuthState.Error(errorMessage)
-        Log.w(TAG, "createUserWithEmail:failure", task.exception)
+
+        val translatedErrorMessage = errorMessage.asString(context)
+
+        _authState.value = AuthState.Error(StringValue.DynamicString(translatedErrorMessage))
     }
 
-    private fun validatePassword(password: String) {
+    private fun validatePassword(password: String, context: Context) {
         _passwordError.value = ""
         if(password.length < 6) {
-            _passwordError.value += AuthErrorText.PASSWORD_TOO_SHORT.value + "\n"
+            _passwordError.value += StringValue.StringResource(R.string.password_too_short).asString(context) + "\n"
         }
         if (password.length > 14) {
-            _passwordError.value += AuthErrorText.PASSWORD_TOO_LONG.value + "\n"
+            _passwordError.value += StringValue.StringResource(R.string.password_too_long).asString(context) + "\n"
         }
         if (!(("(?=.*[a-z\\u00E0-\\u00FC])".toRegex()).containsMatchIn(password))) {
-            _passwordError.value += AuthErrorText.PASSWORD_LOWERCASE.value + "\n"
+            _passwordError.value += StringValue.StringResource(R.string.password_lowercase).asString(context) + "\n"
         }
         if (!(("(?=.*[A-Z\\u00C0-\\u00DC])".toRegex()).containsMatchIn(password))) {
-            _passwordError.value += AuthErrorText.PASSWORD_UPPERCASE.value + "\n"
+            _passwordError.value += StringValue.StringResource(R.string.password_uppercase).asString(context) + "\n"
         }
         if (!(("(?=.*\\d)".toRegex()).containsMatchIn(password))) {
-            _passwordError.value += AuthErrorText.PASSWORD_DIGIT.value + "\n"
+            _passwordError.value += StringValue.StringResource(R.string.password_digit).asString(context) + "\n"
         }
         // REFERENCE: Firebase special characters: https://firebase.google.com/docs/auth/web/password-auth
         if (!(("(?=.*[\\^\\$\\*\\.\\[\\]\\{\\}\\(\\)\\?\"!@#%&/\\\\,><':;\\|_~])").toRegex()).containsMatchIn(password)) {
-            _passwordError.value += AuthErrorText.PASSWORD_SPECIAL.value + "\n"
+            _passwordError.value += StringValue.StringResource(R.string.password_special).asString(context) + "\n"
         }
         if (_passwordError.value.isNotEmpty()) {
             _passwordError.value.dropLast(1);
         }
     }
 
-    private fun validateUsername(username: String) {
+    private fun validateUsername(username: String, context: Context) {
         _usernameError.value = ""
         if(username.matches(".*[^A-Za-z0-9_].*".toRegex())) {
-            _usernameError.value += AuthErrorText.SPECIAL_CHAR_USERNAME.value + "\n"
+            _usernameError.value += StringValue.StringResource(R.string.special_char_username).asString(context) + "\n"
         }
         if(username.length < 3) {
-            _usernameError.value += AuthErrorText.SHORT_USERNAME.value + "\n"
+            _usernameError.value += StringValue.StringResource(R.string.short_username).asString(context) + "\n"
         }
         if(username.length > 20) {
-            _usernameError.value += AuthErrorText.LONG_USERNAME.value + "\n"
+            _usernameError.value += StringValue.StringResource(R.string.long_username).asString(context) + "\n"
         }
         if (_usernameError.value.isNotEmpty()) {
             _usernameError.value.dropLast(1);
         }
     }
 
-    private fun validateEmail(email: String) {
+    private fun validateEmail(email: String, context: Context) {
         if(email.isBlank() || !isValidEmail(email)) {
-            _emailError.value = AuthErrorText.INVALID_EMAIL.value
+            _emailError.value += StringValue.StringResource(R.string.invalid_email).asString(context) + "\n"
         } else {
             _emailError.value = ""
         }
@@ -293,6 +300,6 @@ sealed class AuthState {
     data object Authenticated : AuthState()
     data object Unauthenticated : AuthState()
     data object Loading : AuthState()
-    data class Error(val message: String) : AuthState()
+    data class Error(val message: StringValue) : AuthState()
     data object ResetPassword: AuthState()
 }

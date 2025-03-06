@@ -1,4 +1,6 @@
 package com.example.polyquiz.auth.presentation
+import StringValue
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
@@ -34,7 +36,6 @@ import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
-import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.SIZE_CONSTANTS
 import kotlinx.coroutines.launch
 
@@ -44,8 +45,9 @@ fun LoginPage(
     navigateToSignup: () -> Unit,
     navigateToChat: () -> Unit,
     navigateToForgotPassword: () -> Unit,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
 ) {
+    val context = LocalContext.current
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -61,8 +63,7 @@ fun LoginPage(
                 scope.launch {
                     SnackbarController.sendEvent(
                         event = SnackbarEvent(
-                            // TODO : Find out how to set message outside of composable context
-                            message = AuthFeedbackText.SIGN_IN.value,
+                            message = StringValue.StringResource(R.string.sign_in_feedback)
                         )
                     )
                 }
@@ -127,7 +128,7 @@ fun LoginPage(
                     label = { Text(stringResource(R.string.password),) },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardActions = KeyboardActions(onDone = {
-                        authViewModel.signIn(email, password)
+                        authViewModel.signIn(email, password, context)
                         keyboardController?.hide()
                     }),
                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -156,7 +157,7 @@ fun LoginPage(
                 Button(
                     onClick =
                     {
-                        authViewModel.signIn(email, password)
+                        authViewModel.signIn(email, password, context)
                         keyboardController?.hide()
                     },
                     enabled = authState.value != AuthState.Loading

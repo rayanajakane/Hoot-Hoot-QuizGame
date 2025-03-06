@@ -36,4 +36,5 @@
     <string name="sign_in_feedback">✅ Signed in successfully !</string>
     <string name="sign_up_feedback">✅ Signed up successfully !</string>
     <string name="sign_out_feedback">✅ Signed out successfully !</string>
+    <string name="username_already_exists">Username is already taken.</string>
 </resources>

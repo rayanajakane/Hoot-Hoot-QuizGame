@@ -1,5 +1,6 @@
 package com.example.polyquiz
 
+import StringValue
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.ui.theme.PolyQuizTheme
@@ -37,11 +39,12 @@ class MainActivity : ComponentActivity() {
                     SnackbarHostState()
                 }
                 val scope = rememberCoroutineScope()
+
                 ObserveAsEvents(flow = SnackbarController.events, snackbarHostState) { event ->
                     scope.launch {
                         snackbarHostState.currentSnackbarData?.dismiss()
                         val result = snackbarHostState.showSnackbar(
-                            message = event.message,
+                            message = event.message.asString(context = this@MainActivity),
                             actionLabel = event.action?.name,
                             duration = SnackbarDuration.Short,
                         )
