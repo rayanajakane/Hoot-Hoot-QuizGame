@@ -28,3 +28,8 @@ enum class GradingFeedback(val value: String) {
     PLAYERS_TO_GRADE("Il reste des joueurs à évaluer"),
     WAITING_FOR_GRADING("En attente de correction..."),
 }
+
+enum class StartMatchFeedback(val value: String) {
+    WAITING_TO_START("La partie va bientôt commencer..."),
+    LOCK_MATCH("Verrouiller la partie"),
+}

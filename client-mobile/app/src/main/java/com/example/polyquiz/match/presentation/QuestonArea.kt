@@ -196,7 +196,7 @@ fun QuestionArea(
                             )
                         }
                     ) {
-                        Text(MatchButtonActions.LEAVE_MATCH.value)
+                        Text(MatchButtonActions.SUBMIT_ANSWER.value)
                     }
                 }
             }
