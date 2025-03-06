@@ -89,4 +89,8 @@ export class ChatComponent implements AfterViewChecked {
         }
         return toolTip;
     }
+
+    public isOwnReaction(userReactions: UserIdName[]) {
+        return userReactions.find((it: UserIdName) => it.id === this.authenticationService.userId) ? true : false;
+    }
 }

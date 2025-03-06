@@ -98,13 +98,15 @@ describe('ChatComponent', () => {
     });
 
     it('should react to message', () => {
+        const mockMessage = MOCK_MESSAGE;
         matchRoomServiceSpy.getRoomCode.and.returnValue('test');
-        component.reactToMessage(MOCK_MESSAGE.id, ChatEmoji.LIKE);
+        component.reactToMessage(mockMessage.id, ChatEmoji.LIKE);
+        chatServiceSpy.reactToMessage.and.returnValue();
         expect(chatServiceSpy.reactToMessage).toHaveBeenCalledWith(
-            MOCK_MESSAGE.id,
+            mockMessage.id,
             ChatEmoji.LIKE,
-            MOCK_MESSAGE.authorId,
-            MOCK_MESSAGE.authorUsername,
+            mockMessage.authorId,
+            mockMessage.authorUsername,
             'test',
         );
     });
@@ -112,5 +114,16 @@ describe('ChatComponent', () => {
         const result = component.getReactionsToolTip([MOCK_USER_ID_NAME, MOCK_USER_ID_NAME_2]);
         const expectedResult = `\n${MOCK_USER_ID_NAME.name}\n${MOCK_USER_ID_NAME_2.name}`;
         expect(result).toEqual(expectedResult);
+    });
+
+    it('should return true if own reaction', () => {
+        (authServiceSpy as any).userId = MOCK_USER_ID_NAME.id;
+        const result = component.isOwnReaction([MOCK_USER_ID_NAME]);
+        expect(result).toBeTruthy();
+    });
+    it('should return false if not own reaction', () => {
+        (authServiceSpy as any).userId = '';
+        const result = component.isOwnReaction([MOCK_USER_ID_NAME]);
+        expect(result).toBeFalsy();
     });
 });

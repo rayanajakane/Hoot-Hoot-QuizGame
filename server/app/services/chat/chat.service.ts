@@ -54,16 +54,12 @@ export class ChatService {
                 return 'userLoves';
             case ChatEmoji.DISLIKE:
                 return 'userDislikes';
-            default:
-                return '';
         }
     }
 
     reactToGeneralMessage(messageId: string, userIdName: UserIdName, chatEmoji: ChatEmoji) {
         const messageIndex = this.messages.findIndex((message: Message) => message.id === messageId);
         let attribute = this.getChatEmojiAttribute(chatEmoji);
-
-        if (!attribute) return this.messages[messageIndex];
 
         if (this.messages[messageIndex][attribute].find((it: UserIdName) => it.id === userIdName.id)) {
             this.messages[messageIndex][attribute] = this.messages[messageIndex][attribute].filter((it: UserIdName) => it.id !== userIdName.id);
@@ -77,8 +73,6 @@ export class ChatService {
         const matchRoomIndex = this.matchRoomService.getRoomIndex(roomCode);
         const messageIndex = this.getRoomMessages(roomCode).findIndex((message: Message) => message.id === messageId);
         const attribute = this.getChatEmojiAttribute(chatEmoji);
-
-        if (!attribute) return this.messages[messageIndex];
 
         if (this.matchRoomService.matchRooms[matchRoomIndex].messages[messageIndex][attribute].find((it: UserIdName) => it.id === userIdName.id)) {
             this.matchRoomService.matchRooms[matchRoomIndex].messages[messageIndex][attribute] = this.matchRoomService.matchRooms[

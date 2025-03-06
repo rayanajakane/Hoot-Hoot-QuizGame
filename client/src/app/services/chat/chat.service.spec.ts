@@ -57,8 +57,9 @@ describe('ChatService', () => {
         expect(service.matchRoomMessages.length).toEqual(1);
     });
     it('should handle general emoji', () => {
-        service.generalMessages = [MOCK_MESSAGE];
-        const updatedMessage = MOCK_MESSAGE;
+        const mockMessage = MOCK_MESSAGE;
+        service.generalMessages = [mockMessage];
+        const updatedMessage = mockMessage;
         updatedMessage.userLikes = [MOCK_USER_ID_NAME];
         const sentData = updatedMessage;
         service.handleGeneralEmoji();
@@ -66,8 +67,9 @@ describe('ChatService', () => {
         expect(service.generalMessages[0].userLikes.length).toEqual(1);
     });
     it('should handle room emoji', () => {
-        service.matchRoomMessages = [MOCK_MESSAGE];
-        const updatedMessage = MOCK_MESSAGE;
+        const mockMessage = MOCK_MESSAGE;
+        service.matchRoomMessages = [mockMessage];
+        const updatedMessage = mockMessage;
         updatedMessage.userLikes = [MOCK_USER_ID_NAME];
         const sentData = updatedMessage;
         service.handleRoomEmoji();
@@ -105,23 +107,25 @@ describe('ChatService', () => {
         expect(spy).not.toHaveBeenCalled();
     });
     it('should react to message in general channel', () => {
+        const mockMessage = MOCK_MESSAGE;
         service.channel = ChatChannel.GENERAL;
-        service.reactToMessage(MOCK_MESSAGE.id, ChatEmoji.LIKE, MOCK_MESSAGE.authorId, MOCK_MESSAGE.authorUsername, '');
+        service.reactToMessage(mockMessage.id, ChatEmoji.LIKE, mockMessage.authorId, mockMessage.authorUsername, '');
         const expectedMessageEmojiInfo: MessageEmojiInfo = {
-            messageId: MOCK_MESSAGE.id,
+            messageId: mockMessage.id,
             chatEmoji: ChatEmoji.LIKE,
-            userIdName: { id: MOCK_MESSAGE.authorId, name: MOCK_MESSAGE.authorUsername },
+            userIdName: { id: mockMessage.authorId, name: mockMessage.authorUsername },
         };
         expect(socketHandlerSpy.send).toHaveBeenCalledWith(ChatEvents.GeneralEmoji, expectedMessageEmojiInfo);
     });
     it('should react to message in room channel', () => {
+        const mockMessage = MOCK_MESSAGE;
         service.channel = ChatChannel.ROOM;
         matchContextSpy.setContext(MatchContext.HostView);
-        service.reactToMessage(MOCK_MESSAGE.id, ChatEmoji.LIKE, MOCK_MESSAGE.authorId, MOCK_MESSAGE.authorUsername, '');
+        service.reactToMessage(mockMessage.id, ChatEmoji.LIKE, mockMessage.authorId, mockMessage.authorUsername, '');
         const expectedMessageEmojiInfo: MessageEmojiInfo = {
-            messageId: MOCK_MESSAGE.id,
+            messageId: mockMessage.id,
             chatEmoji: ChatEmoji.LIKE,
-            userIdName: { id: MOCK_MESSAGE.authorId, name: MOCK_MESSAGE.authorUsername },
+            userIdName: { id: mockMessage.authorId, name: mockMessage.authorUsername },
             roomCode: '',
         };
         expect(socketHandlerSpy.send).toHaveBeenCalledWith(ChatEvents.RoomEmoji, expectedMessageEmojiInfo);
