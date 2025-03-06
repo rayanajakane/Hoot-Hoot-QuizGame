@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MAX_LENGTH, MIN_LENGTH, PW_MAX_LENGTH, PW_MIN_LENGTH } from '@app/constants/authentication';
+import { IMAGE_MAX_FILE_SIZE, PresetAvatar } from '@app/constants/image-constants';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
+import { NotificationService } from '@app/services/notification/notification.service';
+import { TranslocoService } from '@jsverse/transloco';
 
 @Component({
     selector: 'app-signup-page',
@@ -14,6 +17,8 @@ export class SignupPageComponent implements OnInit {
     maxUsernameLength = MAX_LENGTH;
     passwordMinLength = PW_MIN_LENGTH;
     passwordMaxLength = PW_MAX_LENGTH;
+    isPresetAvatar = true;
+    loadedImageFile: File | null = null;
 
     form = this.fb.group({
         email: ['', { validators: [Validators.required, Validators.email], updateOn: 'blur' }],
@@ -35,11 +40,14 @@ export class SignupPageComponent implements OnInit {
                 ],
             },
         ],
+        avatar: [PresetAvatar.Default],
     });
 
     constructor(
         private readonly authenticationService: AuthenticationService,
+        public notificationService: NotificationService,
         private fb: FormBuilder,
+        private readonly translocoService: TranslocoService,
     ) {}
 
     get email() {
@@ -52,6 +60,14 @@ export class SignupPageComponent implements OnInit {
 
     get password() {
         return this.form.controls['password'];
+    }
+
+    get avatar() {
+        return this.form.controls['avatar'];
+    }
+
+    get presetAvatar() {
+        return PresetAvatar;
     }
 
     ngOnInit() {
@@ -72,12 +88,38 @@ export class SignupPageComponent implements OnInit {
     signUp() {
         this.form.markAllAsTouched();
         if (this.form.valid) {
-            this.authenticationService.signUp(this.email.value as string, this.username.value as string, this.password.value as string);
+            this.authenticationService.signUp(
+                this.email.value as string,
+                this.username.value as string,
+                this.password.value as string,
+                this.isPresetAvatar,
+                this.avatar.value as string,
+                this.loadedImageFile,
+            );
         }
     }
 
-    uploadAvatar() {
-        // TODO
+    setCustomAvatar(event: Event): void {
+        const eventTarget: HTMLInputElement | null = event.target as HTMLInputElement | null;
+        if (eventTarget?.files?.[0]) {
+            const file: File = eventTarget.files[0];
+            if (file.size > IMAGE_MAX_FILE_SIZE) {
+                this.notificationService.displayErrorMessage(this.translocoService.translate('auth.error.file-too-large'));
+                return;
+            }
+            const reader = new FileReader();
+            reader.addEventListener('load', () => {
+                this.form.get('avatar')?.setValue(reader.result as null);
+                this.loadedImageFile = file;
+            });
+            reader.readAsDataURL(file);
+            this.isPresetAvatar = false;
+        }
+    }
+
+    setPresetAvatar(presetAvatar: PresetAvatar) {
+        this.isPresetAvatar = true;
+        this.form.get('avatar')?.setValue(presetAvatar);
     }
 
     // TODO : Put in username service

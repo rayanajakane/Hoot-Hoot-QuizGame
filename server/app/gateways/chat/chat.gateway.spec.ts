@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MOCK_MESSAGE_INFO } from '@app/constants/match-mocks';
+import { MOCK_MESSAGE, MOCK_MESSAGE_INFO } from '@app/constants/match-mocks';
 import { ChatService } from '@app/services/chat/chat.service';
 import { ChatEvents } from '@common/events/chat.events';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -9,11 +9,7 @@ import { BroadcastOperator, Server, Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { ChatGateway } from './chat.gateway';
 
-const mockMessage = {
-    text: '',
-    author: '',
-    date: new Date(),
-};
+const mockMessage = MOCK_MESSAGE;
 
 describe('MatchGateway', () => {
     let gateway: ChatGateway;
@@ -81,7 +77,7 @@ describe('MatchGateway', () => {
         const sendSpy = jest.spyOn(gateway, 'sendRoomMessage').mockReturnThis();
         const addMessageSpy = jest.spyOn(chatSpy, 'addRoomMessage').mockReturnThis();
         const validateMessageSpy = jest.spyOn(chatSpy, 'isValidMessage').mockReturnThis();
-        gateway.handleRoomMessage(socket, { message: mockMessage, roomCode: '1234' });
+        gateway.handleRoomMessage(socket, MOCK_MESSAGE_INFO);
         expect(sendSpy).toHaveBeenCalled();
         expect(addMessageSpy).toHaveBeenCalled();
         expect(validateMessageSpy).toHaveBeenCalled();
@@ -89,7 +85,7 @@ describe('MatchGateway', () => {
 
     it('sendGeneralMessage() should emit a NewMessage event and send the messages to the players in the right room', () => {
         const emitSpy = jest.spyOn(server, 'emit').mockReturnThis();
-        gateway.sendGeneralMessage(mockMessage);
-        expect(emitSpy).toHaveBeenCalledWith(ChatEvents.SentGeneralMessage, mockMessage);
+        gateway.sendGeneralMessage(MOCK_MESSAGE);
+        expect(emitSpy).toHaveBeenCalledWith(ChatEvents.SentGeneralMessage, MOCK_MESSAGE);
     });
 });

@@ -25,20 +25,20 @@ export class EstimatedAnswerStrategy extends QuestionStrategy {
     calculateScore(matchRoom: MatchRoom, players: Player[]) {
         const currentQuestionPoints = matchRoom.currentQuestion.points;
         const margin = matchRoom.currentQuestion.estimatedParameters.margin;
-        const correctAnswer: number = parseInt(matchRoom.currentQuestionAnswer[0]);
+        const correctAnswer: number = parseInt(matchRoom.currentQuestionAnswer[0], 10);
         players.forEach((player) => {
             const playerAnswer = (player.answer as EstimatedAnswer).answer;
             if (this.isAnswerWithinMargin(playerAnswer, correctAnswer, margin)) {
                 player.answerCorrectness = AnswerCorrectness.GOOD;
                 player.score += currentQuestionPoints;
                 if (this.isCorrectAnswer(playerAnswer, correctAnswer)) {
-                    this.computePlayerBonus(player, currentQuestionPoints, correctAnswer);
+                    this.computePlayerBonus(player, currentQuestionPoints);
                 }
             }
         });
     }
 
-    private computePlayerBonus(player: Player, currentQuestionPoints: number, correctAnswer: number) {
+    private computePlayerBonus(player: Player, currentQuestionPoints: number) {
         const bonus = currentQuestionPoints * BONUS_FACTOR;
         player.score += bonus;
         player.bonusCount++;
@@ -52,8 +52,5 @@ export class EstimatedAnswerStrategy extends QuestionStrategy {
     private isAnswerWithinMargin(playerAnswer: number, correctAnswer: number, margin: number) {
         const gapMargin = Math.abs(playerAnswer - correctAnswer);
         return gapMargin <= margin;
-        // const playerAnswerLowerBound = correctAnswer - margin;
-        // const playerAnswerUpperBound = correctAnswer + margin;
-        // return playerAnswer >= playerAnswerLowerBound && playerAnswer <= playerAnswerUpperBound;
     }
 }

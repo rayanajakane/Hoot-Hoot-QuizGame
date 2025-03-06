@@ -1,17 +1,9 @@
-/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
-import {
-    Auth,
-    createUserWithEmailAndPassword,
-    onAuthStateChanged,
-    sendPasswordResetEmail,
-    signInWithEmailAndPassword,
-    signOut,
-    updateProfile,
-} from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { PresetAvatar } from '@app/constants/image-constants';
 import { AuthError } from '@app/services/authentication/auth-error';
 import { ChatService } from '@app/services/chat/chat.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
@@ -19,15 +11,20 @@ import { NotificationService } from '@app/services/notification/notification.ser
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { ChatEvents } from '@common/events/chat.events';
 import { TranslocoService } from '@jsverse/transloco';
-import { browserSessionPersistence, setPersistence, User, UserCredential } from 'firebase/auth';
-import { DataSnapshot, get, getDatabase, onDisconnect, ref, remove, set, update } from 'firebase/database';
+import { browserSessionPersistence, sendPasswordResetEmail, setPersistence, User, UserCredential } from 'firebase/auth';
+import { Database, DataSnapshot, get, getDatabase, onDisconnect, ref, remove, set, update } from 'firebase/database';
+import { deleteObject, FirebaseStorage, ref as firebaseStorageRef, getDownloadURL, getStorage, uploadBytes } from 'firebase/storage';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
 })
 export class AuthenticationService {
-    private currentUser: User | null;
-    private database = getDatabase();
+    currentUser: User | null;
+    database: Database = getDatabase(); // Realtime Database
+    storage: FirebaseStorage = getStorage(); // Firebase Storage: For images
+
+    authenticatedUser = new BehaviorSubject<User | null>(null);
 
     // eslint-disable-next-line max-params
     constructor(
@@ -40,19 +37,31 @@ export class AuthenticationService {
         private auth: Auth,
     ) {
         setPersistence(this.auth, browserSessionPersistence);
+
         onAuthStateChanged(this.auth, (user) => {
             if (user) {
                 this.setUser(user);
             } else {
-                this.currentUser = null;
+                this.setUser(null);
                 this.router.navigateByUrl('/login');
             }
         });
     }
 
+    get userId(): string {
+        return this.currentUser?.uid ?? '';
+    }
+
+    get userEmail(): string {
+        return this.currentUser?.email ?? '';
+    }
+
     get userDisplayName(): string {
-        const displayName: string = this.currentUser?.displayName ?? '';
-        return displayName;
+        return this.currentUser?.displayName ?? '';
+    }
+
+    get userAvatarUrl(): string {
+        return this.currentUser?.photoURL ?? '';
     }
 
     getUsernameDatabaseRef(username: string) {
@@ -73,6 +82,7 @@ export class AuthenticationService {
 
     setUser(user: User | null) {
         this.currentUser = user;
+        this.authenticatedUser.next(this.currentUser);
     }
 
     isUserAuthenticated(): boolean {
@@ -98,9 +108,8 @@ export class AuthenticationService {
                     return Promise.resolve(true);
                 }
             })
-            .catch(async (error: unknown) => {
+            .catch(async () => {
                 this.setUser(null);
-                console.log(error);
                 return Promise.resolve(false);
             });
     }
@@ -109,8 +118,8 @@ export class AuthenticationService {
         return uid ? ref(this.database, `users/${uid}`) : ref(this.database, 'users/');
     }
 
-    async completeUserProfileCreation(userCredential: UserCredential, username: string) {
-        updateProfile(userCredential.user, { displayName: username }).then(() => {
+    async completeUserProfileCreation(userCredential: UserCredential, username: string, avatarUrl: string) {
+        updateProfile(userCredential.user, { displayName: username, photoURL: avatarUrl }).then(() => {
             const userRef = this.getUserDatabaseRef(userCredential.user.uid);
 
             set(userRef, {
@@ -130,15 +139,76 @@ export class AuthenticationService {
         });
     }
 
-    async signUp(email: string, username: string, password: string) {
+    async editUserProfile(username: string, avatarUrl: string) {
+        let isValidUsername: boolean = this.userDisplayName.toLowerCase() === username.toLowerCase();
+        let isValidAvatarUrl: boolean = this.userAvatarUrl === avatarUrl;
+        if (!isValidUsername) {
+            isValidUsername = await this.editUsername(username);
+        }
+        if (!isValidAvatarUrl) {
+            isValidAvatarUrl = this.editAvatarUrl(avatarUrl);
+        }
+        if (isValidUsername && isValidAvatarUrl) {
+            this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.edited'));
+        }
+    }
+
+    editAvatarUrl(avatarUrl: string) {
+        if (!this.currentUser) return false;
+        updateProfile(this.currentUser, { photoURL: avatarUrl })
+            .then(() => {
+                return true;
+            })
+            .catch((error: any) => {
+                console.log(error);
+                return false;
+            });
+        return true;
+    }
+
+    async editUsername(username: string) {
+        if (!this.currentUser) return false;
+        const formattedUsername = username.trim();
+        const oldUsername = this.userDisplayName;
+        try {
+            await this.checkUsername(formattedUsername.toLowerCase());
+            updateProfile(this.currentUser, { displayName: formattedUsername })
+                .then(() => {
+                    const usernameRef = this.getUsernameDatabaseRef(username.toLowerCase());
+                    set(usernameRef, username.toLowerCase());
+
+                    const oldUsernameRef = this.getUsernameDatabaseRef(oldUsername.toLowerCase());
+                    remove(oldUsernameRef);
+
+                    return true;
+                })
+                .catch((error: any) => {
+                    const errorMessage = this.handleAuthErrorMessage(error);
+                    this.notificationService.displayErrorMessage(errorMessage);
+                    return false;
+                });
+        } catch (error: any) {
+            const errorMessage = this.handleAuthErrorMessage(error);
+            this.notificationService.displayErrorMessage(errorMessage);
+            return false;
+        }
+        return true;
+    }
+
+    async signUp(email: string, username: string, password: string, isPresetAvatar: boolean, avatarUrl: string, avatarFile: File | null) {
         const formattedUsername = username.trim();
         const formattedEmail = email.trim();
 
         try {
             await this.checkUsername(formattedUsername.toLowerCase());
             createUserWithEmailAndPassword(this.auth, `${formattedEmail}`, password)
-                .then((userCredential) => {
-                    this.completeUserProfileCreation(userCredential, formattedUsername);
+                .then(async (userCredential) => {
+                    if (!isPresetAvatar && avatarFile) {
+                        avatarUrl = await this.uploadUserAvatar(userCredential.user.uid, avatarFile);
+                    } else if (!isPresetAvatar && !avatarFile) {
+                        avatarUrl = PresetAvatar.Default;
+                    }
+                    this.completeUserProfileCreation(userCredential, formattedUsername, avatarUrl);
                 })
                 .catch((error) => {
                     const errorMessage = this.handleAuthErrorMessage(error);
@@ -208,18 +278,18 @@ export class AuthenticationService {
             });
     }
 
-    public deleteUser() {
+    deleteUser() {
         const user = this.auth.currentUser;
         if (!user) {
             return;
         }
-        // Delete user from Realtime database (TODO: Delete profile picture too?)
         const userRef = this.getUserDatabaseRef(user.uid);
         remove(userRef);
         if (user.displayName) {
             const usernameRef = this.getUsernameDatabaseRef(user.displayName.toLowerCase());
             remove(usernameRef);
         }
+        this.deleteUserAvatar(user.uid);
         this.disconnectSocket();
         user.delete();
         this.setUser(null);
@@ -257,9 +327,45 @@ export class AuthenticationService {
                 return this.translocoService.translate('auth.error.invalid-username-password');
             }
             default: {
-                console.log(error);
                 return this.translocoService.translate('auth.error.other-error');
             }
         }
+    }
+
+    // FIREBASE STORAGE -- Consider refactoring it in its own service
+    async uploadUserAvatar(userId: string | undefined, file: any): Promise<string> {
+        if (!userId || userId === '') return '';
+        const url: string = await this.uploadImage(`avatars/${userId}`, file);
+        return url;
+    }
+
+    async uploadImage(path: string, file: any): Promise<string> {
+        const storageRef = firebaseStorageRef(this.storage, path);
+        const uploadTask = uploadBytes(storageRef, file);
+
+        // REFERENCE: https://firebase.google.com/docs/storage/web/upload-files?hl=fr
+        return uploadTask
+            .then(async () => {
+                // Handle successful uploads on complete
+                const downloadURL = getDownloadURL((await uploadTask).ref);
+                console.log('File available at', downloadURL);
+                return downloadURL;
+            })
+            .catch(() => {
+                // Handle unsuccessful uploads
+                this.notificationService.displayErrorMessage('TODO');
+                return '';
+            });
+    }
+
+    async deleteUserAvatar(userId: string) {
+        this.deleteImage(`avatars/${userId}`);
+    }
+
+    async deleteImage(path: string) {
+        const storageRef = firebaseStorageRef(this.storage, path);
+        deleteObject(storageRef)
+            .then(() => {})
+            .catch((error: Error) => {});
     }
 }

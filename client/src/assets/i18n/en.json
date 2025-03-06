@@ -18,13 +18,15 @@
             "password-uppercase": "Password should contain at least 1 uppercase letter.",
             "password-digit": "Password should contain at least 1 digit",
             "password-special": "Password should contain at least 1 special character",
-            "password-too-long": "Password too long. Max {{length}} characters."
+            "password-too-long": "Password too long. Max {{length}} characters.",
+            "file-too-large": "File size is too large."
         },
         "dialog-feedback": {
-            "sign-in": "Signed in successfully !",
-            "sign-up": "Signed up successfully !",
-            "sign-out": "Signed out successfully !",
-            "delete": "Deleted profile sucessfully !"
+            "sign-in": "Signed in successfully!",
+            "sign-up": "Signed up successfully!",
+            "sign-out": "Signed out successfully!",
+            "delete": "Deleted profile sucessfully!",
+            "edited": "Saved changes successfully!"
         }
     },
     "page": {
@@ -44,12 +46,41 @@
         "theme": "Visual Theme",
         "language": "Language",
         "upload-avatar": "Upload Avatar",
-        "avatar-choices": "Avatar prédéfinis",
+        "avatar-choices": "Predefined avatars",
         "delete-user": "Delete Profile",
         "danger-zone": "Danger Zone",
         "forgot-password": "Forgot Password?",
         "reset-password": "Reset password",
         "sent-email": "Sent Email!",
         "sent-email-extra-info": "If you already have an account, you will receive an email to reset your password."
+    },
+    "nav": {
+        "main-page": "Main page"
+    },
+    "main-page": {
+        "join-match": "Join a match",
+        "host-match": "Host a match",
+        "admin-game": "Manage games",
+        "edit-profile": "Edit profile",
+        "team-name": "Team 201",
+        "access-code": "Access code"
+    },
+    "match-creation-page": {
+        "games-list": "Games list",
+        "game-details": "Game details ",
+        "select-game": "Select a game from the games list",
+        "time-per-QCM": "Time per QCM:"
+    },
+    "admin-main-page": {
+        "admin-games": "Manage games",
+        "create-new-game": "Create new game",
+        "question-bank": "Question bank",
+        "existing-games-list": "Existing games list",
+        "game-title": "Game title",
+        "last-modification": "Last modification"
+    },
+    "common": {
+        "cancel": "Cancel",
+        "play": "Play"
     }
 }

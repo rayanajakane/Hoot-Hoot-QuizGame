@@ -1,6 +1,7 @@
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { Message } from '@common/interfaces/message';
 import { Injectable } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
 
 const INDEX_NOT_FOUND = -1;
 
@@ -19,6 +20,7 @@ export class ChatService {
     }
 
     addMessage(message: Message): Message {
+        message.id = uuidv4();
         message.date = new Date();
         this.messages.push(message);
         return message;

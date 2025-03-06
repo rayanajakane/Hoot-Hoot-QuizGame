@@ -3,6 +3,7 @@ import { AfterViewChecked, ChangeDetectorRef, Component, ElementRef, ViewChild }
 import { Message } from '@common/interfaces/message';
 
 import { ChatChannel } from '@app/constants/chat-channels';
+import { PresetAvatar } from '@app/constants/image-constants';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { ChatService } from '@app/services/chat/chat.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
@@ -15,6 +16,8 @@ import { MatchRoomService } from '@app/services/match-room/match-room.service';
 })
 export class ChatComponent implements AfterViewChecked {
     @ViewChild('messagesContainer', { static: true }) messagesContainer: ElementRef;
+
+    defaultAvatar = PresetAvatar.Default;
 
     // Allow more constructor parameters to decouple services
     // eslint-disable-next-line max-params
@@ -48,8 +51,11 @@ export class ChatComponent implements AfterViewChecked {
             return;
         }
         const newMessage: Message = {
+            id: '',
             text: messageText,
-            author: this.authenticationService.userDisplayName,
+            authorId: this.authenticationService.userId,
+            authorUsername: this.authenticationService.userDisplayName,
+            photoUrl: this.authenticationService.userAvatarUrl,
             date: new Date(),
         };
         this.chatService.sendMessage(newMessage, this.matchRoomService.getRoomCode());

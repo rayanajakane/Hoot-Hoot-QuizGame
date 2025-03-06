@@ -26,10 +26,10 @@ const getMockQuestion = (): Question => ({
         },
     ],
     estimatedParameters: {
-        lowerBound: getRandomNumber(1, 2),
-        upperBound: getRandomNumber(3, 4),
+        lowerBound: getRandomNumber(0, 1),
+        upperBound: getRandomNumber(2, 3),
         margin: 1,
-        correctAnswer: getRandomNumber(2, 3),
+        correctAnswer: getRandomNumber(1, 2),
     },
     lastModification: new Date(),
 });

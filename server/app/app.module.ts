@@ -8,6 +8,7 @@ import { MatchGateway } from '@app/gateways/match/match.gateway';
 import { TimerGateway } from '@app/gateways/timer/timer.gateway';
 import { Game, gameSchema } from '@app/model/database/game';
 import { Question, questionSchema } from '@app/model/database/question';
+import { FirebaseModule } from '@app/modules/firebase/firebase.module';
 import { LongAnswerStrategy } from '@app/question-strategies/long-answer-strategy/long-answer-strategy';
 import { MultipleChoiceStrategy } from '@app/question-strategies/multiple-choice-strategy/multiple-choice-strategy';
 import { AnswerService } from '@app/services/answer/answer.service';
@@ -40,6 +41,7 @@ import { EstimatedAnswerStrategy } from './question-strategies/estimated-answer-
         MongooseModule.forFeature([{ name: Game.name, schema: gameSchema }]),
         MongooseModule.forFeature([{ name: Question.name, schema: questionSchema }]),
         EventEmitterModule.forRoot(),
+        FirebaseModule,
     ],
     controllers: [GameController, QuestionController, MatchController, BackupController],
     providers: [

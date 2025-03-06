@@ -35,6 +35,7 @@ import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.DisplayAuthenticationText
+import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.constants.SIZE_CONSTANTS
 import kotlinx.coroutines.launch
 
@@ -117,7 +118,8 @@ fun SignupPage(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        AvatarPlaceholder(128.dp)
+                        // TODO: Select avatar
+                        AvatarPlaceholder(128.dp, PresetAvatar.DEFAULT.value)
                         Button(
                             onClick =
                             {
@@ -126,11 +128,11 @@ fun SignupPage(
                         ) { Text(DisplayAuthenticationText.UPLOAD_AVATAR.value) }
                         Text(DisplayAuthenticationText.PRESET_AVATARS.value)
                         Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                            AvatarPlaceholder(32.dp)
-                            AvatarPlaceholder(32.dp)
-                            AvatarPlaceholder(32.dp)
-                            AvatarPlaceholder(32.dp)
-                            AvatarPlaceholder(32.dp)
+                            AvatarPlaceholder(32.dp, PresetAvatar.A.value)
+                            AvatarPlaceholder(32.dp, PresetAvatar.B.value)
+                            AvatarPlaceholder(32.dp, PresetAvatar.C.value)
+                            AvatarPlaceholder(32.dp, PresetAvatar.D.value)
+                            AvatarPlaceholder(32.dp, PresetAvatar.DEFAULT.value)
                         }
                     }
                     Column() {
@@ -230,7 +232,7 @@ fun SignupPage(
 }
 
 @Composable()
-fun AvatarPlaceholder(avatarSize: Dp) {
+fun AvatarPlaceholder(avatarSize: Dp, imageUrl: String) {
     Box(
         contentAlignment= Alignment.Center,
         modifier = Modifier
@@ -240,5 +242,7 @@ fun AvatarPlaceholder(avatarSize: Dp) {
                 color = MaterialTheme.colorScheme.primary,
                 shape = CircleShape
             )
-    ){}
+    ){
+        // TODO: Add image
+    }
 }

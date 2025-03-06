@@ -41,6 +41,7 @@ export class QuestionService {
             await this.questionModel.create(question);
             return question;
         } catch (error) {
+            console.log(error);
             return Promise.reject(`${ERROR_DEFAULT} ${error}`);
         }
     }

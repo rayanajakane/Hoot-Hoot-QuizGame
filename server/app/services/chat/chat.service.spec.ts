@@ -4,21 +4,10 @@ import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ChatService } from './chat.service';
 
-const validMessage = {
-    text: 'valid ',
-    author: '',
-    date: new Date(),
-};
-const secondValidMessage = {
-    text: 'valid 2',
-    author: '',
-    date: new Date(),
-};
-const emptyMessage = {
-    text: '',
-    author: '',
-    date: new Date(),
-};
+const validMessage = MOCK_MESSAGE;
+const secondValidMessage = MOCK_MESSAGE;
+const emptyMessage = MOCK_MESSAGE;
+emptyMessage.text = '';
 
 describe('ChatService', () => {
     let service: ChatService;
@@ -63,14 +52,12 @@ describe('ChatService', () => {
         expect(service.isValidMessage(emptyMessage)).toBeFalsy();
     });
     it('should check if message is whitespace only', () => {
-        const whiteSpaceMessage = {
-            text: ' ',
-            author: '',
-            date: new Date(),
-        };
+        const whiteSpaceMessage = MOCK_MESSAGE;
+        MOCK_MESSAGE.text = ' ';
         expect(service.isValidMessage(whiteSpaceMessage)).toBeFalsy();
     });
     it('should check if message is valid', () => {
+        validMessage.text = 'validMessage';
         expect(service.isValidMessage(validMessage)).toBeTruthy();
     });
     it('should add and get messages', () => {
@@ -78,7 +65,7 @@ describe('ChatService', () => {
         jest.spyOn(matchRoomService, 'getRoomIndex').mockReturnValue(matchRoomIndex);
         const returnedMessage = service.addRoomMessage(mockMessage, mockRoomCode);
         expect(returnedMessage.text).toEqual(mockMessage.text);
-        expect(returnedMessage.author).toEqual(mockMessage.author);
+        expect(returnedMessage.authorId).toEqual(mockMessage.authorId);
     });
     it('should add and return added message', () => {
         service['messages'] = [];

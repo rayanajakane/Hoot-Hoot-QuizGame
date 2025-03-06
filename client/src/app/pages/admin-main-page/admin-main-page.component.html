@@ -1,22 +1,26 @@
-<div id="main-container">
+<div id="main-container" *transloco="let t">
     <div class="nav">
-        <h1>Administration des jeux</h1>
+        <h1>{{ t('admin-main-page.admin-games') }}</h1>
         <div class="navigation-buttons">
-            <button mat-raised-button routerLink="/home"><mat-icon>home</mat-icon>Page principale</button>
+            <button mat-raised-button routerLink="/home"><mat-icon>home</mat-icon>{{ t('nav.main-page') }}</button>
         </div>
     </div>
     <div id="buttons-container">
         <div id="new-game-buttons-container">
-            <button mat-raised-button color="primary" routerLink="/admin/games/new/"><mat-icon>add</mat-icon>Créer un nouveau jeu</button>
-            <button mat-raised-button color="primary" routerLink="/admin/bank"><mat-icon>question_mark</mat-icon>Banque de questions</button>
+            <button mat-raised-button color="primary" routerLink="/admin/games/new/">
+                <mat-icon>add</mat-icon>{{ t('admin-main-page.create-new-game') }}
+            </button>
+            <button mat-raised-button color="primary" routerLink="/admin/bank">
+                <mat-icon>question_mark</mat-icon>{{ t('admin-main-page.question-bank') }}
+            </button>
         </div>
     </div>
     <div class="games-container">
-        <h2>Liste des jeux existants</h2>
+        <h2>{{ t('admin-main-page.existing-games-list') }}</h2>
         <mat-card id="game-header-card">
             <mat-card-content id="game-header-content"
-                ><p>Titre du jeu</p>
-                <p>Date de dernière modification</p>
+                ><p>{{ t('admin-main-page.game-title') }}</p>
+                <p>{{ t('admin-main-page.last-modification') }}</p>
                 <div id="game-list-item-options"><p>Options</p></div>
             </mat-card-content>
         </mat-card>
