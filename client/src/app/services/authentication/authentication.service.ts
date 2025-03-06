@@ -344,6 +344,11 @@ export class AuthenticationService {
         return url;
     }
 
+    async uploadGameQuestionPicture(gameId: string, questionId: string, file: any): Promise<string> {
+        const url: string = await this.uploadImage(`games/${gameId}/questionPictures/${questionId}`, file);
+        return url;
+    }
+
     async uploadImage(path: string, file: any): Promise<string> {
         const storageRef = firebaseStorageRef(this.storage, path);
         const uploadTask = uploadBytes(storageRef, file);

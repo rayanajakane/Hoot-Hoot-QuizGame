@@ -44,14 +44,18 @@ export class BankService {
 
     addQuestion(newQuestion: Question, isModificationPageQuestion: boolean = false): void {
         const pictureFile = newQuestion.pictureFile;
-        newQuestion.pictureUrl = '';
+        const isImageToReupload = newQuestion.pictureUrl.startsWith('data:image/');
+
+        // Reset URL if new image is uploaded
+        if (isImageToReupload) newQuestion.pictureUrl = '';
+
         newQuestion.pictureFile = null;
         delete newQuestion['pictureFile'];
         this.questionService.createQuestion(newQuestion).subscribe({
             next: async (response: HttpResponse<string>) => {
                 if (response.body) {
                     newQuestion = JSON.parse(response.body);
-                    if (!pictureFile) {
+                    if (!pictureFile || !isImageToReupload) {
                         this.addQuestionToLocalBank(newQuestion, isModificationPageQuestion);
                     } else {
                         await this.uploadQuestionPicture(newQuestion, pictureFile, isModificationPageQuestion);
