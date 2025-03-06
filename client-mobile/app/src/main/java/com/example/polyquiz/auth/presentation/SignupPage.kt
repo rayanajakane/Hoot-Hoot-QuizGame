@@ -22,6 +22,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -35,7 +36,6 @@ import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
-import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.constants.SIZE_CONSTANTS
 import kotlinx.coroutines.launch
@@ -47,6 +47,7 @@ fun SignupPage(
     navigateToLogin: () -> Unit,
     authViewModel: AuthViewModel
 ) {
+    val context = LocalContext.current
     val email by authViewModel.email.collectAsState()
     val username by authViewModel.username.collectAsState()
     val password by authViewModel.password.collectAsState()
@@ -68,7 +69,7 @@ fun SignupPage(
                 scope.launch {
                     SnackbarController.sendEvent(
                         event = SnackbarEvent(
-                            message = AuthFeedbackText.SIGN_UP.value,
+                            message = StringValue.StringResource(R.string.sign_up_feedback)
                         )
                     )
                 }
@@ -139,7 +140,7 @@ fun SignupPage(
                     Column() {
                         TextField(
                             value = email,
-                            onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.updateEmail(it) },
+                            onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.updateEmail(it, context) },
                             isError = emailError.isNotEmpty(),
                             singleLine = true,
                             label = { Text(stringResource(R.string.email)) },
@@ -154,7 +155,7 @@ fun SignupPage(
 
                         TextField(
                             value = username,
-                            onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.updateUsername(it) },
+                            onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.updateUsername(it, context) },
                             isError = usernameError.isNotEmpty(),
                             singleLine = true,
                             label = { Text(stringResource(R.string.username)) },
@@ -169,10 +170,10 @@ fun SignupPage(
 
                         TextField(
                             value = password,
-                            onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.updatePassword(it)},
+                            onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.updatePassword(it, context)},
                             singleLine = true,
                             keyboardActions = KeyboardActions(onDone = {
-                                authViewModel.signUp(email, username, password)
+                                authViewModel.signUp(email, username, password, context)
                                 keyboardController?.hide()
                             }),
                             label = { Text(stringResource(R.string.password)) },
@@ -218,7 +219,7 @@ fun SignupPage(
                     Button(
                         onClick =
                         {
-                            authViewModel.signUp(email, username, password)
+                            authViewModel.signUp(email, username, password, context)
                             keyboardController?.hide()
                         },
                         enabled = authState.value != AuthState.Loading

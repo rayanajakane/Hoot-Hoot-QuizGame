@@ -1,11 +1,12 @@
 package com.example.polyquiz
 
+import StringValue
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 
 // Reference: https://youtu.be/KFazs62lIkE
 data class SnackbarEvent(
-    val message: String,
+    val message: StringValue,
     val action: SnackbarAction? = null
 )
 

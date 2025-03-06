@@ -1,6 +1,5 @@
 package com.example.polyquiz.auth.presentation
-import android.graphics.fonts.FontStyle
-import android.widget.Toast
+import StringValue
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
@@ -38,7 +37,6 @@ import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
-import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.SIZE_CONSTANTS
 import kotlinx.coroutines.launch
 
@@ -50,10 +48,10 @@ fun LoginPage(
     navigateToHome: () -> Unit,
     authViewModel: AuthViewModel
 ) {
+    val context = LocalContext.current
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-
 
     val authState = authViewModel.authState.observeAsState()
     val scope = rememberCoroutineScope()
@@ -66,7 +64,7 @@ fun LoginPage(
                 scope.launch {
                     SnackbarController.sendEvent(
                         event = SnackbarEvent(
-                            message = AuthFeedbackText.SIGN_IN.value,
+                            message = StringValue.StringResource(R.string.sign_in_feedback)
                         )
                     )
                 }
@@ -121,7 +119,6 @@ fun LoginPage(
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
-
                 TextField(
                     value = email,
                     onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) email = it },
@@ -139,7 +136,7 @@ fun LoginPage(
                     label = { Text(stringResource(R.string.password),) },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardActions = KeyboardActions(onDone = {
-                        authViewModel.signIn(email, password)
+                        authViewModel.signIn(email, password, context)
                         keyboardController?.hide()
                     }),
                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -168,7 +165,7 @@ fun LoginPage(
                 Button(
                     onClick =
                     {
-                        authViewModel.signIn(email, password)
+                        authViewModel.signIn(email, password, context)
                         keyboardController?.hide()
                     },
                     enabled = authState.value != AuthState.Loading
