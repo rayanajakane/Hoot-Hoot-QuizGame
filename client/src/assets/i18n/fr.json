@@ -72,9 +72,9 @@
         "time-per-QCM": "Temps par QCM:"
     },
     "admin-main-page": {
-        "admin-games-label": "Administration des jeux",
-        "create-new-game-label": "Créer un nouveau jeu",
-        "question-bank-label": "Banque de questions",
+        "admin-games": "Administration des jeux",
+        "create-new-game": "Créer un nouveau jeu",
+        "question-bank": "Banque de questions",
         "existing-games-list": "Liste des jeux existants",
         "game-title": "Titre du jeu",
         "last-modification": "Date de dernière modification"
