@@ -69,6 +69,7 @@ export class GameService {
                 return Promise.reject(`${ERROR_INVALID_GAME}\n${errorMessages.join('\n')}`);
             }
         } catch (error) {
+            console.log(error);
             return Promise.reject(`${ERROR_DEFAULT} ${ERROR_WRONG_FORMAT}`);
         }
     }
