@@ -91,6 +91,7 @@ export class AnswerService {
         this.socketService.send(AnswerEvents.UpdateLongAnswer, choiceInfo);
     }
 
+    
     onFeedback() {
         this.socketService.on(AnswerEvents.Feedback, (feedback: Feedback) => {
             this.feedback = feedback;

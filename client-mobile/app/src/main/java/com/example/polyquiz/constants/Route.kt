@@ -17,4 +17,16 @@ object Route {
 
     @Serializable
     object ForgotPasswordFeedbackPage
+
+    @Serializable
+    object Home
+
+    @Serializable
+    object MatchRoom
+
+    @Serializable
+    object MatchCreation
+
+    @Serializable
+    object WaitPage
 }

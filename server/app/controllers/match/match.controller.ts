@@ -48,6 +48,7 @@ export class MatchController {
     validateUsername(@Body() data: MatchUsernameInfo, @Res() response: Response) {
         const errors = this.playerRoomService.getUsernameErrors(data.matchRoomCode, data.username);
         if (!errors) {
+            console.log('No errors');
             response.status(HttpStatus.OK).send();
         } else {
             response.status(HttpStatus.FORBIDDEN).send({ message: errors });
