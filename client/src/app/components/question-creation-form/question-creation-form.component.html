@@ -34,7 +34,14 @@
                 </div>
 
                 <div>
-                    <button mat-raised-button color="primary" type="submit" class="submit-button" [disabled]="!questionForm.valid">
+                    <button
+                        *ngIf="modificationState !== managementState.GameModify"
+                        mat-raised-button
+                        color="primary"
+                        type="submit"
+                        class="submit-button"
+                        [disabled]="!questionForm.valid"
+                    >
                         <mat-icon>check</mat-icon>
                         {{ getButtonText() }}
                     </button>
