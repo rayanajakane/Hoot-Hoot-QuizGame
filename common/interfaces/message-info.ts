@@ -1,4 +1,4 @@
-import { ChatEmoji } from '@common/constants/chat-emojis';
+import { ChatEmoji } from '../constants/chat-emojis';
 import { Message } from './message';
 import { UserIdName } from './user-id-name';
 

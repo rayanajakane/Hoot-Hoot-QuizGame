@@ -1,4 +1,4 @@
-import { UserIdName } from '@common/interfaces/user-id-name';
+import { UserIdName } from '../interfaces/user-id-name';
 
 export interface Message {
     id: string;
