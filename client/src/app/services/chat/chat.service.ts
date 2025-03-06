@@ -8,11 +8,13 @@ import { ChatEvents } from '@common/events/chat.events';
 import { Message } from '@common/interfaces/message';
 import { MessageEmojiInfo, MessageInfo } from '@common/interfaces/message-info';
 import { UserIdName } from '@common/interfaces/user-id-name';
+import { Subject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
 })
 export class ChatService {
+    updateChatScroll = new Subject<any>();
     generalMessages: Message[] = [];
     matchRoomMessages: Message[] = [];
     channel: string = ChatChannel.GENERAL;
@@ -37,6 +39,9 @@ export class ChatService {
     handleReceivedMessages() {
         this.socketHandler.on(ChatEvents.SentGeneralMessage, (message: Message) => {
             this.generalMessages.push(message);
+            if (this.channel === ChatChannel.GENERAL) {
+                this.updateChatScroll.next(null);
+            }
         });
     }
 
@@ -48,6 +53,9 @@ export class ChatService {
     handleRoomMessages() {
         this.socketHandler.on(ChatEvents.NewMessage, (messageInfo: MessageInfo) => {
             this.matchRoomMessages.push(messageInfo.message);
+            if (this.channel === ChatChannel.ROOM) {
+                this.updateChatScroll.next(null);
+            }
         });
     }
 

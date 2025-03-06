@@ -45,8 +45,10 @@ export class ChatComponent implements AfterViewChecked {
     }
 
     ngAfterViewChecked() {
-        this.scrollToBottom();
-        this.cdr.detectChanges();
+        this.chatService.updateChatScroll.subscribe(() => {
+            this.cdr.detectChanges();
+            this.scrollToBottom();
+        });
     }
 
     sendMessage(messageText: string): void {
