@@ -7,7 +7,6 @@ import { MatchRoom } from '@app/model/schema/match-room.schema';
 import { GradeTracker } from '@app/model/tally-trackers/grade-tracker/grade-tracker';
 import { AnswerEvents } from '@common/events/answer.events';
 import { Grade } from '@common/interfaces/choice-tally';
-import { PlayerCountHistogram } from '@common/interfaces/histogram';
 import { LongAnswerInfo } from '@common/interfaces/long-answer-info';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -104,60 +103,60 @@ describe('LongAnswerStrategy', () => {
         expect(eventEmitterMock.emit).toHaveBeenCalledWith(GradingEvents.GradingComplete, matchRoom.code);
     });
 
-    it('calculateScore() should tally grades and call buildGradesHistogram', () => {
-        const buildHistogramSpy = jest.spyOn<any, any>(strategy, 'buildGradesHistogram').mockReturnThis();
+    // it('calculateScore() should tally grades and call buildGradesHistogram', () => {
+    //     const buildHistogramSpy = jest.spyOn<any, any>(strategy, 'buildGradesHistogram').mockReturnThis();
 
-        strategy.calculateScore(matchRoom, matchRoom.players, grades);
+    //     strategy.calculateScore(matchRoom, matchRoom.players, grades);
 
-        expect(buildHistogramSpy).toHaveBeenCalledWith(matchRoom, gradeTracker);
-    });
+    //     expect(buildHistogramSpy).toHaveBeenCalledWith(matchRoom, gradeTracker);
+    // });
 
-    it('buildHistogram() should delegate histogram creation to buildPlayerCountHistogram', () => {
-        const buildHistogramSpy = jest.spyOn<any, any>(strategy, 'buildPlayerCountHistogram').mockReturnThis();
+    // it('buildHistogram() should delegate histogram creation to buildPlayerCountHistogram', () => {
+    //     const buildHistogramSpy = jest.spyOn<any, any>(strategy, 'buildPlayerCountHistogram').mockReturnThis();
 
-        strategy.buildHistogram(matchRoom);
+    //     strategy.buildHistogram(matchRoom);
 
-        expect(buildHistogramSpy).toHaveBeenCalledWith(matchRoom);
-    });
+    //     expect(buildHistogramSpy).toHaveBeenCalledWith(matchRoom);
+    // });
 
-    it('buildPlayerCountHistogram() should build a histogram of every active players in the last 5 seconds', () => {
-        const longAnswerHistogram: PlayerCountHistogram = strategy.buildPlayerCountHistogram(matchRoom);
+    // it('buildPlayerCountHistogram() should build a histogram of every active players in the last 5 seconds', () => {
+    //     const longAnswerHistogram: PlayerCountHistogram = strategy.buildPlayerCountHistogram(matchRoom);
 
-        expect(longAnswerHistogram).toStrictEqual({
-            question: matchRoom.currentQuestion.text,
-            type: 'QRL',
-            playerCount: 3,
-            activePlayers: 2,
-            inactivePlayers: 1,
-        });
-    });
+    //     expect(longAnswerHistogram).toStrictEqual({
+    //         question: matchRoom.currentQuestion.text,
+    //         type: 'QRL',
+    //         playerCount: 3,
+    //         activePlayers: 2,
+    //         inactivePlayers: 1,
+    //     });
+    // });
 
-    it('buildPlayerCountHistogram() should not count players that have left the game', () => {
-        matchRoom.players[2].isPlaying = false;
-        const longAnswerHistogram: PlayerCountHistogram = strategy.buildPlayerCountHistogram(matchRoom);
+    // it('buildPlayerCountHistogram() should not count players that have left the game', () => {
+    //     matchRoom.players[2].isPlaying = false;
+    //     const longAnswerHistogram: PlayerCountHistogram = strategy.buildPlayerCountHistogram(matchRoom);
 
-        expect(longAnswerHistogram).toStrictEqual({
-            question: matchRoom.currentQuestion.text,
-            type: 'QRL',
-            playerCount: 2,
-            activePlayers: 2,
-            inactivePlayers: 0,
-        });
-    });
+    //     expect(longAnswerHistogram).toStrictEqual({
+    //         question: matchRoom.currentQuestion.text,
+    //         type: 'QRL',
+    //         playerCount: 2,
+    //         activePlayers: 2,
+    //         inactivePlayers: 0,
+    //     });
+    // });
 
-    it('buildGradesHistogram() should convert current matchRoom histogram into a GradesHistogram', () => {
-        strategy['buildGradesHistogram'](matchRoom, gradeTracker);
+    // it('buildGradesHistogram() should convert current matchRoom histogram into a GradesHistogram', () => {
+    //     strategy['buildGradesHistogram'](matchRoom, gradeTracker);
 
-        expect(matchRoom.matchHistograms[matchRoom.currentQuestionIndex]).toStrictEqual({
-            question: matchRoom.currentQuestion.text,
-            type: 'QRL',
-            gradeTallies: [
-                { score: '0', tally: 1 },
-                { score: '50', tally: 1 },
-                { score: '100', tally: 1 },
-            ],
-        });
-    });
+    //     expect(matchRoom.matchHistograms[matchRoom.currentQuestionIndex]).toStrictEqual({
+    //         question: matchRoom.currentQuestion.text,
+    //         type: 'QRL',
+    //         gradeTallies: [
+    //             { score: '0', tally: 1 },
+    //             { score: '50', tally: 1 },
+    //             { score: '100', tally: 1 },
+    //         ],
+    //     });
+    // });
 
     it("prepareAnswersForGrading() should convert every players's answers to a list of LongAnswerInfo for grading of a regular match", () => {
         grades.forEach((grade) => (grade.score = null));

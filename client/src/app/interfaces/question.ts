@@ -1,4 +1,5 @@
 import { Choice } from '@app/interfaces/choice';
+import { EstimatedParameters } from '@app/interfaces/estimated-parameters';
 
 export interface Question {
     id: string;
@@ -7,5 +8,6 @@ export interface Question {
     points: number;
     choices?: Choice[];
     answer?: string;
+    estimatedParameters?: EstimatedParameters;
     lastModification: string;
 }

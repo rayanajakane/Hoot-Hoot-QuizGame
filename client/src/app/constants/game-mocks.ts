@@ -1,5 +1,5 @@
 import { Game } from '@app/interfaces/game';
-import { getRandomString } from './test-utils';
+import { getRandomNumber, getRandomString } from './test-utils';
 
 export const getMockGame = (): Game => ({
     id: getRandomString(),
@@ -24,6 +24,12 @@ export const getMockGame = (): Game => ({
                     isCorrect: false,
                 },
             ],
+            estimatedParameters: {
+                lowerBound: getRandomNumber(1, 2),
+                upperBound: getRandomNumber(3, 4),
+                margin: 1,
+                correctAnswer: getRandomNumber(2, 3),
+            },
             lastModification: new Date().toString(),
         },
         {
@@ -41,6 +47,12 @@ export const getMockGame = (): Game => ({
                     isCorrect: false,
                 },
             ],
+            estimatedParameters: {
+                lowerBound: getRandomNumber(1, 2),
+                upperBound: getRandomNumber(3, 4),
+                margin: 1,
+                correctAnswer: getRandomNumber(2, 3),
+            },
             lastModification: new Date().toString(),
         },
     ],

@@ -1,4 +1,5 @@
 import { Choice } from '@app/model/database/choice';
+import { EstimatedParameters } from '@app/model/database/estimated-parameters';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
 
@@ -22,6 +23,9 @@ export class CreateQuestionDto {
 
     @ApiProperty()
     choices: Choice[];
+
+    @ApiProperty()
+    estimatedParameters: EstimatedParameters;
 
     @ApiProperty()
     lastModification: Date;

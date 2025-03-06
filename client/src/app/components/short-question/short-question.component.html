@@ -1,9 +1,12 @@
-<mat-card class="short-question" [ngClass]="question.type === 'QRL' ? 'color-variant' : ''">
+<mat-card class="short-question" [ngClass]="{ 'color-variant': question.type === 'QRL', 'color-variant-2': question.type === 'QRE' }">
     <mat-card-header class="short-question-header">
         <mat-card-title>{{ question.points }} points</mat-card-title>
         <mat-card-subtitle matTooltip="Date de dernière modification">{{ question.lastModification | date: 'YYYY-MM-dd' }}</mat-card-subtitle>
         <p class="question-type">
-            <mat-icon>{{ question.type === 'QCM' ? 'widgets' : 'article' }}</mat-icon> {{ question.type }}
+            <mat-icon *ngIf="question.type === 'QCM'">widgets</mat-icon>
+            <mat-icon *ngIf="question.type === 'QRL'">article</mat-icon>
+            <mat-icon *ngIf="question.type === 'QRE'">balance</mat-icon>
+            {{ question.type }}
         </p>
         <div class="svg-drag-handle">
             <svg class="svg" width="20px" fill="currentColor" viewBox="0 0 24 24">

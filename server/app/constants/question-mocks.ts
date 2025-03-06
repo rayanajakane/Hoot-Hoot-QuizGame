@@ -1,6 +1,6 @@
 import { Question } from '@app/model/database/question';
 import { FIRST_CORRECT_CHOICE, INCORRECT_CHOICE, SECOND_CORRECT_CHOICE } from './choice-mocks';
-import { getRandomString } from './test-utils';
+import { getRandomNumber, getRandomString } from './test-utils';
 
 const getMockQuestion = (): Question => ({
     id: getRandomString(),
@@ -25,6 +25,12 @@ const getMockQuestion = (): Question => ({
             isCorrect: false,
         },
     ],
+    estimatedParameters: {
+        lowerBound: getRandomNumber(0, 1),
+        upperBound: getRandomNumber(2, 3),
+        margin: 1,
+        correctAnswer: getRandomNumber(1, 2),
+    },
     lastModification: new Date(),
 });
 
@@ -60,4 +66,4 @@ const getMockQuestionWithChoices = (): Question => {
     return mockQuestion;
 };
 
-export { ALL_FALSE_QUESTION, ALL_TRUE_QUESTION, FOUR_CHOICES_QUESTION, VALID_QUESTION, getMockQuestion, getMockQuestionWithChoices };
+export { ALL_FALSE_QUESTION, ALL_TRUE_QUESTION, FOUR_CHOICES_QUESTION, getMockQuestion, getMockQuestionWithChoices, VALID_QUESTION };

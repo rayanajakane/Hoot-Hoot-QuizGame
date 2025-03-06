@@ -8,10 +8,8 @@ import { QuestionType } from '@common/constants/question-types';
 })
 export class FilterByQuestionTypePipe implements PipeTransform {
     transform(questions: Question[], filter: string): Question[] {
-        if (filter === QuestionType.MultipleChoice) {
-            return questions.filter((question: Question) => question.type === QuestionType.MultipleChoice);
-        } else if (filter === QuestionType.LongAnswer) {
-            return questions.filter((question: Question) => question.type === QuestionType.LongAnswer);
+        if (Object.values(QuestionType).includes(filter as QuestionType)) {
+            return questions.filter((question: Question) => question.type === filter);
         }
         return questions;
     }

@@ -8,7 +8,9 @@ export class MultipleChoiceAnswer extends Answer {
         this.selectedChoices.clear();
     }
 
-    updateChoice(choice: string, selection?: boolean): void {
-        this.selectedChoices.set(choice, selection);
+    updateChoice(choice?: string, selection?: boolean): void {
+        if (choice !== undefined && selection !== undefined) {
+            this.selectedChoices.set(choice, selection);
+        }
     }
 }
