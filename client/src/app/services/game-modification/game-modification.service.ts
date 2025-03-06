@@ -91,10 +91,14 @@ export class GameModificationService {
         this.markPendingChanges();
     }
 
+    isPictureToUploadToGame(pictureUrl: string) {
+        return !pictureUrl.includes('games') && pictureUrl !== '';
+    }
+
     getPictureUploads() {
         const pictureUploads: PictureUploadData[] = [];
         this.game.questions.forEach((question: Question, index: number) => {
-            if (question.pictureFile && question.pictureUrl !== '') {
+            if (question.pictureFile && this.isPictureToUploadToGame(question.pictureUrl)) {
                 pictureUploads.push({ index, pictureFile: question.pictureFile });
                 this.game.questions[index].pictureUrl = '';
             }
@@ -138,7 +142,6 @@ export class GameModificationService {
                     this.notificationService.displaySuccessMessage(
                         `Jeu ${this.state === ManagementState.GameModify ? 'modifié' : 'créé'} avec succès! 😺`,
                     );
-                    // TODO: UPLOAD IMAGES TO FIREBASE STORAGE + PATCH QUESTIONS PICTURE URL
                     this.updatePictureUploads(updatedGame, pictureUploads);
                 },
                 error: (error: HttpErrorResponse) =>

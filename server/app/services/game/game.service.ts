@@ -93,6 +93,7 @@ export class GameService {
                 return Promise.reject(`${ERROR_INVALID_GAME}\n${errorMessages.join('\n')}`);
             }
             game = this.creationService.updateDateAndVisibility(game);
+            game = this.creationService.generateMissingQuestionIds(game);
 
             await this.gameModel.findOneAndUpdate(filterQuery, game, {
                 new: true,

@@ -44,7 +44,7 @@ export class BankService {
 
     addQuestion(newQuestion: Question, isModificationPageQuestion: boolean = false): void {
         const pictureFile = newQuestion.pictureFile;
-        const isImageToUpload = newQuestion.pictureUrl !== '';
+        const isImageToUpload = this.isImageToUploadToBank(newQuestion.pictureUrl);
 
         if (isImageToUpload) newQuestion.pictureUrl = '';
 
@@ -93,13 +93,17 @@ export class BankService {
         }
     }
 
+    isImageToUploadToBank(pictureUrl: string) {
+        return !pictureUrl.includes('bankQuestionPictures') && pictureUrl !== '';
+    }
+
     updateQuestion(newQuestion: Question): void {
         if (this.isDuplicateQuestion(newQuestion, this.questions)) {
             this.notificationService.displayErrorMessage(BankStatus.DUPLICATE);
             return;
         }
         const pictureFile = newQuestion.pictureFile;
-        const isImageToUpload = newQuestion.pictureUrl !== '';
+        const isImageToUpload = this.isImageToUploadToBank(newQuestion.pictureUrl);
 
         // Reset URL if new image is uploaded
         if (isImageToUpload) newQuestion.pictureUrl = '';
