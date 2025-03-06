@@ -26,7 +26,7 @@ object JoinMatchService : CommunicationService("match") {
             "validate-username",
         )
     }
-//huh
+
     fun validateUsername(username: String, navigateToWaitPage: () -> Unit, navigateToHome: () -> Unit, navigateToMatchPage: () -> Unit) {
         postUsername(username,
             onSuccess = {
