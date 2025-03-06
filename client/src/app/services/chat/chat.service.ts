@@ -65,7 +65,6 @@ export class ChatService {
 
     handleGeneralEmoji() {
         this.socketHandler.on(ChatEvents.SentGeneralEmoji, (updatedMessage: Message) => {
-            console.log(updatedMessage);
             const messageIndex = this.generalMessages.findIndex((message: Message) => updatedMessage.id === message.id);
             if (messageIndex > -1) {
                 this.generalMessages[messageIndex] = updatedMessage;
