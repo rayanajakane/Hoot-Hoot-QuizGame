@@ -106,14 +106,14 @@ export class GameModificationService {
 
     async updatePictureUploads(game: Game, pictureUploads: PictureUploadData[]) {
         this.game = game;
-        await pictureUploads.forEach(async (pictureUpload: PictureUploadData) => {
+        for (let pictureUpload of pictureUploads) {
             const pictureUrl = await this.authenticationService.uploadGameQuestionPicture(
                 this.game.id,
                 this.game.questions[pictureUpload.index].id,
                 pictureUpload.pictureFile,
             );
             this.game.questions[pictureUpload.index].pictureUrl = pictureUrl;
-        });
+        }
         console.log(this.game);
         this.gameService.submitGame(this.game, ManagementState.GameModify).subscribe({
             next: (response: HttpResponse<string>) => {
