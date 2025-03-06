@@ -95,6 +95,7 @@ export class GameModificationService {
                     this.notificationService.displaySuccessMessage(
                         `Jeux ${this.state === ManagementState.GameModify ? 'modifié' : 'créé'} avec succès! 😺`,
                     );
+                    // TODO: UPLOAD IMAGES TO FIREBASE STORAGE + PATCH QUESTIONS PICTURE URL
                     this.resetPendingChanges();
                     this.router.navigate(['/admin/games/']);
                 },

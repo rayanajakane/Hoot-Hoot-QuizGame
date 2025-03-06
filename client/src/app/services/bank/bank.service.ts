@@ -4,6 +4,7 @@ import { BankStatus, GameStatus } from '@app/constants/feedback-messages';
 import { Question } from '@app/interfaces/question';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { QuestionService } from '@app/services/question/question.service';
+import { AuthenticationService } from '../authentication/authentication.service';
 
 @Injectable({
     providedIn: 'root',
@@ -16,6 +17,7 @@ export class BankService {
     constructor(
         private readonly questionService: QuestionService,
         private readonly notificationService: NotificationService,
+        private authenticationService: AuthenticationService,
     ) {}
 
     getAllQuestions(): void {
@@ -32,6 +34,7 @@ export class BankService {
     deleteQuestion(questionId: string): void {
         this.questionService.deleteQuestion(questionId).subscribe({
             next: () => {
+                this.authenticationService.deleteBankQuestionPicture(questionId); // TODO: Check case where bank question has no image on Firebase storage
                 this.questions = this.questions.filter((question: Question) => question.id !== questionId);
                 this.notificationService.displaySuccessMessage(`${BankStatus.DELETED}`);
             },
@@ -40,17 +43,46 @@ export class BankService {
     }
 
     addQuestion(newQuestion: Question, isModificationPageQuestion: boolean = false): void {
+        const pictureFile = newQuestion.pictureFile;
+        newQuestion.pictureUrl = '';
+        newQuestion.pictureFile = null;
+        delete newQuestion['pictureFile'];
         this.questionService.createQuestion(newQuestion).subscribe({
-            next: (response: HttpResponse<string>) => {
+            next: async (response: HttpResponse<string>) => {
                 if (response.body) {
                     newQuestion = JSON.parse(response.body);
-                    this.questions.push(newQuestion);
-                    if (isModificationPageQuestion) this.notificationService.displaySuccessMessage(GameStatus.ARCHIVED);
-                    else this.notificationService.displaySuccessMessage(BankStatus.SUCCESS);
+                    if (!pictureFile) {
+                        this.addQuestionToLocalBank(newQuestion, isModificationPageQuestion);
+                    } else {
+                        await this.uploadQuestionPicture(newQuestion, pictureFile, isModificationPageQuestion);
+                    }
                 }
             },
             error: (error: HttpErrorResponse) => this.notificationService.displayErrorMessage(`${BankStatus.FAILURE}\n ${error.message}`),
         });
+    }
+
+    async uploadQuestionPicture(newQuestion: Question, pictureFile: File, isModificationPageQuestion: boolean) {
+        const pictureUrl = await this.authenticationService.uploadBankQuestionPicture(newQuestion.id, pictureFile);
+        newQuestion.pictureUrl = pictureUrl;
+        this.questionService.updateQuestion(newQuestion).subscribe({
+            next: (response: HttpResponse<string>) => {
+                if (response.body) {
+                    newQuestion = JSON.parse(response.body);
+                    this.addQuestionToLocalBank(newQuestion, isModificationPageQuestion);
+                }
+            },
+            error: (error: HttpErrorResponse) => this.notificationService.displayErrorMessage(`${BankStatus.FAILURE}\n ${error.message}`),
+        });
+    }
+
+    addQuestionToLocalBank(newQuestion: Question, isModificationPageQuestion: boolean) {
+        this.questions.push(newQuestion);
+        if (isModificationPageQuestion) {
+            this.notificationService.displaySuccessMessage(GameStatus.ARCHIVED);
+        } else {
+            this.notificationService.displaySuccessMessage(BankStatus.SUCCESS);
+        }
     }
 
     updateQuestion(newQuestion: Question): void {

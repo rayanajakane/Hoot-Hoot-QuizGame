@@ -89,6 +89,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
     submitForm() {
         if (this.questionForm.valid) {
             const newQuestion: Question = this.questionForm.value;
+            newQuestion.pictureFile = this.loadedImageFile;
             newQuestion.lastModification = new Date().toLocaleDateString();
 
             if (this.modificationState === ManagementState.BankModify) {
@@ -124,6 +125,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
                 this.question.text = formValue?.text;
                 this.question.type = formValue?.type;
                 this.question.points = formValue?.points;
+                this.question.pictureUrl = formValue?.pictureUrl;
                 this.question.lastModification = new Date().toLocaleDateString();
                 if (this.question.type === QuestionType.MultipleChoice) {
                     this.question.choices = formValue?.choices;
@@ -165,7 +167,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
                 text: ['', Validators.required],
                 points: ['', Validators.required],
                 type: ['', Validators.required],
-                picture: [''],
+                pictureUrl: [''],
             },
             { validators: this.questionService.validateChoicesLength },
         );
@@ -321,6 +323,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
             points: this.question?.points,
             type: this.question?.type,
             lastModification: this.question?.lastModification,
+            pictureUrl: this.question?.pictureUrl,
         });
         if (this.questionForm.get('type')?.value === QuestionType.MultipleChoice) {
             const choicesArray = this.questionForm.get('choices') as FormArray;
@@ -360,15 +363,15 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
             }
             const reader = new FileReader();
             reader.addEventListener('load', () => {
-                this.questionForm.get('picture')?.setValue(reader.result as null);
-                this.loadedImageFile = file;
+                this.questionForm.get('pictureUrl')?.setValue(reader.result as null);
+                this.loadedImageFile = file; // TODO: This file needs to somehow be transferred to AdminEditPage and stuff
             });
             reader.readAsDataURL(file);
         }
     }
 
     public removePicture() {
-        this.questionForm.get('picture')?.setValue(null);
+        this.questionForm.get('pictureUrl')?.setValue('');
         this.loadedImageFile = null;
     }
 }

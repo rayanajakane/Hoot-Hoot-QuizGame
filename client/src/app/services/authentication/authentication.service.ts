@@ -339,6 +339,11 @@ export class AuthenticationService {
         return url;
     }
 
+    async uploadBankQuestionPicture(bankQuestionId: string, file: any): Promise<string> {
+        const url: string = await this.uploadImage(`bankQuestionPictures/${bankQuestionId}`, file);
+        return url;
+    }
+
     async uploadImage(path: string, file: any): Promise<string> {
         const storageRef = firebaseStorageRef(this.storage, path);
         const uploadTask = uploadBytes(storageRef, file);
@@ -360,6 +365,10 @@ export class AuthenticationService {
 
     async deleteUserAvatar(userId: string) {
         this.deleteImage(`avatars/${userId}`);
+    }
+
+    async deleteBankQuestionPicture(bankQuestionId: string) {
+        this.deleteImage(`bankQuestionPictures/${bankQuestionId}`);
     }
 
     async deleteImage(path: string) {

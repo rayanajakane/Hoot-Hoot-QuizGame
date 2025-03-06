@@ -44,8 +44,8 @@ export class QuestionController {
     @Patch('/:id')
     async updateQuestion(@Body() updateQuestionDto: UpdateQuestionDto, @Res() response: Response) {
         try {
-            await this.questionService.updateQuestion(updateQuestionDto);
-            response.status(HttpStatus.OK).send();
+            const updatedQuestion = await this.questionService.updateQuestion(updateQuestionDto);
+            response.status(HttpStatus.OK).json(updatedQuestion);
         } catch (error) {
             if (error === ERROR_QUESTION_NOT_FOUND) {
                 response.status(HttpStatus.NOT_FOUND).send({ message: error });

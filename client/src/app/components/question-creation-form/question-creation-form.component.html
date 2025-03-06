@@ -25,12 +25,12 @@
 
                 <div class="upload-image-container">
                     <!-- TODO: Transloco -->
-                    <button mat-raised-button color="primary" (click)="picture.click()"><mat-icon>upload</mat-icon>Téléverser une image</button>
-                    <button mat-raised-button [disabled]="!questionForm.get('picture')!.value" (click)="removePicture()">Retirer l'image</button>
+                    <button mat-raised-button color="primary" (click)="pictureUrl.click()"><mat-icon>upload</mat-icon>Téléverser une image</button>
+                    <button mat-raised-button [disabled]="!questionForm.get('pictureUrl')!.value" (click)="removePicture()">Retirer l'image</button>
                     <div class="main-image">
-                        <img *ngIf="questionForm.get('picture')!.value" [src]="questionForm.get('picture')!.value" />
+                        <img *ngIf="questionForm.get('pictureUrl')!.value" [src]="questionForm.get('pictureUrl')!.value" />
                     </div>
-                    <input type="file" class="picture" #picture (change)="setPicture($event)" accept="image/png, image/jpeg" />
+                    <input type="file" class="pictureUrl" #pictureUrl (change)="setPicture($event)" accept="image/png, image/jpeg" />
                 </div>
 
                 <div *ngIf="modificationState === managementState.GameCreate">
