@@ -44,10 +44,9 @@ export class BankService {
 
     addQuestion(newQuestion: Question, isModificationPageQuestion: boolean = false): void {
         const pictureFile = newQuestion.pictureFile;
-        const isImageToReupload = newQuestion.pictureUrl.startsWith('data:image/');
+        const isImageToUpload = newQuestion.pictureUrl !== '';
 
-        // Reset URL if new image is uploaded
-        if (isImageToReupload) newQuestion.pictureUrl = '';
+        if (isImageToUpload) newQuestion.pictureUrl = '';
 
         newQuestion.pictureFile = null;
         delete newQuestion['pictureFile'];
@@ -55,7 +54,7 @@ export class BankService {
             next: async (response: HttpResponse<string>) => {
                 if (response.body) {
                     newQuestion = JSON.parse(response.body);
-                    if (!pictureFile || !isImageToReupload) {
+                    if (!pictureFile || !isImageToUpload) {
                         this.addQuestionToLocalBank(newQuestion, isModificationPageQuestion);
                     } else {
                         await this.uploadQuestionPicture(newQuestion, pictureFile, isModificationPageQuestion);
@@ -100,17 +99,17 @@ export class BankService {
             return;
         }
         const pictureFile = newQuestion.pictureFile;
-        const isImageToReupload = newQuestion.pictureUrl.startsWith('data:image/');
+        const isImageToUpload = newQuestion.pictureUrl !== '';
 
         // Reset URL if new image is uploaded
-        if (isImageToReupload) newQuestion.pictureUrl = '';
+        if (isImageToUpload) newQuestion.pictureUrl = '';
 
         newQuestion.pictureFile = null;
         delete newQuestion['pictureFile'];
 
         this.questionService.updateQuestion(newQuestion).subscribe({
             next: async () => {
-                if (isImageToReupload && pictureFile) {
+                if (isImageToUpload && pictureFile) {
                     await this.uploadQuestionPicture(newQuestion, pictureFile, false, false);
                     console.log(newQuestion);
                 }

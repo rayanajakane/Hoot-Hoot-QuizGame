@@ -10,12 +10,12 @@ import { ManagementState } from '@app/constants/states';
 import { Game } from '@app/interfaces/game';
 import { PictureUploadData } from '@app/interfaces/picture-upload-data';
 import { Question } from '@app/interfaces/question';
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { BankService } from '@app/services/bank/bank.service';
 import { GameService } from '@app/services/game/game.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { QuestionService } from '@app/services/question/question.service';
 import { lastValueFrom } from 'rxjs/internal/lastValueFrom';
-import { AuthenticationService } from '../authentication/authentication.service';
 
 @Injectable({
     providedIn: 'root',
@@ -94,7 +94,7 @@ export class GameModificationService {
     getPictureUploads() {
         const pictureUploads: PictureUploadData[] = [];
         this.game.questions.forEach((question: Question, index: number) => {
-            if (question.pictureFile && question.pictureUrl.startsWith('data:image/')) {
+            if (question.pictureFile && question.pictureUrl !== '') {
                 pictureUploads.push({ index, pictureFile: question.pictureFile });
                 this.game.questions[index].pictureUrl = '';
             }
@@ -270,8 +270,18 @@ export class GameModificationService {
     }
 
     private addQuestionToGame(newQuestion: Question) {
+        // Save old values and replace them to avoid submitting too large data to server
+        const pictureFile = newQuestion.pictureFile;
+        const pictureUrl = newQuestion.pictureUrl;
+
+        newQuestion.pictureUrl = '';
+        newQuestion.pictureFile = null;
+        delete newQuestion['pictureFile'];
+
         this.questionService.verifyQuestion(newQuestion).subscribe({
             next: () => {
+                newQuestion.pictureUrl = pictureUrl;
+                newQuestion.pictureFile = pictureFile;
                 if (!this.bankService.addToBank) this.notificationService.displaySuccessMessage(QuestionStatus.VERIFIED);
                 this.game.questions.push(newQuestion);
                 this.markPendingChanges();

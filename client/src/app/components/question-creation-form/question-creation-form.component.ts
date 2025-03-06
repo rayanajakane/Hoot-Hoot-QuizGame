@@ -367,7 +367,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
             reader.addEventListener('load', () => {
                 this.questionForm.get('pictureUrl')?.setValue(reader.result as null);
                 this.questionForm.get('pictureFile')?.setValue(file);
-                this.loadedImageFile = file; // TODO: This file needs to somehow be transferred to AdminEditPage and stuff
+                this.loadedImageFile = file;
             });
             reader.readAsDataURL(file);
         }

@@ -58,7 +58,6 @@ export class GameController {
     @Put('/:id')
     async upsertGame(@Body() updateGameDto: UpdateGameDto, @Res() response: Response) {
         try {
-            console.log(updateGameDto);
             const updatedGame = await this.gameService.upsertGame(updateGameDto);
             response.status(HttpStatus.OK).json(updatedGame);
         } catch (error) {
