@@ -10,8 +10,14 @@ import com.example.polyquiz.auth.presentation.ForgotPasswordPage
 import com.example.polyquiz.auth.presentation.LoginPage
 import com.example.polyquiz.auth.presentation.ForgotPasswordFeedbackPage
 import com.example.polyquiz.auth.presentation.SignupPage
-import com.example.polyquiz.chat.presentation.ChatPage
+import com.example.polyquiz.constants.MatchContext
+import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.Route
+import com.example.polyquiz.match.domain.AnswerService
+import com.example.polyquiz.match.domain.MatchContextService
+import com.example.polyquiz.match.domain.MatchRoomService
+import com.example.polyquiz.match.presentation.QuestionArea
+import com.example.polyquiz.pages.presentation.WaitPage
 
 // References: https://youtu.be/AIC_OFQ1r3k  and  https://youtu.be/lv1raAvwcgI
 @Composable
@@ -21,11 +27,23 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
         navController = navController,
         startDestination = Route.Login
     ) {
+        composable<Route.WaitPage> {
+            WaitPage(
+                modifier = modifier,
+                authViewModel = authViewModel,
+                navigateToHome = {
+                    navController.navigate(Route.Home)
+                },
+                navigateToMatchRoom = {
+                    navController.navigate(Route.MatchRoom)
+                }
+            )
+        }
         composable<Route.Login> {
             LoginPage(
                 modifier = modifier,
-                navigateToChat = {
-                    navController.navigate(Route.Chat)
+                navigateToHome = {
+                    navController.navigate(Route.Home)
                 },
                 navigateToSignup = {
                     navController.navigate(Route.Signup)
@@ -43,17 +61,54 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                     navController.navigate(Route.Login)
                 },
                 navigateToChat = {
-                    navController.navigate(Route.Chat)
+                    navController.navigate(Route.Home)
                 },
                 authViewModel = authViewModel
             )
         }
-        composable<Route.Chat> {
-            ChatPage(modifier,
+        composable<Route.MatchRoom> {
+            //val matchContextService = MatchContextService()
+            //matchContextService.setContext(MatchContext.PLAYERVIEW)
+            QuestionArea(
+                modifier = modifier,
+                navigateToHome = {
+                    navController.navigate(Route.Home)
+                },
+                authViewModel = authViewModel,
+                matchContextService = MatchContextService,
+                matchRoomService = MatchRoomService,
+                timeService = TimeService,
+                answerService = AnswerService
+            )
+        }
+        composable<Route.Home> {
+            HomePage(
+                modifier,
                 navigateToLogin = {
                     navController.navigate(Route.Login)
                 },
-                authViewModel = authViewModel)
+                navigateToCreate = {
+                    navController.navigate(Route.MatchCreation)
+                },
+                authViewModel = authViewModel,
+                navigateToHome = {
+                    navController.navigate(Route.Home)
+                },
+                navigateToWaitPage = {
+                    navController.navigate(Route.WaitPage)
+                }
+            )
+        }
+        composable<Route.MatchCreation> {
+            MatchCreationPage(modifier,
+                navigateToLogin = {
+                    navController.navigate(Route.Login)
+                },
+                navigateToHome = {
+                    navController.navigate(Route.Home)
+                },
+                authViewModel = authViewModel
+            )
         }
 
         composable<Route.ForgotPassword> {
