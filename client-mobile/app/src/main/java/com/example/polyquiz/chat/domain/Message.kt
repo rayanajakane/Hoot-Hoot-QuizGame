@@ -1,5 +1,6 @@
 package com.example.polyquiz.chat.domain
 
+import com.example.polyquiz.auth.domain.UserIdName
 import java.util.Date
 
 data class Message(
@@ -8,5 +9,8 @@ data class Message(
     val authorId: String,
     val authorUsername: String,
     val photoUrl: String,
-    val date: Date
+    val date: Date,
+    val userLikes: List<UserIdName>,
+    val userLoves: List<UserIdName>,
+    val userDislikes: List<UserIdName>
 )
