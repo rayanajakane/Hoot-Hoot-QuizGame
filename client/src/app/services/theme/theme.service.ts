@@ -1,7 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable, Renderer2, RendererFactory2 } from '@angular/core';
-import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { AuthError } from '@app/services/authentication/auth-error';
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { DataSnapshot, get, update } from '@firebase/database';
 
 export enum Theme {
@@ -65,8 +65,8 @@ export class ThemeService {
     }
 
     setTheme(theme: Theme) {
-        this.renderer.addClass(this.document.body, theme);
         this.renderer.removeClass(this.document.body, this.currentTheme);
+        this.renderer.addClass(this.document.body, theme);
         this.currentTheme = theme;
         this.saveThemeToDB(theme);
     }

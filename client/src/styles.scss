@@ -28,18 +28,6 @@ $main-theme: mat.define-light-theme(
     )
 );
 
-$light-theme: mat.define-light-theme(
-    (
-        color: (
-            primary: $my-primary,
-            accent: $my-accent,
-            warn: $my-warn,
-        ),
-        typography: mat.define-typography-config(),
-        density: 0,
-    )
-);
-
 $dark-theme: mat.define-dark-theme(
     (
         color: (
@@ -55,7 +43,6 @@ $dark-theme: mat.define-dark-theme(
 }
 
 .dark-theme {
-    @include mat.all-component-colors($dark-theme);
     background-color: mat.get-theme-color($dark-theme, background, background);
     color: white;
 }
@@ -64,7 +51,7 @@ $dark-theme: mat.define-dark-theme(
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 // @include mat.all-component-themes($dark-theme);
-
+@include mat.all-component-themes($dark-theme);
 /* You can add global styles to this file, and also import other style files */
 
 html,
