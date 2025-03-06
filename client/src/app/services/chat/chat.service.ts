@@ -14,7 +14,7 @@ import { Subject } from 'rxjs';
     providedIn: 'root',
 })
 export class ChatService {
-    updateChatScroll = new Subject<any>();
+    updateChatScroll = new Subject();
     generalMessages: Message[] = [];
     matchRoomMessages: Message[] = [];
     channel: string = ChatChannel.GENERAL;

@@ -15,6 +15,7 @@ import { ChatService } from '@app/services/chat/chat.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { getTranslocoModule } from '@app/transloco-testing.module';
 import { ChatEmoji } from '@common/constants/chat-emojis';
+import { Subject } from 'rxjs';
 import SpyObj = jasmine.SpyObj;
 
 const mockDate = MOCK_DATE;
@@ -67,6 +68,8 @@ describe('ChatComponent', () => {
         (authServiceSpy as any).userId = MOCK_MESSAGE.authorId;
         (authServiceSpy as any).userAvatarUrl = MOCK_MESSAGE.photoUrl;
         matchRoomServiceSpy = TestBed.inject(MatchRoomService) as jasmine.SpyObj<MatchRoomService>;
+        chatServiceSpy.updateChatScroll = new Subject();
+        chatServiceSpy.updateChatScroll.next(null);
         fixture.detectChanges();
     });
 
