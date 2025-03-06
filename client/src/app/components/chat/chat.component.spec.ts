@@ -9,11 +9,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ChatComponent } from '@app/components/chat/chat.component';
-import { MOCK_DATE, MOCK_MESSAGE } from '@app/constants/chat-mocks';
+import { MOCK_DATE, MOCK_MESSAGE, MOCK_USER_ID_NAME, MOCK_USER_ID_NAME_2 } from '@app/constants/chat-mocks';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { ChatService } from '@app/services/chat/chat.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { getTranslocoModule } from '@app/transloco-testing.module';
+import { ChatEmoji } from '@common/constants/chat-emojis';
 import SpyObj = jasmine.SpyObj;
 
 const mockDate = MOCK_DATE;
@@ -30,7 +31,7 @@ describe('ChatComponent', () => {
 
     beforeEach(() => {
         const socketHandlerSpy = jasmine.createSpyObj('SocketHandlerService', ['send']);
-        const chatSpy = jasmine.createSpyObj('ChatService', ['sendMessage', 'handleReceivedMessages']);
+        const chatSpy = jasmine.createSpyObj('ChatService', ['sendMessage', 'handleReceivedMessages', 'reactToMessage']);
         const authSpy = jasmine.createSpyObj('AuthenticationService', ['connectToSocket', 'userDisplayName']);
         const matchSpy = jasmine.createSpyObj('MatchRoomService', ['getRoomCode']);
         socketHandlerSpy.socket = jasmine.createSpyObj('socket', ['removeListener']);
@@ -94,5 +95,22 @@ describe('ChatComponent', () => {
         const messageText = '';
         component.sendMessage(messageText);
         expect(chatServiceSpy.sendMessage).not.toHaveBeenCalled();
+    });
+
+    it('should react to message', () => {
+        matchRoomServiceSpy.getRoomCode.and.returnValue('test');
+        component.reactToMessage(MOCK_MESSAGE.id, ChatEmoji.LIKE);
+        expect(chatServiceSpy.reactToMessage).toHaveBeenCalledWith(
+            MOCK_MESSAGE.id,
+            ChatEmoji.LIKE,
+            MOCK_MESSAGE.authorId,
+            MOCK_MESSAGE.authorUsername,
+            'test',
+        );
+    });
+    it('should display reactions tool tip', () => {
+        const result = component.getReactionsToolTip([MOCK_USER_ID_NAME, MOCK_USER_ID_NAME_2]);
+        const expectedResult = `\n${MOCK_USER_ID_NAME.name}\n${MOCK_USER_ID_NAME_2.name}`;
+        expect(result).toEqual(expectedResult);
     });
 });
