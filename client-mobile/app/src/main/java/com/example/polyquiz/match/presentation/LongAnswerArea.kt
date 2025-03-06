@@ -19,7 +19,9 @@ import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.match.domain.AnswerService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.constants.GradesInfo
+import com.example.polyquiz.constants.GradingFeedback
 import com.example.polyquiz.constants.LongAnswerInfo
+import com.example.polyquiz.constants.MatchButtonActions
 
 @Composable
 fun LongAnswerArea(
@@ -35,7 +37,7 @@ fun LongAnswerArea(
         if (matchContext != MatchContext.HOSTVIEW) {
                 if (!answerService.isSelectionEnabled && !answerService.showFeedback) {
                     Text(
-                        text = "En attente de correction...",
+                        text = GradingFeedback.WAITING_FOR_GRADING.value,
                         fontSize = 18.sp,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
@@ -68,7 +70,7 @@ fun LongAnswerArea(
                 )
         } else if (answerService.gradeAnswers) {
             Text(
-                text = "Veuillez noter les réponses des joueurs!",
+                text = GradingFeedback.GRADE_PLAYERS.value,
                 fontSize = 18.sp,
                 modifier = Modifier.padding(8.dp)
             )
@@ -92,8 +94,8 @@ fun LongAnswerArea(
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 Text(
-                    text = if (answerService.isGradingComplete) "SOUMETTRE CORRECTION"
-                    else "Il reste des joueurs à évaluer"
+                    text = if (answerService.isGradingComplete) MatchButtonActions.SUBMIT_GRADING.value
+                    else GradingFeedback.PLAYERS_TO_GRADE.value
                 )
             }
         }

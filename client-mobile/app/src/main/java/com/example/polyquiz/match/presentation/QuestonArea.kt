@@ -36,9 +36,11 @@ import com.example.polyquiz.constants.MatchStatus
 import com.example.polyquiz.constants.UserInfo
 import androidx.compose.foundation.layout.*
 import com.example.polyquiz.constants.AnswerCorrectness
+import com.example.polyquiz.constants.AnswerFeedback
+import com.example.polyquiz.constants.BonusFeedback
+import com.example.polyquiz.constants.MatchButtonActions
 import com.example.polyquiz.ui.theme.AndroidGreen
 import com.example.polyquiz.ui.theme.BrightRed
-import com.example.polyquiz.ui.theme.RedAnswerWrong
 import com.example.polyquiz.ui.theme.GoldenYellow
 
 @Composable
@@ -129,13 +131,9 @@ fun QuestionArea(
 
                 if (answerService.showFeedback && context === MatchContext.PLAYERVIEW && !matchRoomService.isCooldown) {
                     val (feedbackText, feedbackColor) = when (answerService.answerCorrectness) {
-                        AnswerCorrectness.WRONG -> "\uD83D\uDE14 Mauvaise Réponse \uD83D\uDE14" to BrightRed
-                        AnswerCorrectness.OK -> {
-                            "\uD83C\uDD97 Réponse partielle! Vous avez obtenu ${(question?.points ?: 0) / 2} points \uD83C\uDD97" to GoldenYellow
-                        }
-                        AnswerCorrectness.GOOD -> {
-                            "\uD83C\uDD97 Réponse correcte! Vous avez obtenu ${question?.points} points \uD83C\uDD97" to AndroidGreen
-                        }
+                        AnswerCorrectness.WRONG -> AnswerFeedback.WRONG.value to BrightRed
+                        AnswerCorrectness.OK -> AnswerFeedback.OK.withPoints((question?.points ?: 0) / 2) to GoldenYellow
+                        AnswerCorrectness.GOOD -> AnswerFeedback.GOOD.withPoints(question?.points ?: 0) to AndroidGreen
                         else -> null to null
                     }
 
@@ -151,7 +149,7 @@ fun QuestionArea(
                     if (answerService.bonusPoints > 0){
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = "✨ Vous avez obtenu un bonus de ${answerService.bonusPoints} points!✨",
+                            text = BonusFeedback.BONUS.withPoints(answerService.bonusPoints),
                             style = MaterialTheme.typography.titleMedium,
                             color = Color.Green
                         )
@@ -198,7 +196,7 @@ fun QuestionArea(
                             )
                         }
                     ) {
-                        Text("Soumettre")
+                        Text(MatchButtonActions.LEAVE_MATCH.value)
                     }
                 }
             }
@@ -220,7 +218,7 @@ fun QuestionArea(
                     ) {
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(onClick = { matchRoomService.goToNextQuestion() }) {
-                            Text("QUESTION SUIVANTE")
+                            Text(MatchButtonActions.NEXT_QUESTION.value)
                         }
                     }
 
@@ -231,7 +229,7 @@ fun QuestionArea(
                             navigateToHome()
                         }
                     ) {
-                        Text("Quitter")
+                        Text(MatchButtonActions.LEAVE_MATCH.value)
                     }
                 }
             )
