@@ -4,12 +4,10 @@ import { QuestionType } from '@app/constants/question-types';
 import { MultipleChoiceAnswer } from '@app/model/answer-types/multiple-choice-answer/multiple-choice-answer';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
 import { Player } from '@app/model/schema/player.schema';
-import { ChoiceTracker } from '@app/model/tally-trackers/choice-tracker/choice-tracker';
 import { QuestionStrategy } from '@app/question-strategies/question-strategy';
 import { AnswerCorrectness } from '@common/constants/answer-correctness';
 import { BONUS_FACTOR } from '@common/constants/match-constants';
 import { AnswerEvents } from '@common/events/answer.events';
-import { MultipleChoiceHistogram } from '@common/interfaces/histogram';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
@@ -42,12 +40,12 @@ export class MultipleChoiceStrategy extends QuestionStrategy {
         if (fastestTime) this.computeFastestPlayerBonus(currentQuestionPoints, fastestTime, correctPlayers);
     }
 
-    buildHistogram(matchRoom: MatchRoom, choice: string, selection: boolean): MultipleChoiceHistogram {
-        const choiceTracker = matchRoom.choiceTracker;
-        if (selection) choiceTracker.incrementCount(choice);
-        else choiceTracker.decrementCount(choice);
-        return this.convertToHistogram(choiceTracker);
-    }
+    // buildHistogram(matchRoom: MatchRoom, choice: string, selection: boolean): MultipleChoiceHistogram {
+    //     const choiceTracker = matchRoom.choiceTracker;
+    //     if (selection) choiceTracker.incrementCount(choice);
+    //     else choiceTracker.decrementCount(choice);
+    //     return this.convertToHistogram(choiceTracker);
+    // }
 
     private isCorrectAnswer(playerAnswer: MultipleChoiceAnswer, correctAnswer: string[]) {
         const playerChoices = this.filterSelectedChoices(playerAnswer);
@@ -72,7 +70,7 @@ export class MultipleChoiceStrategy extends QuestionStrategy {
         fastestPlayer.socket.emit(AnswerEvents.Bonus, bonus);
     }
 
-    private convertToHistogram(choiceTracker: ChoiceTracker): MultipleChoiceHistogram {
-        return { question: choiceTracker.question, type: QuestionType.MultipleChoice, choiceTallies: Object.values(choiceTracker.items) };
-    }
+    // private convertToHistogram(choiceTracker: ChoiceTracker): MultipleChoiceHistogram {
+    //     return { question: choiceTracker.question, type: QuestionType.MultipleChoice, choiceTallies: Object.values(choiceTracker.items) };
+    // }
 }

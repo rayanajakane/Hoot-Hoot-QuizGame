@@ -3,6 +3,7 @@ import { Question } from '@app/interfaces/question';
 export const MIN_CHOICES = 2;
 export const MAX_CHOICES = 4;
 export const SNACK_BAR_DISPLAY_TIME = 2000;
+export const VALID_MARGIN_FRACTION = 4;
 
 export interface ChatStateInfo {
     matchRoomCode: string;

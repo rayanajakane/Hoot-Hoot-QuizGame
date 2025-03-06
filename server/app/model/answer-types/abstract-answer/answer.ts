@@ -7,5 +7,5 @@ export abstract class Answer {
         this.timestamp = undefined;
     }
 
-    abstract updateChoice(choice: string, selection: boolean): void;
+    abstract updateChoice(choice?: string, selection?: boolean, estimation?: number): void;
 }
