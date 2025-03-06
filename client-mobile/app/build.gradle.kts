@@ -52,6 +52,8 @@ dependencies {
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
+    implementation("com.google.firebase:firebase-crashlytics-buildtools:3.0.3")
+    implementation(libs.androidx.storage)
     val coreVersion = "1.13.1"
     val navVersion = "2.8.4"
     implementation("androidx.core:core-ktx:$coreVersion")
@@ -75,4 +77,9 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0") // Gson Converter (for JSON serialization/deserialization)
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")  // OkHttp (Retrofit's underlying networking library)
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0") // For logging network requests (optional but recommended)
 }
