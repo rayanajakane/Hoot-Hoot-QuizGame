@@ -63,10 +63,6 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    fun addPasswordError(translatedMessage: String) {
-        _passwordError.value += translatedMessage + "\n"
-    }
-
     fun getUserDatabaseRef(uid: String): DatabaseReference {
         return database.getReference("users/${uid}")
     }
