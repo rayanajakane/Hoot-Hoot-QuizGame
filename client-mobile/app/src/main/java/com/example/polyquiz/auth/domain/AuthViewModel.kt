@@ -229,10 +229,7 @@ class AuthViewModel : ViewModel() {
         } catch (e: Exception) {
             StringValue.StringResource(R.string.other_error)
         }
-
-        val translatedErrorMessage = errorMessage.asString(context)
-
-        _authState.value = AuthState.Error(StringValue.DynamicString(translatedErrorMessage))
+        _authState.value = AuthState.Error(errorMessage)
     }
 
     private fun validatePassword(password: String, context: Context) {
