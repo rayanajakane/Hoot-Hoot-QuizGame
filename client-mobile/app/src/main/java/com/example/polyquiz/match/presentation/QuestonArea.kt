@@ -45,6 +45,7 @@ fun QuestionArea(
     answerService: AnswerService,
     authViewModel: AuthViewModel,
     navigateToHome: () -> Unit,
+    navigateToResultsPage: () -> Unit,
     modifier: Modifier
 ) {
 
@@ -61,6 +62,7 @@ fun QuestionArea(
         matchRoomService.isQuitting = false
         answerService.playerScore = 0
         context = matchContextService.getContext()
+        println("is this$context")
 
         when (MatchRoomService.hasBeenKickedOut) {
             true -> {
@@ -70,6 +72,12 @@ fun QuestionArea(
             }
             else -> Unit
         }
+    }
+    context = matchContextService.getContext()
+
+    fun routeToResultsPage(){
+        matchRoomService.routeToResultsPage()
+
     }
 
     Row(modifier = Modifier.fillMaxSize()) {
@@ -126,7 +134,8 @@ fun QuestionArea(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     val questionText =
-                        if (matchRoomService.isCooldown) MatchStatus.PREPARE.value else question?.text ?: ""
+                        if (matchRoomService.isCooldown) MatchStatus.PREPARE.value else question?.text
+                            ?: ""
 
                     Text(
                         text = questionText,
@@ -146,7 +155,8 @@ fun QuestionArea(
             }
 
             Spacer(modifier = Modifier.height(12.dp))
-            if (context != MatchContext.HOSTVIEW){
+            println(context)
+            if (context != MatchContext.HOSTVIEW) {
                 Text(
                     text = "SCORE : $score",
                     style = MaterialTheme.typography.titleMedium
@@ -154,13 +164,22 @@ fun QuestionArea(
 
                 if (answerService.showFeedback && context === MatchContext.PLAYERVIEW && !matchRoomService.isCooldown) {
                     val (feedbackText, feedbackColor) = when (answerService.answerCorrectness) {
-                        AnswerCorrectness.WRONG -> "\uD83D\uDE14 Mauvaise Réponse \uD83D\uDE14" to Color(0xFFe91b0c)
+                        AnswerCorrectness.WRONG -> "\uD83D\uDE14 Mauvaise Réponse \uD83D\uDE14" to Color(
+                            0xFFe91b0c
+                        )
+
                         AnswerCorrectness.OK -> {
-                            "\uD83C\uDD97 Réponse partielle! Vous avez obtenu ${(question?.points ?: 0) / 2} points \uD83C\uDD97" to Color(0xFFf6c811)
+                            "\uD83C\uDD97 Réponse partielle! Vous avez obtenu ${(question?.points ?: 0) / 2} points \uD83C\uDD97" to Color(
+                                0xFFf6c811
+                            )
                         }
+
                         AnswerCorrectness.GOOD -> {
-                            "\uD83C\uDD97 Réponse correcte! Vous avez obtenu ${question?.points} points \uD83C\uDD97" to Color(0xFF4caf50)
+                            "\uD83C\uDD97 Réponse correcte! Vous avez obtenu ${question?.points} points \uD83C\uDD97" to Color(
+                                0xFF4caf50
+                            )
                         }
+
                         else -> null to null
                     }
 
@@ -173,7 +192,7 @@ fun QuestionArea(
                     }
 
 
-                    if (answerService.bonusPoints > 0){
+                    if (answerService.bonusPoints > 0) {
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
                             text = "✨ Vous avez obtenu un bonus de ${answerService.bonusPoints} points!✨",
@@ -185,7 +204,7 @@ fun QuestionArea(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-        }
+            }
 
             if (!matchRoomService.isCooldown) {
                 when (question?.type) {
@@ -200,12 +219,14 @@ fun QuestionArea(
                     }
 
                     QuestionType.LONG_ANSWER.value -> {
-                        LongAnswerArea(answerService, context, modifier = Modifier.fillMaxWidth(0.8f))
+                        LongAnswerArea(
+                            answerService,
+                            context,
+                            modifier = Modifier.fillMaxWidth(0.8f)
+                        )
                     }
                 }
             }
-
-
 
             Box(
                 modifier = Modifier
@@ -227,8 +248,8 @@ fun QuestionArea(
                     }
                 }
             }
-
         }
+
         if(matchRoomService.isMatchStarted)
         {
             PlayersListComponent(
@@ -245,11 +266,25 @@ fun QuestionArea(
                                 (answerService.isGradingComplete && question?.type == QuestionType.LONG_ANSWER.value)
                             )
                     ) {
+                        println("fuck${matchRoomService.getUsername()}")
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(onClick = { matchRoomService.goToNextQuestion() }) {
                             Text("QUESTION SUIVANTE")
                         }
                     }
+                    if (context == MatchContext.HOSTVIEW && answerService.isEndGame) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(
+                            onClick = {
+                                routeToResultsPage();
+                                navigateToResultsPage()},
+                            modifier = Modifier.fillMaxWidth(0.8f),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text("Présenter les résultats finaux")
+                        }
+                    }
+
 
                     Button(
                         onClick = {
@@ -263,7 +298,5 @@ fun QuestionArea(
                 }
             )
         }
-
-
-        }
+    }
 }
