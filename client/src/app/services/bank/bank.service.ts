@@ -43,6 +43,7 @@ export class BankService {
     }
 
     addQuestion(newQuestion: Question, isModificationPageQuestion: boolean = false): void {
+        console.log('Bank add question');
         console.log(newQuestion);
         const pictureFile = newQuestion.pictureFile;
         const isImageToUpload = this.isImageToUploadToBank(newQuestion.pictureUrl);
@@ -52,9 +53,9 @@ export class BankService {
         // TODO: Copy image if already in firebase storage
 
         if (isImageToUpload) newQuestion.pictureUrl = '';
-
         newQuestion.pictureFile = null;
         delete newQuestion['pictureFile'];
+
         this.questionService.createQuestion(newQuestion).subscribe({
             next: async (response: HttpResponse<string>) => {
                 if (response.body) {

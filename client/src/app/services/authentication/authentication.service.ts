@@ -358,7 +358,6 @@ export class AuthenticationService {
             .then(async () => {
                 // Handle successful uploads on complete
                 const downloadURL = getDownloadURL((await uploadTask).ref);
-                console.log('File available at', downloadURL);
                 return downloadURL;
             })
             .catch(() => {

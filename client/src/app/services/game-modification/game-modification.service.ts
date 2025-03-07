@@ -118,7 +118,6 @@ export class GameModificationService {
             );
             this.game.questions[pictureUpload.index].pictureUrl = pictureUrl;
         }
-        console.log(this.game);
         this.gameService.submitGame(this.game, ManagementState.GameModify).subscribe({
             next: (response: HttpResponse<string>) => {
                 if (!response.body) return;
@@ -168,6 +167,8 @@ export class GameModificationService {
     }
 
     dragQuizQuestion(question: Question) {
+        console.log('drag');
+        console.log(question);
         this.currentQuestion = question;
     }
 
@@ -260,6 +261,8 @@ export class GameModificationService {
     }
 
     private addQuestionToBank(newQuestion: Question) {
+        console.log('addQuestionToBank');
+        console.log(newQuestion);
         if (!this.isDuplicateQuestion(newQuestion, this.originalBankQuestions)) {
             this.bankService.addQuestion(newQuestion);
             // TODO: If existing question already has image, it needs to be copied to the bank.
@@ -289,7 +292,8 @@ export class GameModificationService {
                 this.game.questions.push(newQuestion);
                 this.markPendingChanges();
                 if (this.bankService.addToBank) {
-                    this.originalBankQuestions.push(newQuestion);
+                    this.addQuestionToBank(newQuestion);
+                    // this.originalBankQuestions.push(newQuestion);
                 }
             },
             error: (error: HttpErrorResponse) => this.notificationService.displayErrorMessage(`${QuestionStatus.UNVERIFIED} \n ${error.message}`),

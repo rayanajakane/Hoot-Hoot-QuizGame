@@ -91,14 +91,13 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
             const newQuestion: Question = this.questionForm.value;
             newQuestion.pictureFile = this.loadedImageFile;
             newQuestion.lastModification = new Date().toLocaleDateString();
-
             if (this.modificationState === ManagementState.BankModify) {
                 this.modifyQuestionEvent.emit(newQuestion);
             } else {
                 this.createQuestionEvent.emit(newQuestion);
             }
             if (this.bankService.addToBank) {
-                this.bankService.addQuestion(newQuestion, true);
+                // this.bankService.addQuestion(newQuestion, true);
             }
         }
     }
