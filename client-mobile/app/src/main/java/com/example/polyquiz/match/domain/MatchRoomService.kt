@@ -1,4 +1,5 @@
 package com.example.polyquiz.match.domain
+import android.annotation.SuppressLint
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.constants.MatchEvents
 import com.example.polyquiz.constants.MatchStatus
@@ -12,8 +13,13 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.polyquiz.constants.Route
 
+@SuppressLint("StaticFieldLeak")
 object MatchRoomService {
+    var navController : NavController? = null
     var players by mutableStateOf<List<Player>>(emptyList())
     var messages by mutableStateOf<List<Message>>(emptyList())
     var isMatchStarted by mutableStateOf(false)
@@ -24,6 +30,7 @@ object MatchRoomService {
     var isPlaying by mutableStateOf(false)
     var isTimeToNavigate by mutableStateOf(false)
     var hasBeenKickedOut by mutableStateOf(false)
+    var isLocked by mutableStateOf(false)
     var gameTitle: String = ""
     var gameDuration: Int = 0
     var currentQuestion by mutableStateOf<Question?>(null)
@@ -31,9 +38,12 @@ object MatchRoomService {
     var isCooldown by mutableStateOf(false)
     var isQuitting by mutableStateOf(false)
 
+
     private var matchRoomCode: String = ""
     private var username: String = ""
     private var hasEnteredRoom = false
+
+
 
     private val socket = SocketHandler.getSocket()
 
@@ -58,7 +68,7 @@ object MatchRoomService {
             handleError()
 //            onPlayerChatStateToggle()
             onRouteToResultsPage()
-            println("we just set time to go to wait page to true")
+            //println("we just set time to go to wait page to true")
             timeToGoToWaitPage = true
         }
     }
@@ -260,8 +270,13 @@ object MatchRoomService {
     fun onRouteToResultsPage() {
         socket.on(MatchEvents.ROUTE_TO_RESULTS_PAGE.value) { _ ->
             isResults = true
-//            navigator.navigateTo("results")
+            navigateToResultsPage()
+            println("isResults")
         }
+    }
+
+    private fun navigateToResultsPage() {
+        navController?.navigate(Route.ResultsPage)
     }
 
     fun onPlayerKick() {
@@ -272,9 +287,11 @@ object MatchRoomService {
     }
 
     fun toggleLock() {
-        if (username == HOST_USERNAME) {
+        //if (username == HOST_USERNAME) {
             socket.emit(MatchEvents.TOGGLE_LOCK.value, matchRoomCode)
-        }
+        println(username)
+        println(matchRoomCode)
+       // println(isLocked)
     }
 
 

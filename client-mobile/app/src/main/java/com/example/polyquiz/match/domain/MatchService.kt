@@ -36,7 +36,7 @@ object MatchService {
     fun createMatch(){
         matchRoomService.connect()
         println(currentGame?.id)
-        matchRoomService.createRoom(currentGame!!.id!!) //euh
+        matchRoomService.createRoom(currentGame!!.id!!)
     }
 
     fun getBackupGame(id:String){

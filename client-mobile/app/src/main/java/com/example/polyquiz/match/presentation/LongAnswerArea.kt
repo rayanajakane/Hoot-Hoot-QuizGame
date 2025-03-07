@@ -1,6 +1,7 @@
 package com.example.polyquiz.match.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -20,6 +21,7 @@ import com.example.polyquiz.match.domain.AnswerService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.constants.GradesInfo
 import com.example.polyquiz.constants.LongAnswerInfo
+import com.example.polyquiz.match.domain.MatchService.matchRoomService
 
 @Composable
 fun LongAnswerArea(
@@ -85,13 +87,13 @@ fun LongAnswerArea(
                 }
             }
 
-
             Button(
-                onClick = { answerService.sendGrades() },
+                onClick = { println("Sending grades")
+                    answerService.sendGrades() },
                 enabled = answerService.isGradingComplete,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                Text(
+                Text( // text="SOUMETTRE CORRECTION"
                     text = if (answerService.isGradingComplete) "SOUMETTRE CORRECTION"
                     else "Il reste des joueurs à évaluer"
                 )
@@ -102,30 +104,55 @@ fun LongAnswerArea(
 
 @Composable
 fun AnswerCard(playerAnswer: LongAnswerInfo) {
+    val answerService = AnswerService
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = playerAnswer.username, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-            Text(text = playerAnswer.answer, fontSize = 14.sp, modifier = Modifier.padding(top = 8.dp))
+            Text(
+                text = playerAnswer.username,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+            Text(
+                text = playerAnswer.answer,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
                 AnswerCorrectness.entries.forEach { option ->
                     Button(
-                        onClick = { playerAnswer.score = option.value.toString() },
+                        onClick = {
+                            playerAnswer.score = option.value.toString()
+                            answerService.handleGrading()
+                            //println("playersanswer${playerAnswer.score}")
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = getGradeColor(option)
-                        )
+                        ),
+                        modifier = Modifier.padding(8.dp)
                     ) {
-                        Text("${option.value}%")
+
+                        Text(
+                            text = "${option.value}%",
+                            color = Color.Black
+                        )
                     }
                 }
             }
         }
     }
 }
+
 
 fun getGradeColor(option: AnswerCorrectness): Color {
     return when (option) {

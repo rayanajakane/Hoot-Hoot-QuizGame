@@ -20,4 +20,7 @@ object Route {
 
     @Serializable
     object WaitPage
+
+    @Serializable
+    object ResultsPage
 }

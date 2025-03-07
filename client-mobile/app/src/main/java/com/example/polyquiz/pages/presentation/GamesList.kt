@@ -88,6 +88,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit) {
     fun createMatch(context: MatchContext){
         contextService.setContext(context)
         reloadSelectedGame()
+        println(context)
     }
 
     Row(
