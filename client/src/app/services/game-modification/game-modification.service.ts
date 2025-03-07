@@ -92,7 +92,7 @@ export class GameModificationService {
     }
 
     isPictureToUploadToGame(pictureUrl: string) {
-        return pictureUrl !== '';
+        return pictureUrl !== '' && !pictureUrl.includes('gameQuestionPictures');
     }
 
     getPictureUploads() {
@@ -168,7 +168,6 @@ export class GameModificationService {
 
     dragQuizQuestion(question: Question) {
         console.log('drag');
-        console.log(question);
         this.currentQuestion = question;
     }
 
