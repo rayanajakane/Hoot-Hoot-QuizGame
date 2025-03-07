@@ -56,6 +56,7 @@
         >
             <app-multiple-choice-area *ngIf="currentQuestion.type === questionType.MultipleChoice" class="choice-area"></app-multiple-choice-area>
             <app-long-answer-area *ngIf="currentQuestion.type === questionType.LongAnswer" class="choice-area"></app-long-answer-area>
+            <app-estimated-answer-area *ngIf="currentQuestion.type === questionType.EstimatedAnswer" class="choice-area"></app-estimated-answer-area>
         </div>
 
         <div

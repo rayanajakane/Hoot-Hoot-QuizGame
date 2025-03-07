@@ -11,6 +11,7 @@ import { AlertComponent } from '@app/components/alert/alert.component';
 import { ChatComponent } from '@app/components/chat/chat.component';
 import { DialogConfirmComponent } from '@app/components/dialog-confirm/dialog-confirm.component';
 import { DialogTextInputComponent } from '@app/components/dialog-text-input/dialog-text-input.component';
+import { EstimatedAnswerAreaComponent } from '@app/components/estimated-answer-area/estimated-answer-area.component';
 import { GameListItemComponent } from '@app/components/game-list-item/game-list-item.component';
 import { HistogramComponent } from '@app/components/histogram/histogram.component';
 import { LongAnswerAreaComponent } from '@app/components/long-answer-area/long-answer-area.component';
@@ -92,6 +93,7 @@ import { FIREBASE_CONFIG } from 'src/environments/firebase-config';
         SortByScorePipe,
         SortHistoryPipe,
         SortPlayersPipe,
+        EstimatedAnswerAreaComponent,
     ],
     imports: [
         AppMaterialModule,

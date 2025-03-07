@@ -1,5 +1,6 @@
 import { ExpiredTimerEvents } from '@app/constants/expired-timer-events';
 import { INVALID_CODE, LOCKED_ROOM } from '@app/constants/match-login-errors';
+import { QuestionType } from '@app/constants/question-types';
 import { Choice } from '@app/model/database/choice';
 import { Game } from '@app/model/database/game';
 import { Question } from '@app/model/database/question';
@@ -150,7 +151,8 @@ export class MatchRoomService {
         const firstQuestion = matchRoom.game.questions[0];
         const gameDuration: number = matchRoom.game.duration;
         this.setQuestionStrategy(matchRoom);
-        matchRoom.currentQuestionAnswer = this.filterCorrectChoices(firstQuestion);
+        // matchRoom.currentQuestionAnswer = this.filterCorrectChoices(firstQuestion);
+        this.defineCurrentQuestionAnswer(matchRoomCode);
         this.removeIsCorrectField(firstQuestion);
         matchRoom.hostSocket.send(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
         const isClassicMode: boolean = matchRoom.isClassicMode;
@@ -168,13 +170,30 @@ export class MatchRoomService {
 
         const nextQuestion = this.getCurrentQuestion(matchRoomCode);
         matchRoom.currentQuestion = nextQuestion;
-        matchRoom.currentQuestionAnswer = this.filterCorrectChoices(nextQuestion);
+
+        this.defineCurrentQuestionAnswer(matchRoomCode);
         this.setQuestionStrategy(matchRoom);
 
         this.removeIsCorrectField(nextQuestion);
         server.in(matchRoomCode).emit(MatchEvents.GoToNextQuestion, nextQuestion);
         matchRoom.hostSocket.send(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
         this.timeService.startTimer(server, matchRoomCode, matchRoom.questionDuration, ExpiredTimerEvents.QuestionTimerExpired);
+    }
+
+    defineCurrentQuestionAnswer(matchRoomCode: string) {
+        const matchRoom: MatchRoom = this.getRoom(matchRoomCode);
+        const currentQuestion = matchRoom.currentQuestion;
+        switch (currentQuestion.type) {
+            case QuestionType.MultipleChoice:
+                matchRoom.currentQuestionAnswer = this.filterCorrectChoices(currentQuestion);
+                break;
+            case QuestionType.EstimatedAnswer:
+                matchRoom.currentQuestionAnswer = [String(currentQuestion.estimatedParameters.correctAnswer)];
+                break;
+            default:
+                matchRoom.currentQuestionAnswer = [];
+                break;
+        }
     }
 
     resetPlayerSubmissionCount(matchRoomCode: string) {

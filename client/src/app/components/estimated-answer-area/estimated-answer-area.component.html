@@ -1,0 +1,15 @@
+<div>
+    <form class="long-answer-form" *ngIf="matchContextService.getContext() !== 'hostView'">
+        <mat-form-field class="text-form" appearance="outline">
+            <mat-label class="text-label">Réponse</mat-label>
+            <textarea
+                class="text-input"
+                matInput
+                #message
+                [(ngModel)]="answerService.currentLongAnswer"
+                name="answer"
+                (input)="answerService.updateLongAnswer()"
+            ></textarea>
+        </mat-form-field>
+    </form>
+</div>
