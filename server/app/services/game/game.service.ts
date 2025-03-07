@@ -8,6 +8,7 @@ import {
 } from '@app/constants/request-errors';
 import { Choice } from '@app/model/database/choice';
 import { Game, GameDocument } from '@app/model/database/game';
+import { Question } from '@app/model/database/question';
 import { CreateGameDto } from '@app/model/dto/game/create-game.dto';
 import { UpdateGameDto } from '@app/model/dto/game/update-game.dto';
 import { GameCreationService } from '@app/services/game-creation/game-creation.service';
@@ -30,6 +31,18 @@ export class GameService {
 
     async getAllVisibleGames(): Promise<Game[]> {
         return await this.gameModel.find({ isVisible: true });
+    }
+
+    async countGamesSamePicture(url: string): Promise<number> {
+        const games = await this.getAllGames();
+        const gamesWithRequiredPicture = [];
+        games.forEach((game: Game) => {
+            const hasSamePicture = game.questions.some((question: Question) => {
+                question.pictureUrl === url;
+            });
+            if (hasSamePicture) gamesWithRequiredPicture.push(game);
+        });
+        return gamesWithRequiredPicture.length;
     }
 
     async getGameById(gameId: string): Promise<Game> {

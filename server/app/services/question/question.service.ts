@@ -19,6 +19,10 @@ export class QuestionService {
         return await this.questionModel.find({});
     }
 
+    async countQuestionsSamePicture(url: string): Promise<number> {
+        return (await this.questionModel.find({ pictureUrl: url })).length;
+    }
+
     async getQuestionByName(name: string): Promise<Question> {
         return await this.questionModel.findOne({ text: name });
     }

@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as admin from 'firebase-admin';
 
 // REFERENCE: https://medium.com/@elangoram1998/getting-started-with-firebase-admin-in-nest-js-71f676e73e6
+// https://dev.to/aswinsanakan/how-to-integrate-firebase-in-nestjs-5gl9
 const firebaseProvider = {
     provide: 'FIREBASE_APP',
     inject: [ConfigService],
@@ -13,7 +14,7 @@ const firebaseProvider = {
             type: configService.get<string>('TYPE'),
             project_id: configService.get<string>('PROJECT_ID'),
             private_key_id: configService.get<string>('PRIVATE_KEY_ID'),
-            private_key: configService.get<string>('PRIVATE_KEY'),
+            private_key: configService.get<string>('PRIVATE_KEY').replace(/\\n/g, '\n'),
             client_email: configService.get<string>('CLIENT_EMAIL'),
             client_id: configService.get<string>('CLIENT_ID'),
             auth_uri: configService.get<string>('AUTH_URI'),
