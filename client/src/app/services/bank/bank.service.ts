@@ -42,18 +42,15 @@ export class BankService {
         });
     }
 
-    async addQuestion(newQuestion: Question, isModificationPageQuestion: boolean = false) {
+    addQuestion(newQuestion: Question, isModificationPageQuestion: boolean = false): void {
         console.log('Bank add question');
         console.log(newQuestion);
-
-        if (!newQuestion.pictureFile) {
-            newQuestion.pictureFile = await this.authenticationService.urlToObject(newQuestion.pictureUrl);
-            console.log('After pictureFile edit');
-            console.log(newQuestion);
-        }
-
         const pictureFile = newQuestion.pictureFile;
         const isImageToUpload = this.isImageToUploadToBank(newQuestion.pictureUrl);
+
+        // const isImageToCopyToBank = this.isImageToCopyToBank(newQuestion.pictureUrl);
+
+        // TODO: Copy image if already in firebase storage
 
         if (isImageToUpload) newQuestion.pictureUrl = '';
         newQuestion.pictureFile = null;
@@ -103,15 +100,18 @@ export class BankService {
     }
 
     isImageToUploadToBank(pictureUrl: string) {
-        return pictureUrl !== '' && !pictureUrl.includes('bankQuestionPictures');
+        return pictureUrl !== '';
     }
 
-    updateQuestion(newQuestion: Question) {
+    isImageToCopyToBank(pictureUrl: string) {
+        return !pictureUrl.includes('bankQuestionPictures');
+    }
+
+    updateQuestion(newQuestion: Question): void {
         if (this.isDuplicateQuestion(newQuestion, this.questions)) {
             this.notificationService.displayErrorMessage(BankStatus.DUPLICATE);
             return;
         }
-
         const pictureFile = newQuestion.pictureFile;
         const isImageToUpload = this.isImageToUploadToBank(newQuestion.pictureUrl);
 
