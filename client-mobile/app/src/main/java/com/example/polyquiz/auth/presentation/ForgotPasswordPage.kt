@@ -27,15 +27,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.polyquiz.R
 import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
-import com.example.polyquiz.constants.DisplayAuthenticationText
 import kotlinx.coroutines.launch
 
 @Composable
@@ -93,14 +94,14 @@ fun ForgotPasswordPage(
                     .fillMaxWidth(0.5f)
             ) {
                 Text(
-                    text = DisplayAuthenticationText.RESET_PASSWORD.value,
+                    text = stringResource(R.string.reset_password),
                     fontSize = 35.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
                 Text(
-                    text = DisplayAuthenticationText.SENT_EMAIL_EXTRA_INFO.value,
+                    text = stringResource(R.string.sent_email_extra_info),
                     textAlign = TextAlign.Center
                 )
 
@@ -110,7 +111,7 @@ fun ForgotPasswordPage(
                     value = email,
                     onValueChange = { email = it },
                     singleLine = true,
-                    label = { Text(DisplayAuthenticationText.EMAIL.value) },
+                    label = { Text(stringResource(R.string.email)) },
                     modifier = Modifier.fillMaxWidth(),
                 )
 
@@ -126,7 +127,7 @@ fun ForgotPasswordPage(
                     },
                     enabled = authState.value != AuthState.Loading
                 ) {
-                    Text(DisplayAuthenticationText.RESET_PASSWORD.value)
+                    Text(stringResource(R.string.reset_password))
                 }
 
                 ElevatedButton(
@@ -140,7 +141,7 @@ fun ForgotPasswordPage(
 
                     )
                 ) {
-                    Text(DisplayAuthenticationText.RETURN_TO_LOGIN.value)
+                    Text(stringResource(R.string.return_to_login),)
                 }
             }
         }
