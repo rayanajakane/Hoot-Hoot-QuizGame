@@ -100,7 +100,8 @@ export class MatchRoomService {
     createRoom(gameId: string, isClassicMode: boolean = true) {
         this.socketService.send(MatchEvents.CreateRoom, { gameId, isClassicMode }, (res: { code: string }) => {
             this.matchRoomCode = res.code;
-            this.username = HOST_USERNAME;
+            // TODO: Migrate the logic to server, use UserID instead (need to track Host User ID in match room)
+            this.username = HOST_USERNAME; // This could cause problem if there is a user called 'Organisateur'. It won't synergize with Transloco too.
             this.sendPlayersData(this.matchRoomCode);
             this.router.navigateByUrl('/match-room');
         });
@@ -135,6 +136,7 @@ export class MatchRoomService {
     }
 
     banUsername(username: string) {
+        // TODO: Migrate the logic to server, use UserID instead (need to track Host User ID in match room)
         if (this.username === HOST_USERNAME) {
             const sentInfo: UserInfo = { roomCode: this.matchRoomCode, username };
             this.socketService.send(MatchEvents.BanUsername, sentInfo);
@@ -244,6 +246,7 @@ export class MatchRoomService {
     }
 
     toggleLock() {
+        // TODO: Migrate the logic to server, use UserID instead (need to track Host User ID in match room)
         if (this.username === HOST_USERNAME) {
             this.socketService.send(MatchEvents.ToggleLock, this.matchRoomCode);
         }

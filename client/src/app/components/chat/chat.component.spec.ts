@@ -9,11 +9,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ChatComponent } from '@app/components/chat/chat.component';
-import { MOCK_DATE, MOCK_MESSAGE } from '@app/constants/chat-mocks';
+import { MOCK_DATE, MOCK_MESSAGE, MOCK_USER_ID_NAME, MOCK_USER_ID_NAME_2 } from '@app/constants/chat-mocks';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { ChatService } from '@app/services/chat/chat.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { getTranslocoModule } from '@app/transloco-testing.module';
+import { ChatEmoji } from '@common/constants/chat-emojis';
+import { Subject } from 'rxjs';
 import SpyObj = jasmine.SpyObj;
 
 const mockDate = MOCK_DATE;
@@ -30,7 +32,7 @@ describe('ChatComponent', () => {
 
     beforeEach(() => {
         const socketHandlerSpy = jasmine.createSpyObj('SocketHandlerService', ['send']);
-        const chatSpy = jasmine.createSpyObj('ChatService', ['sendMessage', 'handleReceivedMessages']);
+        const chatSpy = jasmine.createSpyObj('ChatService', ['sendMessage', 'handleReceivedMessages', 'reactToMessage']);
         const authSpy = jasmine.createSpyObj('AuthenticationService', ['connectToSocket', 'userDisplayName']);
         const matchSpy = jasmine.createSpyObj('MatchRoomService', ['getRoomCode']);
         socketHandlerSpy.socket = jasmine.createSpyObj('socket', ['removeListener']);
@@ -66,6 +68,8 @@ describe('ChatComponent', () => {
         (authServiceSpy as any).userId = MOCK_MESSAGE.authorId;
         (authServiceSpy as any).userAvatarUrl = MOCK_MESSAGE.photoUrl;
         matchRoomServiceSpy = TestBed.inject(MatchRoomService) as jasmine.SpyObj<MatchRoomService>;
+        chatServiceSpy.updateChatScroll = new Subject();
+        chatServiceSpy.updateChatScroll.next(null);
         fixture.detectChanges();
     });
 
@@ -94,5 +98,35 @@ describe('ChatComponent', () => {
         const messageText = '';
         component.sendMessage(messageText);
         expect(chatServiceSpy.sendMessage).not.toHaveBeenCalled();
+    });
+
+    it('should react to message', () => {
+        const mockMessage = MOCK_MESSAGE;
+        matchRoomServiceSpy.getRoomCode.and.returnValue('test');
+        component.reactToMessage(mockMessage.id, ChatEmoji.LIKE);
+        chatServiceSpy.reactToMessage.and.returnValue();
+        expect(chatServiceSpy.reactToMessage).toHaveBeenCalledWith(
+            mockMessage.id,
+            ChatEmoji.LIKE,
+            mockMessage.authorId,
+            mockMessage.authorUsername,
+            'test',
+        );
+    });
+    it('should display reactions tool tip', () => {
+        const result = component.getReactionsToolTip([MOCK_USER_ID_NAME, MOCK_USER_ID_NAME_2]);
+        const expectedResult = `\n${MOCK_USER_ID_NAME.name}\n${MOCK_USER_ID_NAME_2.name}`;
+        expect(result).toEqual(expectedResult);
+    });
+
+    it('should return true if own reaction', () => {
+        (authServiceSpy as any).userId = MOCK_USER_ID_NAME.id;
+        const result = component.isOwnReaction([MOCK_USER_ID_NAME]);
+        expect(result).toBeTruthy();
+    });
+    it('should return false if not own reaction', () => {
+        (authServiceSpy as any).userId = '';
+        const result = component.isOwnReaction([MOCK_USER_ID_NAME]);
+        expect(result).toBeFalsy();
     });
 });
