@@ -275,7 +275,7 @@ class AuthViewModel : ViewModel() {
 
     private fun validateEmail(email: String, context: Context) {
         if(email.isBlank() || !isValidEmail(email)) {
-            _emailError.value += StringValue.StringResource(R.string.invalid_email).asString(context) + "\n"
+            _emailError.value = StringValue.StringResource(R.string.invalid_email).asString(context) + "\n"
         } else {
             _emailError.value = ""
         }
