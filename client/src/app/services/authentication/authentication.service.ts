@@ -13,7 +13,7 @@ import { ChatEvents } from '@common/events/chat.events';
 import { TranslocoService } from '@jsverse/transloco';
 import { browserSessionPersistence, sendPasswordResetEmail, setPersistence, User, UserCredential } from 'firebase/auth';
 import { Database, DataSnapshot, get, getDatabase, onDisconnect, ref, remove, set, update } from 'firebase/database';
-import { deleteObject, FirebaseStorage, ref as firebaseStorageRef, getDownloadURL, getStorage, listAll, uploadBytes } from 'firebase/storage';
+import { deleteObject, FirebaseStorage, ref as firebaseStorageRef, getDownloadURL, getStorage, uploadBytes } from 'firebase/storage';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -339,13 +339,8 @@ export class AuthenticationService {
         return url;
     }
 
-    async uploadBankQuestionPicture(bankQuestionId: string, file: any): Promise<string> {
-        const url: string = await this.uploadImage(`bankQuestionPictures/${bankQuestionId}`, file);
-        return url;
-    }
-
-    async uploadGameQuestionPicture(gameId: string, questionId: string, file: any): Promise<string> {
-        const url: string = await this.uploadImage(`gameQuestionPictures/${gameId}/${questionId}`, file);
+    async uploadQuestionPicture(questionId: string, file: any): Promise<string> {
+        const url: string = await this.uploadImage(`questionPictures/${questionId}`, file);
         return url;
     }
 
@@ -367,25 +362,12 @@ export class AuthenticationService {
             });
     }
 
+    isImageToUpload(imageUrl: string) {
+        return imageUrl.startsWith('data:image/');
+    }
+
     async deleteUserAvatar(userId: string) {
         this.deleteImage(`avatars/${userId}`);
-    }
-
-    async deleteBankQuestionPicture(bankQuestionId: string) {
-        this.deleteImage(`bankQuestionPictures/${bankQuestionId}`);
-    }
-
-    async deleteGameQuestionPictures(gameId: string) {
-        const storageRef = firebaseStorageRef(this.storage, `gameQuestionPictures/${gameId}`);
-        await listAll(storageRef)
-            .then((res) => {
-                res.items.forEach((itemRef) => {
-                    deleteObject(itemRef);
-                });
-            })
-            .catch((error) => {
-                console.log(error);
-            });
     }
 
     async deleteImage(path: string) {

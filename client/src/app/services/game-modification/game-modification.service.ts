@@ -91,14 +91,10 @@ export class GameModificationService {
         this.markPendingChanges();
     }
 
-    isPictureToUploadToGame(pictureUrl: string) {
-        return pictureUrl !== '';
-    }
-
     getPictureUploads() {
         const pictureUploads: PictureUploadData[] = [];
         this.game.questions.forEach((question: Question, index: number) => {
-            if (question.pictureFile && this.isPictureToUploadToGame(question.pictureUrl)) {
+            if (question.pictureFile && this.authenticationService.isImageToUpload(question.pictureUrl)) {
                 pictureUploads.push({ index, pictureFile: question.pictureFile });
                 this.game.questions[index].pictureUrl = '';
             }
@@ -111,8 +107,7 @@ export class GameModificationService {
     async updatePictureUploads(game: Game, pictureUploads: PictureUploadData[]) {
         this.game = game;
         for (let pictureUpload of pictureUploads) {
-            const pictureUrl = await this.authenticationService.uploadGameQuestionPicture(
-                this.game.id,
+            const pictureUrl = await this.authenticationService.uploadQuestionPicture(
                 this.game.questions[pictureUpload.index].id,
                 pictureUpload.pictureFile,
             );

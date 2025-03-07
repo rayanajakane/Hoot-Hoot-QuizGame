@@ -34,7 +34,6 @@ export class BankService {
     deleteQuestion(questionId: string): void {
         this.questionService.deleteQuestion(questionId).subscribe({
             next: () => {
-                this.authenticationService.deleteBankQuestionPicture(questionId); // TODO: Check case where bank question has no image on Firebase storage
                 this.questions = this.questions.filter((question: Question) => question.id !== questionId);
                 this.notificationService.displaySuccessMessage(`${BankStatus.DELETED}`);
             },
@@ -46,11 +45,7 @@ export class BankService {
         console.log('Bank add question');
         console.log(newQuestion);
         const pictureFile = newQuestion.pictureFile;
-        const isImageToUpload = this.isImageToUploadToBank(newQuestion.pictureUrl);
-
-        // const isImageToCopyToBank = this.isImageToCopyToBank(newQuestion.pictureUrl);
-
-        // TODO: Copy image if already in firebase storage
+        const isImageToUpload = this.authenticationService.isImageToUpload(newQuestion.pictureUrl);
 
         if (isImageToUpload) newQuestion.pictureUrl = '';
         newQuestion.pictureFile = null;
@@ -72,7 +67,7 @@ export class BankService {
     }
 
     async uploadQuestionPicture(newQuestion: Question, pictureFile: File, isModificationPageQuestion: boolean = false, isNewQuestion = true) {
-        const pictureUrl = await this.authenticationService.uploadBankQuestionPicture(newQuestion.id, pictureFile);
+        const pictureUrl = await this.authenticationService.uploadQuestionPicture(newQuestion.id, pictureFile);
         newQuestion.pictureUrl = pictureUrl;
         this.questionService.updateQuestion(newQuestion).subscribe({
             next: (response: HttpResponse<string>) => {
@@ -99,21 +94,13 @@ export class BankService {
         }
     }
 
-    isImageToUploadToBank(pictureUrl: string) {
-        return pictureUrl !== '';
-    }
-
-    isImageToCopyToBank(pictureUrl: string) {
-        return !pictureUrl.includes('bankQuestionPictures');
-    }
-
     updateQuestion(newQuestion: Question): void {
         if (this.isDuplicateQuestion(newQuestion, this.questions)) {
             this.notificationService.displayErrorMessage(BankStatus.DUPLICATE);
             return;
         }
         const pictureFile = newQuestion.pictureFile;
-        const isImageToUpload = this.isImageToUploadToBank(newQuestion.pictureUrl);
+        const isImageToUpload = this.authenticationService.isImageToUpload(newQuestion.pictureUrl);
 
         // Reset URL if new image is uploaded
         if (isImageToUpload) newQuestion.pictureUrl = '';

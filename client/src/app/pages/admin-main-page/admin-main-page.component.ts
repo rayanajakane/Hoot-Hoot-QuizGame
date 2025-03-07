@@ -22,7 +22,6 @@ export class AdminMainPageComponent implements OnInit {
     }
 
     async onDeleteGameFromList(gameToDeleteId: string) {
-        await this.authenticationService.deleteGameQuestionPictures(gameToDeleteId);
         this.gameService.deleteGame(gameToDeleteId);
     }
 
