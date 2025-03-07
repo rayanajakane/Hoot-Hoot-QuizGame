@@ -108,7 +108,7 @@ fun QuestionArea(
                 Text("join")
             }
         }
-        //////////////////////////////////////////////////////////
+
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -276,8 +276,7 @@ fun QuestionArea(
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(
                             onClick = {
-                                routeToResultsPage();
-                                navigateToResultsPage()},
+                                routeToResultsPage() },
                             modifier = Modifier.fillMaxWidth(0.8f),
                             shape = RoundedCornerShape(8.dp)
                         ) {
