@@ -4,6 +4,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatSliderModule } from '@angular/material/slider';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -105,6 +106,7 @@ import { FIREBASE_CONFIG } from 'src/environments/firebase-config';
         DragDropModule,
         ReactiveFormsModule,
         TranslocoRootModule,
+        MatSliderModule,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [

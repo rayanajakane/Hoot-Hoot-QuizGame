@@ -153,7 +153,7 @@ export class MatchRoomService {
         this.setQuestionStrategy(matchRoom);
         // matchRoom.currentQuestionAnswer = this.filterCorrectChoices(firstQuestion);
         this.defineCurrentQuestionAnswer(matchRoomCode);
-        this.removeIsCorrectField(firstQuestion);
+        this.removeAnswerField(firstQuestion);
         matchRoom.hostSocket.send(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
         const isClassicMode: boolean = matchRoom.isClassicMode;
         server.in(matchRoomCode).emit(MatchEvents.BeginQuiz, { firstQuestion, gameDuration, isClassicMode });
@@ -174,7 +174,7 @@ export class MatchRoomService {
         this.defineCurrentQuestionAnswer(matchRoomCode);
         this.setQuestionStrategy(matchRoom);
 
-        this.removeIsCorrectField(nextQuestion);
+        this.removeAnswerField(nextQuestion);
         server.in(matchRoomCode).emit(MatchEvents.GoToNextQuestion, nextQuestion);
         matchRoom.hostSocket.send(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
         this.timeService.startTimer(server, matchRoomCode, matchRoom.questionDuration, ExpiredTimerEvents.QuestionTimerExpired);
@@ -239,8 +239,9 @@ export class MatchRoomService {
         return correctChoices;
     }
 
-    private removeIsCorrectField(question: Question) {
+    private removeAnswerField(question: Question) {
         question.choices.forEach((choice: Choice) => delete choice.isCorrect);
+        question.estimatedParameters.correctAnswer = undefined;
     }
 
     private setQuestionStrategy(matchRoom: MatchRoom) {

@@ -1,15 +1,10 @@
-<div>
-    <form class="long-answer-form" *ngIf="matchContextService.getContext() !== 'hostView'">
-        <mat-form-field class="text-form" appearance="outline">
-            <mat-label class="text-label">Réponse</mat-label>
-            <textarea
-                class="text-input"
-                matInput
-                #message
-                [(ngModel)]="answerService.currentLongAnswer"
-                name="answer"
-                (input)="answerService.updateLongAnswer()"
-            ></textarea>
-        </mat-form-field>
-    </form>
-</div>
+<mat-slider
+    min="{{ matchRoomService.currentQuestion.estimatedParameters?.lowerBound }}"
+    max="{{ matchRoomService.currentQuestion.estimatedParameters?.upperBound }}"
+    step="1"
+    discrete="thumblabel"
+>
+    <input matSliderThumb [formControl]="currentLongAnswerControl" (input)="updateAnswerFromSlider($event)" />
+</mat-slider>
+
+<p>Valeur choisie : {{ currentLongAnswerControl.value }}</p>
