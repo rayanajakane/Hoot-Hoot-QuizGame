@@ -14,9 +14,12 @@ import com.example.polyquiz.constants.Route
 import com.example.polyquiz.match.domain.AnswerService
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
+import com.example.polyquiz.match.domain.Player
 import com.example.polyquiz.match.presentation.QuestionArea
 import com.example.polyquiz.pages.presentation.MatchCreationPage
 import com.example.polyquiz.pages.presentation.WaitPage
+import com.example.polyquiz.results.presentation.ResultsPage
+
 
 // References: https://youtu.be/AIC_OFQ1r3k  and  https://youtu.be/lv1raAvwcgI
 @Composable
@@ -70,6 +73,9 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                 navigateToHome = {
                     navController.navigate(Route.Home)
                 },
+                navigateToResultsPage = {
+                    navController.navigate(Route.ResultsPage)
+                },
                 authViewModel = authViewModel,
                 matchContextService = MatchContextService,
                 matchRoomService = MatchRoomService,
@@ -105,6 +111,12 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                 },
                 authViewModel = authViewModel,
                 navigateToWaitPage = {navController.navigate(Route.WaitPage)}
+            )
+        }
+        composable<Route.ResultsPage> {
+            ResultsPage(modifier,
+                matchRoomService = MatchRoomService,
+                //matchContextService = MatchContextService,
             )
         }
     }
