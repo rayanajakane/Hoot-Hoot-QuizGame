@@ -43,8 +43,13 @@ export class BankService {
     }
 
     addQuestion(newQuestion: Question, isModificationPageQuestion: boolean = false): void {
+        console.log(newQuestion);
         const pictureFile = newQuestion.pictureFile;
         const isImageToUpload = this.isImageToUploadToBank(newQuestion.pictureUrl);
+
+        // const isImageToCopyToBank = this.isImageToCopyToBank(newQuestion.pictureUrl);
+
+        // TODO: Copy image if already in firebase storage
 
         if (isImageToUpload) newQuestion.pictureUrl = '';
 
@@ -94,7 +99,11 @@ export class BankService {
     }
 
     isImageToUploadToBank(pictureUrl: string) {
-        return !pictureUrl.includes('bankQuestionPictures') && pictureUrl !== '';
+        return pictureUrl !== '';
+    }
+
+    isImageToCopyToBank(pictureUrl: string) {
+        return !pictureUrl.includes('bankQuestionPictures');
     }
 
     updateQuestion(newQuestion: Question): void {
