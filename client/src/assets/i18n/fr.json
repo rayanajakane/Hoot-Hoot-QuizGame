@@ -1,17 +1,32 @@
 {
     "auth": {
         "error": {
+            "email-already-in-use": "Ce courriel est déjà utilisé",
             "session-already-exists": "Cet utilisateur est déjà connecté.",
             "empty-username-password": "Le nom d'utilisateur et/ou le mot de passe sont vides.",
             "user-already-exists": "Cet utilisateur existe déjà.",
+            "user-already-connected": "L'utilisateur est déjà connecté.",
             "password-too-short": "Le mot de passe est trop court (minimum: 6 caractères).",
             "invalid-username-password": "Le nom d'utilisateur et/ou le mot de passe sont invalides.",
-            "other-error": "Une erreur inconnue est survenue."
+            "username-already-exists": "Ce nom d'utilisateur est déjà pris",
+            "other-error": "Une erreur inconnue est survenue.",
+            "invalid-email": "Adresse courriel invalide.",
+            "username-too-short": "Nom d'utilisateur trop court. Min {{length}} caractères.",
+            "username-too-long": "Nom d'utilisateur trop long. Max {{length}} caractères.",
+            "username-special-char": "Ne doit pas contenir des charactères spéciaux.",
+            "password-lowercase": "Devrait contenir au moins 1 lettre minuscule.",
+            "password-uppercase": "Devrait contenir au moins 1 lettre majuscule.",
+            "password-digit": "Devrait contenir au moins 1 chiffre.",
+            "password-special": "Devrait contenir au moins 1 caractère spécial.",
+            "password-too-long": "Mot de passe trop long. Max {{length}} characters.",
+            "file-too-large": "La taille du fichier est trop élevée."
         },
         "dialog-feedback": {
             "sign-in": "Connexion réussie !",
             "sign-up": "Inscription réussie !",
-            "sign-out": "Déconnexion réussie !"
+            "sign-out": "Déconnexion réussie !",
+            "delete": "Suppression du profil réussie !",
+            "edited": "Modifications enregistrées !"
         }
     },
     "page": {
@@ -24,6 +39,48 @@
         "return-to-login": "Retourner à la page de connexion",
         "logout-action": "Se déconnecter",
         "message-label": "Message",
-        "disabled-label": "Désactivé"
+        "disabled-label": "Désactivé",
+        "email": "Courriel",
+        "user-edit": "Modification du Profil",
+        "save": "Sauvegarder",
+        "theme": "Thème visuel",
+        "language": "Langue",
+        "upload-avatar": "Téléverser un avatar",
+        "avatar-choices": "Avatars prédéfinis",
+        "delete-user": "Supprimer le profil",
+        "danger-zone": "Zone dangereuse",
+        "forgot-password": "Mot de passe oublié ?",
+        "reset-password": "Réinitialiser le mot de passe",
+        "sent-email": "Courriel envoyé !",
+        "sent-email-extra-info": "Si vous avez déjà un compte, vous recevrez un courriel pour réinitialiser votre mot de passe."
+    },
+    "nav": {
+        "main-page": "Page principale"
+    },
+    "main-page": {
+        "join-match": "Joindre une partie",
+        "host-match": "Créer une partie",
+        "admin-game": "Administrer les jeux",
+        "edit-profile": "Modifier le profil",
+        "team-name": "Équipe 201",
+        "access-code": "Code d'accès"
+    },
+    "match-creation-page": {
+        "games-list-label": "Liste des jeux",
+        "game-details-label": "Détails du jeu ",
+        "select-game-label": "Sélectionner un jeu dans la liste des jeux",
+        "time-per-QCM": "Temps par QCM:"
+    },
+    "admin-main-page": {
+        "admin-games": "Administration des jeux",
+        "create-new-game": "Créer un nouveau jeu",
+        "question-bank": "Banque de questions",
+        "existing-games-list": "Liste des jeux existants",
+        "game-title": "Titre du jeu",
+        "last-modification": "Date de dernière modification"
+    },
+    "common": {
+        "cancel": "Annuler",
+        "play": "Jouer"
     }
 }

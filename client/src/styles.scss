@@ -182,6 +182,10 @@ body {
     background-color: rgb(247, 246, 255) !important;
 }
 
+.color-variant-2 {
+    background-color: rgb(226, 235, 255) !important;
+}
+
 .controls-container {
     display: flex;
     flex-direction: column;
@@ -207,4 +211,18 @@ body {
 
 .controls-container button {
     width: 15vw;
+}
+
+.mat-tool-tip,
+.tooltip-multiline,
+mat-tool-tip {
+    white-space: pre-line !important;
+    height: auto;
+    display: flex;
+}
+
+.mat-tool-tip *,
+.tooltip-multiline *,
+mat-tool-tip * {
+    text-align: left;
 }

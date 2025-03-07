@@ -22,8 +22,11 @@ import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.constants.UserInfo
 import com.example.polyquiz.match.domain.AnswerService
 import com.example.polyquiz.match.domain.Choice
-import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
+import com.example.polyquiz.ui.theme.AndroidGreen
+import com.example.polyquiz.ui.theme.BrightRed
+import com.example.polyquiz.ui.theme.DarkGrey
+import com.example.polyquiz.ui.theme.LightGray
 
 @Composable
 fun MultipleChoiceArea(
@@ -70,10 +73,10 @@ fun ChoiceButton(
     if (index < choices.size) {
         val choice = choices[index]
         val buttonColor = when {
-            showFeedback && feedback.correctAnswer.orEmpty().contains(choice.text) -> Color(0xFF4caf50)
-            showFeedback && selectedStates[index] && !feedback.correctAnswer.orEmpty().contains(choice.text) -> Color(0xFFf44336)
-            selectedStates[index] && !showFeedback -> Color(0xFFA9A9A9)
-            else -> Color(0xFFD3D3D3)
+            showFeedback && feedback.correctAnswer.orEmpty().contains(choice.text) -> AndroidGreen
+            showFeedback && selectedStates[index] && !feedback.correctAnswer.orEmpty().contains(choice.text) -> BrightRed
+            selectedStates[index] && !showFeedback -> DarkGrey
+            else -> LightGray
         }
 
         Button(

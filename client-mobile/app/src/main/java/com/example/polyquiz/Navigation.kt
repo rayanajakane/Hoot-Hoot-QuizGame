@@ -6,7 +6,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.auth.presentation.ForgotPasswordPage
 import com.example.polyquiz.auth.presentation.LoginPage
+import com.example.polyquiz.auth.presentation.ForgotPasswordFeedbackPage
 import com.example.polyquiz.auth.presentation.SignupPage
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.match.domain.TimeService
@@ -49,6 +51,9 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                 },
                 navigateToSignup = {
                     navController.navigate(Route.Signup)
+                },
+                navigateToForgotPassword = {
+                    navController.navigate(Route.ForgotPassword)
                 },
                 authViewModel = authViewModel
             )
@@ -117,6 +122,28 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
             ResultsPage(modifier,
                 matchRoomService = MatchRoomService,
                 //matchContextService = MatchContextService,
+            )
+        }
+
+        composable<Route.ForgotPassword> {
+            ForgotPasswordPage(modifier,
+                navigateToForgotPasswordFeedback = {
+                    navController.navigate(Route.ForgotPasswordFeedbackPage)
+                },
+                navigateToLogin = {
+                    navController.navigate(Route.Login)
+                },
+                authViewModel = authViewModel
+            )
+        }
+
+        composable<Route.ForgotPasswordFeedbackPage> {
+            ForgotPasswordFeedbackPage(
+                modifier,
+                navigateToLogin = {
+                    navController.navigate(Route.Login)
+                },
+                authViewModel = authViewModel
             )
         }
     }

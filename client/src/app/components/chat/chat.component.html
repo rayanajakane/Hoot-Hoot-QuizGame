@@ -1,31 +1,88 @@
 <div id="main-chat-container">
-    <h2 id="current-username">{{ this.authenticationService.userDisplayName }}</h2>
+    <div class="header-row">
+        <h2 id="header-title">{{ this.authenticationService.userDisplayName }}</h2>
+        <div>
+            <mat-form-field>
+                <mat-label>Option</mat-label>
+                <mat-select [(value)]="channel">
+                    <mat-option value="general">General</mat-option>
+                    <mat-option value="room" [disabled]="this.matchContextService.getContext() === 0">Match</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+
     <div id="messages-container" #messagesContainer>
         <div
-            *ngFor="let message of this.chatService.messages"
+            *ngFor="let message of this.messages"
             class="message-container"
-            [ngClass]="message.author === this.authenticationService.userDisplayName ? 'right-message' : 'left-message'"
+            [ngClass]="message.authorId === this.authenticationService.userId ? 'right-message' : 'left-message'"
         >
-            <div class="message-info-container">
-                <p class="message-author">{{ message.author }}</p>
-                <p>{{ message.date | date: 'HH:mm:ss' }}</p>
-            </div>
-            <div
-                class="message-text-container"
-                [ngClass]="[
-                    message.author === this.authenticationService.userDisplayName ? 'own-message' : 'received-message',
-                    message.author === 'Organisateur' ? 'host-message' : '',
-                    message.author === '' ? 'player-quit-message' : ''
-                ]"
-            >
-                <p>{{ message.text }}</p>
+            <div class="two-columns-container">
+                <div *ngIf="message.authorId !== this.authenticationService.userId" class="avatar-container">
+                    <div class="avatar">
+                        <img src="{{ message.photoUrl ? message.photoUrl : defaultAvatar }}" alt="" />
+                    </div>
+                </div>
+                <div class="message-text-info-container">
+                    <div class="message-info-container">
+                        <p class="message-author">{{ message.authorUsername }}</p>
+                        <p>{{ message.date | date: 'HH:mm:ss' }}</p>
+                    </div>
+                    <div
+                        class="message-text-container"
+                        [ngClass]="[
+                            message.authorId === this.authenticationService.userId ? 'own-message' : 'received-message',
+                            message.authorUsername === 'Organisateur' ? 'host-message' : '',
+                            message.authorId === '' ? 'player-quit-message' : ''
+                        ]"
+                    >
+                        <p>{{ message.text }}</p>
+                    </div>
+                    <!-- Cannot appear for Player Quit Messages -->
+                    <div class="emojis-container" *ngIf="message.authorId !== ''">
+                        <button
+                            mat-raised-button
+                            [matTooltip]="getReactionsToolTip(message.userLikes)"
+                            matTooltipClass="tooltip-multiline"
+                            matTooltipPosition="above"
+                            (click)="reactToMessage(message.id, emoji.LIKE)"
+                            [color]="isOwnReaction(message.userLikes) ? 'primary' : ''"
+                        >
+                            👍{{ message.userLikes.length }}
+                        </button>
+                        <button
+                            mat-raised-button
+                            [matTooltip]="getReactionsToolTip(message.userLoves)"
+                            matTooltipClass="tooltip-multiline"
+                            matTooltipPosition="above"
+                            (click)="reactToMessage(message.id, emoji.LOVE)"
+                            [color]="isOwnReaction(message.userLoves) ? 'primary' : ''"
+                        >
+                            ❤️{{ message.userLoves.length }}
+                        </button>
+                        <button
+                            mat-raised-button
+                            [matTooltip]="getReactionsToolTip(message.userDislikes)"
+                            tooltipClass="tooltip-multiline"
+                            matTooltipPosition="above"
+                            (click)="reactToMessage(message.id, emoji.DISLIKE)"
+                            [color]="isOwnReaction(message.userDislikes) ? 'primary' : ''"
+                        >
+                            👎{{ message.userDislikes.length }}
+                        </button>
+                    </div>
+                </div>
+                <div *ngIf="message.authorId === this.authenticationService.userId" class="avatar-container">
+                    <div class="avatar"><img src="{{ message.photoUrl ? message.photoUrl : defaultAvatar }}" alt="" /></div>
+                </div>
             </div>
         </div>
     </div>
 
     <form id="chat-form" *transloco="let t">
         <mat-form-field id="chat-input-container">
-            <mat-label>{{ disableMessagingField ? t('page.disabled-label') : t('page.message-label') }}</mat-label>
+            <mat-label>{{ t('page.message-label') }}</mat-label>
             <input
                 id="chat-input"
                 matInput
@@ -33,14 +90,8 @@
                 maxlength="200"
                 [placeholder]="'...'"
                 (keydown.enter)="sendMessage(message.value); message.value = ''"
-                [disabled]="disableMessagingField"
             />
-            <mat-icon
-                id="chat-send-icon"
-                [ngClass]="{ 'disabled-send': disableMessagingField }"
-                (click)="sendMessage(message.value); message.value = ''"
-                >send</mat-icon
-            >
+            <mat-icon id="chat-send-icon" (click)="sendMessage(message.value); message.value = ''">send</mat-icon>
         </mat-form-field>
     </form>
 </div>

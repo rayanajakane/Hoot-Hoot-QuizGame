@@ -2,6 +2,7 @@ package com.example.polyquiz.pages.presentation
 
 import android.annotation.SuppressLint
 import android.service.autofill.FieldClassification.Match
+import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,7 +29,9 @@ import androidx.compose.ui.unit.dp
 import com.example.polyquiz.Game
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.HOST_USERNAME
+import com.example.polyquiz.constants.MatchButtonActions
 import com.example.polyquiz.constants.MatchContext
+import com.example.polyquiz.constants.StartMatchFeedback
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.MatchRoomService.gameTitle
@@ -88,7 +91,6 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
         }
         when (MatchRoomService.isTimeToNavigate) {
             true -> {
-                println("MatchRoomService.isTimeToNavigate is true")
                 MatchRoomService.isTimeToNavigate = false
                 navigateToMatchRoom()
             }
@@ -97,7 +99,6 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
         }
         when (MatchRoomService.hasBeenKickedOut) {
             true -> {
-                println("MatchRoomService.isTimeToNavigate is true")
                 MatchRoomService.hasBeenKickedOut = false
                 navigateToHome()
             }
@@ -141,7 +142,7 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
                 onClick = { quitMatch(); navigateToHome() },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
             ) {
-                Text("Quitter")
+                Text(MatchButtonActions.LEAVE_MATCH.value)
             }
         }
 
@@ -166,13 +167,13 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
             } else {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = "La partie va bientôt commencer...",
+                        text = StartMatchFeedback.WAITING_TO_START.value,
                         style = MaterialTheme.typography.headlineMedium
                     )
                     if (isHost()) {
                         Text(text = "Code d'accès: ${MatchRoomService.getRoomCode()}")
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("Verrouiller la partie")
+                            Text(StartMatchFeedback.LOCK_MATCH.value)
                             Spacer(modifier = Modifier.width(8.dp))
                             //isLocked = false
                              Switch(checked = isLocked, onCheckedChange = { toggleLock() })
@@ -182,7 +183,7 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
                             onClick = { startMatch() },
                              //enabled = isLocked && players.isNotEmpty()
                         ) {
-                            Text("Commencer la partie")
+                            Text(MatchButtonActions.START_MATCH.value)
                         }
                     }
                     players.forEach { player ->
@@ -193,9 +194,9 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(player.username)
-                            if (isHost() && player.username != "Organisateur") {
+                            if (isHost() && player.username != HOST_USERNAME) {
                                 Button(onClick = { banPlayerUsername(player.username) }) {
-                                    Text("Bannir")
+                                    Text(MatchButtonActions.BAN_PLAYER.value)
                                 }
                             }
                         }

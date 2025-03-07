@@ -10,6 +10,15 @@ object Route {
     object Signup
 
     @Serializable
+    object Chat
+
+    @Serializable
+    object ForgotPassword
+
+    @Serializable
+    object ForgotPasswordFeedbackPage
+
+    @Serializable
     object Home
 
     @Serializable

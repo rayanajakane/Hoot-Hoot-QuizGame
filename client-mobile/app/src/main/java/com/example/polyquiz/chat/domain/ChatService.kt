@@ -2,6 +2,7 @@ package com.example.polyquiz.chat.domain
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.polyquiz.auth.domain.UserIdName
 import com.example.polyquiz.constants.ChatEvents
 import com.example.vanillaprototype.socket.SocketHandler
 import com.google.gson.Gson
@@ -34,18 +35,18 @@ object ChatService {
         _messages.postValue(emptyList())
     }
 
-    fun sendMessage(text: String, username: String) {
+    fun sendMessage(text: String, userId: String, username: String, photoUrl: String) {
         if (text.filterNot { it.isWhitespace() }.isNotEmpty()) {
-            val newMessage = Message(text.trim(), username, Date.from(
-                Instant.now()))
+            val newMessage = Message("", text.trim(), userId, username, photoUrl, Date.from(
+                Instant.now()), listOf(), listOf(), listOf())
             val newMessageStringified = Gson().toJson(newMessage)
             val newMessageJsonObject = JSONObject(newMessageStringified)
-            mSocket.emit(ChatEvents.PROTOTYPE_MESSAGE.value, newMessageJsonObject);
+            mSocket.emit(ChatEvents.GENERAL_MESSAGE.value, newMessageJsonObject);
         }
     }
 
     fun handleReceivedMessage() {
-        mSocket.on(ChatEvents.SENT_PROTOTYPE_MESSAGE.value) { args ->
+        mSocket.on(ChatEvents.SENT_GENERAL_MESSAGE.value) { args ->
             if (args[0] != null) {
                 val newMessage = Gson().fromJson(args[0].toString(), Message::class.java) as Message
                 addMessage(newMessage)

@@ -6,6 +6,7 @@ import { MOCK_MATCH_ROOM, MOCK_PLAYER, MOCK_ROOM_CODE } from '@app/constants/mat
 import { PlayerEvents } from '@app/constants/player-events';
 import { MultipleChoiceAnswer } from '@app/model/answer-types/multiple-choice-answer/multiple-choice-answer';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
+import { EstimatedAnswerStrategy } from '@app/question-strategies/estimated-answer-strategy/estimated-answer-strategy';
 import { LongAnswerStrategy } from '@app/question-strategies/long-answer-strategy/long-answer-strategy';
 import { MultipleChoiceStrategy } from '@app/question-strategies/multiple-choice-strategy/multiple-choice-strategy';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
@@ -48,6 +49,7 @@ describe('AnswerService', () => {
                 QuestionStrategyContext,
                 MultipleChoiceStrategy,
                 LongAnswerStrategy,
+                EstimatedAnswerStrategy,
             ],
         }).compile();
 

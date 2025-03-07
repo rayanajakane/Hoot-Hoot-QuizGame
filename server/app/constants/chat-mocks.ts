@@ -1,10 +1,31 @@
 import { Message } from '@app/model/schema/message.schema';
-import { ChatStateInfo } from '@common/interfaces/message-info';
+import { ChatEmoji } from '@common/constants/chat-emojis';
+import { ChatStateInfo, MessageEmojiInfo } from '@common/interfaces/message-info';
 
-// TODO : Remove
-
-export const MOCK_MESSAGE: Message = { text: 'Test Text', author: 'User', date: new Date() };
+export const MOCK_MESSAGE: Message = {
+    id: 'abc',
+    text: 'Test Text',
+    authorId: 'User',
+    authorUsername: 'User',
+    photoUrl: 'abc',
+    date: new Date(),
+    userLikes: [],
+    userLoves: [],
+    userDislikes: [],
+};
 export const MOCK_ROOM_CODE = '1234';
+
+export const MOCK_USER_ID_NAME = {
+    id: '1234',
+    name: 'mock',
+};
+
+export const MOCK_MESSAGE_EMOJI_INFO: MessageEmojiInfo = {
+    messageId: 'abc1234',
+    chatEmoji: ChatEmoji.LIKE,
+    userIdName: { id: '1234', name: 'mock' },
+    roomCode: '7777',
+};
 
 export const MOCK_CHAT_STATE_DATA: ChatStateInfo = {
     roomCode: MOCK_ROOM_CODE,

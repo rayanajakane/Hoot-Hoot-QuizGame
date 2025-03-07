@@ -1,24 +1,30 @@
-/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
 import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { SessionAlreadyExistsError } from '@app/services/authentication/session-exists';
+import { PresetAvatar } from '@app/constants/image-constants';
+import { AuthError } from '@app/services/authentication/auth-error';
 import { ChatService } from '@app/services/chat/chat.service';
+import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { ChatEvents } from '@common/events/chat.events';
 import { TranslocoService } from '@jsverse/transloco';
-import { browserSessionPersistence, setPersistence, User } from 'firebase/auth';
-import { DataSnapshot, get, getDatabase, onDisconnect, ref, set, update } from 'firebase/database';
+import { browserSessionPersistence, sendPasswordResetEmail, setPersistence, User, UserCredential } from 'firebase/auth';
+import { Database, DataSnapshot, get, getDatabase, onDisconnect, ref, remove, set, update } from 'firebase/database';
+import { deleteObject, FirebaseStorage, ref as firebaseStorageRef, getDownloadURL, getStorage, uploadBytes } from 'firebase/storage';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
 })
 export class AuthenticationService {
-    private currentUser: User | null;
-    private database = getDatabase();
+    currentUser: User | null;
+    database: Database = getDatabase(); // Realtime Database
+    storage: FirebaseStorage = getStorage(); // Firebase Storage: For images
+
+    authenticatedUser = new BehaviorSubject<User | null>(null);
 
     // eslint-disable-next-line max-params
     constructor(
@@ -27,22 +33,56 @@ export class AuthenticationService {
         private readonly notificationService: NotificationService,
         private readonly translocoService: TranslocoService,
         private readonly chatService: ChatService,
+        private matchRoomService: MatchRoomService,
         private auth: Auth,
     ) {
         setPersistence(this.auth, browserSessionPersistence);
+
         onAuthStateChanged(this.auth, (user) => {
             if (user) {
-                this.currentUser = user;
+                this.setUser(user);
             } else {
-                this.currentUser = null;
+                this.setUser(null);
                 this.router.navigateByUrl('/login');
             }
         });
     }
 
+    get userId(): string {
+        return this.currentUser?.uid ?? '';
+    }
+
+    get userEmail(): string {
+        return this.currentUser?.email ?? '';
+    }
+
     get userDisplayName(): string {
-        const displayName: string = this.currentUser?.displayName ?? '';
-        return displayName;
+        return this.currentUser?.displayName ?? '';
+    }
+
+    get userAvatarUrl(): string {
+        return this.currentUser?.photoURL ?? '';
+    }
+
+    getUsernameDatabaseRef(username: string) {
+        return ref(this.database, `usernames/${username}`);
+    }
+
+    async checkUsername(username: string): Promise<boolean> {
+        const usernameRef = this.getUsernameDatabaseRef(username);
+        return get(usernameRef).then(async (databaseSnapshot: DataSnapshot) => {
+            if (databaseSnapshot.exists()) {
+                return Promise.reject(new AuthError('UsernameAlreadyExists', 'UsernameAlreadyExistsError'));
+            } else {
+                // Username will be saved in realtime database later when sign up succeeds.
+                return Promise.resolve(false);
+            }
+        });
+    }
+
+    setUser(user: User | null) {
+        this.currentUser = user;
+        this.authenticatedUser.next(this.currentUser);
     }
 
     isUserAuthenticated(): boolean {
@@ -68,48 +108,125 @@ export class AuthenticationService {
                     return Promise.resolve(true);
                 }
             })
-            .catch(async (error: unknown) => {
-                this.currentUser = null;
-                console.log(error);
+            .catch(async () => {
+                this.setUser(null);
                 return Promise.resolve(false);
             });
     }
 
-    getUserDatabaseRef(uid: string) {
-        return ref(this.database, `users/${uid}`);
+    getUserDatabaseRef(uid: string | null) {
+        return uid ? ref(this.database, `users/${uid}`) : ref(this.database, 'users/');
     }
 
-    signUp(username: string, password: string) {
-        const formattedUsername = username.trim();
-        createUserWithEmailAndPassword(this.auth, `${formattedUsername}@polyQuiz.com`, password)
-            .then((userCredential) => {
-                updateProfile(userCredential.user, { displayName: formattedUsername }).then(() => {
-                    const userRef = this.getUserDatabaseRef(userCredential.user.uid);
-                    set(userRef, {
-                        isOnline: true,
-                    });
-                    onDisconnect(userRef).update({
-                        isOnline: false,
-                    });
-                    this.connectToSocket();
-                    this.currentUser = userCredential.user;
-                    this.router.navigateByUrl('/home');
-                    this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-up'));
-                });
-            })
-            .catch((error) => {
-                const errorMessage = this.handleAuthErrorMessage(error);
-                this.notificationService.displayErrorMessage(errorMessage);
+    async completeUserProfileCreation(userCredential: UserCredential, username: string, avatarUrl: string) {
+        updateProfile(userCredential.user, { displayName: username, photoURL: avatarUrl }).then(() => {
+            const userRef = this.getUserDatabaseRef(userCredential.user.uid);
+
+            set(userRef, {
+                isOnline: true,
             });
+            onDisconnect(userRef).update({
+                isOnline: false,
+            });
+
+            const usernameRef = this.getUsernameDatabaseRef(username.toLowerCase());
+            set(usernameRef, username.toLowerCase());
+
+            this.connectToSocket();
+            this.setUser(userCredential.user);
+            this.router.navigateByUrl('/home');
+            this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-up'));
+        });
     }
 
-    signIn(username: string, password: string) {
+    async editUserProfile(username: string, avatarUrl: string) {
+        let isValidUsername: boolean = this.userDisplayName.toLowerCase() === username.toLowerCase();
+        let isValidAvatarUrl: boolean = this.userAvatarUrl === avatarUrl;
+        if (!isValidUsername) {
+            isValidUsername = await this.editUsername(username);
+        }
+        if (!isValidAvatarUrl) {
+            isValidAvatarUrl = this.editAvatarUrl(avatarUrl);
+        }
+        if (isValidUsername && isValidAvatarUrl) {
+            this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.edited'));
+        }
+    }
+
+    editAvatarUrl(avatarUrl: string) {
+        if (!this.currentUser) return false;
+        updateProfile(this.currentUser, { photoURL: avatarUrl })
+            .then(() => {
+                return true;
+            })
+            .catch((error: any) => {
+                console.log(error);
+                return false;
+            });
+        return true;
+    }
+
+    async editUsername(username: string) {
+        if (!this.currentUser) return false;
         const formattedUsername = username.trim();
-        signInWithEmailAndPassword(this.auth, `${formattedUsername}@polyQuiz.com`, password)
+        const oldUsername = this.userDisplayName;
+        try {
+            await this.checkUsername(formattedUsername.toLowerCase());
+            updateProfile(this.currentUser, { displayName: formattedUsername })
+                .then(() => {
+                    const usernameRef = this.getUsernameDatabaseRef(username.toLowerCase());
+                    set(usernameRef, username.toLowerCase());
+
+                    const oldUsernameRef = this.getUsernameDatabaseRef(oldUsername.toLowerCase());
+                    remove(oldUsernameRef);
+
+                    return true;
+                })
+                .catch((error: any) => {
+                    const errorMessage = this.handleAuthErrorMessage(error);
+                    this.notificationService.displayErrorMessage(errorMessage);
+                    return false;
+                });
+        } catch (error: any) {
+            const errorMessage = this.handleAuthErrorMessage(error);
+            this.notificationService.displayErrorMessage(errorMessage);
+            return false;
+        }
+        return true;
+    }
+
+    async signUp(email: string, username: string, password: string, isPresetAvatar: boolean, avatarUrl: string, avatarFile: File | null) {
+        const formattedUsername = username.trim();
+        const formattedEmail = email.trim();
+
+        try {
+            await this.checkUsername(formattedUsername.toLowerCase());
+            createUserWithEmailAndPassword(this.auth, `${formattedEmail}`, password)
+                .then(async (userCredential) => {
+                    if (!isPresetAvatar && avatarFile) {
+                        avatarUrl = await this.uploadUserAvatar(userCredential.user.uid, avatarFile);
+                    } else if (!isPresetAvatar && !avatarFile) {
+                        avatarUrl = PresetAvatar.Default;
+                    }
+                    this.completeUserProfileCreation(userCredential, formattedUsername, avatarUrl);
+                })
+                .catch((error) => {
+                    const errorMessage = this.handleAuthErrorMessage(error);
+                    this.notificationService.displayErrorMessage(errorMessage);
+                });
+        } catch (error: any) {
+            const errorMessage = this.handleAuthErrorMessage(error);
+            this.notificationService.displayErrorMessage(errorMessage);
+        }
+    }
+
+    signIn(email: string, password: string) {
+        const formattedEmail = email.trim();
+        signInWithEmailAndPassword(this.auth, `${formattedEmail}`, password)
             .then(async (userCredential) => {
                 const userRef = this.getUserDatabaseRef(userCredential.user.uid);
                 const isAbleToSignIn = await this.ensureUserSession(userCredential.user.uid);
-                if (!isAbleToSignIn) throw new SessionAlreadyExistsError();
+                if (!isAbleToSignIn) throw new AuthError('SessionAlreadyExists', 'SessionAlreadyExistsError');
                 update(userRef, {
                     isOnline: true,
                 });
@@ -131,10 +248,14 @@ export class AuthenticationService {
         if (!this.socketHandler.isSocketAlive()) {
             this.socketHandler.connect();
             this.chatService.handleReceivedMessages();
+            this.chatService.handleRoomMessages();
+            this.chatService.handleGeneralEmoji();
+            this.chatService.handleRoomEmoji();
         }
     }
 
     disconnectSocket() {
+        this.matchRoomService.disconnectFromRoom();
         this.socketHandler.disconnect();
         this.socketHandler.socket.removeListener(ChatEvents.NewMessage);
         this.chatService.clearMessages();
@@ -151,7 +272,7 @@ export class AuthenticationService {
             .then(() => {
                 this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-out'));
                 this.disconnectSocket();
-                this.currentUser = null;
+                this.setUser(null);
                 this.router.navigateByUrl('/login');
             })
             .catch((error) => {
@@ -159,13 +280,47 @@ export class AuthenticationService {
             });
     }
 
+    deleteUser() {
+        const user = this.auth.currentUser;
+        if (!user) {
+            return;
+        }
+        const userRef = this.getUserDatabaseRef(user.uid);
+        remove(userRef);
+        if (user.displayName) {
+            const usernameRef = this.getUsernameDatabaseRef(user.displayName.toLowerCase());
+            remove(usernameRef);
+        }
+        this.deleteUserAvatar(user.uid);
+        this.disconnectSocket();
+        user.delete();
+        this.setUser(null);
+        this.router.navigateByUrl('/login');
+        this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.delete'));
+    }
+
+    sendResetPasswordEmail(email: string) {
+        // TODO: Check if we need to use Firebase Admin SDK to getUserByEmail() from server (to only send emails to user that already have an account)
+        sendPasswordResetEmail(this.auth, email)
+            .then(() => {
+                this.router.navigateByUrl('reset-password-email-sent');
+            })
+            .catch((error) => {
+                console.log(error);
+                this.notificationService.displayErrorMessage(this.translocoService.translate('auth.error.invalid-email'));
+            });
+    }
+
     private handleAuthErrorMessage(error: FirebaseError): string {
         switch (error.code) {
             case 'SessionAlreadyExists': {
-                return "L'utilisateur est déjà connecté !";
+                return this.translocoService.translate('auth.error.user-already-connected');
+            }
+            case 'UsernameAlreadyExists': {
+                return this.translocoService.translate('auth.error.username-already-exists');
             }
             case 'auth/email-already-in-use': {
-                return this.translocoService.translate('auth.error.user-already-exists');
+                return this.translocoService.translate('auth.error.email-already-in-use');
             }
             case 'auth/weak-password': {
                 return this.translocoService.translate('auth.error.password-too-short');
@@ -174,9 +329,45 @@ export class AuthenticationService {
                 return this.translocoService.translate('auth.error.invalid-username-password');
             }
             default: {
-                console.log(error);
                 return this.translocoService.translate('auth.error.other-error');
             }
         }
+    }
+
+    // FIREBASE STORAGE -- Consider refactoring it in its own service
+    async uploadUserAvatar(userId: string | undefined, file: any): Promise<string> {
+        if (!userId || userId === '') return '';
+        const url: string = await this.uploadImage(`avatars/${userId}`, file);
+        return url;
+    }
+
+    async uploadImage(path: string, file: any): Promise<string> {
+        const storageRef = firebaseStorageRef(this.storage, path);
+        const uploadTask = uploadBytes(storageRef, file);
+
+        // REFERENCE: https://firebase.google.com/docs/storage/web/upload-files?hl=fr
+        return uploadTask
+            .then(async () => {
+                // Handle successful uploads on complete
+                const downloadURL = getDownloadURL((await uploadTask).ref);
+                console.log('File available at', downloadURL);
+                return downloadURL;
+            })
+            .catch(() => {
+                // Handle unsuccessful uploads
+                this.notificationService.displayErrorMessage('TODO');
+                return '';
+            });
+    }
+
+    async deleteUserAvatar(userId: string) {
+        this.deleteImage(`avatars/${userId}`);
+    }
+
+    async deleteImage(path: string) {
+        const storageRef = firebaseStorageRef(this.storage, path);
+        deleteObject(storageRef)
+            .then(() => {})
+            .catch((error: Error) => {});
     }
 }

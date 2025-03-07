@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslationService } from '@app/translation/translation.service';
 
 @Component({
     selector: 'app-root',
@@ -9,10 +9,18 @@ import { TranslocoService } from '@jsverse/transloco';
 })
 export class AppComponent implements OnInit {
     constructor(
-        private translocoService: TranslocoService,
+        private translationService: TranslationService,
         public authenticationService: AuthenticationService,
     ) {}
     ngOnInit(): void {
-        this.translocoService.load('fr').subscribe();
+        this.authenticationService.authenticatedUser.subscribe(async (user) => {
+            if (user) {
+                const currentLangugage = await this.translationService.getLanguageFromDB();
+                this.translationService.setLanguage(currentLangugage);
+            } else {
+                // Fallback language in case user is not authenticated
+                this.translationService.initLanguageFR();
+            }
+        });
     }
 }

@@ -137,21 +137,6 @@ fun HomePage(
                     contentColor = MaterialTheme.colorScheme.onPrimary)) {
                 Text(text = "Créer une partie")
             }
-            Surface(
-                shadowElevation = 10.dp,
-                tonalElevation = 10.dp,
-                color = MaterialTheme.colorScheme.surfaceColorAtElevation(10.dp),
-                modifier = Modifier.padding(10.dp)
-            ){
-                Button(
-                    onClick = { },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceBright,
-                        contentColor = MaterialTheme.colorScheme.onSurface),
-                ) {
-                    Text(text = "Administrer les jeux")
-                }
-            }
         }
         ElevatedButton(
             onClick = {

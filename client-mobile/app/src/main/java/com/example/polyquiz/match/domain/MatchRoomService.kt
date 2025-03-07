@@ -38,12 +38,9 @@ object MatchRoomService {
     var isCooldown by mutableStateOf(false)
     var isQuitting by mutableStateOf(false)
 
-
     private var matchRoomCode: String = ""
     private var username: String = ""
     private var hasEnteredRoom = false
-
-
 
     private val socket = SocketHandler.getSocket()
 
@@ -74,7 +71,6 @@ object MatchRoomService {
     }
 
     fun disconnectFromRoom() {
-//        navigator.navigateTo("home")
         hasEnteredRoom = false
         socket.off(MatchEvents.FETCH_PLAYERS_DATA.value)
         socket.off(MatchEvents.MATCH_STARTING.value)
@@ -101,24 +97,12 @@ object MatchRoomService {
                 matchRoomCode = response.getString("code")
                 username = HOST_USERNAME
                 sendPlayersData(matchRoomCode)
-               //navigator.navigateTo("match-room")
             }
         })
     }
 
     fun getPlayerByUsername(username: String): Player? =
         players.find { it.username == username }
-//
-//    fun onPlayerChatStateToggle() {
-//        socket.on(ChatEvents.RETURN_CURRENT_CHAT_STATE.value) { args ->
-//            if (args.isNotEmpty()) {
-//                val currentChatState = args[0] as? Boolean ?: return@on
-//                getPlayerByUsername(this.username)?.let { player ->
-//                    player.isChatActive = currentChatState
-//                }
-//            }
-//        }
-//    }
 
     fun joinRoom(roomCode: String, username: String) {
 
@@ -193,7 +177,6 @@ object MatchRoomService {
                 currentQuestion = firstQuestion
                 gameDuration = data.getInt("gameDuration")
                 isTimeToNavigate = true
-//                navigator.navigateTo("play-match", mapOf("question" to firstQuestion, "duration" to gameDuration))
             }
         }
     }
@@ -247,7 +230,6 @@ object MatchRoomService {
 
     fun onRedirectAfterDisconnection() {
         socket.on(MatchEvents.DISCONNECT.value) { _ ->
-//            navigator.navigateTo("home")
             resetMatchValues()
         }
     }
@@ -270,8 +252,6 @@ object MatchRoomService {
     fun onRouteToResultsPage() {
         socket.on(MatchEvents.ROUTE_TO_RESULTS_PAGE.value) { _ ->
             isResults = true
-            navigateToResultsPage()
-            println("isResults")
         }
     }
 
@@ -293,7 +273,4 @@ object MatchRoomService {
         println(matchRoomCode)
        // println(isLocked)
     }
-
-
-
 }

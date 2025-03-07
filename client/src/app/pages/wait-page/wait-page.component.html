@@ -1,8 +1,4 @@
 <div id="main-container">
-    <button mat-raised-button id="exit-button" routerLink="/home" (click)="quitGame()">
-        <p>QUITTER</p>
-        <i class="material-icons">logout</i>
-    </button>
     <div class="centered-container" *ngIf="matchRoomService.isMatchStarted">
         <div id="game-starting">
             <h1>Le jeu {{ this.matchRoomService.gameTitle }} commence dans..</h1>
@@ -30,6 +26,12 @@
                 [disabled]="!isLocked || matchRoomService.players.length === 0"
             >
                 Commencer la partie
+            </button>
+        </div>
+        <div id="exit-button-container">
+            <button mat-raised-button id="exit-button" routerLink="/home" (click)="quitGame()">
+                <p>QUITTER</p>
+                <i class="material-icons">logout</i>
             </button>
         </div>
         <mat-card *ngFor="let player of matchRoomService.players" class="player-username-card">

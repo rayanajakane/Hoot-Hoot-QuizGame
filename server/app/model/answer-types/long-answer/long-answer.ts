@@ -8,7 +8,9 @@ export class LongAnswer extends Answer {
         this.answer = '';
     }
 
-    updateChoice(choice: string): void {
-        this.answer = choice;
+    updateChoice(choice?: string): void {
+        if (choice !== undefined) {
+            this.answer = choice;
+        }
     }
 }

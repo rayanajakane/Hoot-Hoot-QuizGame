@@ -56,7 +56,7 @@ export class WaitPageComponent implements OnInit {
     }
 
     banPlayerUsername(username: string) {
-        if (username === HOST_USERNAME) return;
+        if (username === HOST_USERNAME) return; // TODO: Migrate the logic to server, use UserID instead (need to track Host User ID in match room)
         this.matchRoomService.banUsername(username);
     }
 

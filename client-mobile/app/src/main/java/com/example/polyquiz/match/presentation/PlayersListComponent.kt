@@ -12,21 +12,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.polyquiz.constants.MatchContext
-import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.Player
+import com.example.polyquiz.ui.theme.AndroidGreen
+import com.example.polyquiz.ui.theme.BrightRed
+import com.example.polyquiz.ui.theme.PurpleGrey80
+import com.example.polyquiz.ui.theme.GoldenYellow
 
 @Composable
 fun PlayersListComponent(
     matchRoomService: MatchRoomService,
-    matchContextService: MatchContextService,
+    context: MatchContext,
     players: List<Player>,
     modifier: Modifier = Modifier,
     extraContent: @Composable () -> Unit = {}
 ) {
     val username = matchRoomService.getUsername()
-    val context = matchContextService.getContext()
-
     var sortBy by remember { mutableStateOf("score") }
     var sortOrder by remember { mutableStateOf("descending") }
 
@@ -47,7 +48,7 @@ fun PlayersListComponent(
         modifier = modifier
             .fillMaxHeight()
             .width(250.dp)
-            .background(Color(0xFFD3D3D3))
+            .background(PurpleGrey80)
             .padding(8.dp)
     ) {
         Text(text = "Joueurs", fontSize = 20.sp, modifier = Modifier.padding(8.dp))
@@ -116,9 +117,9 @@ fun PlayerCard(player: Player, context: MatchContext) {
             color = if (context == MatchContext.HOSTVIEW) {
                 when {
                     !player.isPlaying -> Color.Gray
-                    player.state == "no-interaction" -> Color(0xFFD31F40)
-                    player.state == "first-interaction" -> Color(0xFFE4BD12)
-                    player.state == "final-answer" -> Color(0xFF158F21)
+                    player.state == "no-interaction" -> AndroidGreen
+                    player.state == "first-interaction" -> GoldenYellow
+                    player.state == "final-answer" -> BrightRed
                     player.state == "exit" -> Color.Black
                     else -> Color.Black.copy(alpha = 0.5f)
                 }
@@ -148,3 +149,4 @@ fun ButtonGroup(options: List<Pair<String, String>>, selected: String, onSelecte
         }
     }
 }
+

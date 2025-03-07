@@ -254,7 +254,8 @@ fun QuestionArea(
         {
             PlayersListComponent(
                 matchRoomService = matchRoomService,
-                matchContextService = matchContextService,
+                //matchContextService = matchContextService,
+                context = MatchContext.HOSTVIEW,
                 players = matchRoomService.players,
                 modifier = Modifier.width(250.dp).fillMaxHeight(),
                 extraContent = {

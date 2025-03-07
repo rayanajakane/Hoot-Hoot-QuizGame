@@ -9,16 +9,23 @@ import {
     STEP_POINTS,
 } from '@app/constants/game-validation-constraints';
 import {
+    ERROR_ANSWER_NOT_INTEGER,
+    ERROR_ANSWER_OUT_OF_BOUNDS,
     ERROR_CHOICES_NUMBER,
     ERROR_CHOICES_RATIO,
     ERROR_DURATION,
     ERROR_EMPTY_DESCRIPTION,
     ERROR_EMPTY_QUESTION,
     ERROR_EMPTY_TITLE,
+    ERROR_INVALID_BOUNDS,
+    ERROR_LOWER_BOUND_NOT_INTEGER,
+    ERROR_MARGIN_NOT_INTEGER,
+    ERROR_MARGIN_TOO_BIG,
     ERROR_POINTS,
     ERROR_QUESTIONS_NUMBER,
     ERROR_QUESTION_TYPE,
     ERROR_REPEAT_CHOICES,
+    ERROR_UPPER_BOUND_NOT_INTEGER,
 } from '@app/constants/game-validation-errors';
 import { QuestionType } from '@app/constants/question-types';
 import { Choice } from '@app/model/database/choice';
@@ -33,6 +40,10 @@ export class GameValidationService {
         return text && text.trim() !== '';
     }
 
+    isValidInteger(number: number): boolean {
+        return Number.isInteger(number);
+    }
+
     isValidChoicesRatio(question: CreateQuestionDto): boolean {
         const hasValidRightChoice = question.choices.some((choice: Choice) => choice.isCorrect && this.isValidString(choice.text));
         const hasValidWrongChoice = question.choices.some((choice: Choice) => !choice.isCorrect && this.isValidString(choice.text));
@@ -43,6 +54,18 @@ export class GameValidationService {
         const min = Math.min(firstBound, secondBound);
         const max = Math.max(firstBound, secondBound);
         return quantity >= min && quantity <= max;
+    }
+
+    isValidMargin(margin: number, lowerBound: number, upperBound: number): boolean {
+        return margin >= 0 && margin <= (upperBound - lowerBound) / 4;
+    }
+
+    isValidBounds(lowerBound: number, upperBound: number): boolean {
+        return lowerBound < upperBound;
+    }
+
+    isAnswerInBounds(answer: number, lowerBound: number, upperBound: number): boolean {
+        return answer >= lowerBound && answer <= upperBound;
     }
 
     isUniqueChoices(choices: Choice[]): boolean {
@@ -64,7 +87,12 @@ export class GameValidationService {
         const errorConditions: Map<string, boolean> = new Map([
             [ERROR_POINTS, !this.isValidRange(question.points, MIN_POINTS, MAX_POINTS) || question.points % STEP_POINTS !== 0],
             [ERROR_EMPTY_QUESTION, !this.isValidString(question.text)],
-            [ERROR_QUESTION_TYPE, question.type !== QuestionType.MultipleChoice && question.type !== QuestionType.LongAnswer],
+            [
+                ERROR_QUESTION_TYPE,
+                question.type !== QuestionType.MultipleChoice &&
+                    question.type !== QuestionType.LongAnswer &&
+                    question.type !== QuestionType.EstimatedAnswer,
+            ],
         ]);
         return this.checkErrors(errorConditions, []);
     }
@@ -75,6 +103,24 @@ export class GameValidationService {
             [ERROR_CHOICES_NUMBER, !this.isValidRange(question.choices.length, MIN_CHOICES_NUMBER, MAX_CHOICES_NUMBER)],
             [ERROR_REPEAT_CHOICES, !this.isUniqueChoices(question.choices)],
             [ERROR_CHOICES_RATIO, !this.isValidChoicesRatio(question)],
+        ]);
+        return this.checkErrors(errorConditions, errorMessages);
+    }
+
+    findEstimatedQuestionErrors(question: CreateQuestionDto): string[] {
+        const errorMessages: string[] = this.findGeneralQuestionErrors(question);
+        const questionLowerBound = question.estimatedParameters?.lowerBound;
+        const questionUpperBound = question.estimatedParameters?.upperBound;
+        const questionMargin = question.estimatedParameters?.margin;
+        const questionAnswer = question.estimatedParameters?.correctAnswer;
+        const errorConditions: Map<string, boolean> = new Map([
+            [ERROR_INVALID_BOUNDS, !this.isValidBounds(questionLowerBound, questionUpperBound)],
+            [ERROR_MARGIN_TOO_BIG, !this.isValidMargin(questionMargin, questionLowerBound, questionUpperBound)],
+            [ERROR_ANSWER_OUT_OF_BOUNDS, !this.isAnswerInBounds(questionAnswer, questionLowerBound, questionUpperBound)],
+            [ERROR_ANSWER_NOT_INTEGER, !this.isValidInteger(questionAnswer)],
+            [ERROR_LOWER_BOUND_NOT_INTEGER, !this.isValidInteger(questionLowerBound)],
+            [ERROR_UPPER_BOUND_NOT_INTEGER, !this.isValidInteger(questionUpperBound)],
+            [ERROR_MARGIN_NOT_INTEGER, !this.isValidInteger(questionMargin)],
         ]);
         return this.checkErrors(errorConditions, errorMessages);
     }
@@ -100,6 +146,12 @@ export class GameValidationService {
     }
 
     findQuestionErrors(question: Question): string[] {
-        return question.type === QuestionType.MultipleChoice ? this.findChoicesQuestionErrors(question) : this.findGeneralQuestionErrors(question);
+        if (question.type === QuestionType.MultipleChoice) {
+            return this.findChoicesQuestionErrors(question);
+        } else if (question.type === QuestionType.EstimatedAnswer) {
+            return this.findEstimatedQuestionErrors(question);
+        } else {
+            return this.findGeneralQuestionErrors(question);
+        }
     }
 }
