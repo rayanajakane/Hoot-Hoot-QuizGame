@@ -92,7 +92,7 @@ export class GameModificationService {
     }
 
     isPictureToUploadToGame(pictureUrl: string) {
-        return !pictureUrl.includes('games') && pictureUrl !== '';
+        return pictureUrl !== '';
     }
 
     getPictureUploads() {
@@ -289,11 +289,12 @@ export class GameModificationService {
                 newQuestion.pictureUrl = pictureUrl;
                 newQuestion.pictureFile = pictureFile;
                 if (!this.bankService.addToBank) this.notificationService.displaySuccessMessage(QuestionStatus.VERIFIED);
+                console.log('PUSHED QUESTION TO GAME');
+                console.log(newQuestion);
                 this.game.questions.push(newQuestion);
                 this.markPendingChanges();
                 if (this.bankService.addToBank) {
                     this.addQuestionToBank(newQuestion);
-                    // this.originalBankQuestions.push(newQuestion);
                 }
             },
             error: (error: HttpErrorResponse) => this.notificationService.displayErrorMessage(`${QuestionStatus.UNVERIFIED} \n ${error.message}`),
