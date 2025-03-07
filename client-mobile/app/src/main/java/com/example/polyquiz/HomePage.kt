@@ -28,16 +28,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
-import com.example.polyquiz.constants.AuthFeedbackText
-import com.example.polyquiz.constants.DisplayAuthenticationText
 import com.example.polyquiz.match.domain.MatchRoomService
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.jvm.internal.Intrinsics.Kotlin
 
 @Composable
 fun HomePage(
@@ -61,7 +58,7 @@ fun HomePage(
                 scope.launch {
                     SnackbarController.sendEvent(
                         event = SnackbarEvent(
-                            message = AuthFeedbackText.SIGN_OUT.value,
+                            message = StringValue.StringResource(R.string.sign_out_feedback)
                         )
                     )
                 }
@@ -147,7 +144,7 @@ fun HomePage(
                 containerColor = MaterialTheme.colorScheme.surfaceBright,
                 contentColor = MaterialTheme.colorScheme.onSurface)
         ) {
-            Text(text = DisplayAuthenticationText.LOGOUT.value)
+            Text(text = stringResource(R.string.logout_action))
         }
     }
 }
