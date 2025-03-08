@@ -96,9 +96,6 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
             } else {
                 this.createQuestionEvent.emit(newQuestion);
             }
-            if (this.bankService.addToBank) {
-                // this.bankService.addQuestion(newQuestion, true);
-            }
         }
     }
 

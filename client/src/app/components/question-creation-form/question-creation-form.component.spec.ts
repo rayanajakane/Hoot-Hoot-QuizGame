@@ -163,20 +163,6 @@ describe('QuestionCreationFormComponent', () => {
         expect(component.modifyQuestionEvent.emit).toHaveBeenCalledWith(mockQuestionSubmit);
     });
 
-    it('should create copy of question in the bank if toggled', () => {
-        spyOn(component.modifyQuestionEvent, 'emit');
-
-        bankServiceSpy.addToBank = false;
-        component.modificationState = ManagementState.GameModify;
-        component.submitForm();
-        expect(bankServiceSpy.addQuestion).not.toHaveBeenCalled();
-
-        bankServiceSpy.addToBank = true;
-        component.modificationState = ManagementState.GameModify;
-        component.submitForm();
-        expect(bankServiceSpy.addQuestion).toHaveBeenCalled();
-    });
-
     it('should update form values when ngOnChanges is called', () => {
         spyOn(component, 'ngOnChanges').and.callThrough();
         const changedQuestion = {
@@ -212,6 +198,8 @@ describe('QuestionCreationFormComponent', () => {
                 { text: 'Choice 1', isCorrect: false },
                 { text: 'Choice 2', isCorrect: true },
             ],
+            pictureFile: null,
+            pictureUrl: '',
         });
         component.submitForm();
         expect(component.createQuestionEvent.emit).not.toHaveBeenCalled();
