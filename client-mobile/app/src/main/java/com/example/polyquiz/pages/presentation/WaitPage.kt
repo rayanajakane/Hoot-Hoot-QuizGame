@@ -181,11 +181,11 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
                             Spacer(modifier = Modifier.width(8.dp))
                             //isLocked = false
                              Switch(checked = MatchRoomService.isLocked, onCheckedChange = { toggleLock() })
-                            // println(isLocked)
                         }
                         Button(
                             onClick = { startMatch()
                                 },
+                            enabled = MatchRoomService.isLocked && players.isNotEmpty()
 
                         ) {
                             Text(MatchButtonActions.START_MATCH.value)
