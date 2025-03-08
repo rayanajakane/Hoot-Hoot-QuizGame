@@ -11,6 +11,7 @@ import { GameListItemComponent } from '@app/components/game-list-item/game-list-
 import { getMockGame } from '@app/constants/game-mocks';
 import { AdminMainPageComponent } from '@app/pages/admin-main-page/admin-main-page.component';
 import { SortHistoryPipe } from '@app/pipes/sort-history.pipe';
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { GameService } from '@app/services/game/game.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { getTranslocoModule } from '@app/transloco-testing.module';
@@ -23,6 +24,7 @@ describe('AdminPageComponent', () => {
     let gameSpy: SpyObj<GameService>;
     let notificationServiceSpy: SpyObj<NotificationService>;
     let dialogMock: SpyObj<MatDialog>;
+    let authenticationSpy: SpyObj<AuthenticationService>;
 
     beforeEach(waitForAsync(() => {
         dialogMock = jasmine.createSpyObj({
@@ -31,6 +33,7 @@ describe('AdminPageComponent', () => {
             }),
         });
         gameSpy = jasmine.createSpyObj('GameService', ['getGames', 'deleteGame', 'uploadGame']);
+        authenticationSpy = jasmine.createSpyObj('AuthenticationService', ['isImageToUpload', 'uploadQuestionPicture']);
         notificationServiceSpy = jasmine.createSpyObj('NotificationService', ['displayErrorMessage', 'displaySuccessMessage']);
 
         gameSpy.games = [getMockGame()];
@@ -53,6 +56,7 @@ describe('AdminPageComponent', () => {
                 { provide: MatDialog, useValue: dialogMock },
                 { provide: GameService, useValue: gameSpy },
                 { provide: NotificationService, useValue: notificationServiceSpy },
+                { provide: AuthenticationService, useValue: authenticationSpy },
             ],
         }).compileComponents();
     }));

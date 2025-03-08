@@ -32,7 +32,6 @@ const mockQuestion: Question = {
     lastModification: '',
     pictureUrl: '',
     pictureFile: null,
-    creatorName: '',
 };
 
 const maxchoicesLengthTest = 5;
@@ -192,7 +191,6 @@ describe('QuestionCreationFormComponent', () => {
             lastModification: '2024-01-26T14:21:19+00:00',
             pictureUrl: '',
             pictureFile: null,
-            creatorName: '',
         };
         component.question = changedQuestion;
         component.ngOnChanges({

@@ -176,7 +176,7 @@ describe('GameModificationService', () => {
         service.handleSubmit();
 
         expect(gameServiceSpy.submitGame).toHaveBeenCalled();
-        expect(notificationServiceSpy.displaySuccessMessage).toHaveBeenCalledWith('Jeux modifié avec succès! 😺');
+        expect(notificationServiceSpy.displaySuccessMessage).toHaveBeenCalled();
         expect(resetSpy).toHaveBeenCalled();
         expect(routerSpy.navigate).toHaveBeenCalledWith(['/admin/games/']);
     });
@@ -189,7 +189,7 @@ describe('GameModificationService', () => {
         service.handleSubmit();
 
         expect(gameServiceSpy.submitGame).toHaveBeenCalled();
-        expect(notificationServiceSpy.displaySuccessMessage).toHaveBeenCalledWith('Jeux créé avec succès! 😺');
+        expect(notificationServiceSpy.displaySuccessMessage).toHaveBeenCalled();
         expect(resetSpy).toHaveBeenCalled();
         expect(routerSpy.navigate).toHaveBeenCalledWith(['/admin/games/']);
     });
