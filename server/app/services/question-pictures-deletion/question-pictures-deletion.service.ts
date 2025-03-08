@@ -36,7 +36,10 @@ export class QuestionPicturesDeletionService {
     async deleteNonUsedPicture(pictureUrl: string, games: Game[]) {
         const nGamesWithSameImage = this.countGamesSamePicture(pictureUrl, games);
         const nBankQuestionsWithSameImage = await this.questionService.countQuestionsSamePicture(pictureUrl);
+        console.log(`nGames: ${nGamesWithSameImage}`);
+        console.log(`nBankQuestions: ${nBankQuestionsWithSameImage}`);
         if (nGamesWithSameImage + nBankQuestionsWithSameImage === 0) {
+            console.log(pictureUrl);
             await this.firebaseRepositoryService.deleteImage(pictureUrl);
         }
     }
