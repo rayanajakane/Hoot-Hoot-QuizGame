@@ -33,6 +33,11 @@ export class QuestionPicturesDeletionService {
         return gamesWithRequiredPicture.length;
     }
 
+    async deleteQuestionNonUsedPicture(pictureUrl: string) {
+        const games = await this.gameService.getAllGames();
+        await this.deleteNonUsedPicture(pictureUrl, games);
+    }
+
     async deleteNonUsedPicture(pictureUrl: string, games: Game[]) {
         if (!pictureUrl) return;
         const nGamesWithSameImage = this.countGamesSamePicture(pictureUrl, games);

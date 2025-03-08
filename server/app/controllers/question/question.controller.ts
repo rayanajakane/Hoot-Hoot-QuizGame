@@ -2,7 +2,6 @@ import { ERROR_QUESTION_NOT_FOUND } from '@app/constants/request-errors';
 import { Question } from '@app/model/database/question';
 import { CreateQuestionDto } from '@app/model/dto/question/create-question-dto';
 import { UpdateQuestionDto } from '@app/model/dto/question/update-question-dto';
-import { GameService } from '@app/services/game/game.service';
 import { QuestionPicturesDeletionService } from '@app/services/question-pictures-deletion/question-pictures-deletion.service';
 import { QuestionService } from '@app/services/question/question.service';
 import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Res } from '@nestjs/common';
@@ -14,7 +13,6 @@ import { Response } from 'express';
 export class QuestionController {
     constructor(
         private readonly questionService: QuestionService,
-        private readonly gameService: GameService,
         private readonly questionPicturesDeletionService: QuestionPicturesDeletionService,
     ) {}
 
@@ -53,9 +51,8 @@ export class QuestionController {
         try {
             const originalQuestion: Question = await this.questionService.getQuestionById(updateQuestionDto.id);
             const updatedQuestion = await this.questionService.updateQuestion(updateQuestionDto);
-            const games = await this.gameService.getAllGames();
             if (originalQuestion.pictureUrl !== updatedQuestion.pictureUrl) {
-                await this.questionPicturesDeletionService.deleteNonUsedPicture(originalQuestion.pictureUrl, games);
+                await this.questionPicturesDeletionService.deleteQuestionNonUsedPicture(originalQuestion.pictureUrl);
             }
             response.status(HttpStatus.OK).json(updatedQuestion);
         } catch (error) {
@@ -71,8 +68,7 @@ export class QuestionController {
     async deleteQuestion(@Param('id') id: string, @Res() response: Response) {
         try {
             const question = await this.questionService.deleteQuestion(id);
-            const games = await this.gameService.getAllGames();
-            await this.questionPicturesDeletionService.deleteNonUsedPicture(question.pictureUrl, games);
+            await this.questionPicturesDeletionService.deleteQuestionNonUsedPicture(question.pictureUrl);
             response.status(HttpStatus.NO_CONTENT).send();
         } catch (error) {
             console.log(error);
