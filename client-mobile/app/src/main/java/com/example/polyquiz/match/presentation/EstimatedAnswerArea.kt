@@ -3,6 +3,7 @@ package com.example.polyquiz.match.presentation
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -98,20 +99,35 @@ fun EstimatedAnswerArea(
                 )
             }
 
-            Slider(
-                value = if (isInputCleared) lowerBound else sliderValue,
-                onValueChange = {
-                    sliderValue = it
-                    isInputCleared = false
-                    val newValue = it.toInt().toString()
-                    answer = newValue
-                    answerService.currentLongAnswer = newValue
-                    answerService.updateLongAnswer()
-                },
-                valueRange = lowerBound..upperBound,
-                modifier = Modifier.fillMaxWidth(),
-                enabled = !isDisabled
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = lowerBound.toInt().toString(),
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+                Slider(
+                    value = if (isInputCleared) lowerBound else sliderValue,
+                    onValueChange = {
+                        sliderValue = it
+                        isInputCleared = false
+                        val newValue = it.toInt().toString()
+                        answer = newValue
+                        answerService.currentLongAnswer = newValue
+                        answerService.updateLongAnswer()
+                    },
+                    valueRange = lowerBound..upperBound,
+                    modifier = Modifier.weight(1f),
+                    enabled = !isDisabled
+                )
+                Text(
+                    text = upperBound.toInt().toString(),
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
         }
     }
 }
