@@ -127,8 +127,8 @@ fun SignupPage(
                             {
                                 // TODO
                             },
-                        ) { Text(stringResource(R.string.upload_avatar),) }
-                        Text(stringResource(R.string.preset_avatars),)
+                        ) { Text(stringResource(R.string.upload_avatar)) }
+                        Text(stringResource(R.string.preset_avatars))
                         Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                             AvatarPlaceholder(32.dp, PresetAvatar.A.value)
                             AvatarPlaceholder(32.dp, PresetAvatar.B.value)
