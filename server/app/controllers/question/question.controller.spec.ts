@@ -123,8 +123,10 @@ describe('QuestionController', () => {
     });
 
     it('updateQuestion() should succeed if service is able to update the question', async () => {
-        jest.spyOn(questionService, 'getQuestionById').mockResolvedValue(getMockQuestion());
-        jest.spyOn(questionService, 'updateQuestion').mockResolvedValue(getMockQuestion());
+        const mockQuestion: Question = getMockQuestion();
+        mockQuestion.pictureUrl = 'mock';
+        jest.spyOn(questionService, 'getQuestionById').mockResolvedValue(mockQuestion);
+        jest.spyOn(questionService, 'updateQuestion').mockResolvedValue(mockQuestion);
         jest.spyOn(gameService, 'getAllGames').mockResolvedValue([getMockGame()]);
         jest.spyOn(deletionService, 'deleteNonUsedPicture').mockResolvedValue();
         const res = {} as any as Response;
@@ -132,8 +134,11 @@ describe('QuestionController', () => {
             expect(code).toEqual(HttpStatus.OK);
             return res;
         };
+        res.json = (question) => {
+            return res;
+        };
         res.send = () => res;
-        await controller.updateQuestion(getMockQuestion(), res);
+        await controller.updateQuestion(mockQuestion, res);
     });
 
     it('updateQuestion() should return NOT_FOUND when service cannot find the question', async () => {
@@ -145,6 +150,7 @@ describe('QuestionController', () => {
             expect(code).toEqual(HttpStatus.NOT_FOUND);
             return res;
         };
+
         res.send = () => res;
         await controller.updateQuestion(new Question(), res);
     });

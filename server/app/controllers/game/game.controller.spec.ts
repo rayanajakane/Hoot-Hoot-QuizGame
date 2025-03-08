@@ -162,6 +162,9 @@ describe('GamesController', () => {
             expect(code).toEqual(HttpStatus.OK);
             return res;
         };
+        res.json = (game) => {
+            return res;
+        };
         res.send = () => res;
         await controller.upsertGame(getMockGame(), res);
     });
