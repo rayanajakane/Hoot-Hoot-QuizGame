@@ -37,6 +37,7 @@ import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.MatchRoomService.gameTitle
 import com.example.polyquiz.match.domain.MatchRoomService.players
 import com.example.polyquiz.match.domain.MatchService
+import com.example.polyquiz.match.domain.MatchService.matchRoomService
 import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.match.presentation.TimerComponent
 
@@ -48,15 +49,22 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
     var isHostPlaying: Boolean = false
     val matchService = MatchService
     val timeService = TimeService
+    var hasInitialized by mutableStateOf(false)
     var isLocked by mutableStateOf(false)
 
 
     fun resetWaitPage() {
        // isLocked = false
         //MatchRoomService.isMatchStarted = false
-        //MatchRoomService.isHostPlaying = true
+        println("resetwaitpage")
+        MatchRoomService.isHostPlaying = true
         MatchRoomService.isBanned = false
         MatchRoomService.isQuitting = false
+        println("resetcaleed${MatchRoomService.isMatchStarted}")
+        println("resetcae${matchRoomService.isMatchStarted}")
+        MatchRoomService.isMatchStarted = false
+        println("resetcal2${MatchRoomService.isMatchStarted}")
+        println("resetca2${matchRoomService.isMatchStarted}")
     }
 
     fun getTime(): Int {
@@ -71,39 +79,36 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
         return matchService.currentGame!!;
     }
 
+    LaunchedEffect(MatchRoomService.isTimeToNavigate) {
+        if (MatchRoomService.isTimeToNavigate) {
+            MatchRoomService.isTimeToNavigate = false
+            navigateToMatchRoom()
+        }
+    }
 
-    LaunchedEffect(Unit, MatchRoomService.isTimeToNavigate, MatchRoomService.hasBeenKickedOut) {
-        resetWaitPage()
+
+    LaunchedEffect(MatchRoomService.hasBeenKickedOut) {
+        if (MatchRoomService.hasBeenKickedOut) {
+            MatchRoomService.hasBeenKickedOut = false
+            navigateToHome()
+        }
+    }
+
+
+    LaunchedEffect(Unit) {
+        //if (!hasInitialized) {
+            resetWaitPage()
+          //  hasInitialized = true // Mark page as initialized
+                //}
         timeService.listenToTimerEvents()
-        //TimeService.handleTimer() //pour l'organisateur, il faudrait un listenToTimerEvents()
 
-//        snapshotFlow { MatchRoomService.isMatchStarted }.collect {
-//            println("Match started state changed: $it")
-//        }
 
         if (isHost()) {
             gameTitle = getCurrentGame().title
             println(gameTitle)
             MatchContextService.setContext(MatchContext.HOSTVIEW)
-
         } else {
             MatchContextService.setContext(MatchContext.PLAYERVIEW)
-        }
-        when (MatchRoomService.isTimeToNavigate) {
-            true -> {
-                MatchRoomService.isTimeToNavigate = false
-                navigateToMatchRoom()
-            }
-
-            else -> Unit
-        }
-        when (MatchRoomService.hasBeenKickedOut) {
-            true -> {
-                MatchRoomService.hasBeenKickedOut = false
-                navigateToHome()
-            }
-
-            else -> Unit
         }
     }
 
@@ -122,6 +127,8 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
 
     fun startMatch() {
         MatchRoomService.startMatch()
+        println("f1${MatchRoomService.isMatchStarted}")
+        println("f2${matchRoomService.isMatchStarted}")
     }
 
     fun quitMatch() { //originellement quitGame sur le client lourd
@@ -153,6 +160,8 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+            println("waitroom${MatchRoomService.isMatchStarted}")
+            println("waitroom${matchRoomService.isMatchStarted}")
             if (MatchRoomService.isMatchStarted) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
@@ -177,10 +186,11 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
                             Spacer(modifier = Modifier.width(8.dp))
                             //isLocked = false
                              Switch(checked = isLocked, onCheckedChange = { toggleLock() })
-                             println(isLocked)
+                            // println(isLocked)
                         }
                         Button(
-                            onClick = { startMatch() },
+                            onClick = { startMatch()
+                                println("isstartedmatch${matchRoomService.isMatchStarted}")},
                              //enabled = isLocked && players.isNotEmpty()
                         ) {
                             Text(MatchButtonActions.START_MATCH.value)
