@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.polyquiz.constants.MatchContext
+import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.Player
 import com.example.polyquiz.ui.theme.AndroidGreen
@@ -22,12 +23,13 @@ import com.example.polyquiz.ui.theme.GoldenYellow
 @Composable
 fun PlayersListComponent(
     matchRoomService: MatchRoomService,
-    context: MatchContext,
+    matchContextService: MatchContextService,
     players: List<Player>,
     modifier: Modifier = Modifier,
-    extraContent: @Composable () -> Unit = {}
+    extraContent: @Composable () -> Unit = {},
 ) {
     val username = matchRoomService.getUsername()
+    val context = matchContextService.getContext()
     var sortBy by remember { mutableStateOf("score") }
     var sortOrder by remember { mutableStateOf("descending") }
 

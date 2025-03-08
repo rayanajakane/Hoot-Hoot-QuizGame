@@ -49,14 +49,11 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
     var isHostPlaying: Boolean = false
     val matchService = MatchService
     val timeService = TimeService
-    var hasInitialized by mutableStateOf(false)
     var isLocked by mutableStateOf(false)
 
 
     fun resetWaitPage() {
        // isLocked = false
-        //MatchRoomService.isMatchStarted = false
-        println("resetwaitpage")
         MatchRoomService.isHostPlaying = true
         MatchRoomService.isBanned = false
         MatchRoomService.isQuitting = false
@@ -93,10 +90,7 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
 
 
     LaunchedEffect(Unit) {
-        //if (!hasInitialized) {
-            resetWaitPage()
-          //  hasInitialized = true // Mark page as initialized
-                //}
+        resetWaitPage()
         timeService.listenToTimerEvents()
 
 

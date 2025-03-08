@@ -1,6 +1,5 @@
 package com.example.polyquiz.match.presentation
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -77,7 +76,6 @@ fun QuestionArea(
 
     fun routeToResultsPage(){
         matchRoomService.routeToResultsPage()
-
     }
 
     Row(modifier = Modifier.fillMaxSize()) {
@@ -250,12 +248,14 @@ fun QuestionArea(
             }
         }
 
-        if(matchRoomService.isMatchStarted)
+        println("ismatch${matchRoomService.isMatchStarted}")
+        println("ismatch${MatchRoomService.isMatchStarted}")
+
+        if(MatchRoomService.isMatchStarted)
         {
             PlayersListComponent(
                 matchRoomService = matchRoomService,
-                //matchContextService = matchContextService,
-                context = MatchContext.HOSTVIEW,
+                matchContextService = matchContextService,
                 players = matchRoomService.players,
                 modifier = Modifier.width(250.dp).fillMaxHeight(),
                 extraContent = {
@@ -284,7 +284,6 @@ fun QuestionArea(
                             Text("Présenter les résultats finaux")
                         }
                     }
-
 
                     Button(
                         onClick = {
