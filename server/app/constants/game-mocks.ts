@@ -35,6 +35,8 @@ const getMockGame = (): Game => ({
                 correctAnswer: getRandomNumber(1, 2),
             },
             lastModification: new Date(gameYear, 1, 1),
+            pictureUrl: '',
+            creatorName: 'mock',
         },
     ],
 });
@@ -77,6 +79,8 @@ const GAME_WITH_IS_CORRECT_FIELD: Game = {
                 margin: 0,
                 correctAnswer: 0,
             },
+            pictureUrl: '',
+            creatorName: 'mock',
         },
         {
             id: '1',
@@ -100,6 +104,8 @@ const GAME_WITH_IS_CORRECT_FIELD: Game = {
                 margin: 0,
                 correctAnswer: 0,
             },
+            pictureUrl: '',
+            creatorName: 'mock',
         },
     ],
 };
@@ -132,6 +138,8 @@ const GAME_WITHOUT_IS_CORRECT_FIELD: Game = {
                 margin: 0,
                 correctAnswer: 0,
             },
+            pictureUrl: '',
+            creatorName: 'mock',
         },
         {
             id: '1',
@@ -153,6 +161,8 @@ const GAME_WITHOUT_IS_CORRECT_FIELD: Game = {
                 margin: 0,
                 correctAnswer: 0,
             },
+            pictureUrl: '',
+            creatorName: 'mock',
         },
     ],
 };

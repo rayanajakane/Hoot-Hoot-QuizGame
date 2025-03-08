@@ -19,6 +19,10 @@ export class QuestionService {
         return await this.questionModel.find({});
     }
 
+    async countQuestionsSamePicture(url: string): Promise<number> {
+        return (await this.questionModel.find({ pictureUrl: url })).length;
+    }
+
     async getQuestionByName(name: string): Promise<Question> {
         return await this.questionModel.findOne({ text: name });
     }
@@ -32,6 +36,9 @@ export class QuestionService {
             return Promise.reject(`${ERROR_QUESTION_BANK_SAME_TITLE}`);
         }
         question.id = uuidv4();
+        if (!question.pictureUrl || !question.pictureUrl.startsWith('https://firebasestorage.googleapis.com/')) {
+            question.pictureUrl = '';
+        }
         question.lastModification = new Date();
         const errorMessages = this.validation.findQuestionErrors(question);
         if (errorMessages.length) {
@@ -63,14 +70,16 @@ export class QuestionService {
         }
     }
 
-    async deleteQuestion(questionId: string): Promise<void> {
+    async deleteQuestion(questionId: string): Promise<Question> {
         try {
-            if (!(await this.getQuestionById(questionId))) {
+            const question = await this.getQuestionById(questionId);
+            if (!question) {
                 return Promise.reject(`${ERROR_QUESTION_NOT_FOUND}`);
             }
             await this.questionModel.deleteOne({
                 id: questionId,
             });
+            return question;
         } catch (error) {
             return Promise.reject(`${ERROR_DEFAULT} ${error}`);
         }

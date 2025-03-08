@@ -10,4 +10,6 @@ data class Question(
     val choices: List<Choice>? = null,
     val answer: String? = null,
     val lastModification: String?,
+    val pictureUrl: String,
+    val creatorName: String,
 )

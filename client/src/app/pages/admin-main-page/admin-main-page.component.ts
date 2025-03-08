@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Game } from '@app/interfaces/game';
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { GameService } from '@app/services/game/game.service';
 
 @Component({
@@ -11,13 +12,16 @@ export class AdminMainPageComponent implements OnInit {
     order: string = 'ascending';
     subject: string = 'date';
 
-    constructor(readonly gameService: GameService) {}
+    constructor(
+        readonly gameService: GameService,
+        public authenticationService: AuthenticationService,
+    ) {}
 
     ngOnInit(): void {
         this.gameService.getGames();
     }
 
-    onDeleteGameFromList(gameToDeleteId: string): void {
+    async onDeleteGameFromList(gameToDeleteId: string) {
         this.gameService.deleteGame(gameToDeleteId);
     }
 

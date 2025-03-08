@@ -219,10 +219,12 @@ describe('GameService', () => {
         const spyValidate = jest.spyOn(gameValidationService, 'findGameErrors').mockReturnValue([]);
         const spyDateVisibility = jest.spyOn(gameCreationService, 'updateDateAndVisibility').mockReturnValue(mockGame);
         const spyModel = jest.spyOn(gameModel, 'findOneAndUpdate').mockImplementation();
+        const generateIds = jest.spyOn(gameCreationService, 'generateMissingQuestionIds').mockReturnValue(mockGame);
         const upsertedGame = await service.upsertGame(mockGame);
         expect(upsertedGame).toEqual(mockGame);
         expect(spyValidate).toHaveBeenCalledWith(mockGame);
         expect(spyDateVisibility).toHaveBeenCalledWith(mockGame);
+        expect(generateIds).toHaveBeenCalledWith(mockGame);
         expect(spyModel).toHaveBeenCalledWith({ id: mockGame.id }, mockGame, { new: true, upsert: true });
     });
 
@@ -241,11 +243,13 @@ describe('GameService', () => {
         const spyValidate = jest.spyOn(gameValidationService, 'findGameErrors').mockReturnValue([]);
         const spyDateVisibility = jest.spyOn(gameCreationService, 'updateDateAndVisibility').mockReturnValue(mockGame);
         const spyModel = jest.spyOn(gameModel, 'findOneAndUpdate').mockRejectedValue('');
+        const generateIds = jest.spyOn(gameCreationService, 'generateMissingQuestionIds').mockReturnValue(mockGame);
         await service.upsertGame(mockGame).catch((error) => {
             expect(error).toBe(`${ERROR_DEFAULT} `);
         });
         expect(spyValidate).toHaveBeenCalledWith(mockGame);
         expect(spyDateVisibility).toHaveBeenCalledWith(mockGame);
+        expect(generateIds).toHaveBeenCalledWith(mockGame);
         expect(spyModel).toHaveBeenCalledWith({ id: mockGame.id }, mockGame, { new: true, upsert: true });
     });
 

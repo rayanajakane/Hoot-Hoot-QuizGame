@@ -31,6 +31,9 @@ export const getMockGame = (): Game => ({
                 correctAnswer: getRandomNumber(2, 3),
             },
             lastModification: new Date().toString(),
+            pictureUrl: '',
+            pictureFile: null,
+            creatorName: '',
         },
         {
             id: getRandomString(),
@@ -54,6 +57,9 @@ export const getMockGame = (): Game => ({
                 correctAnswer: getRandomNumber(2, 3),
             },
             lastModification: new Date().toString(),
+            pictureUrl: '',
+            pictureFile: null,
+            creatorName: '',
         },
     ],
 });
