@@ -36,6 +36,7 @@ const getMockGame = (): Game => ({
             },
             lastModification: new Date(gameYear, 1, 1),
             pictureUrl: '',
+            creatorName: 'mock',
         },
     ],
 });
@@ -79,6 +80,7 @@ const GAME_WITH_IS_CORRECT_FIELD: Game = {
                 correctAnswer: 0,
             },
             pictureUrl: '',
+            creatorName: 'mock',
         },
         {
             id: '1',
@@ -103,6 +105,7 @@ const GAME_WITH_IS_CORRECT_FIELD: Game = {
                 correctAnswer: 0,
             },
             pictureUrl: '',
+            creatorName: 'mock',
         },
     ],
 };
@@ -136,6 +139,7 @@ const GAME_WITHOUT_IS_CORRECT_FIELD: Game = {
                 correctAnswer: 0,
             },
             pictureUrl: '',
+            creatorName: 'mock',
         },
         {
             id: '1',
@@ -158,6 +162,7 @@ const GAME_WITHOUT_IS_CORRECT_FIELD: Game = {
                 correctAnswer: 0,
             },
             pictureUrl: '',
+            creatorName: 'mock',
         },
     ],
 };

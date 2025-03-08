@@ -66,8 +66,6 @@ export class GameController {
             const originalGame: Game = await this.gameService.getGameById(updateGameDto.id);
             const updatedGame = await this.gameService.upsertGame(updateGameDto);
             await this.questionPicturesDeletionService.deleteGameNonUsedPictures(originalGame);
-            console.log('UPDATED GAME');
-            console.log(updatedGame);
             response.status(HttpStatus.OK).json(updatedGame);
         } catch (error) {
             response.status(HttpStatus.BAD_REQUEST).send({ message: error });

@@ -12,4 +12,5 @@ export interface Question {
     lastModification: string;
     pictureUrl: string;
     pictureFile?: File | null; // To keep the file for uploading question picture AFTER the game / bankQuestion has been validated.
+    creatorName?: string;
 }

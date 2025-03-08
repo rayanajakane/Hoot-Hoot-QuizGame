@@ -267,6 +267,8 @@ export class GameModificationService {
     }
 
     private addQuestionToGame(newQuestion: Question) {
+        newQuestion.creatorName = '';
+
         // Save old values and replace them to avoid submitting too large data to server
         const pictureFile = newQuestion.pictureFile;
         const pictureUrl = newQuestion.pictureUrl;

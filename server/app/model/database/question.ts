@@ -30,6 +30,9 @@ export class Question {
 
     @Prop({ default: '' })
     pictureUrl: string;
+
+    @Prop({ default: '' })
+    creatorName: string;
 }
 
 export const questionSchema = SchemaFactory.createForClass(Question);

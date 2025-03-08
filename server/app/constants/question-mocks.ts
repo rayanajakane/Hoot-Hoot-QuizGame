@@ -33,6 +33,7 @@ const getMockQuestion = (): Question => ({
     },
     lastModification: new Date(),
     pictureUrl: '',
+    creatorName: 'mock',
 });
 
 const VALID_QUESTION = getMockQuestion();

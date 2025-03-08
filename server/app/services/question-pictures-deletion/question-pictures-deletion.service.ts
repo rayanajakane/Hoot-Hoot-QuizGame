@@ -37,11 +37,7 @@ export class QuestionPicturesDeletionService {
         if (!pictureUrl) return;
         const nGamesWithSameImage = this.countGamesSamePicture(pictureUrl, games);
         const nBankQuestionsWithSameImage = await this.questionService.countQuestionsSamePicture(pictureUrl);
-        console.log('CHECK IF DELETE');
-        console.log(`nGamesWithSameImage: ${nGamesWithSameImage}`);
-        console.log(`nBankQuestionsWithSameImage: ${nBankQuestionsWithSameImage}`);
         if (nGamesWithSameImage + nBankQuestionsWithSameImage === 0) {
-            console.log('DELETE');
             await this.firebaseRepositoryService.deleteImage(pictureUrl);
         }
     }

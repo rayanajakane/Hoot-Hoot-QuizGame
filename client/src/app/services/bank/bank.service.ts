@@ -42,6 +42,9 @@ export class BankService {
     }
 
     addQuestion(newQuestion: Question, isModificationPageQuestion: boolean = false): void {
+        if (!newQuestion.creatorName) {
+            newQuestion.creatorName = this.authenticationService.userDisplayName;
+        }
         const pictureFile = newQuestion.pictureFile;
         const isImageToUpload = this.authenticationService.isImageToUpload(newQuestion.pictureUrl);
 

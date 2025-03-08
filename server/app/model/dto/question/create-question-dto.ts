@@ -33,4 +33,8 @@ export class CreateQuestionDto {
     @ApiProperty()
     @IsString()
     pictureUrl: string;
+
+    @ApiProperty()
+    @IsString()
+    creatorName: string;
 }

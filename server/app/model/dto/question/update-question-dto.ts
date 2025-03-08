@@ -31,4 +31,7 @@ export class UpdateQuestionDto {
 
     @ApiProperty()
     pictureUrl: string;
+
+    @ApiProperty()
+    creatorName: string;
 }
