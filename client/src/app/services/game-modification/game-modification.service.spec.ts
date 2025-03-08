@@ -26,6 +26,7 @@ import { Question } from '@app/interfaces/question';
 import { BankService } from '@app/services/bank/bank.service';
 import { GameModificationService } from '@app/services/game-modification/game-modification.service';
 import { getTranslocoModule } from '@app/transloco-testing.module';
+import { AuthenticationService } from '../authentication/authentication.service';
 
 describe('GameModificationService', () => {
     let service: GameModificationService;
@@ -36,6 +37,7 @@ describe('GameModificationService', () => {
     let questionServiceSpy: jasmine.SpyObj<QuestionService>;
     let bankServiceSpy: jasmine.SpyObj<BankService>;
     let routerSpy: jasmine.SpyObj<Router>;
+    let authenticationServiceSpy: jasmine.SpyObj<AuthenticationService>;
 
     let mockDialogRef: jasmine.SpyObj<MatDialogRef<any, any>>;
 
@@ -130,6 +132,8 @@ describe('GameModificationService', () => {
 
         bankServiceSpy = jasmine.createSpyObj('BankService', ['addQuestion']);
 
+        authenticationServiceSpy = jasmine.createSpyObj('AuthenticationService', ['isImageToUpload', 'uploadQuestionPicture']);
+
         questionServiceSpy.createQuestion.and.returnValue(of(mockHttpResponse));
 
         const dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
@@ -144,6 +148,7 @@ describe('GameModificationService', () => {
                 { provide: QuestionService, useValue: questionServiceSpy },
                 { provide: BankService, useValue: bankServiceSpy },
                 { provide: Router, useValue: routerSpy },
+                { provide: AuthenticationService, useValue: authenticationServiceSpy },
             ],
         }).compileComponents();
 

@@ -13,6 +13,7 @@ import { AdminMainPageComponent } from '@app/pages/admin-main-page/admin-main-pa
 import { SortHistoryPipe } from '@app/pipes/sort-history.pipe';
 import { GameService } from '@app/services/game/game.service';
 import { NotificationService } from '@app/services/notification/notification.service';
+import { getTranslocoModule } from '@app/transloco-testing.module';
 import { of } from 'rxjs';
 import SpyObj = jasmine.SpyObj;
 
@@ -35,7 +36,16 @@ describe('AdminPageComponent', () => {
         gameSpy.games = [getMockGame()];
 
         TestBed.configureTestingModule({
-            imports: [MatButtonToggleModule, MatMenuModule, MatDialogModule, MatSnackBarModule, RouterTestingModule, MatIconModule, MatCardModule],
+            imports: [
+                MatButtonToggleModule,
+                MatMenuModule,
+                MatDialogModule,
+                MatSnackBarModule,
+                RouterTestingModule,
+                MatIconModule,
+                MatCardModule,
+                getTranslocoModule(),
+            ],
             declarations: [AdminMainPageComponent, GameListItemComponent, SortHistoryPipe],
             providers: [
                 HttpClient,

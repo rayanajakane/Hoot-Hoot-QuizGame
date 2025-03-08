@@ -2,9 +2,9 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BankStatus, GameStatus } from '@app/constants/feedback-messages';
 import { Question } from '@app/interfaces/question';
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { QuestionService } from '@app/services/question/question.service';
-import { AuthenticationService } from '../authentication/authentication.service';
 
 @Injectable({
     providedIn: 'root',

@@ -12,15 +12,18 @@ import { getMockQuestion } from '@app/constants/question-mocks';
 import { ManagementState } from '@app/constants/states';
 import { Question } from '@app/interfaces/question';
 import { SortByLastModificationPipe } from '@app/pipes/sort-by-last-modification.pipe';
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { BankService } from '@app/services/bank/bank.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { QuestionService } from '@app/services/question/question.service';
+import { getTranslocoModule } from '@app/transloco-testing.module';
 import { of, throwError } from 'rxjs';
 
 describe('BankService', () => {
     let service: BankService;
     let questionSpy: jasmine.SpyObj<QuestionService>;
     let notificationSpy: jasmine.SpyObj<NotificationService>;
+    let authenticationSpy: jasmine.SpyObj<AuthenticationService>;
 
     const mockQuestions: Question[] = [
         {
@@ -73,6 +76,7 @@ describe('BankService', () => {
             'updateQuestion',
             'openCreateQuestionModal',
         ]);
+        authenticationSpy = jasmine.createSpyObj('AuthenticationService', ['isImageToUpload', 'uploadQuestionPicture']);
         notificationSpy = jasmine.createSpyObj('NotificationService', ['displayErrorMessage', 'displaySuccessMessage']);
         questionSpy.getAllQuestions.and.returnValue(of(mockQuestions));
         questionSpy.deleteQuestion.and.returnValue(of(mockHttpResponse));
@@ -80,10 +84,11 @@ describe('BankService', () => {
 
         TestBed.configureTestingModule({
             declarations: [SortByLastModificationPipe, QuestionListItemComponent, MockCreateQuestionComponent],
-            imports: [MatExpansionModule, MatIconModule, BrowserAnimationsModule, MatCardModule],
+            imports: [MatExpansionModule, MatIconModule, BrowserAnimationsModule, MatCardModule, getTranslocoModule()],
             providers: [
                 { provide: QuestionService, useValue: questionSpy },
                 { provide: NotificationService, useValue: notificationSpy },
+                { provide: AuthenticationService, useValue: authenticationSpy },
             ],
         });
         service = TestBed.inject(BankService);

@@ -94,6 +94,8 @@ describe('QuestionCreationFormComponent', () => {
                 { text: 'Choice 1', isCorrect: true },
                 { text: 'Choice 2', isCorrect: false },
             ],
+            pictureUrl: '',
+            pictureFile: null,
         });
     });
 
