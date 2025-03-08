@@ -27,7 +27,7 @@ object QuestionService : CommunicationService("questions") {
         )
     }
 
-    fun deleteQuestion(questionId: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
+    fun deleteQuestion(questionId: String, onSuccess: (Unit) -> Unit, onError: (String) -> Unit) {
         delete(
             questionId,
             onSuccess,
@@ -44,7 +44,7 @@ object QuestionService : CommunicationService("questions") {
         )
     }
 
-    fun updateQuestion(modifiedQuestion: Question, onSuccess: () -> Unit, onError: (String) -> Unit) {
+    fun updateQuestion(modifiedQuestion: Question, onSuccess: (Unit) -> Unit, onError: (String) -> Unit) {
         update(
             modifiedQuestion,
             modifiedQuestion.id,

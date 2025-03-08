@@ -9,7 +9,7 @@ object JoinMatchService : CommunicationService("match") {
 
     override val apiService: ApiService = retrofit.create(JoinMatchApiService::class.java)
 
-    fun validateMatchRoomCode(matchRoomCode: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
+    fun validateMatchRoomCode(matchRoomCode: String, onSuccess: (Unit) -> Unit, onError: (String) -> Unit) {
         check(
             MatchRoomData(matchRoomCode),
             onSuccess,
@@ -18,7 +18,7 @@ object JoinMatchService : CommunicationService("match") {
         )
     }
 
-    fun postUsername(username: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
+    fun postUsername(username: String, onSuccess: (Unit) -> Unit, onError: (String) -> Unit) {
         check(
             UserData(matchRoomCode, username),
             onSuccess,

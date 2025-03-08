@@ -52,12 +52,12 @@ class GameService : CommunicationService(BASE_URL) {
             )
         }
 
-        fun modifyGame(id: String, newGame: Game, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        fun modifyGame(id: String, newGame: Game, onSuccess: (Unit) -> Unit, onError: (String) -> Unit) {
             put(newGame, id, onSuccess, onError);
         }
 
 
-        fun deleteGame(id: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        fun deleteGame(id: String, onSuccess: (Unit) -> Unit, onError: (String) -> Unit) {
             delete(id, onSuccess, onError)
         }
     }

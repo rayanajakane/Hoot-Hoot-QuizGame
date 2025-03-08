@@ -47,28 +47,28 @@ abstract class CommunicationService(
         call.enqueue(createCallback(onSuccess, onError))
     }
 
-    fun check(payload: Any, onSuccess: () -> Unit, onError: (String) -> Unit, endpoint: String = "") {
+    fun check(payload: Any, onSuccess: (Unit) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
         val fullEndpoint = buildFullEndpoint(endpoint)
         val call = apiService.check(fullEndpoint, payload)
-        call.enqueue(createVoidCallback(onSuccess, onError))
+        call.enqueue(createCallback(onSuccess, onError))
     }
 
-    fun delete(id: String, onSuccess: () -> Unit, onError: (String) -> Unit, endpoint: String = "") {
+    fun delete(id: String, onSuccess: (Unit) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
         val fullEndpoint = buildFullEndpoint(endpoint)
         val call = apiService.delete("$fullEndpoint/$id")
-        call.enqueue(createVoidCallback(onSuccess, onError))
+        call.enqueue(createCallback(onSuccess, onError))
     }
 
-    fun update(payload: Any, id: String, onSuccess: () -> Unit, onError: (String) -> Unit, endpoint: String = "") {
+    fun update(payload: Any, id: String, onSuccess: (Unit) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
         val fullEndpoint = buildFullEndpoint(endpoint)
         val call = apiService.update("$fullEndpoint/$id", payload)
-        call.enqueue(createVoidCallback(onSuccess, onError))
+        call.enqueue(createCallback(onSuccess, onError))
     }
 
-    fun put(payload: Any, id: String, onSuccess: () -> Unit, onError: (String) -> Unit, endpoint: String = "") {
+    fun put(payload: Any, id: String, onSuccess: (Unit) -> Unit, onError: (String) -> Unit, endpoint: String = "") {
         val fullEndpoint = buildFullEndpoint(endpoint)
         val call = apiService.put("$fullEndpoint/$id", payload)
-        call.enqueue(createVoidCallback(onSuccess, onError))
+        call.enqueue(createCallback(onSuccess, onError))
     }
 
     // Helper method to build the full endpoint path in case of custom endpoints
@@ -89,7 +89,7 @@ abstract class CommunicationService(
                     if (body != null) {
                         onSuccess(body)
                     } else {
-                        onError("Response body is null")
+                        onSuccess(Unit as R)
                     }
                 } else {
                     onError("Failed with HTTP code: ${response.code()} - ${response.message()}")
@@ -97,23 +97,6 @@ abstract class CommunicationService(
             }
 
             override fun onFailure(call: Call<R>, t: Throwable) {
-                onError("Network error: ${t}")
-                t.printStackTrace()
-            }
-        }
-    }
-
-    private fun createVoidCallback(onSuccess: () -> Unit, onError: (String) -> Unit): Callback<Void> {
-        return object : Callback<Void> {
-            override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                if (response.isSuccessful) {
-                    onSuccess()
-                } else {
-                    onError("Failed with HTTP code: ${response.code()} - ${response.message()}")
-                }
-            }
-
-            override fun onFailure(call: Call<Void>, t: Throwable) {
                 onError("Network error: ${t}")
                 t.printStackTrace()
             }
@@ -138,15 +121,15 @@ abstract class CommunicationService(
         fun add(@Url url: String, @Body payload: Any): Call<Any>
 
         @POST
-        fun check(@Url url: String, @Body payload: Any): Call<Void>
+        fun check(@Url url: String, @Body payload: Any): Call<Unit>
 
         @DELETE
-        fun delete(@Url url: String): Call<Void>
+        fun delete(@Url url: String): Call<Unit>
 
         @PATCH
-        fun update(@Url url: String, @Body payload: Any): Call<Void>
+        fun update(@Url url: String, @Body payload: Any): Call<Unit>
 
         @PUT
-        fun put(@Url url: String, @Body payload: Any): Call<Void>
+        fun put(@Url url: String, @Body payload: Any): Call<Unit>
     }
 }
