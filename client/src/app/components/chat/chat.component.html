@@ -39,6 +39,39 @@
                     >
                         <p>{{ message.text }}</p>
                     </div>
+                    <!-- Cannot appear for Player Quit Messages -->
+                    <div class="emojis-container" *ngIf="message.authorId !== ''">
+                        <button
+                            mat-raised-button
+                            [matTooltip]="getReactionsToolTip(message.userLikes)"
+                            matTooltipClass="tooltip-multiline"
+                            matTooltipPosition="above"
+                            (click)="reactToMessage(message.id, emoji.LIKE)"
+                            [color]="isOwnReaction(message.userLikes) ? 'primary' : ''"
+                        >
+                            👍{{ message.userLikes.length }}
+                        </button>
+                        <button
+                            mat-raised-button
+                            [matTooltip]="getReactionsToolTip(message.userLoves)"
+                            matTooltipClass="tooltip-multiline"
+                            matTooltipPosition="above"
+                            (click)="reactToMessage(message.id, emoji.LOVE)"
+                            [color]="isOwnReaction(message.userLoves) ? 'primary' : ''"
+                        >
+                            ❤️{{ message.userLoves.length }}
+                        </button>
+                        <button
+                            mat-raised-button
+                            [matTooltip]="getReactionsToolTip(message.userDislikes)"
+                            tooltipClass="tooltip-multiline"
+                            matTooltipPosition="above"
+                            (click)="reactToMessage(message.id, emoji.DISLIKE)"
+                            [color]="isOwnReaction(message.userDislikes) ? 'primary' : ''"
+                        >
+                            👎{{ message.userDislikes.length }}
+                        </button>
+                    </div>
                 </div>
                 <div *ngIf="message.authorId === this.authenticationService.userId" class="avatar-container">
                     <div class="avatar"><img src="{{ message.photoUrl ? message.photoUrl : defaultAvatar }}" alt="" /></div>
