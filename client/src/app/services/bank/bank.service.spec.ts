@@ -29,6 +29,9 @@ describe('BankService', () => {
             text: 'Combien de motifs blancs et noirs y a-t-il respectivement sur un ballon de soccer?',
             points: 20,
             lastModification: '2024-11-13T20:20:39+00:00',
+            pictureUrl: '',
+            pictureFile: null,
+            creatorName: '',
         },
         {
             id: '2',
@@ -36,6 +39,9 @@ describe('BankService', () => {
             text: "Le ratio d'or est de 1:1.618, mais connaissez-vous le ratio d'argent?",
             points: 40,
             lastModification: '2018-01-20T14:17:39+00:00',
+            pictureUrl: '',
+            pictureFile: null,
+            creatorName: '',
         },
     ];
 
@@ -45,6 +51,9 @@ describe('BankService', () => {
         text: 'Quelle est la capitale du canada?',
         points: 20,
         lastModification: '2024-01-26T14:21:19+00:00',
+        pictureUrl: '',
+        pictureFile: null,
+        creatorName: '',
     };
     const mockHttpResponse: HttpResponse<string> = new HttpResponse({ status: 200, statusText: 'OK', body: JSON.stringify(newQuestionMock) });
     @Component({
@@ -123,7 +132,16 @@ describe('BankService', () => {
     });
 
     it('should return false when questionList is empty', () => {
-        const newQuestion: Question = { id: '1', text: 'New question', type: 'QCM', points: 10, lastModification: '' };
+        const newQuestion: Question = {
+            id: '1',
+            text: 'New question',
+            type: 'QCM',
+            points: 10,
+            lastModification: '',
+            pictureUrl: '',
+            pictureFile: null,
+            creatorName: '',
+        };
         const questionList: Question[] = [];
         const result = service['isDuplicateQuestion'](newQuestion, questionList);
         expect(result).toBeFalse();
@@ -141,6 +159,9 @@ describe('BankService', () => {
             type: 'QCM',
             points: 10,
             lastModification: '',
+            pictureUrl: '',
+            pictureFile: null,
+            creatorName: '',
         };
         const result = service['isDuplicateQuestion'](newQuestion, mockQuestions);
         expect(result).toBeTrue();

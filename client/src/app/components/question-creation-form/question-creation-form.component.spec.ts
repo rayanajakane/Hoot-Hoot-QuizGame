@@ -30,6 +30,9 @@ const mockQuestion: Question = {
         { text: 'Choice 2', isCorrect: false },
     ],
     lastModification: '',
+    pictureUrl: '',
+    pictureFile: null,
+    creatorName: '',
 };
 
 const maxchoicesLengthTest = 5;
@@ -138,7 +141,7 @@ describe('QuestionCreationFormComponent', () => {
 
     it('should submit the form to create a question in the question list', () => {
         spyOn(component.createQuestionEvent, 'emit');
-        component.onSubmit();
+        component.submitForm();
         expect(component.createQuestionEvent.emit).toHaveBeenCalled();
     });
 
@@ -146,7 +149,7 @@ describe('QuestionCreationFormComponent', () => {
         spyOn(component.createQuestionEvent, 'emit');
         const mockQuestionSubmit: Question = component.questionForm.value;
         mockQuestion.lastModification = '';
-        component.onSubmit();
+        component.submitForm();
         expect(component.createQuestionEvent.emit).toHaveBeenCalledWith(mockQuestionSubmit);
     });
 
@@ -155,7 +158,7 @@ describe('QuestionCreationFormComponent', () => {
         spyOn(component.modifyQuestionEvent, 'emit');
         const mockQuestionSubmit: Question = component.questionForm.value;
         mockQuestion.lastModification = '';
-        component.onSubmit();
+        component.submitForm();
         expect(component.modifyQuestionEvent.emit).toHaveBeenCalledWith(mockQuestionSubmit);
     });
 
@@ -164,12 +167,12 @@ describe('QuestionCreationFormComponent', () => {
 
         bankServiceSpy.addToBank = false;
         component.modificationState = ManagementState.GameModify;
-        component.onSubmit();
+        component.submitForm();
         expect(bankServiceSpy.addQuestion).not.toHaveBeenCalled();
 
         bankServiceSpy.addToBank = true;
         component.modificationState = ManagementState.GameModify;
-        component.onSubmit();
+        component.submitForm();
         expect(bankServiceSpy.addQuestion).toHaveBeenCalled();
     });
 
@@ -185,12 +188,15 @@ describe('QuestionCreationFormComponent', () => {
                 { text: 'Choice 2', isCorrect: false },
             ],
             lastModification: '2024-01-26T14:21:19+00:00',
+            pictureUrl: '',
+            pictureFile: null,
+            creatorName: '',
         };
         component.question = changedQuestion;
         component.ngOnChanges({
             question: { currentValue: changedQuestion, previousValue: null, isFirstChange: () => true, firstChange: true },
         });
-        component.onSubmit();
+        component.submitForm();
         component.questionForm.value.lastModification = '2024-01-26T14:21:19+00:00';
         component.questionForm.value.id = '1';
         expect(component.questionForm.value).toEqual(changedQuestion);
@@ -207,7 +213,7 @@ describe('QuestionCreationFormComponent', () => {
                 { text: 'Choice 2', isCorrect: true },
             ],
         });
-        component.onSubmit();
+        component.submitForm();
         expect(component.createQuestionEvent.emit).not.toHaveBeenCalled();
     });
 

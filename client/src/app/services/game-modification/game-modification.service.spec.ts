@@ -25,6 +25,7 @@ import { Game } from '@app/interfaces/game';
 import { Question } from '@app/interfaces/question';
 import { BankService } from '@app/services/bank/bank.service';
 import { GameModificationService } from '@app/services/game-modification/game-modification.service';
+import { getTranslocoModule } from '@app/transloco-testing.module';
 
 describe('GameModificationService', () => {
     let service: GameModificationService;
@@ -47,6 +48,9 @@ describe('GameModificationService', () => {
             text: 'Combien de motifs blancs et noirs y a-t-il respectivement sur un ballon de soccer?',
             points: 20,
             lastModification: '2018-11-13T20:20:39+00:00',
+            pictureUrl: '',
+            pictureFile: null,
+            creatorName: '',
         },
     ];
 
@@ -57,6 +61,9 @@ describe('GameModificationService', () => {
             text: 'Combien de motifs blancs et noirs y a-t-il respectivement sur un ballon de soccer?',
             points: 20,
             lastModification: '2018-11-13T20:20:39+00:00',
+            pictureUrl: '',
+            pictureFile: null,
+            creatorName: '',
         },
         {
             id: '2',
@@ -64,6 +71,9 @@ describe('GameModificationService', () => {
             text: "Le ratio d'or est de 1:1.618, mais connaissez-vous le ratio d'argent?",
             points: 40,
             lastModification: '2024-01-20T14:17:39+00:00',
+            pictureUrl: '',
+            pictureFile: null,
+            creatorName: '',
         },
     ];
 
@@ -126,6 +136,7 @@ describe('GameModificationService', () => {
         mockDialogRef = dialogRefSpy as jasmine.SpyObj<MatDialogRef<any, any>>;
 
         TestBed.configureTestingModule({
+            imports: [getTranslocoModule()],
             providers: [
                 { provide: GameService, useValue: gameServiceSpy },
                 { provide: MatSnackBar, useValue: {} },
@@ -289,9 +300,9 @@ describe('GameModificationService', () => {
         const changesSpy = spyOn<any, any>(service, 'markPendingChanges').and.returnValue({});
 
         const mockListQuestions: Question[] = [
-            { id: '1', text: 'Question 1', type: 'QCM', points: 10, lastModification: '' },
-            { id: '2', text: 'Question 2', type: 'QCM', points: 20, lastModification: '' },
-            { id: '3', text: 'Question 3', type: 'QCM', points: 30, lastModification: '' },
+            { id: '1', text: 'Question 1', type: 'QCM', points: 10, lastModification: '', pictureUrl: '', pictureFile: null, creatorName: '' },
+            { id: '2', text: 'Question 2', type: 'QCM', points: 20, lastModification: '', pictureUrl: '', pictureFile: null, creatorName: '' },
+            { id: '3', text: 'Question 3', type: 'QCM', points: 30, lastModification: '', pictureUrl: '', pictureFile: null, creatorName: '' },
         ];
         service.game.questions = [...mockListQuestions];
 
