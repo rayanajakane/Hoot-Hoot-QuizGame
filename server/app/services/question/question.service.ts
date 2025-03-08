@@ -36,7 +36,9 @@ export class QuestionService {
             return Promise.reject(`${ERROR_QUESTION_BANK_SAME_TITLE}`);
         }
         question.id = uuidv4();
-        question.pictureUrl = '';
+        if (!question.pictureUrl.startsWith('https://firebasestorage.googleapis.com/')) {
+            question.pictureUrl = '';
+        }
         question.lastModification = new Date();
         const errorMessages = this.validation.findQuestionErrors(question);
         if (errorMessages.length) {
