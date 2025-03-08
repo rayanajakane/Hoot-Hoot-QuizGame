@@ -7,6 +7,9 @@
     >
         <input matSliderThumb [formControl]="currentLongAnswerControl" (input)="updateAnswerFromSlider($event)" />
     </mat-slider>
-
+    <mat-form-field>
+        <mat-label>Value</mat-label>
+        <input matInput type="number" [formControl]="currentLongAnswerControl" (input)="updateAnswerFromSlider($event)" />
+    </mat-form-field>
     <p>Valeur choisie : {{ currentLongAnswerControl.value }}</p>
 </div>
