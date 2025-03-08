@@ -37,4 +37,14 @@
     <string name="sign_up_feedback">✅ Inscription réussie !</string>
     <string name="sign_out_feedback">✅ Déconnexion réussie !</string>
     <string name="username_already_exists">Ce nom d\'utilisateur est déjà pris.</string>
+    <string name="visual_themes">Thèmes visuels</string>
+    <string name="language">Langue</string>
+    <string name="edit_profile">Modifier le profil</string>
+    <string name="home_page">Page principale</string>
+    <string name="user_edit">Modification du Profil</string>
+    <string name="save">Enregistrer</string>
+    <string name="danzer_zone">Zone dangereuse</string>
+    <string name="delete_user">Supprimer le profil</string>
+
+
 </resources>

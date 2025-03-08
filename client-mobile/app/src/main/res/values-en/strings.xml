@@ -37,4 +37,12 @@
     <string name="sign_up_feedback">✅ Signed up successfully !</string>
     <string name="sign_out_feedback">✅ Signed out successfully !</string>
     <string name="username_already_exists">Username is already taken.</string>
+    <string name="visual_themes">Visual themes</string>
+    <string name="language">Language</string>
+    <string name="edit_profile">Edit profile</string>
+    <string name="home_page">Home page</string>
+    <string name="user_edit">Edit profile</string>
+    <string name="save">Save</string>
+    <string name="danzer_zone">Danger zone</string>
+    <string name="delete_user">Delete profile</string>
 </resources>

@@ -42,6 +42,7 @@ fun HomePage(
     navigateToLogin: () -> Unit,
     navigateToHome: () -> Unit,
     navigateToCreate: () -> Unit,
+    navigateToUserEdit: () -> Unit,
     navigateToWaitPage: () -> Unit,
     authViewModel: AuthViewModel
 ) {
@@ -53,7 +54,7 @@ fun HomePage(
     val shouldNavigate = rememberUpdatedState(MatchRoomService.timeToGoToWaitPage)
 
     LaunchedEffect(authState.value, MatchRoomService.timeToGoToWaitPage) {
-        when(authState.value) {
+        when (authState.value) {
             is AuthState.Unauthenticated -> {
                 scope.launch {
                     SnackbarController.sendEvent(
@@ -64,6 +65,7 @@ fun HomePage(
                 }
                 navigateToLogin()
             }
+
             is AuthState.Error -> {
                 scope.launch {
                     SnackbarController.sendEvent(
@@ -73,30 +75,33 @@ fun HomePage(
                     )
                 }
             }
+
             else -> Unit
         }
-        when(shouldNavigate.value) {
+        when (shouldNavigate.value) {
             true -> {
                 MatchRoomService.timeToGoToWaitPage = false
                 navigateToWaitPage()
             }
+
             else -> Unit
         }
     }
 
 
-    Row (
+    Row(
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .pointerInput(Unit) {
-            detectTapGestures(onTap = {
-                focusManager.clearFocus()
-                keyboardController?.hide()
-            })
-        }
-    ){
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                })
+            }
+    ) {
         ChatComponent(modifier = modifier, authViewModel = authViewModel)
-        Column (
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxHeight()
@@ -131,8 +136,21 @@ fun HomePage(
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary)) {
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            ) {
                 Text(text = "Créer une partie")
+            }
+            Button(
+                onClick = {
+                    navigateToUserEdit()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            ) {
+                Text(text = stringResource(R.string.edit_profile))
             }
         }
         ElevatedButton(
@@ -142,7 +160,8 @@ fun HomePage(
             modifier = Modifier.padding(20.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.surfaceBright,
-                contentColor = MaterialTheme.colorScheme.onSurface)
+                contentColor = MaterialTheme.colorScheme.onSurface
+            )
         ) {
             Text(text = stringResource(R.string.logout_action))
         }
