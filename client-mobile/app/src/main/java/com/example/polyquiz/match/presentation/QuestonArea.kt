@@ -149,9 +149,9 @@ fun QuestionArea(
                     if (answerService.bonusPoints > 0){
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = BonusFeedback.BONUS.withPoints(answerService.bonusPoints),
+                            text = BonusFeedback.BONUS.value,
                             style = MaterialTheme.typography.titleMedium,
-                            color = Color.Green
+                            color = AndroidGreen
                         )
                     }
                 }

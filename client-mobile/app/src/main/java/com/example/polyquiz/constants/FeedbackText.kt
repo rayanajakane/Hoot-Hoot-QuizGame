@@ -16,11 +16,7 @@ enum class AnswerFeedback(val value: String) {
 }
 
 enum class BonusFeedback(val value: String) {
-    BONUS("\uD83C\uDF89 Vous avez obtenu un bonus de %d points! \uD83C\uDF89");
-
-    fun withPoints(points: Int): String {
-        return String.format(value, points)
-    }
+    BONUS("\uD83C\uDF89 Vous avez obtenu un bonus de 20%! \uD83C\uDF89");
 }
 
 enum class GradingFeedback(val value: String) {
