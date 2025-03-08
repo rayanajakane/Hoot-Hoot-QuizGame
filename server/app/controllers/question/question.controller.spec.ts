@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { getMockGame } from '@app/constants/game-mocks';
+import { getMockQuestion } from '@app/constants/question-mocks';
 import { ERROR_QUESTION_NOT_FOUND } from '@app/constants/request-errors';
 import { Question } from '@app/model/database/question';
+import { GameService } from '@app/services/game/game.service';
+import { QuestionPicturesDeletionService } from '@app/services/question-pictures-deletion/question-pictures-deletion.service';
 import { QuestionService } from '@app/services/question/question.service';
 import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -11,9 +15,13 @@ import { QuestionController } from './question.controller';
 describe('QuestionController', () => {
     let controller: QuestionController;
     let questionService: SinonStubbedInstance<QuestionService>;
+    let gameService: SinonStubbedInstance<GameService>;
+    let deletionService: SinonStubbedInstance<QuestionPicturesDeletionService>;
 
     beforeEach(async () => {
         questionService = createStubInstance(QuestionService);
+        gameService = createStubInstance(GameService);
+        deletionService = createStubInstance(QuestionPicturesDeletionService);
         const module: TestingModule = await Test.createTestingModule({
             controllers: [QuestionController],
             providers: [
@@ -21,6 +29,11 @@ describe('QuestionController', () => {
                     provide: QuestionService,
                     useValue: questionService,
                 },
+                {
+                    provide: QuestionPicturesDeletionService,
+                    useValue: deletionService,
+                },
+                { provide: GameService, useValue: gameService },
             ],
         }).compile();
 
@@ -110,14 +123,17 @@ describe('QuestionController', () => {
     });
 
     it('updateQuestion() should succeed if service is able to update the question', async () => {
-        questionService.updateQuestion.resolves();
+        jest.spyOn(questionService, 'getQuestionById').mockResolvedValue(getMockQuestion());
+        jest.spyOn(questionService, 'updateQuestion').mockResolvedValue(getMockQuestion());
+        jest.spyOn(gameService, 'getAllGames').mockResolvedValue([getMockGame()]);
+        jest.spyOn(deletionService, 'deleteNonUsedPicture').mockResolvedValue();
         const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.OK);
             return res;
         };
         res.send = () => res;
-        await controller.updateQuestion(new Question(), res);
+        await controller.updateQuestion(getMockQuestion(), res);
     });
 
     it('updateQuestion() should return NOT_FOUND when service cannot find the question', async () => {
@@ -145,7 +161,10 @@ describe('QuestionController', () => {
     });
 
     it('deleteQuestion() should succeed if service is able to delete the question', async () => {
-        questionService.deleteQuestion.resolves();
+        questionService.getQuestionById.resolves(getMockQuestion());
+        gameService.getAllGames.resolves([getMockGame()]);
+        questionService.deleteQuestion.resolves(getMockQuestion());
+        deletionService.deleteGameNonUsedPictures.resolves();
         const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.NO_CONTENT);
