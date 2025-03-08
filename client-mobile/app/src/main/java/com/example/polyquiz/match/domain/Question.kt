@@ -8,6 +8,7 @@ data class Question(
     var text: String,
     val points: Int,
     val choices: List<Choice>? = null,
+    val estimatedParameters: EstimatedParameters? = null,
     val answer: String? = null,
     val lastModification: String?,
 )

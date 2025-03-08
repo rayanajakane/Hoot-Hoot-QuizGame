@@ -175,6 +175,10 @@ fun QuestionArea(
                     QuestionType.LONG_ANSWER.value -> {
                         LongAnswerArea(answerService, context, modifier = Modifier.fillMaxWidth(0.8f))
                     }
+
+                    QuestionType.ESTIMATED_ANSWER.value ->{
+                        EstimatedAnswerArea(answerService, matchRoomService, context, modifier = Modifier.fillMaxWidth(0.8f))
+                    }
                 }
             }
 
