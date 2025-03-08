@@ -33,18 +33,18 @@ fun PlayersListComponent(
     var sortBy by remember { mutableStateOf("score") }
     var sortOrder by remember { mutableStateOf("descending") }
 
-    val sortedPlayers = remember(players, sortBy, sortOrder) {
-        players.sortedWith(
-            when (sortBy) {
-                "name" -> compareBy { it.username }
-                "score" -> compareBy { it.score as Comparable<*> }
-                "state" -> compareBy { it.state }
-                else -> compareBy<Player> { it.score as Comparable<*> }
-            }.let { comparator ->
-                if (sortOrder == "descending") comparator.reversed() else comparator
-            }
-        )
-    }
+//    val sortedPlayers = remember(players, sortBy, sortOrder) {
+//        players.sortedWith(
+//            when (sortBy) {
+//                "name" -> compareBy { it.username }
+//                "score" -> compareBy {it.score.toInt() }
+//                "state" -> compareBy { it.state }
+//                else -> compareBy<Player> { it.score as Comparable<*> }
+//            }.let { comparator ->
+//                if (sortOrder == "descending") comparator.reversed() else comparator
+//            }
+//        )
+//    }
 
     Column(
         modifier = modifier
@@ -60,7 +60,7 @@ fun PlayersListComponent(
         }
 
         LazyColumn(modifier = Modifier.weight(1f)) {
-            items(sortedPlayers) { player ->
+            items(players) { player ->
                 PlayerCard(player, context)
             }
         }
