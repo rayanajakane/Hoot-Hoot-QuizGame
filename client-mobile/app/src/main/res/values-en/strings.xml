@@ -43,6 +43,6 @@
     <string name="home_page">Home page</string>
     <string name="user_edit">Edit profile</string>
     <string name="save">Save</string>
-    <string name="danzer_zone">Danger zone</string>
+    <string name="danger_zone">Danger zone</string>
     <string name="delete_user">Delete profile</string>
 </resources>

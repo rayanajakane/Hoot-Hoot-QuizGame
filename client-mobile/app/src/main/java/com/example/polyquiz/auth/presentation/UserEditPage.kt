@@ -1,6 +1,5 @@
 package com.example.polyquiz.auth.presentation
 
-import android.content.res.Resources
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -262,7 +261,7 @@ fun UserEditPage(
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                Text(stringResource(R.string.danzer_zone), fontSize = 30.sp,
+                Text(stringResource(R.string.danger_zone), fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 8.dp))
                 Button(
