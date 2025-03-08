@@ -162,8 +162,6 @@ export class GameModificationService {
     }
 
     dragQuizQuestion(question: Question) {
-        console.log('drag');
-        console.log(question);
         this.currentQuestion = question;
     }
 
@@ -256,8 +254,6 @@ export class GameModificationService {
     }
 
     private addQuestionToBank(newQuestion: Question) {
-        console.log('addQuestionToBank');
-        console.log(newQuestion);
         if (!this.isDuplicateQuestion(newQuestion, this.originalBankQuestions)) {
             this.bankService.addQuestion(newQuestion);
             // TODO: If existing question already has image, it needs to be copied to the bank.

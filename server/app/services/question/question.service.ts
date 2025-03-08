@@ -68,14 +68,16 @@ export class QuestionService {
         }
     }
 
-    async deleteQuestion(questionId: string): Promise<void> {
+    async deleteQuestion(questionId: string): Promise<Question> {
         try {
-            if (!(await this.getQuestionById(questionId))) {
+            const question = await this.getQuestionById(questionId);
+            if (!question) {
                 return Promise.reject(`${ERROR_QUESTION_NOT_FOUND}`);
             }
             await this.questionModel.deleteOne({
                 id: questionId,
             });
+            return question;
         } catch (error) {
             return Promise.reject(`${ERROR_DEFAULT} ${error}`);
         }

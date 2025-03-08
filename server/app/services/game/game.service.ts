@@ -8,7 +8,6 @@ import {
 } from '@app/constants/request-errors';
 import { Choice } from '@app/model/database/choice';
 import { Game, GameDocument } from '@app/model/database/game';
-import { Question } from '@app/model/database/question';
 import { CreateGameDto } from '@app/model/dto/game/create-game.dto';
 import { UpdateGameDto } from '@app/model/dto/game/update-game.dto';
 import { GameCreationService } from '@app/services/game-creation/game-creation.service';
@@ -31,18 +30,6 @@ export class GameService {
 
     async getAllVisibleGames(): Promise<Game[]> {
         return await this.gameModel.find({ isVisible: true });
-    }
-
-    async countGamesSamePicture(url: string): Promise<number> {
-        const games = await this.getAllGames();
-        const gamesWithRequiredPicture = [];
-        games.forEach((game: Game) => {
-            const hasSamePicture = game.questions.some((question: Question) => {
-                question.pictureUrl === url;
-            });
-            if (hasSamePicture) gamesWithRequiredPicture.push(game);
-        });
-        return gamesWithRequiredPicture.length;
     }
 
     async getGameById(gameId: string): Promise<Game> {
@@ -118,14 +105,16 @@ export class GameService {
         }
     }
 
-    async deleteGame(gameId: string): Promise<void> {
+    async deleteGame(gameId: string): Promise<Game> {
+        let game: Game;
         try {
-            await this.getGameById(gameId);
+            game = await this.getGameById(gameId);
         } catch (error) {
             return Promise.reject(`${ERROR_DEFAULT} ${error}`);
         }
         try {
             await this.gameModel.deleteOne({ id: gameId });
+            return game;
         } catch (error) {
             return Promise.reject(`${ERROR_DEFAULT} ${error}`);
         }

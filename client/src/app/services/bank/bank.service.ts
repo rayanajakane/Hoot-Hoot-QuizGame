@@ -42,8 +42,6 @@ export class BankService {
     }
 
     addQuestion(newQuestion: Question, isModificationPageQuestion: boolean = false): void {
-        console.log('Bank add question');
-        console.log(newQuestion);
         const pictureFile = newQuestion.pictureFile;
         const isImageToUpload = this.authenticationService.isImageToUpload(newQuestion.pictureUrl);
 
@@ -112,7 +110,6 @@ export class BankService {
             next: async () => {
                 if (isImageToUpload && pictureFile) {
                     await this.uploadQuestionPicture(newQuestion, pictureFile, false, false);
-                    console.log(newQuestion);
                 }
                 this.notificationService.displaySuccessMessage(BankStatus.MODIFIED);
             },

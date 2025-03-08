@@ -20,6 +20,7 @@ import { GameService } from '@app/services/game/game.service';
 import { MatchBackupService } from '@app/services/match-backup/match-backup.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { PlayerRoomService } from '@app/services/player-room/player-room.service';
+import { QuestionPicturesDeletionService } from '@app/services/question-pictures-deletion/question-pictures-deletion.service';
 import { QuestionStrategyContext } from '@app/services/question-strategy-context/question-strategy-context.service';
 import { QuestionService } from '@app/services/question/question.service';
 import { TimeService } from '@app/services/time/time.service';
@@ -64,6 +65,7 @@ import { MongooseModule } from '@nestjs/mongoose';
         MultipleChoiceStrategy,
         LongAnswerStrategy,
         EstimatedAnswerStrategy,
+        QuestionPicturesDeletionService,
     ],
 })
 export class AppModule {}

@@ -22,9 +22,7 @@ const firebaseProvider = {
             client_x509_cert_url: configService.get<string>('CLIENT_CERT_URL'),
             universe_domain: configService.get<string>('UNIVERSAL_DOMAIN'),
         } as admin.ServiceAccount;
-        firebaseConfig.projectId = 'log3900-201-7daa3';
-        console.log(`https://${firebaseConfig.projectId}-default-rtdb.firebaseio.com`);
-        console.log(`${firebaseConfig.projectId}.firebasestorage.app`);
+        firebaseConfig.projectId = 'log3900-201-7daa3'; // TODO: Import from .env properly
         return admin.initializeApp({
             credential: admin.credential.cert(firebaseConfig),
             databaseURL: `https://${firebaseConfig.projectId}-default-rtdb.firebaseio.com`,

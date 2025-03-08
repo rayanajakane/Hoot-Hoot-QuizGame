@@ -20,9 +20,8 @@ export class FirebaseRepositoryService {
 
     async deleteImage(url: string) {
         // Inspired by: https://stackoverflow.com/questions/47375945/delete-firebase-storage-image-url-with-download-url
-        let name = url.substr(url.indexOf('%2F') + 3, url.indexOf('?') - (url.indexOf('%2F') + 3));
+        let name = url.substring(url.indexOf('%2F') + 3, url.indexOf('?') - (url.indexOf('%2F') + 3));
         name = name.replace('%20', ' ');
-        console.log(name);
         await this.storage.bucket().file(`questionPictures/${name}`).delete();
     }
 
