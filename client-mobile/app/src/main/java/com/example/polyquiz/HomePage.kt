@@ -1,5 +1,6 @@
 package com.example.polyquiz
 
+import android.service.autofill.FieldClassification.Match
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,7 @@ import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AuthFeedbackText
 import com.example.polyquiz.constants.DisplayAuthenticationText
+import com.example.polyquiz.constants.Route
 import com.example.polyquiz.match.domain.MatchRoomService
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -54,8 +56,10 @@ fun HomePage(
     val keyboardController = LocalSoftwareKeyboardController.current
     var showDialog by remember { mutableStateOf(false) }
     val shouldNavigate = rememberUpdatedState(MatchRoomService.timeToGoToWaitPage)
+    //val showMsg = rememberUpdatedState(MatchRoomService.showErrorMsg)
 
     LaunchedEffect(authState.value, MatchRoomService.timeToGoToWaitPage) {
+
         when(authState.value) {
             is AuthState.Unauthenticated -> {
                 scope.launch {

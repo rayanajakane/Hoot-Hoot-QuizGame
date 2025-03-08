@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,6 +21,10 @@ import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.match.domain.JoinMatchService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.TimeService
+import com.google.gson.Gson
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
 
 @Composable
 fun JoinGameDialog(
@@ -34,6 +39,8 @@ fun JoinGameDialog(
 ) {
     var room by remember { mutableStateOf("") }
     val username by remember { mutableStateOf(authViewModel.getUsername() )}
+    val scope = rememberCoroutineScope()
+
 
     fun submitCode(matchRoomCode: String) {
         JoinMatchService.matchRoomCode = "";
@@ -45,6 +52,13 @@ fun JoinGameDialog(
             },
             onError = { errorMessage ->
                 println("Error: $errorMessage")
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = errorMessage,
+                        )
+                    )
+                }
                 JoinMatchService.matchRoomCode = ""
             }
         )

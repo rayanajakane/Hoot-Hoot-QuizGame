@@ -12,6 +12,15 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import com.example.polyquiz.SnackbarController
+import com.example.polyquiz.SnackbarEvent
+import com.example.polyquiz.constants.AuthFeedbackText
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
 
 object MatchRoomService {
     var players by mutableStateOf<List<Player>>(emptyList())
@@ -24,12 +33,15 @@ object MatchRoomService {
     var isPlaying by mutableStateOf(false)
     var isTimeToNavigate by mutableStateOf(false)
     var hasBeenKickedOut by mutableStateOf(false)
+    var errorMessage by mutableStateOf("")
+    var showErrorMsg by mutableStateOf(false)
     var gameTitle: String = ""
     var gameDuration: Int = 0
     var currentQuestion by mutableStateOf<Question?>(null)
     var isHostPlaying by mutableStateOf(true)
     var isCooldown by mutableStateOf(false)
     var isQuitting by mutableStateOf(false)
+
 
     private var matchRoomCode: String = ""
     private var username: String = ""
@@ -75,6 +87,7 @@ object MatchRoomService {
         socket.emit(MatchEvents.DISCONNECT.value)
         MatchContextService.resetContext()
         hasBeenKickedOut = true
+        println("Youve been kicked out")
     }
 
     fun createRoom(gameId: String, isClassicMode: Boolean = true) {
@@ -130,8 +143,15 @@ object MatchRoomService {
     fun handleError() {
         socket.on(MatchEvents.ERROR.value) { args ->
             if (args.isNotEmpty()) {
-                val errorMessage = args[0] as? String ?: "Unknown error"
+                val capturedMessage = args[0] as? String ?: "Unknown error"
+                errorMessage = capturedMessage
+                showErrorMsg = true
+                println("An error has been received")
+                println(errorMessage)
 //                notificationService.displayErrorMessage(errorMessage)
+//                CoroutineScope(Dispatchers.Main).launch {
+               //     _errorEvents.emit(errorMessage)
+              //  }
             }
         }
     }

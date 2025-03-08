@@ -35,6 +35,11 @@ import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.MatchStatus
 import com.example.polyquiz.constants.UserInfo
 import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
+import com.example.polyquiz.SnackbarController
+import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.constants.AnswerCorrectness
 import com.example.polyquiz.constants.AnswerFeedback
 import com.example.polyquiz.constants.BonusFeedback
@@ -42,6 +47,7 @@ import com.example.polyquiz.constants.MatchButtonActions
 import com.example.polyquiz.ui.theme.AndroidGreen
 import com.example.polyquiz.ui.theme.BrightRed
 import com.example.polyquiz.ui.theme.GoldenYellow
+import kotlinx.coroutines.launch
 
 @Composable
 fun QuestionArea(
@@ -58,8 +64,12 @@ fun QuestionArea(
     var context = MatchContext.PLAYERVIEW
     val question by matchRoomService::currentQuestion
     val score by answerService::playerScore
+    val scope = rememberCoroutineScope()
+//    val error = rememberUpdatedState(MatchRoomService.showErrorMsg)
+//    val error by remember { derivedStateOf { MatchRoomService.showErrorMsg } }
+//    val errorMessage by remember { derivedStateOf { MatchRoomService.errorMessage } }
 
-    LaunchedEffect(Unit, MatchRoomService.hasBeenKickedOut) {
+    LaunchedEffect(Unit, MatchRoomService.hasBeenKickedOut, MatchRoomService.showErrorMsg) {
         answerService.resetStateForNewQuestion()
         timeService.listenToTimerEvents()
         answerService.listenToAnswerEvents()
@@ -70,10 +80,40 @@ fun QuestionArea(
         when (MatchRoomService.hasBeenKickedOut) {
             true -> {
                 MatchRoomService.hasBeenKickedOut = false
+                println("gtfo")
                 navigateToHome()
             }
             else -> Unit
         }
+
+        when (MatchRoomService.showErrorMsg) {
+            true -> {
+                val errorMessage = MatchRoomService.errorMessage
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = errorMessage,
+                        )
+                    )
+                }
+                MatchRoomService.errorMessage = ""
+                MatchRoomService.showErrorMsg = false
+
+            }
+            else -> Unit
+        }
+
+//        when (error) {
+//            true -> {
+//                println(MatchRoomService.errorMessage)
+//
+//            }
+//
+//            else -> {
+//                println("we are in the else")
+//                Unit
+//            }
+//        }
     }
 
 

@@ -20,11 +20,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.polyquiz.SnackbarController
+import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.HOST_USERNAME
 import com.example.polyquiz.constants.MatchButtonActions
@@ -36,12 +39,15 @@ import com.example.polyquiz.match.domain.MatchRoomService.gameTitle
 import com.example.polyquiz.match.domain.MatchRoomService.players
 import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.match.presentation.TimerComponent
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: AuthViewModel, navigateToMatchRoom: () -> Unit) {
     var isLocked: Boolean = false
     var isHostPlaying: Boolean = false
+    val scope = rememberCoroutineScope()
+
 
     fun resetWaitPage() {
         isLocked = false
@@ -60,7 +66,7 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
 //        return MatchService.currentGame()
 //    }
 
-    LaunchedEffect(Unit, MatchRoomService.isTimeToNavigate, MatchRoomService.hasBeenKickedOut) {
+    LaunchedEffect(Unit, MatchRoomService.isTimeToNavigate, MatchRoomService.hasBeenKickedOut, MatchRoomService.showErrorMsg) {
         resetWaitPage()
         TimeService.handleTimer() //pour l'organisateur, il faudrait un listenToTimerEvents()
 
@@ -81,6 +87,22 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
             true -> {
                 MatchRoomService.hasBeenKickedOut = false
                 navigateToHome()
+            }
+            else -> Unit
+        }
+
+        when (MatchRoomService.showErrorMsg) {
+            true -> {
+                val errorMessage = MatchRoomService.errorMessage
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = errorMessage,
+                        )
+                    )
+                }
+                MatchRoomService.errorMessage = ""
+                MatchRoomService.showErrorMsg = false
             }
             else -> Unit
         }

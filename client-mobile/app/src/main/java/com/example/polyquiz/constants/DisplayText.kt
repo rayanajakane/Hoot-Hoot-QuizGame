@@ -47,3 +47,4 @@ enum class AuthFeedbackText (val value: String) {
     SIGN_UP("✅ Inscription réussie !"),
     SIGN_OUT("✅ Déconnexion réussie !")
 }
+

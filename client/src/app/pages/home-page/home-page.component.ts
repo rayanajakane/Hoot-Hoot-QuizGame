@@ -50,7 +50,8 @@ export class HomePageComponent {
                 this.joinMatchService.validateUsername(this.authenticationService.userDisplayName);
             },
             error: (error: HttpErrorResponse) => {
-                this.notificationService.displayErrorMessage(`${JSON.parse(error.error)['message']}`);
+                // this.notificationService.displayErrorMessage(`${JSON.parse(error.error)['message']}`);
+                this.notificationService.displayErrorMessage(JSON.stringify(JSON.parse(error.error), null, 2));
                 this.joinMatchService.matchRoomCode = '';
             },
         });
