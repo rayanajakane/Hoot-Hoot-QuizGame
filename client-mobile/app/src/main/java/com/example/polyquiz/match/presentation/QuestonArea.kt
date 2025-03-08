@@ -204,7 +204,7 @@ fun QuestionArea(
 
             }
 
-            if (!matchRoomService.isCooldown) {
+            if (!matchRoomService.isCooldown && context === MatchContext.PLAYERVIEW) {
                 when (question?.type) {
                     QuestionType.MULTIPLE_CHOICE.value -> {
                         MultipleChoiceArea(

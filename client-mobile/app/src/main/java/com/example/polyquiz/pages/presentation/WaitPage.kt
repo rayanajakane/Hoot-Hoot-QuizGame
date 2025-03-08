@@ -49,7 +49,7 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
     var isHostPlaying: Boolean = false
     val matchService = MatchService
     val timeService = TimeService
-    var isLocked by mutableStateOf(false)
+   // var isLocked by mutableStateOf(false)
 
 
     fun resetWaitPage() {
@@ -78,6 +78,13 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
             MatchRoomService.isTimeToNavigate = false
             navigateToMatchRoom()
         }
+        if (isHost()) {
+            gameTitle = getCurrentGame().title
+            println(gameTitle)
+            MatchContextService.setContext(MatchContext.HOSTVIEW)
+        } else {
+            MatchContextService.setContext(MatchContext.PLAYERVIEW)
+        }
     }
 
 
@@ -94,19 +101,19 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
         timeService.listenToTimerEvents()
 
 
-        if (isHost()) {
-            gameTitle = getCurrentGame().title
-            println(gameTitle)
-            MatchContextService.setContext(MatchContext.HOSTVIEW)
-        } else {
-            MatchContextService.setContext(MatchContext.PLAYERVIEW)
-        }
+//        if (isHost()) {
+//            gameTitle = getCurrentGame().title
+//            println(gameTitle)
+//            MatchContextService.setContext(MatchContext.HOSTVIEW)
+//        } else {
+//            MatchContextService.setContext(MatchContext.PLAYERVIEW)
+//        }
     }
 
     fun toggleLock() {
        //isLocked = true
         MatchRoomService.toggleLock()
-         //isLocked = !isLocked
+        //MatchRoomService.isLocked = !MatchRoomService.isLocked
     }
 
     fun banPlayerUsername(username: String) {
@@ -173,7 +180,7 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
                             Text(StartMatchFeedback.LOCK_MATCH.value)
                             Spacer(modifier = Modifier.width(8.dp))
                             //isLocked = false
-                             Switch(checked = isLocked, onCheckedChange = { toggleLock() })
+                             Switch(checked = MatchRoomService.isLocked, onCheckedChange = { toggleLock() })
                             // println(isLocked)
                         }
                         Button(

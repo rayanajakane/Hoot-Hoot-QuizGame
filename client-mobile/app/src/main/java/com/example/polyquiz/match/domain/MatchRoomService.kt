@@ -268,7 +268,8 @@ object MatchRoomService {
 
     fun toggleLock() {
         //if (username == HOST_USERNAME) {
-            socket.emit(MatchEvents.TOGGLE_LOCK.value, matchRoomCode)
+        socket.emit(MatchEvents.TOGGLE_LOCK.value, matchRoomCode)
+        isLocked = !isLocked
         println(username)
         println(matchRoomCode)
        // println(isLocked)
