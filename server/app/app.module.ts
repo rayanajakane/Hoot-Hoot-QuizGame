@@ -9,6 +9,7 @@ import { TimerGateway } from '@app/gateways/timer/timer.gateway';
 import { Game, gameSchema } from '@app/model/database/game';
 import { Question, questionSchema } from '@app/model/database/question';
 import { FirebaseModule } from '@app/modules/firebase/firebase.module';
+import { EstimatedAnswerStrategy } from '@app/question-strategies/estimated-answer-strategy/estimated-answer-strategy';
 import { LongAnswerStrategy } from '@app/question-strategies/long-answer-strategy/long-answer-strategy';
 import { MultipleChoiceStrategy } from '@app/question-strategies/multiple-choice-strategy/multiple-choice-strategy';
 import { AnswerService } from '@app/services/answer/answer.service';
@@ -26,7 +27,6 @@ import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MongooseModule } from '@nestjs/mongoose';
-import { EstimatedAnswerStrategy } from './question-strategies/estimated-answer-strategy/estimated-answer-strategy';
 
 @Module({
     imports: [

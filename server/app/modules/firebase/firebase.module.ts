@@ -5,7 +5,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as admin from 'firebase-admin';
 
 // REFERENCE: https://medium.com/@elangoram1998/getting-started-with-firebase-admin-in-nest-js-71f676e73e6
-// https://dev.to/aswinsanakan/how-to-integrate-firebase-in-nestjs-5gl9
 const firebaseProvider = {
     provide: 'FIREBASE_APP',
     inject: [ConfigService],
@@ -23,6 +22,8 @@ const firebaseProvider = {
             client_x509_cert_url: configService.get<string>('CLIENT_CERT_URL'),
             universe_domain: configService.get<string>('UNIVERSAL_DOMAIN'),
         } as admin.ServiceAccount;
+
+        console.log(firebaseConfig);
 
         return admin.initializeApp({
             credential: admin.credential.cert(firebaseConfig),
