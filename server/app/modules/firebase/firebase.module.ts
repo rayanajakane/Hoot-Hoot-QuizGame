@@ -22,13 +22,13 @@ const firebaseProvider = {
             client_x509_cert_url: configService.get<string>('CLIENT_CERT_URL'),
             universe_domain: configService.get<string>('UNIVERSAL_DOMAIN'),
         } as admin.ServiceAccount;
-
-        console.log(firebaseConfig);
-
+        firebaseConfig.projectId = 'log3900-201-7daa3';
+        console.log(`https://${firebaseConfig.projectId}-default-rtdb.firebaseio.com`);
+        console.log(`${firebaseConfig.projectId}.firebasestorage.app`);
         return admin.initializeApp({
             credential: admin.credential.cert(firebaseConfig),
-            databaseURL: `https://${firebaseConfig.projectId}.firebaseio.com`,
-            storageBucket: `${firebaseConfig.projectId}.appspot.com`,
+            databaseURL: `https://${firebaseConfig.projectId}-default-rtdb.firebaseio.com`,
+            storageBucket: `${firebaseConfig.projectId}.firebasestorage.app`,
         });
     },
 };

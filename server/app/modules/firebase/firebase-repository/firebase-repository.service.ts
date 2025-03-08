@@ -16,7 +16,6 @@ export class FirebaseRepositoryService {
         this.collection = this.db.collection('<collection_name>');
         this.database = firebaseApp.database('https://log3900-201-7daa3-default-rtdb.firebaseio.com/'); // TODO: Consider adding it to .env (?)
         this.storage = firebaseApp.storage();
-        const bucket = this.storage.bucket();
     }
 
     async deleteImage(url: string) {
