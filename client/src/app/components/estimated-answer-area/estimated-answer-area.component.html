@@ -1,10 +1,12 @@
-<mat-slider
-    min="{{ matchRoomService.currentQuestion.estimatedParameters?.lowerBound }}"
-    max="{{ matchRoomService.currentQuestion.estimatedParameters?.upperBound }}"
-    step="1"
-    discrete="thumblabel"
->
-    <input matSliderThumb [formControl]="currentLongAnswerControl" (input)="updateAnswerFromSlider($event)" />
-</mat-slider>
+<div id="estimated-answer-area" *ngIf="matchContextService.getContext() !== contextOptions.HostView">
+    <mat-slider
+        min="{{ matchRoomService.currentQuestion.estimatedParameters?.lowerBound }}"
+        max="{{ matchRoomService.currentQuestion.estimatedParameters?.upperBound }}"
+        step="1"
+        discrete="thumblabel"
+    >
+        <input matSliderThumb [formControl]="currentLongAnswerControl" (input)="updateAnswerFromSlider($event)" />
+    </mat-slider>
 
-<p>Valeur choisie : {{ currentLongAnswerControl.value }}</p>
+    <p>Valeur choisie : {{ currentLongAnswerControl.value }}</p>
+</div>

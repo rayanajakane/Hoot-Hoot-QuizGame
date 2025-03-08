@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatchContext } from '@app/constants/states';
 import { AnswerService } from '@app/services/answer/answer.service';
+import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 @Component({
     selector: 'app-estimated-answer-area',
@@ -12,8 +14,13 @@ export class EstimatedAnswerAreaComponent implements OnInit {
 
     constructor(
         public matchRoomService: MatchRoomService,
+        public matchContextService: MatchContextService,
         public answerService: AnswerService,
     ) {}
+
+    get contextOptions(): typeof MatchContext {
+        return MatchContext;
+    }
 
     ngOnInit(): void {
         const lowerBound = this.matchRoomService.currentQuestion?.estimatedParameters?.lowerBound || 0;
@@ -21,6 +28,7 @@ export class EstimatedAnswerAreaComponent implements OnInit {
         this.answerService.currentLongAnswer = lowerBound.toString();
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     updateAnswerFromSlider(event: any): void {
         if (event && event.target && event.target.value !== undefined) {
             const newValue = Number(event.target.value);

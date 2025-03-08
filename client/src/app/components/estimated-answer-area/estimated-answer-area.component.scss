@@ -21,3 +21,12 @@
     font-weight: bold;
     min-width: 40px;
 }
+
+#estimated-answer-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    position: fixed;
+    top: 55vh;
+    align-self: center;
+}
