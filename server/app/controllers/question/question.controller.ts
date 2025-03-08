@@ -1,4 +1,5 @@
 import { ERROR_QUESTION_NOT_FOUND } from '@app/constants/request-errors';
+import { Question } from '@app/model/database/question';
 import { CreateQuestionDto } from '@app/model/dto/question/create-question-dto';
 import { UpdateQuestionDto } from '@app/model/dto/question/update-question-dto';
 import { GameService } from '@app/services/game/game.service';
@@ -50,7 +51,12 @@ export class QuestionController {
     @Patch('/:id')
     async updateQuestion(@Body() updateQuestionDto: UpdateQuestionDto, @Res() response: Response) {
         try {
+            const originalQuestion: Question = await this.questionService.getQuestionById(updateQuestionDto.id);
             const updatedQuestion = await this.questionService.updateQuestion(updateQuestionDto);
+            const games = await this.gameService.getAllGames();
+            if (originalQuestion.pictureUrl !== updatedQuestion.pictureUrl) {
+                await this.questionPicturesDeletionService.deleteNonUsedPicture(originalQuestion.pictureUrl, games);
+            }
             response.status(HttpStatus.OK).json(updatedQuestion);
         } catch (error) {
             if (error === ERROR_QUESTION_NOT_FOUND) {

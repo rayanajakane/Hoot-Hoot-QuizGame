@@ -1,4 +1,5 @@
 import { ERROR_GAME_SAME_TITLE } from '@app/constants/request-errors';
+import { Game } from '@app/model/database/game';
 import { CreateGameDto } from '@app/model/dto/game/create-game.dto';
 import { UpdateGameDto } from '@app/model/dto/game/update-game.dto';
 import { GameService } from '@app/services/game/game.service';
@@ -62,7 +63,11 @@ export class GameController {
     @Put('/:id')
     async upsertGame(@Body() updateGameDto: UpdateGameDto, @Res() response: Response) {
         try {
+            const originalGame: Game = await this.gameService.getGameById(updateGameDto.id);
             const updatedGame = await this.gameService.upsertGame(updateGameDto);
+            await this.questionPicturesDeletionService.deleteGameNonUsedPictures(originalGame);
+            console.log('UPDATED GAME');
+            console.log(updatedGame);
             response.status(HttpStatus.OK).json(updatedGame);
         } catch (error) {
             response.status(HttpStatus.BAD_REQUEST).send({ message: error });
@@ -73,7 +78,7 @@ export class GameController {
     async deleteGame(@Param('id') id: string, @Res() response: Response) {
         try {
             const game = await this.gameService.deleteGame(id);
-            this.questionPicturesDeletionService.deleteGameNonUnsedPictures(game);
+            await this.questionPicturesDeletionService.deleteGameNonUsedPictures(game);
             response.status(HttpStatus.NO_CONTENT).send();
         } catch (error) {
             response.status(HttpStatus.NOT_FOUND).send({ message: error });
