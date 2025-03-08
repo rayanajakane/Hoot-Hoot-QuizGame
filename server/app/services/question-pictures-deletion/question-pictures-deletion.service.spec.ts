@@ -1,8 +1,8 @@
 import { FirebaseRepositoryService } from '@app/modules/firebase/firebase-repository/firebase-repository.service';
+import { GameService } from '@app/services/game/game.service';
+import { QuestionService } from '@app/services/question/question.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { createStubInstance, SinonStubbedInstance } from 'sinon';
-import { GameService } from '../game/game.service';
-import { QuestionService } from '../question/question.service';
 import { QuestionPicturesDeletionService } from './question-pictures-deletion.service';
 
 describe('QuestionPicturesDeletionService', () => {

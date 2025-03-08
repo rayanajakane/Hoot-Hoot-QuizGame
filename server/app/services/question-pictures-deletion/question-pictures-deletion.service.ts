@@ -1,9 +1,9 @@
 import { Game } from '@app/model/database/game';
 import { Question } from '@app/model/database/question';
 import { FirebaseRepositoryService } from '@app/modules/firebase/firebase-repository/firebase-repository.service';
+import { GameService } from '@app/services/game/game.service';
+import { QuestionService } from '@app/services/question/question.service';
 import { Injectable } from '@nestjs/common';
-import { GameService } from '../game/game.service';
-import { QuestionService } from '../question/question.service';
 
 @Injectable()
 export class QuestionPicturesDeletionService {
