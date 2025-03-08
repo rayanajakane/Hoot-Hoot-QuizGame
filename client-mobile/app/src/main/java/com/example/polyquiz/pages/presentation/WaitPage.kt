@@ -60,11 +60,8 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
         MatchRoomService.isHostPlaying = true
         MatchRoomService.isBanned = false
         MatchRoomService.isQuitting = false
-        println("resetcaleed${MatchRoomService.isMatchStarted}")
-        println("resetcae${matchRoomService.isMatchStarted}")
         MatchRoomService.isMatchStarted = false
-        println("resetcal2${MatchRoomService.isMatchStarted}")
-        println("resetca2${matchRoomService.isMatchStarted}")
+
     }
 
     fun getTime(): Int {
@@ -127,8 +124,6 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
 
     fun startMatch() {
         MatchRoomService.startMatch()
-        println("f1${MatchRoomService.isMatchStarted}")
-        println("f2${matchRoomService.isMatchStarted}")
     }
 
     fun quitMatch() { //originellement quitGame sur le client lourd
@@ -160,8 +155,7 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            println("waitroom${MatchRoomService.isMatchStarted}")
-            println("waitroom${matchRoomService.isMatchStarted}")
+
             if (MatchRoomService.isMatchStarted) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
@@ -190,8 +184,8 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
                         }
                         Button(
                             onClick = { startMatch()
-                                println("isstartedmatch${matchRoomService.isMatchStarted}")},
-                             //enabled = isLocked && players.isNotEmpty()
+                                },
+
                         ) {
                             Text(MatchButtonActions.START_MATCH.value)
                         }
