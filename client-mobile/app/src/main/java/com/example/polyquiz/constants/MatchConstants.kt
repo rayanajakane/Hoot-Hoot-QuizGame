@@ -24,3 +24,6 @@ enum class MatchButtonActions(val value: String){
     START_MATCH("COMMENCER LA PARTIE"),
 }
 
+enum class MatchDisplayText(val value: String){
+    ANSWER("Réponse"),
+}

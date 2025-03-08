@@ -6,9 +6,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.polyquiz.constants.EstimatedQuestionFeedback
 import com.example.polyquiz.match.domain.AnswerService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.constants.MatchContext
+import com.example.polyquiz.constants.MatchDisplayText
 import com.example.polyquiz.ui.theme.AndroidGreen
 import com.example.polyquiz.ui.theme.BrightRed
 
@@ -37,7 +39,7 @@ fun EstimatedAnswerArea(
         if (matchContext != MatchContext.HOSTVIEW) {
             if (isDisabled) {
                 Text(
-                    text = "Réponse correcte : ${answerService.feedback.correctAnswer?.get(0)}",
+                    text = EstimatedQuestionFeedback.CORRECT_ANSWER.withPoints(answerService.feedback.correctAnswer!!.get(0).toInt()),
                     fontSize = 18.sp,
                     color = AndroidGreen,
                     modifier = Modifier
@@ -47,7 +49,7 @@ fun EstimatedAnswerArea(
             }
             if (!isDisabled) {
                 Text(
-                    text = "Choisissez une valeur estimée",
+                    text = EstimatedQuestionFeedback.CHOOSE_VALUE.value,
                     fontSize = 18.sp,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -78,7 +80,7 @@ fun EstimatedAnswerArea(
                         }
                     }
                 },
-                label = { Text("Réponse") },
+                label = { Text(MatchDisplayText.ANSWER.value) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
@@ -89,7 +91,7 @@ fun EstimatedAnswerArea(
 
             if (isOutOfBounds) {
                 Text(
-                    text = "Valeur hors limites ! Doit être entre ${lowerBound.toInt()} et ${upperBound.toInt()}",
+                    text = EstimatedQuestionFeedback.ANSWER_OUT_OF_BOUNDS.value,
                     color = BrightRed,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(start = 4.dp)

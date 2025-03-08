@@ -29,3 +29,13 @@ enum class StartMatchFeedback(val value: String) {
     WAITING_TO_START("La partie va bientôt commencer..."),
     LOCK_MATCH("Verrouiller la partie"),
 }
+
+enum class EstimatedQuestionFeedback(val value: String) {
+    CHOOSE_VALUE("Choisissez une valeur estimée"),
+    ANSWER_OUT_OF_BOUNDS("Votre réponse est en dehors de l'intervalle"),
+    CORRECT_ANSWER("Réponse correcte : %s");
+
+    fun withPoints(points: Int): String {
+        return String.format(value, points)
+    }
+}
