@@ -89,13 +89,23 @@ abstract class CommunicationService(
                     if (body != null) {
                         onSuccess(body)
                     } else {
-                        onSuccess(Unit as R)
+                        onSuccess(Unit as R) // Handle cases where the response body is empty
                     }
                 } else {
-                    onError("Failed with HTTP code: ${response.code()} - ${response.message()}")
+                    val errorBody = response.errorBody()?.string()
+                    val errorMessage = if (errorBody != null) {
+                        try {
+                            val errorJson = Gson().fromJson(errorBody, Map::class.java)
+                            errorJson["message"] as? String ?: "Unknown error"
+                        } catch (e: Exception) {
+                            "Failed to parse error message"
+                        }
+                    } else {
+                        "Failed with HTTP code: ${response.code()} - ${response.message()}"
+                    }
+                    onError(errorMessage)
                 }
             }
-
             override fun onFailure(call: Call<R>, t: Throwable) {
                 onError("Network error: ${t}")
                 t.printStackTrace()
