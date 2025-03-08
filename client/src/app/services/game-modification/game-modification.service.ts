@@ -149,6 +149,7 @@ export class GameModificationService {
     dropInQuizList(event: CdkDragDrop<Question[]>) {
         this.isFirstInteraction = false;
         const droppedQuestion: Question = event.previousContainer.data[event.previousIndex];
+        droppedQuestion.creatorName = ''; // If we want to reset the author when we add a bank question to the game
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
             this.markPendingChanges();
