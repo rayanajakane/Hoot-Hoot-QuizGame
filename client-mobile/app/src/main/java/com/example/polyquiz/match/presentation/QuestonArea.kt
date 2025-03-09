@@ -149,9 +149,9 @@ fun QuestionArea(
                     if (answerService.bonusPoints > 0){
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = BonusFeedback.BONUS.withPoints(answerService.bonusPoints),
+                            text = BonusFeedback.BONUS.value,
                             style = MaterialTheme.typography.titleMedium,
-                            color = Color.Green
+                            color = AndroidGreen
                         )
                     }
                 }
@@ -174,6 +174,10 @@ fun QuestionArea(
 
                     QuestionType.LONG_ANSWER.value -> {
                         LongAnswerArea(answerService, context, modifier = Modifier.fillMaxWidth(0.8f))
+                    }
+
+                    QuestionType.ESTIMATED_ANSWER.value ->{
+                        EstimatedAnswerArea(answerService, matchRoomService, context, modifier = Modifier.fillMaxWidth(0.8f))
                     }
                 }
             }

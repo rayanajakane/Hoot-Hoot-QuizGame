@@ -4,6 +4,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatSliderModule } from '@angular/material/slider';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -11,6 +12,7 @@ import { AlertComponent } from '@app/components/alert/alert.component';
 import { ChatComponent } from '@app/components/chat/chat.component';
 import { DialogConfirmComponent } from '@app/components/dialog-confirm/dialog-confirm.component';
 import { DialogTextInputComponent } from '@app/components/dialog-text-input/dialog-text-input.component';
+import { EstimatedAnswerAreaComponent } from '@app/components/estimated-answer-area/estimated-answer-area.component';
 import { GameListItemComponent } from '@app/components/game-list-item/game-list-item.component';
 import { HistogramComponent } from '@app/components/histogram/histogram.component';
 import { LongAnswerAreaComponent } from '@app/components/long-answer-area/long-answer-area.component';
@@ -92,6 +94,7 @@ import { FIREBASE_CONFIG } from 'src/environments/firebase-config';
         SortByScorePipe,
         SortHistoryPipe,
         SortPlayersPipe,
+        EstimatedAnswerAreaComponent,
     ],
     imports: [
         AppMaterialModule,
@@ -103,6 +106,7 @@ import { FIREBASE_CONFIG } from 'src/environments/firebase-config';
         DragDropModule,
         ReactiveFormsModule,
         TranslocoRootModule,
+        MatSliderModule,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [

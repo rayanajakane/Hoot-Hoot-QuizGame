@@ -1,7 +1,7 @@
 import { Choice } from '@app/model/database/choice';
 import { Game } from '@app/model/database/game';
-import { VALID_QUESTION } from './question-mocks';
-import { getRandomNumber, getRandomString } from './test-utils';
+import { getMockQuestion, VALID_QUESTION } from './question-mocks';
+import { getRandomString } from './test-utils';
 
 const gameYear = 2020;
 
@@ -12,33 +12,7 @@ const getMockGame = (): Game => ({
     lastModification: new Date(gameYear, 1, 1),
     duration: 30,
     isVisible: true,
-    questions: [
-        {
-            id: getRandomString(),
-            type: 'QCM',
-            text: getRandomString(),
-            points: 30,
-            choices: [
-                {
-                    text: getRandomString(),
-                    isCorrect: true,
-                },
-                {
-                    text: getRandomString(),
-                    isCorrect: false,
-                },
-            ],
-            estimatedParameters: {
-                lowerBound: getRandomNumber(0, 1),
-                upperBound: getRandomNumber(2, 3),
-                margin: 1,
-                correctAnswer: getRandomNumber(1, 2),
-            },
-            lastModification: new Date(gameYear, 1, 1),
-            pictureUrl: '',
-            creatorName: 'mock',
-        },
-    ],
+    questions: [getMockQuestion()],
 });
 
 const MOCK_CHOICES: Choice[] = [
