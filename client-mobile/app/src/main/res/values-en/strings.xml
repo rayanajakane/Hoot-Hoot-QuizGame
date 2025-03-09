@@ -45,4 +45,6 @@
     <string name="save">Save</string>
     <string name="danger_zone">Danger zone</string>
     <string name="delete_user">Delete profile</string>
+    <string name="english">english</string>
+    <string name="french">french</string>
 </resources>

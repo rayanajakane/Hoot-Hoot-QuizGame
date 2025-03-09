@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.firebase.database)
     implementation("com.google.firebase:firebase-crashlytics-buildtools:3.0.3")
     implementation(libs.androidx.storage)
+    implementation(libs.androidx.appcompat)
     val coreVersion = "1.13.1"
     val navVersion = "2.8.4"
     implementation("androidx.core:core-ktx:$coreVersion")

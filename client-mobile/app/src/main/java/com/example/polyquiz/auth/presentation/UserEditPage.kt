@@ -1,5 +1,6 @@
 package com.example.polyquiz.auth.presentation
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,35 +35,44 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.os.LocaleListCompat
 import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.PresetAvatar
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserEditPage(
     modifier: Modifier,
     navigateToHome: () -> Unit,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
 ) {
+    val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+
+    var currentLang: String = Locale.getDefault().language
+
     val email by authViewModel.email.collectAsState()
     val username by authViewModel.username.collectAsState()
+
     var expandedTheme by remember { mutableStateOf(false) }
     var expandedLang by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
 
     // TODO : Find way to get instead of hardcode
-    val languages = listOf("en", "fr")
+    val availableLangs = mapOf("en" to R.string.english, "fr" to R.string.french)
+
     val themes = listOf("light theme", "dark theme")
-    val textFieldStateLang = rememberTextFieldState(languages[1])
+    val textFieldStateLang = rememberTextFieldState(currentLang)
     val textFieldStateTheme = rememberTextFieldState(themes[0])
     Button(
         onClick = {
@@ -148,7 +158,7 @@ fun UserEditPage(
                             TextField(
                                 value = username,
                                 onValueChange = {
-                                    // TODO
+                                    authViewModel.updateUsername(it, context)
                                 },
 //                            isError = usernameError.isNotEmpty(),
                                 singleLine = true,
@@ -201,12 +211,14 @@ fun UserEditPage(
                                 }
                             }
                             Spacer(modifier = Modifier.height(8.dp))
+                            // Languages
+                            // REF : https://github.com/android/user-interface-samples/blob/main/PerAppLanguages/compose_app/app/src/main/java/com/example/perapplanguages/MainActivity.kt
                             ExposedDropdownMenuBox(
                                 expanded = expandedLang,
                                 onExpandedChange = { expandedLang = it },
                             ) {
                                 TextField(
-                                    value = "",
+                                    value = currentLang,
                                     modifier = Modifier
                                         .menuAnchor()
                                         .fillMaxWidth(),
@@ -225,7 +237,7 @@ fun UserEditPage(
                                 ExposedDropdownMenu(
                                     expanded = expandedLang,
                                     onDismissRequest = { expandedLang = false }) {
-                                    languages.forEach { language ->
+                                    availableLangs.keys.forEach { language ->
                                         DropdownMenuItem(
                                             text = {
                                                 Text(
@@ -234,10 +246,17 @@ fun UserEditPage(
                                                 )
                                             },
                                             onClick = {
+                                                expandedLang = false
                                                 textFieldStateLang.setTextAndPlaceCursorAtEnd(
                                                     language
                                                 )
-                                                expandedLang = false
+                                                // set app locale given the user's selected locale
+                                                AppCompatDelegate.setApplicationLocales(
+                                                    LocaleListCompat.forLanguageTags(
+                                                        availableLangs[language].toString()
+                                                    )
+                                                )
+                                                currentLang = language
                                             },
                                             contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
                                         )
@@ -261,9 +280,11 @@ fun UserEditPage(
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                Text(stringResource(R.string.danger_zone), fontSize = 30.sp,
+                Text(
+                    stringResource(R.string.danger_zone), fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 8.dp))
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
                 Button(
                     onClick = {
                         // TODO
@@ -284,4 +305,3 @@ fun UserEditPage(
     }
 
 }
-

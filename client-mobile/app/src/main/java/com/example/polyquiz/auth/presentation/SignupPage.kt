@@ -45,7 +45,7 @@ fun SignupPage(
     modifier: Modifier,
     navigateToChat: () -> Unit,
     navigateToLogin: () -> Unit,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
 ) {
     val context = LocalContext.current
     val email by authViewModel.email.collectAsState()

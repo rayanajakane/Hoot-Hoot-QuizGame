@@ -132,6 +132,7 @@ class AuthViewModel : ViewModel() {
                         userRef.child("isOnline").setValue(true)
                         userRef.child("isOnline").onDisconnect().setValue(false)
                         user = task.result.user
+                        _username.value = user?.displayName ?: ""
                         _authState.value = AuthState.Authenticated
                         SocketHandler.connect()
                         Log.d(TAG, "signInWithEmail:success")
@@ -155,7 +156,6 @@ class AuthViewModel : ViewModel() {
          val usernameRef = getUsernameDatabaseRef(username.lowercase())
          usernameRef.get().addOnSuccessListener { databaseSnapshot: DataSnapshot ->
              if(databaseSnapshot.exists()) {
-                 // TODO : Make new error text
                  _authState.value = AuthState.Error(StringValue.StringResource(R.string.username_already_exists))
                  Log.e(TAG, StringValue.StringResource(R.string.username_already_exists).toString())
              } else {
@@ -167,6 +167,7 @@ class AuthViewModel : ViewModel() {
                              val displayNameUpdate = UserProfileChangeRequest.Builder()
                                  .setDisplayName(username)
                                  .build()
+                             _username.value = user?.displayName ?: ""
                              user?.updateProfile(displayNameUpdate)?.addOnCompleteListener { updateTask ->
                                  if (updateTask.isSuccessful) {
                                      val userRef = task.result.user?.let { this.getUserDatabaseRef(it.uid) }

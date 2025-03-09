@@ -45,6 +45,8 @@
     <string name="save">Enregistrer</string>
     <string name="danger_zone">Zone dangereuse</string>
     <string name="delete_user">Supprimer le profil</string>
+    <string name="english">anglais</string>
+    <string name="french">français</string>
 
 
 </resources>
