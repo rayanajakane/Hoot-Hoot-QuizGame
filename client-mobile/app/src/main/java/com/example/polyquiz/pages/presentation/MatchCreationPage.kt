@@ -44,7 +44,7 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
     fun updateQuestion() {
         QuestionService.updateQuestion(
             modifiedQuestion = Question(id="c7f6e692-d8f7-4c07-a45a-b33659e4ad68", type="QCM", text="noo mais est-ce que la vie???", points=80, choices= listOf(
-                Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification="", photoUrl="", creatorName=""),
+                Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification="", pictureUrl="", creatorName=""),
             onSuccess = {
                 println("It worked")
             },
@@ -56,7 +56,7 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
 
     fun verifyQuestion() {
         QuestionService.verifyQuestion(
-            question = Question(id="", type="QCM", text="noo mais est-ce que la vie?", points=80, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification="", photoUrl="", creatorName=""),
+            question = Question(id="", type="QCM", text="noo mais est-ce que la vie?", points=80, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification="", pictureUrl="", creatorName=""),
                 onSuccess = { response ->
                 println("Response: $response")
             },
@@ -79,7 +79,7 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
     }
 
     fun addQuestion() {
-        val question = Question(id="", type="QCM", text="noo mais est-ce que la vie?", points=80, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification="", photoUrl="", creatorName="")
+        val question = Question(id="", type="QCM", text="noo mais est-ce que la vie?", points=80, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification="", pictureUrl="", creatorName="")
         QuestionService.createQuestion(question,
             onSuccess = { response ->
                 println("Response: $response")

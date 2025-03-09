@@ -16,11 +16,7 @@ enum class AnswerFeedback(val value: String) {
 }
 
 enum class BonusFeedback(val value: String) {
-    BONUS("\uD83C\uDF89 Vous avez obtenu un bonus de %d points! \uD83C\uDF89");
-
-    fun withPoints(points: Int): String {
-        return String.format(value, points)
-    }
+    BONUS("\uD83C\uDF89 Vous avez obtenu un bonus de 20%! \uD83C\uDF89");
 }
 
 enum class GradingFeedback(val value: String) {
@@ -32,4 +28,14 @@ enum class GradingFeedback(val value: String) {
 enum class StartMatchFeedback(val value: String) {
     WAITING_TO_START("La partie va bientôt commencer..."),
     LOCK_MATCH("Verrouiller la partie"),
+}
+
+enum class EstimatedQuestionFeedback(val value: String) {
+    CHOOSE_VALUE("Choisissez une valeur estimée. La marge est de +/- %s"),
+    ANSWER_OUT_OF_BOUNDS("Votre réponse est en dehors de l'intervalle"),
+    CORRECT_ANSWER("Réponse correcte : %s. La marge était de +/-");
+
+    fun withPoints(points: Int): String {
+        return String.format(value, points)
+    }
 }
