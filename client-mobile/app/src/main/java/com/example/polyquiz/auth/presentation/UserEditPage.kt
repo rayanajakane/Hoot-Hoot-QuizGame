@@ -58,7 +58,6 @@ fun UserEditPage(
     context: Context,
 ) {
     val focusManager = LocalFocusManager.current
-    var test by remember { mutableStateOf(Locale.getDefault().language) }
 
     var currentLang by remember { mutableStateOf(Locale.getDefault().language) }
 
@@ -70,7 +69,7 @@ fun UserEditPage(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     // TODO : Find way to get instead of hardcode
-    val availableLangs = mapOf("en" to R.string.english, "fr" to R.string.french)
+    val availableLangs = mapOf("en" to stringResource(R.string.english), "fr" to stringResource(R.string.french))
 
     val themes = listOf("light theme", "dark theme")
     val textFieldStateLang = rememberTextFieldState(currentLang)
@@ -219,7 +218,7 @@ fun UserEditPage(
                                 onExpandedChange = { expandedLang = it },
                             ) {
                                 TextField(
-                                    value = currentLang,
+                                    value = availableLangs[currentLang].toString(),
                                     modifier = Modifier
                                         .menuAnchor()
                                         .fillMaxWidth(),
@@ -242,7 +241,7 @@ fun UserEditPage(
                                         DropdownMenuItem(
                                             text = {
                                                 Text(
-                                                    language,
+                                                    availableLangs[language].toString(),
                                                     style = MaterialTheme.typography.bodyLarge
                                                 )
                                             },
@@ -277,8 +276,6 @@ fun UserEditPage(
                         }
                     }
                 }
-                Text("current lang = $currentLang")
-                Text(test)
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     stringResource(R.string.danger_zone), fontSize = 30.sp,
