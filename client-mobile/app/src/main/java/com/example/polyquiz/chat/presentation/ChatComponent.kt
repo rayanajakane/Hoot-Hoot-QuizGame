@@ -32,13 +32,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.polyquiz.constants.DisplayChatText
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.chat.domain.Message
@@ -87,7 +88,7 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                 modifier = Modifier.fillMaxWidth().padding(0.dp, 10.dp, 0.dp, 70.dp),
                 value = newMessageText,
                 onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) newMessageText = it },
-                label = { Text(text = DisplayChatText.MESSAGE_LABEL.value) },
+                label = { Text(text = stringResource(R.string.message_label)) },
                 singleLine = true,
                 shape = RoundedCornerShape(0.dp),
                 keyboardOptions = KeyboardOptions(

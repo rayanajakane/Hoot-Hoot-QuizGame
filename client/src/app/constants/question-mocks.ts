@@ -31,4 +31,7 @@ export const getMockQuestion = (): Question => ({
         correctAnswer: getRandomNumber(2, 3),
     },
     lastModification: getRandomString(),
+    pictureUrl: '',
+    pictureFile: null,
+    creatorName: '',
 });

@@ -206,3 +206,22 @@ button.answer.selected {
     align-items: center;
     gap: 0.2rem;
 }
+
+img {
+    height: 20vh;
+    object-fit: contain;
+}
+
+.one-column {
+    display: flex;
+}
+.two-columns {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.two-columns h1 {
+    text-align: left;
+}
