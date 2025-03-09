@@ -32,10 +32,10 @@ export class AnswerService {
     isEndGame: boolean;
     currentLongAnswer: string;
 
-    private _showFeedback: boolean = false;
+    private showingFeedback: boolean = false;
 
-    private _showFeedbackSubject = new BehaviorSubject<boolean>(this._showFeedback);
-    showFeedback$ = this._showFeedbackSubject.asObservable();
+    private showingFeedbackSubject = new BehaviorSubject<boolean>(this.showingFeedback);
+    showingFeedback$ = this.showingFeedbackSubject.asObservable();
 
     // Allow more constructor parameters to decouple services
     // eslint-disable-next-line max-params
@@ -48,15 +48,13 @@ export class AnswerService {
         this.listenToAnswerEvents();
     }
 
-    // Getter for the boolean property
     get showFeedback(): boolean {
-        return this._showFeedback;
+        return this.showingFeedback;
     }
 
-    // Setter for the boolean property (updates both the property and the BehaviorSubject)
     set showFeedback(value: boolean) {
-        this._showFeedback = value;
-        this._showFeedbackSubject.next(value); // Notify subscribers
+        this.showingFeedback = value;
+        this.showingFeedbackSubject.next(value);
     }
 
     listenToAnswerEvents() {

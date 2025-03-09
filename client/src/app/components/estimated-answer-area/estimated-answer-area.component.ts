@@ -33,8 +33,8 @@ export class EstimatedAnswerAreaComponent implements OnInit, OnDestroy {
         this.lowerBound = estimatedParams?.lowerBound ?? Number.MIN_SAFE_INTEGER;
         this.upperBound = estimatedParams?.upperBound ?? Number.MAX_SAFE_INTEGER;
         this.currentLongAnswerControl = new FormControl(this.answerService.currentLongAnswer || this.lowerBound.toString());
-        this.showFeedbackSubscription = this.answerService.showFeedback$.subscribe((showFeedback) => {
-            this.updateInputState(showFeedback);
+        this.showFeedbackSubscription = this.answerService.showingFeedback$.subscribe((showingFeedback) => {
+            this.updateInputState(showingFeedback);
         });
 
         this.updateInputState(this.answerService.showFeedback);
@@ -60,16 +60,17 @@ export class EstimatedAnswerAreaComponent implements OnInit, OnDestroy {
         }
 
         if (value === '' || value === '-') {
-            this.emptyLongAnswer();
+            this.resetLongAnswer();
             return;
         }
 
         this.updateNumericInput(value);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onSliderChange(event: any): void {
-        this.updateNumericInput(event.target.value);
+    onSliderChange(event: Event): void {
+        const inputElement = event.target as HTMLInputElement;
+        const value = inputElement.value;
+        this.updateNumericInput(value);
     }
 
     private updateNumericInput(value: string): void {
@@ -80,11 +81,11 @@ export class EstimatedAnswerAreaComponent implements OnInit, OnDestroy {
             this.setLongAnswer(numValue);
         } else {
             this.isOutOfBounds = true;
-            this.emptyLongAnswer();
+            this.resetLongAnswer();
         }
     }
 
-    private emptyLongAnswer(): void {
+    private resetLongAnswer(): void {
         this.answerService.currentLongAnswer = '';
         this.answerService.updateLongAnswer();
     }
