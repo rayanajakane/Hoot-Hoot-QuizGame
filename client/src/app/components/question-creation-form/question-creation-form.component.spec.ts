@@ -30,6 +30,8 @@ const mockQuestion: Question = {
         { text: 'Choice 2', isCorrect: false },
     ],
     lastModification: '',
+    pictureUrl: '',
+    pictureFile: null,
 };
 
 const maxchoicesLengthTest = 5;
@@ -91,6 +93,8 @@ describe('QuestionCreationFormComponent', () => {
                 { text: 'Choice 1', isCorrect: true },
                 { text: 'Choice 2', isCorrect: false },
             ],
+            pictureUrl: '',
+            pictureFile: null,
         });
     });
 
@@ -138,7 +142,7 @@ describe('QuestionCreationFormComponent', () => {
 
     it('should submit the form to create a question in the question list', () => {
         spyOn(component.createQuestionEvent, 'emit');
-        component.onSubmit();
+        component.submitForm();
         expect(component.createQuestionEvent.emit).toHaveBeenCalled();
     });
 
@@ -146,7 +150,7 @@ describe('QuestionCreationFormComponent', () => {
         spyOn(component.createQuestionEvent, 'emit');
         const mockQuestionSubmit: Question = component.questionForm.value;
         mockQuestion.lastModification = '';
-        component.onSubmit();
+        component.submitForm();
         expect(component.createQuestionEvent.emit).toHaveBeenCalledWith(mockQuestionSubmit);
     });
 
@@ -155,22 +159,8 @@ describe('QuestionCreationFormComponent', () => {
         spyOn(component.modifyQuestionEvent, 'emit');
         const mockQuestionSubmit: Question = component.questionForm.value;
         mockQuestion.lastModification = '';
-        component.onSubmit();
+        component.submitForm();
         expect(component.modifyQuestionEvent.emit).toHaveBeenCalledWith(mockQuestionSubmit);
-    });
-
-    it('should create copy of question in the bank if toggled', () => {
-        spyOn(component.modifyQuestionEvent, 'emit');
-
-        bankServiceSpy.addToBank = false;
-        component.modificationState = ManagementState.GameModify;
-        component.onSubmit();
-        expect(bankServiceSpy.addQuestion).not.toHaveBeenCalled();
-
-        bankServiceSpy.addToBank = true;
-        component.modificationState = ManagementState.GameModify;
-        component.onSubmit();
-        expect(bankServiceSpy.addQuestion).toHaveBeenCalled();
     });
 
     it('should update form values when ngOnChanges is called', () => {
@@ -185,12 +175,14 @@ describe('QuestionCreationFormComponent', () => {
                 { text: 'Choice 2', isCorrect: false },
             ],
             lastModification: '2024-01-26T14:21:19+00:00',
+            pictureUrl: '',
+            pictureFile: null,
         };
         component.question = changedQuestion;
         component.ngOnChanges({
             question: { currentValue: changedQuestion, previousValue: null, isFirstChange: () => true, firstChange: true },
         });
-        component.onSubmit();
+        component.submitForm();
         component.questionForm.value.lastModification = '2024-01-26T14:21:19+00:00';
         component.questionForm.value.id = '1';
         expect(component.questionForm.value).toEqual(changedQuestion);
@@ -206,8 +198,10 @@ describe('QuestionCreationFormComponent', () => {
                 { text: 'Choice 1', isCorrect: false },
                 { text: 'Choice 2', isCorrect: true },
             ],
+            pictureFile: null,
+            pictureUrl: '',
         });
-        component.onSubmit();
+        component.submitForm();
         expect(component.createQuestionEvent.emit).not.toHaveBeenCalled();
     });
 

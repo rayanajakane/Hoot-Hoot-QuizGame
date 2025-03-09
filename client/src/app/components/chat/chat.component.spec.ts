@@ -19,6 +19,7 @@ import { Subject } from 'rxjs';
 import SpyObj = jasmine.SpyObj;
 
 const mockDate = MOCK_DATE;
+const mockMessage = MOCK_MESSAGE;
 
 describe('ChatComponent', () => {
     it('should create', () => {
@@ -37,6 +38,8 @@ describe('ChatComponent', () => {
         const matchSpy = jasmine.createSpyObj('MatchRoomService', ['getRoomCode']);
         socketHandlerSpy.socket = jasmine.createSpyObj('socket', ['removeListener']);
         chatSpy.socketHandler = socketHandlerSpy;
+
+        const mockMessage = { ...MOCK_MESSAGE };
 
         TestBed.configureTestingModule({
             declarations: [ChatComponent],
@@ -64,9 +67,9 @@ describe('ChatComponent', () => {
         chatServiceSpy = TestBed.inject(ChatService) as jasmine.SpyObj<ChatService>;
         authServiceSpy = TestBed.inject(AuthenticationService) as jasmine.SpyObj<AuthenticationService>;
         authServiceSpy.connectToSocket.and.returnValue();
-        (authServiceSpy as any).userDisplayName = MOCK_MESSAGE.authorUsername;
-        (authServiceSpy as any).userId = MOCK_MESSAGE.authorId;
-        (authServiceSpy as any).userAvatarUrl = MOCK_MESSAGE.photoUrl;
+        (authServiceSpy as any).userDisplayName = mockMessage.authorUsername;
+        (authServiceSpy as any).userId = mockMessage.authorId;
+        (authServiceSpy as any).userAvatarUrl = mockMessage.photoUrl;
         matchRoomServiceSpy = TestBed.inject(MatchRoomService) as jasmine.SpyObj<MatchRoomService>;
         chatServiceSpy.updateChatScroll = new Subject();
         chatServiceSpy.updateChatScroll.next(null);
@@ -89,9 +92,12 @@ describe('ChatComponent', () => {
 
     it('should send message', () => {
         matchRoomServiceSpy.getRoomCode.and.returnValue('test');
-        component.sendMessage(MOCK_MESSAGE.text);
-        MOCK_MESSAGE.id = ''; // ID is not determined by the client but by the server
-        expect(chatServiceSpy.sendMessage).toHaveBeenCalledWith(MOCK_MESSAGE, 'test');
+        mockMessage.id = ''; // ID is not determined by the client but by the server
+        mockMessage.userLikes = [];
+        mockMessage.userDislikes = [];
+        mockMessage.userLoves = [];
+        component.sendMessage(mockMessage.text);
+        expect(chatServiceSpy.sendMessage).toHaveBeenCalledWith(mockMessage, 'test');
     });
 
     it('should not send an empty message', () => {
@@ -101,7 +107,6 @@ describe('ChatComponent', () => {
     });
 
     it('should react to message', () => {
-        const mockMessage = MOCK_MESSAGE;
         matchRoomServiceSpy.getRoomCode.and.returnValue('test');
         component.reactToMessage(mockMessage.id, ChatEmoji.LIKE);
         chatServiceSpy.reactToMessage.and.returnValue();

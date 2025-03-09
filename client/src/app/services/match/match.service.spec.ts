@@ -30,6 +30,9 @@ describe('MatchService', () => {
                 points: 30,
                 choices: [],
                 lastModification: ' new Date(YEAR, 1, 1)',
+                pictureUrl: '',
+                pictureFile: null,
+                creatorName: '',
             },
         ],
     };

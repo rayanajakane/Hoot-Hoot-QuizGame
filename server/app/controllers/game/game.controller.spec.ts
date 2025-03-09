@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { getMockGame } from '@app/constants/game-mocks';
 import { ERROR_GAME_SAME_TITLE } from '@app/constants/request-errors';
 import { Game } from '@app/model/database/game';
 import { GameService } from '@app/services/game/game.service';
+import { QuestionPicturesDeletionService } from '@app/services/question-pictures-deletion/question-pictures-deletion.service';
 import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Response } from 'express';
@@ -11,15 +13,21 @@ import { GameController } from './game.controller';
 describe('GamesController', () => {
     let controller: GameController;
     let gameService: SinonStubbedInstance<GameService>;
+    let deletionService: SinonStubbedInstance<QuestionPicturesDeletionService>;
 
     beforeEach(async () => {
         gameService = createStubInstance(GameService);
+        deletionService = createStubInstance(QuestionPicturesDeletionService);
         const module: TestingModule = await Test.createTestingModule({
             controllers: [GameController],
             providers: [
                 {
                     provide: GameService,
                     useValue: gameService,
+                },
+                {
+                    provide: QuestionPicturesDeletionService,
+                    useValue: deletionService,
                 },
             ],
         }).compile();
@@ -146,14 +154,19 @@ describe('GamesController', () => {
     });
 
     it('upsertGame() should succeed if service is able to modify the game', async () => {
-        gameService.upsertGame.resolves();
+        jest.spyOn(gameService, 'getGameById').mockResolvedValue(getMockGame());
+        jest.spyOn(gameService, 'upsertGame').mockResolvedValue(getMockGame());
+        jest.spyOn(deletionService, 'deleteGameNonUsedPictures').mockResolvedValue();
         const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.OK);
             return res;
         };
+        res.json = (game) => {
+            return res;
+        };
         res.send = () => res;
-        await controller.upsertGame(new Game(), res);
+        await controller.upsertGame(getMockGame(), res);
     });
 
     it('upsertGame() should return BAD_REQUEST when service cannot modify the game', async () => {
@@ -169,6 +182,7 @@ describe('GamesController', () => {
 
     it('deleteGame() should succeed if service is able to delete the game', async () => {
         gameService.deleteGame.resolves();
+        deletionService.deleteGameNonUsedPictures.resolves();
         const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.NO_CONTENT);

@@ -2,6 +2,7 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BankStatus, GameStatus } from '@app/constants/feedback-messages';
 import { Question } from '@app/interfaces/question';
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { QuestionService } from '@app/services/question/question.service';
 
@@ -16,6 +17,7 @@ export class BankService {
     constructor(
         private readonly questionService: QuestionService,
         private readonly notificationService: NotificationService,
+        private authenticationService: AuthenticationService,
     ) {}
 
     getAllQuestions(): void {
@@ -40,30 +42,82 @@ export class BankService {
     }
 
     addQuestion(newQuestion: Question, isModificationPageQuestion: boolean = false): void {
+        if (!newQuestion.creatorName) {
+            newQuestion.creatorName = this.authenticationService.userDisplayName;
+        }
+        const pictureFile = newQuestion.pictureFile;
+        const isImageToUpload = this.authenticationService.isImageToUpload(newQuestion.pictureUrl);
+
+        if (isImageToUpload) newQuestion.pictureUrl = '';
+        newQuestion.pictureFile = null;
+        delete newQuestion['pictureFile'];
+
         this.questionService.createQuestion(newQuestion).subscribe({
-            next: (response: HttpResponse<string>) => {
+            next: async (response: HttpResponse<string>) => {
                 if (response.body) {
                     newQuestion = JSON.parse(response.body);
-                    this.questions.push(newQuestion);
-                    if (isModificationPageQuestion) this.notificationService.displaySuccessMessage(GameStatus.ARCHIVED);
-                    else this.notificationService.displaySuccessMessage(BankStatus.SUCCESS);
+                    if (!pictureFile || !isImageToUpload) {
+                        this.addQuestionToLocalBank(newQuestion, isModificationPageQuestion);
+                    } else {
+                        await this.uploadQuestionPicture(newQuestion, pictureFile, isModificationPageQuestion);
+                    }
                 }
             },
             error: (error: HttpErrorResponse) => this.notificationService.displayErrorMessage(`${BankStatus.FAILURE}\n ${error.message}`),
         });
     }
 
-    updateQuestion(newQuestion: Question): void {
-        if (!this.isDuplicateQuestion(newQuestion, this.questions)) {
-            this.questionService.updateQuestion(newQuestion).subscribe({
-                next: () => {
-                    this.notificationService.displaySuccessMessage(BankStatus.MODIFIED);
-                },
-                error: (error: HttpErrorResponse) => this.notificationService.displayErrorMessage(`${BankStatus.UNMODIFIED} \n ${error.message}`),
-            });
+    async uploadQuestionPicture(newQuestion: Question, pictureFile: File, isModificationPageQuestion: boolean = false, isNewQuestion = true) {
+        const pictureUrl = await this.authenticationService.uploadQuestionPicture(newQuestion.id, pictureFile);
+        newQuestion.pictureUrl = pictureUrl;
+        this.questionService.updateQuestion(newQuestion).subscribe({
+            next: (response: HttpResponse<string>) => {
+                if (response.body) {
+                    newQuestion = JSON.parse(response.body);
+                    if (isNewQuestion) {
+                        this.addQuestionToLocalBank(newQuestion, isModificationPageQuestion);
+                    } else {
+                        const index = this.questions.findIndex((it: Question) => newQuestion.id === it.id);
+                        this.questions[index] = newQuestion;
+                    }
+                }
+            },
+            error: (error: HttpErrorResponse) => this.notificationService.displayErrorMessage(`${BankStatus.FAILURE}\n ${error.message}`),
+        });
+    }
+
+    addQuestionToLocalBank(newQuestion: Question, isModificationPageQuestion: boolean) {
+        this.questions.push(newQuestion);
+        if (isModificationPageQuestion) {
+            this.notificationService.displaySuccessMessage(GameStatus.ARCHIVED);
         } else {
-            this.notificationService.displayErrorMessage(BankStatus.DUPLICATE);
+            this.notificationService.displaySuccessMessage(BankStatus.SUCCESS);
         }
+    }
+
+    updateQuestion(newQuestion: Question): void {
+        if (this.isDuplicateQuestion(newQuestion, this.questions)) {
+            this.notificationService.displayErrorMessage(BankStatus.DUPLICATE);
+            return;
+        }
+        const pictureFile = newQuestion.pictureFile;
+        const isImageToUpload = this.authenticationService.isImageToUpload(newQuestion.pictureUrl);
+
+        // Reset URL if new image is uploaded
+        if (isImageToUpload) newQuestion.pictureUrl = '';
+
+        newQuestion.pictureFile = null;
+        delete newQuestion['pictureFile'];
+
+        this.questionService.updateQuestion(newQuestion).subscribe({
+            next: async () => {
+                if (isImageToUpload && pictureFile) {
+                    await this.uploadQuestionPicture(newQuestion, pictureFile, false, false);
+                }
+                this.notificationService.displaySuccessMessage(BankStatus.MODIFIED);
+            },
+            error: (error: HttpErrorResponse) => this.notificationService.displayErrorMessage(`${BankStatus.UNMODIFIED} \n ${error.message}`),
+        });
     }
 
     private isDuplicateQuestion(newQuestion: Question, questionList: Question[]): boolean {

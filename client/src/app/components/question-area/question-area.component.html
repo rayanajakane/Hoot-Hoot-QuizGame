@@ -36,8 +36,9 @@
             </ng-template>
 
             <div id="question">
-                <div id="question-text-container">
+                <div id="question-text-container" [ngClass]="this.currentQuestion.pictureUrl !== '' ? 'two-columns' : 'one-column'">
                     <h1>{{ this.currentQuestion!.text }}</h1>
+                    <img *ngIf="this.currentQuestion.pictureUrl !== ''" src="{{ this.currentQuestion.pictureUrl }}" alt="" />
                 </div>
                 <h1 id="points" *ngIf="!this.matchRoomService.isCooldown">{{ currentQuestion.points }} points</h1>
             </div>
