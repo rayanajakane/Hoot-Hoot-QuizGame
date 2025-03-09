@@ -31,38 +31,36 @@
     text-align: center;
 }
 
-.mat-form-field {
-    width: 100%;
-    max-width: 300px;
-    text-align: center;
-}
-
-input.mat-input-element {
-    text-align: center;
-    font-size: 1.25rem;
-}
-
 .error-message {
     color: #f44336;
     font-size: 1rem;
     text-align: center;
 }
 
+.number-input {
+    width: 120px; // Approximately 5 digits + some padding
+    margin: 0 auto;
+    display: block;
+}
+
+::ng-deep .number-input .mat-mdc-text-field-wrapper {
+    width: 100%;
+}
+
 .slider-container {
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 100%;
     gap: 1rem;
-}
+    width: 100%;
+    margin: 1rem 0;
 
-.bound-label {
-    font-size: 1rem;
-    font-weight: bold;
-    min-width: 3rem;
-}
+    .bound-label {
+        min-width: 50px;
+        text-align: center;
+    }
 
-.mat-slider {
-    flex-grow: 1;
-    max-width: 50%;
+    .full-width {
+        flex: 1;
+        width: 100%;
+    }
 }
