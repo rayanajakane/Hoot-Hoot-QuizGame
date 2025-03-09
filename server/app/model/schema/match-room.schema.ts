@@ -26,4 +26,5 @@ export interface MatchRoom {
     hostSocket: Socket;
     isClassicMode: boolean;
     startTime: Date;
+    qrCodeUrl: string;
 }

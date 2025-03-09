@@ -15,6 +15,7 @@ import { GameInfo } from '@common/interfaces/game-info';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Server, Socket } from 'socket.io';
+import { QrCodeService } from '../qr-code/qr-code.service';
 
 @Injectable()
 export class MatchRoomService {
@@ -25,6 +26,7 @@ export class MatchRoomService {
         private readonly eventEmitter: EventEmitter2,
         private readonly timeService: TimeService,
         private readonly questionStrategyService: QuestionStrategyContext,
+        private qrCodeService: QrCodeService,
     ) {
         this.matchRooms = [];
     }
@@ -54,12 +56,15 @@ export class MatchRoomService {
 
     // allow more parameters to make method more reusable
     // eslint-disable-next-line max-params
-    addRoom(selectedGame: Game, socket: Socket, isClassicMode: boolean = true): MatchRoom {
+    async addRoom(selectedGame: Game, socket: Socket, isClassicMode: boolean = true): Promise<MatchRoom> {
         const isLocked = false;
         const isPlaying = false;
 
+        const roomCode = this.generateRoomCode();
+        const qrCodeUrl = await this.qrCodeService.generateQrCode(roomCode);
+
         const newRoom: MatchRoom = {
-            code: this.generateRoomCode(),
+            code: roomCode,
             hostSocket: socket,
             isLocked,
             isPlaying,
@@ -78,6 +83,7 @@ export class MatchRoomService {
             messages: [],
             isClassicMode,
             startTime: new Date(),
+            qrCodeUrl,
         };
         this.matchRooms.push(newRoom);
         this.setQuestionStrategy(newRoom);
@@ -96,12 +102,13 @@ export class MatchRoomService {
         this.getRoom(matchRoomCode).isLocked = !this.getRoom(matchRoomCode).isLocked;
     }
 
-    deleteRoom(matchRoomCode: string): void {
+    async deleteRoom(matchRoomCode: string): Promise<void> {
         this.timeService.terminateTimer(matchRoomCode);
         this.questionStrategyService.deleteRoom(matchRoomCode);
         this.matchRooms = this.matchRooms.filter((room: MatchRoom) => {
             return room.code !== matchRoomCode;
         });
+        this.qrCodeService.deleteQrCode(matchRoomCode);
     }
 
     getRoomCodeErrors(matchRoomCode: string): string {

@@ -41,6 +41,7 @@ const MOCK_MATCH_ROOM: MatchRoom = {
     hostSocket: undefined,
     isClassicMode: true,
     startTime: new Date(),
+    qrCodeUrl: '',
 };
 
 const MOCK_TEST_MATCH_ROOM: MatchRoom = {
@@ -63,6 +64,7 @@ const MOCK_TEST_MATCH_ROOM: MatchRoom = {
     hostSocket: undefined,
     isClassicMode: true,
     startTime: new Date(),
+    qrCodeUrl: '',
 };
 
 const MOCK_RANDOM_MATCH_ROOM: MatchRoom = {
@@ -85,6 +87,7 @@ const MOCK_RANDOM_MATCH_ROOM: MatchRoom = {
     hostSocket: undefined,
     isClassicMode: true,
     startTime: new Date(),
+    qrCodeUrl: '',
 };
 
 const MOCK_PLAYER_ROOM: MatchRoom = {
@@ -107,6 +110,7 @@ const MOCK_PLAYER_ROOM: MatchRoom = {
     hostSocket: undefined,
     isClassicMode: true,
     startTime: new Date(),
+    qrCodeUrl: '',
 };
 
 const MOCK_ROOM_CODE = 'mockCode';
