@@ -1,15 +1,23 @@
-<div id="estimated-answer-area" *ngIf="matchContextService.getContext() !== contextOptions.HostView">
-    <mat-slider
-        min="{{ matchRoomService.currentQuestion.estimatedParameters?.lowerBound }}"
-        max="{{ matchRoomService.currentQuestion.estimatedParameters?.upperBound }}"
-        step="1"
-        discrete="thumblabel"
-    >
-        <input matSliderThumb [formControl]="currentLongAnswerControl" (input)="updateAnswerFromSlider($event)" />
-    </mat-slider>
-    <mat-form-field>
-        <mat-label>Value</mat-label>
-        <input matInput type="number" [formControl]="currentLongAnswerControl" (input)="updateAnswerFromSlider($event)" />
-    </mat-form-field>
-    <p>Valeur choisie : {{ currentLongAnswerControl.value }}</p>
+<div id="main-container">
+    <div id="estimated-answer-area" *ngIf="matchContextService.getContext() !== contextOptions.HostView">
+        <p *ngIf="answerService.showFeedback" class="correct-answer">Réponse correcte : {{ answerService.feedback.correctAnswer }}</p>
+        <p *ngIf="!answerService.showFeedback" class="instruction">
+            Choisissez une valeur estimée (La marge est de +/- {{ matchRoomService.currentQuestion.estimatedParameters?.margin }})
+        </p>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Réponse</mat-label>
+            <input matInput type="text" [formControl]="currentLongAnswerControl" (input)="onInputChange()" [class.error]="isOutOfBounds" />
+        </mat-form-field>
+
+        <p *ngIf="isOutOfBounds" class="error-message">Valeur hors limites ! Doit être entre {{ lowerBound }} et {{ upperBound }}</p>
+
+        <div class="slider-container">
+            <span class="bound-label">{{ lowerBound }}</span>
+            <mat-slider [min]="lowerBound" [max]="upperBound" [step]="1">
+                <input matSliderThumb [formControl]="currentLongAnswerControl" (input)="onSliderChange($event)" />
+            </mat-slider>
+            <span class="bound-label">{{ upperBound }}</span>
+        </div>
+    </div>
 </div>
