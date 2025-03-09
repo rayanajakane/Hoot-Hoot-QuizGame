@@ -33,7 +33,7 @@ enum class StartMatchFeedback(val value: String) {
 enum class EstimatedQuestionFeedback(val value: String) {
     CHOOSE_VALUE("Choisissez une valeur estimée. La marge est de +/- %s"),
     ANSWER_OUT_OF_BOUNDS("Votre réponse est en dehors de l'intervalle"),
-    CORRECT_ANSWER("Réponse correcte : %s");
+    CORRECT_ANSWER("Réponse correcte : %s. La marge était de +/-");
 
     fun withPoints(points: Int): String {
         return String.format(value, points)

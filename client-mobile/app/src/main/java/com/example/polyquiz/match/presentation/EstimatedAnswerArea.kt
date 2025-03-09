@@ -5,6 +5,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.polyquiz.constants.EstimatedQuestionFeedback
@@ -38,23 +40,21 @@ fun EstimatedAnswerArea(
             .padding(horizontal = 16.dp)
     ) {
         if (matchContext != MatchContext.HOSTVIEW) {
-            if (isDisabled) {
-                Text(
-                    text = EstimatedQuestionFeedback.CORRECT_ANSWER.withPoints(answerService.feedback.correctAnswer!!.get(0).toInt()),
-                    fontSize = 18.sp,
-                    color = AndroidGreen,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)
-                )
-            }
-            if (!isDisabled) {
-                Text(
-                    text = EstimatedQuestionFeedback.CHOOSE_VALUE.withPoints(estimatedParams!!.margin),
-                    fontSize = 18.sp,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
+            Text(
+                text = if (isDisabled) {
+                    EstimatedQuestionFeedback.CORRECT_ANSWER
+                        .withPoints(answerService.feedback.correctAnswer!!.get(0).toInt()) + estimatedParams?.margin
+                } else {
+                    EstimatedQuestionFeedback.CHOOSE_VALUE.withPoints(estimatedParams!!.margin)
+                },
+                fontSize = 18.sp,
+                color = if (isDisabled) AndroidGreen else Color.Black,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            )
+
 
             OutlinedTextField(
                 value = answer,
