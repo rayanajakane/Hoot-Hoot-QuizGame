@@ -50,7 +50,7 @@ fun EstimatedAnswerArea(
             }
             if (!isDisabled) {
                 Text(
-                    text = EstimatedQuestionFeedback.CHOOSE_VALUE.value,
+                    text = EstimatedQuestionFeedback.CHOOSE_VALUE.withPoints(estimatedParams!!.margin),
                     fontSize = 18.sp,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -83,8 +83,9 @@ fun EstimatedAnswerArea(
                 },
                 label = { Text(MatchDisplayText.ANSWER.value) },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
+                    .width(180.dp)
+                    .padding(vertical = 8.dp)
+                    .align(Alignment.CenterHorizontally),
                 singleLine = true,
                 enabled = !isDisabled,
                 isError = isOutOfBounds
