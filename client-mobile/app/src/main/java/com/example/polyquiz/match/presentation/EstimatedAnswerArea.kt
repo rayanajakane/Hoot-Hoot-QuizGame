@@ -72,6 +72,8 @@ fun EstimatedAnswerArea(
                                 answerService.updateLongAnswer()
                             } else {
                                 isOutOfBounds = true
+                                answerService.currentLongAnswer = ""
+                                answerService.updateLongAnswer()
                             }
                         } else if (newText.isEmpty() || newText == "-") {
                             answerService.currentLongAnswer = ""
