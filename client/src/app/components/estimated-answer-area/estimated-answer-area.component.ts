@@ -15,7 +15,6 @@ export class EstimatedAnswerAreaComponent implements OnInit, OnDestroy {
     currentLongAnswerControl: FormControl;
     lowerBound: number;
     upperBound: number;
-    isInputCleared: boolean = false;
     isOutOfBounds: boolean = false;
     private showFeedbackSubscription: Subscription;
 
@@ -61,9 +60,7 @@ export class EstimatedAnswerAreaComponent implements OnInit, OnDestroy {
         }
 
         if (value === '' || value === '-') {
-            this.isInputCleared = true;
-            this.answerService.currentLongAnswer = '';
-            this.answerService.updateLongAnswer();
+            this.emptyLongAnswer();
             return;
         }
 
@@ -72,7 +69,6 @@ export class EstimatedAnswerAreaComponent implements OnInit, OnDestroy {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSliderChange(event: any): void {
-        this.isInputCleared = false;
         this.updateNumericInput(event.target.value);
     }
 
@@ -81,11 +77,21 @@ export class EstimatedAnswerAreaComponent implements OnInit, OnDestroy {
 
         if (numValue >= this.lowerBound && numValue <= this.upperBound) {
             this.isOutOfBounds = false;
-            this.currentLongAnswerControl.setValue(numValue);
-            this.answerService.currentLongAnswer = numValue.toString();
-            this.answerService.updateLongAnswer();
+            this.setLongAnswer(numValue);
         } else {
             this.isOutOfBounds = true;
+            this.emptyLongAnswer();
         }
+    }
+
+    private emptyLongAnswer(): void {
+        this.answerService.currentLongAnswer = '';
+        this.answerService.updateLongAnswer();
+    }
+
+    private setLongAnswer(numValue: number): void {
+        this.currentLongAnswerControl.setValue(numValue);
+        this.answerService.currentLongAnswer = numValue.toString();
+        this.answerService.updateLongAnswer();
     }
 }
