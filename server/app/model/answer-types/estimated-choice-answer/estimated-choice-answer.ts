@@ -8,9 +8,7 @@ export class EstimatedAnswer extends Answer {
         this.answer = Infinity;
     }
 
-    updateChoice(_: string, __: boolean, estimation?: number): void {
-        if (estimation !== undefined) {
-            this.answer = estimation;
-        }
+    updateChoice(choice?: string): void {
+        this.answer = parseInt(choice);
     }
 }
