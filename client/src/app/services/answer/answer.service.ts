@@ -109,7 +109,6 @@ export class AnswerService {
 
     onFeedback() {
         this.socketService.on(AnswerEvents.Feedback, (feedback: Feedback) => {
-            feedback;
             this.feedback = feedback;
             this.showFeedback = true;
             this.isNextQuestionButtonEnabled = true;
