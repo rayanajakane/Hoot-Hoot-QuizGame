@@ -12,6 +12,7 @@ import { Feedback } from '@common/interfaces/feedback';
 import { GradesInfo } from '@common/interfaces/grades-info';
 import { LongAnswerInfo } from '@common/interfaces/long-answer-info';
 import { UserInfo } from '@common/interfaces/user-info';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -21,7 +22,6 @@ export class AnswerService {
     feedback: Feedback;
     gradeAnswers: boolean;
     isGradingComplete: boolean;
-    showFeedback: boolean;
     isNextQuestionButtonEnabled: boolean;
     isSelectionEnabled: boolean;
     correctAnswer: string[];
@@ -32,6 +32,11 @@ export class AnswerService {
     isEndGame: boolean;
     currentLongAnswer: string;
 
+    private _showFeedback: boolean = false;
+
+    private _showFeedbackSubject = new BehaviorSubject<boolean>(this._showFeedback);
+    showFeedback$ = this._showFeedbackSubject.asObservable();
+
     // Allow more constructor parameters to decouple services
     // eslint-disable-next-line max-params
     constructor(
@@ -41,6 +46,17 @@ export class AnswerService {
         private readonly timeService: TimeService,
     ) {
         this.listenToAnswerEvents();
+    }
+
+    // Getter for the boolean property
+    get showFeedback(): boolean {
+        return this._showFeedback;
+    }
+
+    // Setter for the boolean property (updates both the property and the BehaviorSubject)
+    set showFeedback(value: boolean) {
+        this._showFeedback = value;
+        this._showFeedbackSubject.next(value); // Notify subscribers
     }
 
     listenToAnswerEvents() {
@@ -91,9 +107,9 @@ export class AnswerService {
         this.socketService.send(AnswerEvents.UpdateLongAnswer, choiceInfo);
     }
 
-    
     onFeedback() {
         this.socketService.on(AnswerEvents.Feedback, (feedback: Feedback) => {
+            console.log(feedback);
             this.feedback = feedback;
             this.showFeedback = true;
             this.isNextQuestionButtonEnabled = true;
