@@ -12,7 +12,7 @@
     </div>
     <div id="waiting-for-players" *ngIf="!matchRoomService.isMatchStarted">
         <h1>La partie va bientôt commencer...</h1>
-        <div *ngIf="isHost" id="host-options-container">
+        <div id="host-options-container">
             <div id="code-container">
                 <div>
                     <h2>Code d'accès</h2>
@@ -20,10 +20,11 @@
                 </div>
                 <img src="{{ qrCodeUrl }}" alt="" />
             </div>
-            <mat-slide-toggle [(ngModel)]="isLocked" (click)="toggleLock()">{{
+            <mat-slide-toggle *ngIf="isHost" [(ngModel)]="isLocked" (click)="toggleLock()">{{
                 isLocked ? 'Partie verrouillée' : 'Partie déverouillée'
             }}</mat-slide-toggle>
             <button
+                *ngIf="isHost"
                 mat-raised-button
                 id="start-button"
                 color="primary"
