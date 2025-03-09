@@ -1,5 +1,5 @@
 <div class="form-container">
-    <form [formGroup]="questionForm" class="question-form" (ngSubmit)="onSubmit()">
+    <form [formGroup]="questionForm" class="question-form">
         <mat-form-field class="question-text-container">
             <mat-label>Question</mat-label>
             <input class="question-input" matInput formControlName="text" placeholder="Texte de la question" />
@@ -22,6 +22,17 @@
                         <mat-option *ngFor="let point of [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]" [value]="point">{{ point }}</mat-option>
                     </mat-select>
                 </mat-form-field>
+
+                <div class="upload-image-container">
+                    <!-- TODO: Transloco -->
+                    <button mat-raised-button color="primary" (click)="pictureUrl.click()"><mat-icon>upload</mat-icon>Téléverser une image</button>
+                    <button mat-raised-button [disabled]="!questionForm.get('pictureUrl')!.value" (click)="removePicture()">Retirer l'image</button>
+                    <div class="main-image">
+                        <img *ngIf="questionForm.get('pictureUrl')!.value" [src]="questionForm.get('pictureUrl')!.value" />
+                    </div>
+                    <input type="file" class="pictureUrl" #pictureUrl (change)="setPicture($event)" accept="image/png, image/jpeg" />
+                </div>
+
                 <div *ngIf="modificationState === managementState.GameCreate">
                     <mat-slide-toggle
                         [ngModelOptions]="{ standalone: true }"
@@ -40,6 +51,7 @@
                         color="primary"
                         type="submit"
                         class="submit-button"
+                        (click)="submitForm()"
                         [disabled]="!questionForm.valid"
                     >
                         <mat-icon>check</mat-icon>

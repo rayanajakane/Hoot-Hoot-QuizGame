@@ -21,6 +21,14 @@ export class GameCreationService {
         return game;
     }
 
+    generateMissingQuestionIds(game: Game) {
+        game.questions.forEach((question: Question, index: number) => {
+            if (!question.id) {
+                game.questions[index].id = uuidv4();
+            }
+        });
+        return game;
+    }
     completeIsCorrectField(game: Game): Game {
         game.questions.forEach((question: Question) => {
             this.completeIsCorrectChoice(question);

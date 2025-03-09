@@ -25,6 +25,8 @@ import { Game } from '@app/interfaces/game';
 import { Question } from '@app/interfaces/question';
 import { BankService } from '@app/services/bank/bank.service';
 import { GameModificationService } from '@app/services/game-modification/game-modification.service';
+import { getTranslocoModule } from '@app/transloco-testing.module';
+import { AuthenticationService } from '../authentication/authentication.service';
 
 describe('GameModificationService', () => {
     let service: GameModificationService;
@@ -35,6 +37,7 @@ describe('GameModificationService', () => {
     let questionServiceSpy: jasmine.SpyObj<QuestionService>;
     let bankServiceSpy: jasmine.SpyObj<BankService>;
     let routerSpy: jasmine.SpyObj<Router>;
+    let authenticationServiceSpy: jasmine.SpyObj<AuthenticationService>;
 
     let mockDialogRef: jasmine.SpyObj<MatDialogRef<any, any>>;
 
@@ -47,6 +50,9 @@ describe('GameModificationService', () => {
             text: 'Combien de motifs blancs et noirs y a-t-il respectivement sur un ballon de soccer?',
             points: 20,
             lastModification: '2018-11-13T20:20:39+00:00',
+            pictureUrl: '',
+            pictureFile: null,
+            creatorName: '',
         },
     ];
 
@@ -57,6 +63,9 @@ describe('GameModificationService', () => {
             text: 'Combien de motifs blancs et noirs y a-t-il respectivement sur un ballon de soccer?',
             points: 20,
             lastModification: '2018-11-13T20:20:39+00:00',
+            pictureUrl: '',
+            pictureFile: null,
+            creatorName: '',
         },
         {
             id: '2',
@@ -64,6 +73,9 @@ describe('GameModificationService', () => {
             text: "Le ratio d'or est de 1:1.618, mais connaissez-vous le ratio d'argent?",
             points: 40,
             lastModification: '2024-01-20T14:17:39+00:00',
+            pictureUrl: '',
+            pictureFile: null,
+            creatorName: '',
         },
     ];
 
@@ -120,12 +132,15 @@ describe('GameModificationService', () => {
 
         bankServiceSpy = jasmine.createSpyObj('BankService', ['addQuestion']);
 
+        authenticationServiceSpy = jasmine.createSpyObj('AuthenticationService', ['isImageToUpload', 'uploadQuestionPicture']);
+
         questionServiceSpy.createQuestion.and.returnValue(of(mockHttpResponse));
 
         const dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
         mockDialogRef = dialogRefSpy as jasmine.SpyObj<MatDialogRef<any, any>>;
 
         TestBed.configureTestingModule({
+            imports: [getTranslocoModule()],
             providers: [
                 { provide: GameService, useValue: gameServiceSpy },
                 { provide: MatSnackBar, useValue: {} },
@@ -133,6 +148,7 @@ describe('GameModificationService', () => {
                 { provide: QuestionService, useValue: questionServiceSpy },
                 { provide: BankService, useValue: bankServiceSpy },
                 { provide: Router, useValue: routerSpy },
+                { provide: AuthenticationService, useValue: authenticationServiceSpy },
             ],
         }).compileComponents();
 
@@ -160,7 +176,7 @@ describe('GameModificationService', () => {
         service.handleSubmit();
 
         expect(gameServiceSpy.submitGame).toHaveBeenCalled();
-        expect(notificationServiceSpy.displaySuccessMessage).toHaveBeenCalledWith('Jeux modifié avec succès! 😺');
+        expect(notificationServiceSpy.displaySuccessMessage).toHaveBeenCalled();
         expect(resetSpy).toHaveBeenCalled();
         expect(routerSpy.navigate).toHaveBeenCalledWith(['/admin/games/']);
     });
@@ -173,7 +189,7 @@ describe('GameModificationService', () => {
         service.handleSubmit();
 
         expect(gameServiceSpy.submitGame).toHaveBeenCalled();
-        expect(notificationServiceSpy.displaySuccessMessage).toHaveBeenCalledWith('Jeux créé avec succès! 😺');
+        expect(notificationServiceSpy.displaySuccessMessage).toHaveBeenCalled();
         expect(resetSpy).toHaveBeenCalled();
         expect(routerSpy.navigate).toHaveBeenCalledWith(['/admin/games/']);
     });
@@ -289,9 +305,9 @@ describe('GameModificationService', () => {
         const changesSpy = spyOn<any, any>(service, 'markPendingChanges').and.returnValue({});
 
         const mockListQuestions: Question[] = [
-            { id: '1', text: 'Question 1', type: 'QCM', points: 10, lastModification: '' },
-            { id: '2', text: 'Question 2', type: 'QCM', points: 20, lastModification: '' },
-            { id: '3', text: 'Question 3', type: 'QCM', points: 30, lastModification: '' },
+            { id: '1', text: 'Question 1', type: 'QCM', points: 10, lastModification: '', pictureUrl: '', pictureFile: null, creatorName: '' },
+            { id: '2', text: 'Question 2', type: 'QCM', points: 20, lastModification: '', pictureUrl: '', pictureFile: null, creatorName: '' },
+            { id: '3', text: 'Question 3', type: 'QCM', points: 30, lastModification: '', pictureUrl: '', pictureFile: null, creatorName: '' },
         ];
         service.game.questions = [...mockListQuestions];
 

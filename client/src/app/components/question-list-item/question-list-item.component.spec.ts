@@ -20,6 +20,9 @@ describe('QuestionListItemComponent', () => {
         text: 'Combien de motifs blancs et noirs y a-t-il respectivement sur un ballon de soccer?',
         points: 20,
         lastModification: new Date().toString(),
+        pictureUrl: '',
+        pictureFile: null,
+        creatorName: '',
     };
 
     @Component({

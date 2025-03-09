@@ -20,9 +20,9 @@ android {
         applicationId = "com.example.polyquiz"
         minSdk = 33
         targetSdk = 34
+        resourceConfigurations += listOf("en", "fr")
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

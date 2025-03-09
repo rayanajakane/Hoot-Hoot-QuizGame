@@ -21,7 +21,11 @@
                 <i *ngIf="question.type === 'QRE'" class="material-icons">balance</i>
                 <p *ngIf="question.type === 'QRE'" class="question-type">QRE</p>
             </div>
-            <p>{{ question.lastModification | date: 'YYYY-MM-dd hh:mm' }}</p>
+            <div *ngIf="isBankQuestion && question.creatorName" class="creator-name-container">
+                <i class="material-icons">person</i>
+                <p>{{ question.creatorName }}</p>
+            </div>
+            <p>{{ question.lastModification | date: 'YYYY-MM-dd HH:mm' }}</p>
             <div class="question-buttons-container">
                 <button
                     mat-icon-button

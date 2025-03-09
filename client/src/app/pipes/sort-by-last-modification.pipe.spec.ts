@@ -10,6 +10,9 @@ const mockQuestion: Question[] = [
         points: 10,
         choices: [],
         lastModification: new Date(2024, 2, 1).toString(),
+        pictureUrl: '',
+        pictureFile: null,
+        creatorName: '',
     },
     {
         id: 'question2',
@@ -18,6 +21,9 @@ const mockQuestion: Question[] = [
         points: 20,
         choices: [],
         lastModification: new Date(1999, 5, 17).toString(),
+        pictureUrl: '',
+        pictureFile: null,
+        creatorName: '',
     },
     {
         id: 'question3',
@@ -26,6 +32,9 @@ const mockQuestion: Question[] = [
         points: 30,
         choices: [],
         lastModification: new Date(2007, 3, 21).toString(),
+        pictureUrl: '',
+        pictureFile: null,
+        creatorName: '',
     },
     {
         id: 'question4',
@@ -34,6 +43,9 @@ const mockQuestion: Question[] = [
         points: 40,
         choices: [],
         lastModification: new Date(2007, 3, 21).toString(),
+        pictureUrl: '',
+        pictureFile: null,
+        creatorName: '',
     },
 ];
 

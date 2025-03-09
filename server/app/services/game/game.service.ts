@@ -93,6 +93,7 @@ export class GameService {
                 return Promise.reject(`${ERROR_INVALID_GAME}\n${errorMessages.join('\n')}`);
             }
             game = this.creationService.updateDateAndVisibility(game);
+            game = this.creationService.generateMissingQuestionIds(game);
 
             await this.gameModel.findOneAndUpdate(filterQuery, game, {
                 new: true,
@@ -104,14 +105,16 @@ export class GameService {
         }
     }
 
-    async deleteGame(gameId: string): Promise<void> {
+    async deleteGame(gameId: string): Promise<Game> {
+        let game: Game;
         try {
-            await this.getGameById(gameId);
+            game = await this.getGameById(gameId);
         } catch (error) {
             return Promise.reject(`${ERROR_DEFAULT} ${error}`);
         }
         try {
             await this.gameModel.deleteOne({ id: gameId });
+            return game;
         } catch (error) {
             return Promise.reject(`${ERROR_DEFAULT} ${error}`);
         }

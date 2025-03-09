@@ -24,6 +24,9 @@ describe('CommunicationService', () => {
                 points: 30,
                 choices: [],
                 lastModification: new Date().toString(),
+                pictureUrl: '',
+                pictureFile: null,
+                creatorName: '',
             },
         ],
     };

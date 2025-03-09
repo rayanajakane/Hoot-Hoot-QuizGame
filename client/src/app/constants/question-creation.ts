@@ -25,4 +25,5 @@ export const TEMPLATE_QUESTION: Question = {
     text: 'Quelle est la capitale du canada?',
     points: 20,
     lastModification: '2024-01-26T14:21:19+00:00',
+    pictureUrl: '',
 };

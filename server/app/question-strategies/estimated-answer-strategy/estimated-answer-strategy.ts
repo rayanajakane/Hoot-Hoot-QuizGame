@@ -18,7 +18,6 @@ export class EstimatedAnswerStrategy extends QuestionStrategy {
     }
 
     gradeAnswers(matchRoom: MatchRoom, players: Player[]): void {
-        console.log('Grading estimated answers');
         this.calculateScore(matchRoom, players);
         this.eventEmitter.emit(GradingEvents.GradingComplete, matchRoom.code);
     }
@@ -27,10 +26,8 @@ export class EstimatedAnswerStrategy extends QuestionStrategy {
         const currentQuestionPoints = matchRoom.currentQuestion.points;
         const margin = matchRoom.currentQuestion.estimatedParameters.margin;
         const correctAnswer: number = parseInt(matchRoom.currentQuestionAnswer[0]); // TODO: use matchRoom.currentQuestionAnswer
-        console.log('Correct answer:', correctAnswer);
         players.forEach((player) => {
             const playerAnswer = (player.answer as EstimatedAnswer).answer;
-            console.log('Player answer:', playerAnswer);
             if (this.isAnswerWithinMargin(playerAnswer, correctAnswer, margin)) {
                 player.answerCorrectness = AnswerCorrectness.GOOD;
                 player.score += currentQuestionPoints;

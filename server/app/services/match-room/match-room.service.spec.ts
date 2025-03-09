@@ -312,14 +312,15 @@ describe('MatchRoomService', () => {
     it('sendFirstQuestion() should emit the first question along with the game duration', () => {
         matchRoom.hostSocket = mockHostSocket;
         const currentQuestion = matchRoom.game.questions[0];
-        const currentAnswers = currentQuestion.choices[0].text;
+        const currentAnswers = currentQuestion.choices.filter((choice) => choice.isCorrect).map((choice) => choice.text);
         service.sendFirstQuestion(mockServer, MOCK_ROOM_CODE);
         expect(emitMock).toHaveBeenCalledWith('beginQuiz', {
             firstQuestion: currentQuestion,
             gameDuration: matchRoom.game.duration,
             isClassicMode: true,
         });
-        expect(mockHostSocket.send).toHaveBeenCalledWith('currentAnswers', [currentAnswers]);
+        console.log('currrrrr', currentAnswers);
+        expect(mockHostSocket.send).toHaveBeenCalledWith('currentAnswers', currentAnswers);
         expect(startTimerMock).toHaveBeenCalledWith(mockServer, MOCK_ROOM_CODE, matchRoom.game.duration, ExpiredTimerEvents.QuestionTimerExpired);
     });
 
@@ -356,7 +357,7 @@ describe('MatchRoomService', () => {
     it('removeIsCorrectField() should remove isCorrect answer from choices', () => {
         const question = getMockQuestion();
         question.choices = MOCK_CHOICES;
-        service['removeIsCorrectField'](question);
+        service['removeAnswerField'](question);
         expect(question.choices[0].isCorrect).toBeUndefined();
         expect(question.choices[1].isCorrect).toBeUndefined();
     });

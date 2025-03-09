@@ -32,6 +32,8 @@ const getMockQuestion = (): Question => ({
         correctAnswer: getRandomNumber(1, 2),
     },
     lastModification: new Date(),
+    pictureUrl: '',
+    creatorName: 'mock',
 });
 
 const VALID_QUESTION = getMockQuestion();

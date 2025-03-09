@@ -29,4 +29,12 @@ export class CreateQuestionDto {
 
     @ApiProperty()
     lastModification: Date;
+
+    @ApiProperty()
+    @IsString()
+    pictureUrl: string;
+
+    @ApiProperty()
+    @IsString()
+    creatorName: string;
 }

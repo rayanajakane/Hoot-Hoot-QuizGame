@@ -9,6 +9,7 @@ import { TimerGateway } from '@app/gateways/timer/timer.gateway';
 import { Game, gameSchema } from '@app/model/database/game';
 import { Question, questionSchema } from '@app/model/database/question';
 import { FirebaseModule } from '@app/modules/firebase/firebase.module';
+import { EstimatedAnswerStrategy } from '@app/question-strategies/estimated-answer-strategy/estimated-answer-strategy';
 import { LongAnswerStrategy } from '@app/question-strategies/long-answer-strategy/long-answer-strategy';
 import { MultipleChoiceStrategy } from '@app/question-strategies/multiple-choice-strategy/multiple-choice-strategy';
 import { AnswerService } from '@app/services/answer/answer.service';
@@ -19,6 +20,7 @@ import { GameService } from '@app/services/game/game.service';
 import { MatchBackupService } from '@app/services/match-backup/match-backup.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { PlayerRoomService } from '@app/services/player-room/player-room.service';
+import { QuestionPicturesDeletionService } from '@app/services/question-pictures-deletion/question-pictures-deletion.service';
 import { QuestionStrategyContext } from '@app/services/question-strategy-context/question-strategy-context.service';
 import { QuestionService } from '@app/services/question/question.service';
 import { TimeService } from '@app/services/time/time.service';
@@ -26,7 +28,6 @@ import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MongooseModule } from '@nestjs/mongoose';
-import { EstimatedAnswerStrategy } from './question-strategies/estimated-answer-strategy/estimated-answer-strategy';
 
 @Module({
     imports: [
@@ -64,6 +65,7 @@ import { EstimatedAnswerStrategy } from './question-strategies/estimated-answer-
         MultipleChoiceStrategy,
         LongAnswerStrategy,
         EstimatedAnswerStrategy,
+        QuestionPicturesDeletionService,
     ],
 })
 export class AppModule {}

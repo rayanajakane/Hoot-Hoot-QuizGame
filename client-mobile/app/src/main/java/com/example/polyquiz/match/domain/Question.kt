@@ -11,4 +11,6 @@ data class Question(
     val estimatedParameters: EstimatedParameters? = null,
     val answer: String? = null,
     val lastModification: String?,
+    val pictureUrl: String,
+    val creatorName: String,
 )
