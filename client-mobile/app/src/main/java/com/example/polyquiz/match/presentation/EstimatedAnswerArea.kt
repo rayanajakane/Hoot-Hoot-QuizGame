@@ -73,7 +73,7 @@ fun EstimatedAnswerArea(
                             } else {
                                 isOutOfBounds = true
                             }
-                        } else if (newText.isEmpty()) {
+                        } else if (newText.isEmpty() || newText == "-") {
                             answerService.currentLongAnswer = ""
                             answerService.updateLongAnswer()
                             sliderValue = lowerBound
