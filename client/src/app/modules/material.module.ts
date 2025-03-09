@@ -1,6 +1,6 @@
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
@@ -21,6 +21,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { AgChartsAngularModule } from 'ag-charts-angular';
 
 const modules = [
@@ -46,8 +47,9 @@ const modules = [
     MatTooltipModule,
     ScrollingModule,
     AgChartsAngularModule,
-    MatSliderModule,
     FormsModule,
+    ReactiveFormsModule,
+    NoopAnimationsModule,
 ];
 
 @NgModule({
