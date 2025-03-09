@@ -148,10 +148,10 @@ describe('MatchRoomService', () => {
         expect(result).toEqual(0);
     });
 
-    it('addRoom() should generate a room code add the new MatchRoom in the rooms list', () => {
+    it('addRoom() should generate a room code add the new MatchRoom in the rooms list', async () => {
         service.matchRooms = [];
         const generateSpy = jest.spyOn(service, 'generateRoomCode').mockReturnValue(MOCK_ROOM_CODE);
-        const strategySpy = jest.spyOn<any, any>(service, 'setQuestionStrategy').mockImplementation();
+        const strategySpy = jest.spyOn(service as any, 'setQuestionStrategy').mockReturnThis();
         jest.spyOn(qrCodeSpy, 'generateQrCode').mockResolvedValue('');
         const mockGame = getMockGame();
         const expectedResult: MatchRoom = {
@@ -177,11 +177,11 @@ describe('MatchRoomService', () => {
             qrCodeUrl: '',
         };
 
-        const result = service.addRoom(mockGame, socket);
+        const result = await service.addRoom(mockGame, socket);
         expect(generateSpy).toHaveBeenCalled();
-        expect(strategySpy).toHaveBeenCalled();
         expect(result).toEqual(expectedResult);
         expect(service.matchRooms.length).toEqual(1);
+        expect(strategySpy).toHaveBeenCalled();
     });
 
     it('getRoomCodeByHostSocket() should return code of the room where the host belongs', () => {
