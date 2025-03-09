@@ -40,7 +40,6 @@ export class AnswerGateway {
 
     @SubscribeMessage(AnswerEvents.UpdateLongAnswer)
     updateLongAnswer(@ConnectedSocket() socket: Socket, @MessageBody() choice: ChoiceInfo) {
-        console.log('updateLongAnswer', choice);
         this.answerService.updateChoice(choice.choice, true, choice.userInfo.username, choice.userInfo.roomCode);
         this.playerRoomService.setState(socket.id, PlayerState.firstInteraction);
     }

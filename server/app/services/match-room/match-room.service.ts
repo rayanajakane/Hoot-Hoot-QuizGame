@@ -151,8 +151,7 @@ export class MatchRoomService {
         const firstQuestion = matchRoom.game.questions[0];
         const gameDuration: number = matchRoom.game.duration;
         this.setQuestionStrategy(matchRoom);
-        // matchRoom.currentQuestionAnswer = this.filterCorrectChoices(firstQuestion);
-        this.defineCurrentQuestionAnswer(matchRoomCode);
+        this.defineCurrentQuestionAnswer(matchRoomCode, firstQuestion);
         this.removeAnswerField(firstQuestion);
         matchRoom.hostSocket.send(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
         const isClassicMode: boolean = matchRoom.isClassicMode;
@@ -171,7 +170,7 @@ export class MatchRoomService {
         const nextQuestion = this.getCurrentQuestion(matchRoomCode);
         matchRoom.currentQuestion = nextQuestion;
 
-        this.defineCurrentQuestionAnswer(matchRoomCode);
+        this.defineCurrentQuestionAnswer(matchRoomCode, matchRoom.currentQuestion);
         this.setQuestionStrategy(matchRoom);
 
         this.removeAnswerField(nextQuestion);
@@ -180,15 +179,14 @@ export class MatchRoomService {
         this.timeService.startTimer(server, matchRoomCode, matchRoom.questionDuration, ExpiredTimerEvents.QuestionTimerExpired);
     }
 
-    defineCurrentQuestionAnswer(matchRoomCode: string) {
+    defineCurrentQuestionAnswer(matchRoomCode: string, question: Question) {
         const matchRoom: MatchRoom = this.getRoom(matchRoomCode);
-        const currentQuestion = matchRoom.currentQuestion;
-        switch (currentQuestion.type) {
+        switch (question.type) {
             case QuestionType.MultipleChoice:
-                matchRoom.currentQuestionAnswer = this.filterCorrectChoices(currentQuestion);
+                matchRoom.currentQuestionAnswer = this.filterCorrectChoices(question);
                 break;
             case QuestionType.EstimatedAnswer:
-                matchRoom.currentQuestionAnswer = [String(currentQuestion.estimatedParameters.correctAnswer)];
+                matchRoom.currentQuestionAnswer = [String(question.estimatedParameters.correctAnswer)];
                 break;
             default:
                 matchRoom.currentQuestionAnswer = [];
