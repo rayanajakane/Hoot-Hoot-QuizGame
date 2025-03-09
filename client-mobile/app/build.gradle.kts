@@ -58,6 +58,7 @@ dependencies {
     val coreVersion = "1.13.1"
     val navVersion = "2.8.4"
     implementation("androidx.core:core-ktx:$coreVersion")
+    implementation("androidx.appcompat:appcompat:1.6.1")
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))

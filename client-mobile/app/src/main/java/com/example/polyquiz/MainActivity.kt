@@ -1,11 +1,11 @@
 package com.example.polyquiz
 
-import android.content.ContextWrapper
+
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -17,14 +17,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+
 import androidx.compose.ui.tooling.preview.Preview
+
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.ui.theme.PolyQuizTheme
-import com.example.polyquiz.utils.ContextUtils
+
 import com.example.vanillaprototype.socket.SocketHandler
+
 import kotlinx.coroutines.launch
 
-class MainActivity : ComponentActivity() {
+
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -62,12 +66,27 @@ class MainActivity : ComponentActivity() {
                 { innerPadding ->
                     Navigation(
                         modifier = Modifier.padding(innerPadding),
-                        authViewModel = authViewModel
+                        authViewModel = authViewModel,
+                        context = applicationContext,
                     )
                 }
             }
         }
     }
+
+
+//    private fun setAppLocale(context: Context) {
+//        var language = context.dataStore.data.first()
+//        Log.e("caca", "set app language to $language" )
+//        val locale = Locale(language)
+//        Locale.setDefault(locale)
+//
+//        val config = resources.configuration
+//        config.setLocales(LocaleList(locale))
+//
+//        createConfigurationContext(config)
+//        resources.updateConfiguration(config, resources.displayMetrics)
+//    }
 }
 
 @Preview(showBackground = true)

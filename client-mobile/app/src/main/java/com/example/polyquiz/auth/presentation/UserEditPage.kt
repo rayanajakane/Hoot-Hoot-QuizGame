@@ -1,5 +1,6 @@
 package com.example.polyquiz.auth.presentation
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -35,7 +36,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -55,11 +55,12 @@ fun UserEditPage(
     modifier: Modifier,
     navigateToHome: () -> Unit,
     authViewModel: AuthViewModel,
+    context: Context,
 ) {
-    val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+    var test by remember { mutableStateOf(Locale.getDefault().language) }
 
-    var currentLang: String = Locale.getDefault().language
+    var currentLang by remember { mutableStateOf(Locale.getDefault().language) }
 
     val email by authViewModel.email.collectAsState()
     val username by authViewModel.username.collectAsState()
@@ -250,13 +251,8 @@ fun UserEditPage(
                                                 textFieldStateLang.setTextAndPlaceCursorAtEnd(
                                                     language
                                                 )
-                                                // set app locale given the user's selected locale
-                                                AppCompatDelegate.setApplicationLocales(
-                                                    LocaleListCompat.forLanguageTags(
-                                                        availableLangs[language].toString()
-                                                    )
-                                                )
                                                 currentLang = language
+
                                             },
                                             contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
                                         )
@@ -266,7 +262,9 @@ fun UserEditPage(
                             Spacer(modifier = Modifier.height(8.dp))
                             Button(
                                 onClick = {
-                                    // TODO
+                                    AppCompatDelegate.setApplicationLocales(
+                                        LocaleListCompat.forLanguageTags(currentLang)
+                                    )
                                 },
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = MaterialTheme.colorScheme.primary,
@@ -279,6 +277,8 @@ fun UserEditPage(
                         }
                     }
                 }
+                Text("current lang = $currentLang")
+                Text(test)
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     stringResource(R.string.danger_zone), fontSize = 30.sp,
@@ -303,5 +303,4 @@ fun UserEditPage(
         }
 
     }
-
 }
