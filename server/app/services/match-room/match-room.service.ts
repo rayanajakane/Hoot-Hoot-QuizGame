@@ -6,6 +6,7 @@ import { Question } from '@app/model/database/question';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
 import { Player } from '@app/model/schema/player.schema';
 import { ChoiceTracker } from '@app/model/tally-trackers/choice-tracker/choice-tracker';
+import { QrCodeService } from '@app/services/qr-code/qr-code.service';
 import { QuestionStrategyContext } from '@app/services/question-strategy-context/question-strategy-context.service';
 import { TimeService } from '@app/services/time/time.service';
 import { COOLDOWN_TIME, COUNTDOWN_TIME, FACTOR, MAXIMUM_CODE_LENGTH } from '@common/constants/match-constants';
@@ -15,7 +16,6 @@ import { GameInfo } from '@common/interfaces/game-info';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Server, Socket } from 'socket.io';
-import { QrCodeService } from '../qr-code/qr-code.service';
 
 @Injectable()
 export class MatchRoomService {
