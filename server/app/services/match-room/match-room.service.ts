@@ -14,6 +14,7 @@ import { COOLDOWN_TIME, COUNTDOWN_TIME, FACTOR, MAXIMUM_CODE_LENGTH } from '@com
 import { MatchEvents } from '@common/events/match.events';
 import { TimerEvents } from '@common/events/timer.events';
 import { GameInfo } from '@common/interfaces/game-info';
+import { MatchPageInfo } from '@common/interfaces/match-page-info';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Server, Socket } from 'socket.io';
@@ -232,6 +233,20 @@ export class MatchRoomService {
         const maxScore = Math.max(...playingPlayers.map((player) => player.score));
         const playersWithMaxScore = playingPlayers.filter((player) => player.score === maxScore);
         playersWithMaxScore.forEach((player) => player.socket.emit(MatchEvents.Winner));
+    }
+
+    getAllMatchesInfo() {
+        const matchPagesInfo: MatchPageInfo[] = [];
+        this.matchRooms.forEach((matchRoom: MatchRoom) => {
+            matchPagesInfo.push({
+                code: matchRoom.code,
+                isLocked: matchRoom.isLocked,
+                isPlaying: matchRoom.isPlaying,
+                gameTitle: matchRoom.game.title,
+                nPlayers: matchRoom.players.length,
+            });
+        });
+        return matchPagesInfo;
     }
 
     private filterCorrectChoices(question: Question) {

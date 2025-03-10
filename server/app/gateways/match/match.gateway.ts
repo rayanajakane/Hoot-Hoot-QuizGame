@@ -60,6 +60,12 @@ export class MatchGateway implements OnGatewayDisconnect {
         return { code: newMatchRoom.code };
     }
 
+    @SubscribeMessage(MatchEvents.GetAllMatches)
+    returnAllMatches(@ConnectedSocket() socket: Socket) {
+        const allMatches = this.matchRoomService.getAllMatchesInfo();
+        this.server.emit(MatchEvents.ReturnAllMatches, allMatches);
+    }
+
     @SubscribeMessage(MatchEvents.RouteToResultsPage)
     routeToResultsPage(@ConnectedSocket() socket: Socket, @MessageBody() matchRoomCode: string) {
         const roomIndex = this.matchRoomService.getRoomIndex(matchRoomCode);

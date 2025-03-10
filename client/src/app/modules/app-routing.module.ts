@@ -10,6 +10,7 @@ import { AdminQuestionBankComponent } from '@app/pages/admin-question-bank/admin
 import { ForgotPasswordFeedbackPageComponent } from '@app/pages/forgot-password-feedback-page/forgot-password-feedback-page.component';
 import { ForgotPasswordPageComponent } from '@app/pages/forgot-password-page/forgot-password-page.component';
 import { HomePageComponent } from '@app/pages/home-page/home-page.component';
+import { JoinMatchPageComponent } from '@app/pages/join-match-page/join-match-page.component';
 import { LoginPageComponent } from '@app/pages/login-page/login-page.component';
 import { MatchCreationPageComponent } from '@app/pages/match-creation-page/match-creation-page.component';
 import { ResultsPageComponent } from '@app/pages/results-page/results-page.component';
@@ -43,6 +44,7 @@ const routes: Routes = [
     },
     { path: 'host', component: MatchCreationPageComponent, canActivate: [authenticationGuard] },
     { path: 'match-room', canActivate: [matchLoginGuard], component: WaitPageComponent },
+    { path: 'join-match', component: JoinMatchPageComponent },
     { path: 'play-match', canActivate: [matchLoginGuard], component: QuestionAreaComponent },
     { path: 'results', canActivate: [matchLoginGuard], component: ResultsPageComponent },
     { path: 'edit-profile', component: UserEditPageComponent, canActivate: [authenticationGuard] },

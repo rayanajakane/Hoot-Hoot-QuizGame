@@ -1,0 +1,59 @@
+<ng-container *transloco="let t">
+    <div id="main-container">
+        <div class="nav">
+            <h1>Joindre une partie</h1>
+            <div class="navigation-buttons">
+                <button mat-raised-button routerLink="/home"><mat-icon>home</mat-icon>{{ t('nav.main-page') }}</button>
+            </div>
+        </div>
+
+        <mat-form-field type="text">
+            <mat-label>Code de la partie</mat-label>
+            <input
+                id="code-input"
+                matInput
+                #inputCode
+                maxlength="200"
+                [placeholder]="'...'"
+                (keydown.enter)="submitCode(inputCode.value); inputCode.value = ''"
+            />
+        </mat-form-field>
+        <button mat-raised-button (click)="submitCode(input)" color="primary" class="match-button" id="join-button">
+            <mat-icon>play_circle</mat-icon>
+            {{ t('main-page.join-match') }}
+        </button>
+        <h2>Parties en attente</h2>
+        <div>
+            <h3>Parties déverrouillées</h3>
+            <div class="matches-container">
+                <div *ngFor="let match of matches">
+                    <mat-card *ngIf="!match.isPlaying && !match.isLocked" class="match-card">
+                        <h3>{{ match.gameTitle }}</h3>
+                        <p>{{ match.nPlayers }}</p>
+                        <button mat-raised-button color="primary" (click)="submitCode(match.code)" class="join-existing-match-button">
+                            <p>Rejoindre</p>
+                        </button>
+                    </mat-card>
+                </div>
+            </div>
+            <h3>Parties verrouillées</h3>
+            <div class="matches-container">
+                <div *ngFor="let match of matches">
+                    <mat-card *ngIf="!match.isPlaying && match.isLocked" class="match-card">
+                        <h3>{{ match.gameTitle }}</h3>
+                        <p>{{ match.nPlayers }}</p>
+                    </mat-card>
+                </div>
+            </div>
+        </div>
+        <h2>Parties en cours</h2>
+        <div class="matches-container">
+            <div *ngFor="let match of matches">
+                <mat-card *ngIf="match.isPlaying" class="match-card">
+                    <h3>{{ match.gameTitle }}</h3>
+                    <p>{{ match.nPlayers }}</p>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+</ng-container>

@@ -1,0 +1,25 @@
+#main-container {
+    padding: 1rem 8rem;
+    margin-bottom: 25vh;
+}
+
+.matches-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.match-card {
+    display: flex;
+    width: 15vw;
+    flex-direction: column;
+    padding: 0.5rem 1rem 1rem 1rem;
+    margin-right: 1rem;
+}
+
+.join-existing-match-button {
+    padding: 1rem;
+    width: 6rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
