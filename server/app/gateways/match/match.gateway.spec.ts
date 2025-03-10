@@ -113,7 +113,7 @@ describe('MatchGateway', () => {
     });
 
     it('createRoom() should let the host create a match room and let the host join the new room', async () => {
-        matchRoomSpy.addRoom.returns(MOCK_MATCH_ROOM);
+        matchRoomSpy.addRoom.resolves(MOCK_MATCH_ROOM);
         const result = await gateway.createRoom(socket, {
             gameId: MOCK_MATCH_ROOM.game.id,
             isClassicMode: true,
@@ -123,7 +123,7 @@ describe('MatchGateway', () => {
     });
 
     it('createRoom() should let host create a testing match room and let host join as the only player in the new room', async () => {
-        matchRoomSpy.addRoom.returns(MOCK_TEST_MATCH_ROOM);
+        matchRoomSpy.addRoom.resolves(MOCK_MATCH_ROOM);
         const result = await gateway.createRoom(socket, {
             gameId: MOCK_TEST_MATCH_ROOM.game.id,
             isClassicMode: true,
@@ -133,7 +133,7 @@ describe('MatchGateway', () => {
     });
 
     it('createRoom() should let host create a random match room and let host join as a regular player', async () => {
-        matchRoomSpy.addRoom.returns(MOCK_RANDOM_MATCH_ROOM);
+        matchRoomSpy.addRoom.resolves(MOCK_MATCH_ROOM);
         matchBackupSpy.getBackupGame.returns(GAME_VALID_QUESTION);
         const result = await gateway.createRoom(socket, {
             gameId: MOCK_RANDOM_MATCH_ROOM.game.id,
@@ -232,7 +232,7 @@ describe('MatchGateway', () => {
 
     it('handleDisconnect() should disconnect host and all other players and delete the match room if the host disconnects', () => {
         matchRoomSpy.getRoomCodeByHostSocket.returns(MOCK_ROOM_CODE);
-        matchRoomSpy.getRoom.returns(MOCK_MATCH_ROOM);
+        matchRoomSpy.getRoom.resolves(MOCK_MATCH_ROOM);
         const errorSpy = jest.spyOn(gateway, 'sendError').mockReturnThis();
         const deleteSpy = jest.spyOn(gateway, 'deleteRoom').mockReturnThis();
         gateway.handleDisconnect(socket);

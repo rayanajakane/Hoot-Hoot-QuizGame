@@ -380,4 +380,10 @@ export class AuthenticationService {
                 console.log(error);
             });
     }
+
+    async getImageDownloadUrl(path: string) {
+        const storageRef = firebaseStorageRef(this.storage, path);
+        const downloadUrl = await getDownloadURL(storageRef);
+        return downloadUrl;
+    }
 }

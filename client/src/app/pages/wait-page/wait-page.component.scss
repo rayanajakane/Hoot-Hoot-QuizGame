@@ -68,9 +68,28 @@
 #exit-button-container {
     display: flex;
     justify-content: center;
+    margin-bottom: 1rem;
 }
 
 #exit-button {
     display: flex;
     gap: 1rem;
+}
+
+#code-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+#code-container h2,
+#code-container p {
+    text-align: left;
+}
+
+img {
+    width: 12rem;
+    object-fit: fill;
 }

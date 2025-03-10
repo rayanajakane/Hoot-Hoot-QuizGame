@@ -7,6 +7,7 @@ import { Question } from '@app/model/database/question';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
 import { Player } from '@app/model/schema/player.schema';
 import { ChoiceTracker } from '@app/model/tally-trackers/choice-tracker/choice-tracker';
+import { QrCodeService } from '@app/services/qr-code/qr-code.service';
 import { QuestionStrategyContext } from '@app/services/question-strategy-context/question-strategy-context.service';
 import { TimeService } from '@app/services/time/time.service';
 import { COOLDOWN_TIME, COUNTDOWN_TIME, FACTOR, MAXIMUM_CODE_LENGTH } from '@common/constants/match-constants';
@@ -26,6 +27,7 @@ export class MatchRoomService {
         private readonly eventEmitter: EventEmitter2,
         private readonly timeService: TimeService,
         private readonly questionStrategyService: QuestionStrategyContext,
+        private qrCodeService: QrCodeService,
     ) {
         this.matchRooms = [];
     }
@@ -55,12 +57,15 @@ export class MatchRoomService {
 
     // allow more parameters to make method more reusable
     // eslint-disable-next-line max-params
-    addRoom(selectedGame: Game, socket: Socket, isClassicMode: boolean = true): MatchRoom {
+    async addRoom(selectedGame: Game, socket: Socket, isClassicMode: boolean = true): Promise<MatchRoom> {
         const isLocked = false;
         const isPlaying = false;
 
+        const roomCode = this.generateRoomCode();
+        const qrCodeUrl = await this.qrCodeService.generateQrCode(roomCode);
+
         const newRoom: MatchRoom = {
-            code: this.generateRoomCode(),
+            code: roomCode,
             hostSocket: socket,
             isLocked,
             isPlaying,
@@ -79,6 +84,7 @@ export class MatchRoomService {
             messages: [],
             isClassicMode,
             startTime: new Date(),
+            qrCodeUrl,
         };
         this.matchRooms.push(newRoom);
         this.setQuestionStrategy(newRoom);
@@ -97,12 +103,13 @@ export class MatchRoomService {
         this.getRoom(matchRoomCode).isLocked = !this.getRoom(matchRoomCode).isLocked;
     }
 
-    deleteRoom(matchRoomCode: string): void {
+    async deleteRoom(matchRoomCode: string): Promise<void> {
         this.timeService.terminateTimer(matchRoomCode);
         this.questionStrategyService.deleteRoom(matchRoomCode);
         this.matchRooms = this.matchRooms.filter((room: MatchRoom) => {
             return room.code !== matchRoomCode;
         });
+        this.qrCodeService.deleteQrCode(matchRoomCode);
     }
 
     getRoomCodeErrors(matchRoomCode: string): string {

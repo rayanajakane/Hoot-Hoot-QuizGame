@@ -54,8 +54,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         let selectedGame: Game = {} as Game;
         selectedGame = this.matchBackupService.getBackupGame(data.gameId);
 
-        // TODO : Remove all mention of randomMode
-        const newMatchRoom: MatchRoom = this.matchRoomService.addRoom(selectedGame, socket, data.isClassicMode);
+        const newMatchRoom: MatchRoom = await this.matchRoomService.addRoom(selectedGame, socket, data.isClassicMode);
 
         socket.join(newMatchRoom.code);
         return { code: newMatchRoom.code };
