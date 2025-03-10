@@ -57,11 +57,16 @@ export class MatchGateway implements OnGatewayDisconnect {
         const newMatchRoom: MatchRoom = await this.matchRoomService.addRoom(selectedGame, socket, data.isClassicMode);
 
         socket.join(newMatchRoom.code);
+        this.returnAllMatches();
         return { code: newMatchRoom.code };
     }
 
     @SubscribeMessage(MatchEvents.GetAllMatches)
-    returnAllMatches(@ConnectedSocket() socket: Socket) {
+    getAllMatches(@ConnectedSocket() socket: Socket) {
+        this.returnAllMatches();
+    }
+
+    returnAllMatches() {
         const allMatches = this.matchRoomService.getAllMatchesInfo();
         this.server.emit(MatchEvents.ReturnAllMatches, allMatches);
     }
@@ -89,6 +94,7 @@ export class MatchGateway implements OnGatewayDisconnect {
     @SubscribeMessage(MatchEvents.ToggleLock)
     toggleLock(@ConnectedSocket() socket: Socket, @MessageBody() matchRoomCode: string) {
         this.matchRoomService.toggleLock(matchRoomCode);
+        this.returnAllMatches();
     }
 
     @SubscribeMessage(MatchEvents.BanUsername)
@@ -102,6 +108,7 @@ export class MatchGateway implements OnGatewayDisconnect {
             // this.server.in(playerToBan.socket.id).disconnectSockets();
         }
         this.sendPlayersData(socket, data.roomCode);
+        this.returnAllMatches();
     }
 
     @SubscribeMessage(MatchEvents.SendPlayersData)
@@ -116,6 +123,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         this.matchRoomService.markGameAsPlaying(roomCode);
         this.matchRoomService.startMatch(socket, this.server, roomCode);
         this.playerRoomService.setStateForAll(roomCode, PlayerState.noInteraction);
+        this.returnAllMatches();
     }
 
     @SubscribeMessage(MatchEvents.GoToNextQuestion)
@@ -187,12 +195,14 @@ export class MatchGateway implements OnGatewayDisconnect {
         }
         this.handleSendPlayersData(roomCode);
         this.sendMessageOnDisconnect(roomCode, player.username);
+        this.returnAllMatches();
     }
 
     deleteRoom(matchRoomCode: string) {
         this.server.to(matchRoomCode).emit(MatchEvents.HostQuitMatch);
         // this.server.in(matchRoomCode).disconnectSockets(); // TODO: Check if we need to manually remove from room instead.
         this.matchRoomService.deleteRoom(matchRoomCode);
+        this.returnAllMatches();
     }
 
     handleSendPlayersData(matchRoomCode: string) {

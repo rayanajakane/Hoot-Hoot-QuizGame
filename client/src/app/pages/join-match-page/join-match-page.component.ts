@@ -20,7 +20,28 @@ export class JoinMatchPageComponent {
     ) {}
 
     get matches(): MatchPageInfo[] {
-        return [
+        const mocks = [
+            {
+                code: '1234',
+                isLocked: false,
+                isPlaying: false,
+                gameTitle: 'Jeu cute',
+                nPlayers: 1,
+            },
+            {
+                code: '1234',
+                isLocked: false,
+                isPlaying: false,
+                gameTitle: 'Jeu cute',
+                nPlayers: 1,
+            },
+            {
+                code: '1234',
+                isLocked: false,
+                isPlaying: false,
+                gameTitle: 'Jeu cute',
+                nPlayers: 1,
+            },
             {
                 code: '1234',
                 isLocked: false,
@@ -64,14 +85,16 @@ export class JoinMatchPageComponent {
                 nPlayers: 1,
             },
         ];
-        // return this.joinMatchService.matchesInfo;
+        console.log(mocks);
+        return this.joinMatchService.matchesInfo;
+        return mocks;
     }
 
     ngOnInit() {
-        // this.joinMatchService.getAllMatches();
+        this.joinMatchService.getAllMatches();
     }
     ngOnDestroy() {
-        // this.joinMatchService.stopReturningAllMatches();
+        this.joinMatchService.stopReturningAllMatches();
     }
 
     submitCode(roomCode: string): void {
