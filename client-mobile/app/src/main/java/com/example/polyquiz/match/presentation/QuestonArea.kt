@@ -35,6 +35,7 @@ import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.MatchStatus
 import com.example.polyquiz.constants.UserInfo
 import androidx.compose.foundation.layout.*
+import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AnswerCorrectness
 import com.example.polyquiz.constants.AnswerFeedback
 import com.example.polyquiz.constants.BonusFeedback
@@ -78,6 +79,7 @@ fun QuestionArea(
 
 
     Row(modifier = Modifier.fillMaxSize()) {
+        ChatComponent(modifier = Modifier, authViewModel = authViewModel)
         Column(
             modifier = Modifier
                 .weight(1f)

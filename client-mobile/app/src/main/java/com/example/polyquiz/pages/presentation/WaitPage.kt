@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.HOST_USERNAME
 import com.example.polyquiz.constants.MatchButtonActions
 import com.example.polyquiz.constants.MatchContext
@@ -109,6 +110,7 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End
         ) {
+            ChatComponent(modifier = Modifier, authViewModel = authViewModel)
             Button(
                 onClick = { quitMatch(); navigateToHome() },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red)

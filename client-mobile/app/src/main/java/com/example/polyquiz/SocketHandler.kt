@@ -30,7 +30,7 @@ object SocketHandler {
         if (!mSocket.connected()) {
             mSocket.connect()
             ChatService.deleteMessages()
-            ChatService.handleReceivedMessage()
+            ChatService.handleReceivedMessages()
         }
     }
 
