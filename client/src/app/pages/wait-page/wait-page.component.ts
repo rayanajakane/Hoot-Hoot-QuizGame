@@ -57,6 +57,7 @@ export class WaitPageComponent implements OnInit {
 
     toggleLock() {
         this.matchRoomService.toggleLock();
+        this.isLocked = this.isLocked ? false : true;
     }
 
     banPlayerUsername(username: string) {
