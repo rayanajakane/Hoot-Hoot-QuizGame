@@ -28,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -63,6 +64,7 @@ fun UserEditPage(
 
     val email by authViewModel.email.collectAsState()
     val username by authViewModel.username.collectAsState()
+    val oldUsername = authViewModel.getUsername()
 
     var expandedTheme by remember { mutableStateOf(false) }
     var expandedLang by remember { mutableStateOf(false) }
@@ -74,6 +76,14 @@ fun UserEditPage(
     val themes = listOf("light theme", "dark theme")
     val textFieldStateLang = rememberTextFieldState(currentLang)
     val textFieldStateTheme = rememberTextFieldState(themes[0])
+
+    // TODO : Cleanup function
+    DisposableEffect(Unit) {
+        onDispose {
+            authViewModel.resetUsername()
+        }
+    }
+
     Button(
         onClick = {
             navigateToHome()
@@ -261,9 +271,16 @@ fun UserEditPage(
                             Spacer(modifier = Modifier.height(8.dp))
                             Button(
                                 onClick = {
+                                    // Change app language
                                     AppCompatDelegate.setApplicationLocales(
                                         LocaleListCompat.forLanguageTags(currentLang)
                                     )
+
+                                    // Change username
+                                    if(oldUsername != username) {
+                                        authViewModel.changeUsername(username, oldUsername)
+
+                                    }
                                 },
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = MaterialTheme.colorScheme.primary,

@@ -73,20 +73,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-
-//    private fun setAppLocale(context: Context) {
-//        var language = context.dataStore.data.first()
-//        Log.e("caca", "set app language to $language" )
-//        val locale = Locale(language)
-//        Locale.setDefault(locale)
-//
-//        val config = resources.configuration
-//        config.setLocales(LocaleList(locale))
-//
-//        createConfigurationContext(config)
-//        resources.updateConfiguration(config, resources.displayMetrics)
-//    }
 }
 
 @Preview(showBackground = true)

@@ -47,4 +47,5 @@
     <string name="delete_user">Supprimer le profil</string>
     <string name="english">Anglais</string>
     <string name="french">Français</string>
+    <string name="edited_feedback">Modifications enregistrées !</string>
 </resources>

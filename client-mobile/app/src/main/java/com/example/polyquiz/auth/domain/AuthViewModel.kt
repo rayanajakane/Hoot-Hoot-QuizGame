@@ -10,7 +10,10 @@ import androidx.core.content.ContextCompat.getString
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.polyquiz.R
+import com.example.polyquiz.SnackbarController
+import com.example.polyquiz.SnackbarEvent
 import com.example.vanillaprototype.socket.SocketHandler
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
@@ -26,6 +29,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.database
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class AuthViewModel : ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -67,7 +71,7 @@ class AuthViewModel : ViewModel() {
         return database.getReference("users/${uid}")
     }
 
-    fun getUsernameDatabaseRef(username: String) : DatabaseReference {
+    fun getUsernameDatabaseRef(username: String): DatabaseReference {
         return database.getReference("usernames/${username}")
     }
 
@@ -76,7 +80,7 @@ class AuthViewModel : ViewModel() {
         validateEmail(newEmail, context)
     }
 
-    fun updateUsername(newUsername : String, context: Context) {
+    fun updateUsername(newUsername: String, context: Context) {
         _username.value = newUsername
         validateUsername(newUsername, context)
     }
@@ -95,6 +99,10 @@ class AuthViewModel : ViewModel() {
         _passwordError.value = ""
     }
 
+    fun resetUsername() {
+        _username.value = user?.displayName ?: ""
+    }
+
     fun getUsername(): String {
         return auth.currentUser?.displayName ?: ""
     }
@@ -111,9 +119,46 @@ class AuthViewModel : ViewModel() {
         }
     }
 
+    fun changeUsername(username: String, oldUsername: String) {
+        val usernameRef = getUsernameDatabaseRef(username.lowercase())
+        usernameRef.get().addOnSuccessListener { databaseSnapshot: DataSnapshot ->
+            if (databaseSnapshot.exists()) {
+                viewModelScope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.StringResource(R.string.username_already_exists)
+                        )
+                    )
+                }
+            } else {
+                val oldUsernameRef = getUsernameDatabaseRef(oldUsername.lowercase())
+                val displayNameUpdate = UserProfileChangeRequest.Builder()
+                    .setDisplayName(username)
+                    .build()
+
+                user?.updateProfile(displayNameUpdate)
+                    ?.addOnCompleteListener { updateTask ->
+                        if (updateTask.isSuccessful) {
+                            usernameRef.setValue(username.lowercase())
+                            oldUsernameRef.removeValue()
+                            _username.value = user?.displayName ?: ""
+                            viewModelScope.launch {
+                                SnackbarController.sendEvent(
+                                    event = SnackbarEvent(
+                                        message = StringValue.StringResource(R.string.edited_feedback)
+                                    )
+                                )
+                            }
+                        }
+                    }
+            }
+        }
+    }
+
     fun signIn(email: String, password: String, context: Context) {
         if (email.isEmpty() || password.isEmpty()) {
-            _authState.value = AuthState.Error(StringValue.StringResource(R.string.empty_username_password))
+            _authState.value =
+                AuthState.Error(StringValue.StringResource(R.string.empty_username_password))
             return
         }
 
@@ -122,70 +167,84 @@ class AuthViewModel : ViewModel() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val userRef = task.result.user?.let { this.getUserDatabaseRef(it.uid) }
-                    userRef?.child("isOnline")?.get()?.addOnSuccessListener { dataSnapshot: DataSnapshot ->
-                        val isOnline: Boolean = dataSnapshot.value as Boolean
-                        if (isOnline) {
-                            auth.signOut()
-                            _authState.value = AuthState.Error(StringValue.StringResource(R.string.already_online))
-                            return@addOnSuccessListener
+                    userRef?.child("isOnline")?.get()
+                        ?.addOnSuccessListener { dataSnapshot: DataSnapshot ->
+                            val isOnline: Boolean = dataSnapshot.value as Boolean
+                            if (isOnline) {
+                                auth.signOut()
+                                _authState.value =
+                                    AuthState.Error(StringValue.StringResource(R.string.already_online))
+                                return@addOnSuccessListener
+                            }
+                            userRef.child("isOnline").setValue(true)
+                            userRef.child("isOnline").onDisconnect().setValue(false)
+                            user = task.result.user
+                            _username.value = user?.displayName ?: ""
+                            _email.value = user?.email ?: ""
+                            _authState.value = AuthState.Authenticated
+                            SocketHandler.connect()
+                            Log.d(TAG, "signInWithEmail:success")
                         }
-                        userRef.child("isOnline").setValue(true)
-                        userRef.child("isOnline").onDisconnect().setValue(false)
-                        user = task.result.user
-                        _username.value = user?.displayName ?: ""
-                        _authState.value = AuthState.Authenticated
-                        SocketHandler.connect()
-                        Log.d(TAG, "signInWithEmail:success")
-                    }
                 } else {
                     handleAuthError(task, context)
                 }
             }
     }
 
-     fun signUp(email: String, username: String, password: String, context: Context) {
+    fun signUp(email: String, username: String, password: String, context: Context) {
         if (email.isEmpty() || username.isEmpty() || password.isEmpty()) {
-            _authState.value = AuthState.Error(StringValue.StringResource(R.string.empty_username_password))
+            _authState.value =
+                AuthState.Error(StringValue.StringResource(R.string.empty_username_password))
             return
         }
         if (emailError.value.isNotEmpty() || passwordError.value.isNotEmpty() || usernameError.value.isNotEmpty()) {
-            _authState.value = AuthState.Error(StringValue.StringResource(R.string.invalid_username_password))
+            _authState.value =
+                AuthState.Error(StringValue.StringResource(R.string.invalid_username_password))
             return
         }
-         // TODO: Replace spaces? (or simply forbid them?)
-         val usernameRef = getUsernameDatabaseRef(username.lowercase())
-         usernameRef.get().addOnSuccessListener { databaseSnapshot: DataSnapshot ->
-             if(databaseSnapshot.exists()) {
-                 _authState.value = AuthState.Error(StringValue.StringResource(R.string.username_already_exists))
-                 Log.e(TAG, StringValue.StringResource(R.string.username_already_exists).toString())
-             } else {
-                 _authState.value = AuthState.Loading
-                 auth.createUserWithEmailAndPassword(email, password)
-                     .addOnCompleteListener { task ->
-                         if (task.isSuccessful) {
-                             user = task.result.user
-                             val displayNameUpdate = UserProfileChangeRequest.Builder()
-                                 .setDisplayName(username)
-                                 .build()
-                             _username.value = user?.displayName ?: ""
-                             user?.updateProfile(displayNameUpdate)?.addOnCompleteListener { updateTask ->
-                                 if (updateTask.isSuccessful) {
-                                     val userRef = task.result.user?.let { this.getUserDatabaseRef(it.uid) }
-                                     userRef?.child("isOnline")?.setValue(true)
-                                     userRef?.child("isOnline")?.onDisconnect()?.setValue(false)
-                                     usernameRef.setValue(username.lowercase())
-                                     _authState.value = AuthState.Authenticated
-                                     SocketHandler.connect()
-                                 }
-                                 Log.d(TAG, "createUserWithEmail:success")
-                             }
-                         } else {
-                             handleAuthError(task, context)
-                         }
-                     }
-             }
-         }
-     }
+        // TODO: Replace spaces? (or simply forbid them?)
+        val usernameRef = getUsernameDatabaseRef(username.lowercase())
+        usernameRef.get().addOnSuccessListener { databaseSnapshot: DataSnapshot ->
+            if (databaseSnapshot.exists()) {
+                _authState.value =
+                    AuthState.Error(StringValue.StringResource(R.string.username_already_exists))
+                Log.e(
+                    TAG,
+                    StringValue.StringResource(R.string.username_already_exists).toString()
+                )
+            } else {
+                _authState.value = AuthState.Loading
+                auth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            user = task.result.user
+                            val displayNameUpdate = UserProfileChangeRequest.Builder()
+                                .setDisplayName(username)
+                                .build()
+                            _username.value = user?.displayName ?: ""
+                            user?.updateProfile(displayNameUpdate)
+                                ?.addOnCompleteListener { updateTask ->
+                                    if (updateTask.isSuccessful) {
+                                        val userRef =
+                                            task.result.user?.let { this.getUserDatabaseRef(it.uid) }
+                                        userRef?.child("isOnline")?.setValue(true)
+                                        userRef?.child("isOnline")?.onDisconnect()
+                                            ?.setValue(false)
+                                        usernameRef.setValue(username.lowercase())
+                                        _username.value = user?.displayName ?: ""
+                                        _email.value = user?.email ?: ""
+                                        _authState.value = AuthState.Authenticated
+                                        SocketHandler.connect()
+                                    }
+                                    Log.d(TAG, "createUserWithEmail:success")
+                                }
+                        } else {
+                            handleAuthError(task, context)
+                        }
+                    }
+            }
+        }
+    }
 
 
     fun signOut() {
@@ -204,7 +263,8 @@ class AuthViewModel : ViewModel() {
             if (task.isSuccessful) {
                 _authState.value = AuthState.ResetPassword
             } else {
-                _authState.value = AuthState.Error(StringValue.StringResource(R.string.invalid_email_with_emoji))
+                _authState.value =
+                    AuthState.Error(StringValue.StringResource(R.string.invalid_email_with_emoji))
             }
         }
     }
@@ -217,11 +277,11 @@ class AuthViewModel : ViewModel() {
     private fun handleAuthError(task: Task<AuthResult>, context: Context) {
         val errorMessage = try {
             throw task.exception!!
-        } catch(e: FirebaseAuthUserCollisionException) {
+        } catch (e: FirebaseAuthUserCollisionException) {
             StringValue.StringResource(R.string.user_already_exists)
-        } catch(e: FirebaseAuthWeakPasswordException) {
+        } catch (e: FirebaseAuthWeakPasswordException) {
             StringValue.StringResource(R.string.password_too_short)
-        } catch(e: FirebaseAuthInvalidCredentialsException) {
+        } catch (e: FirebaseAuthInvalidCredentialsException) {
             StringValue.StringResource(R.string.invalid_username_password)
         } catch (e: Exception) {
             StringValue.StringResource(R.string.other_error)
@@ -234,24 +294,33 @@ class AuthViewModel : ViewModel() {
 
     private fun validatePassword(password: String, context: Context) {
         _passwordError.value = ""
-        if(password.length < 6) {
-            _passwordError.value += StringValue.StringResource(R.string.password_too_short).asString(context) + "\n"
+        if (password.length < 6) {
+            _passwordError.value += StringValue.StringResource(R.string.password_too_short)
+                .asString(context) + "\n"
         }
         if (password.length > 14) {
-            _passwordError.value += StringValue.StringResource(R.string.password_too_long).asString(context) + "\n"
+            _passwordError.value += StringValue.StringResource(R.string.password_too_long)
+                .asString(context) + "\n"
         }
         if (!(("(?=.*[a-z\\u00E0-\\u00FC])".toRegex()).containsMatchIn(password))) {
-            _passwordError.value += StringValue.StringResource(R.string.password_lowercase).asString(context) + "\n"
+            _passwordError.value += StringValue.StringResource(R.string.password_lowercase)
+                .asString(context) + "\n"
         }
         if (!(("(?=.*[A-Z\\u00C0-\\u00DC])".toRegex()).containsMatchIn(password))) {
-            _passwordError.value += StringValue.StringResource(R.string.password_uppercase).asString(context) + "\n"
+            _passwordError.value += StringValue.StringResource(R.string.password_uppercase)
+                .asString(context) + "\n"
         }
         if (!(("(?=.*\\d)".toRegex()).containsMatchIn(password))) {
-            _passwordError.value += StringValue.StringResource(R.string.password_digit).asString(context) + "\n"
+            _passwordError.value += StringValue.StringResource(R.string.password_digit)
+                .asString(context) + "\n"
         }
         // REFERENCE: Firebase special characters: https://firebase.google.com/docs/auth/web/password-auth
-        if (!(("(?=.*[\\^\\$\\*\\.\\[\\]\\{\\}\\(\\)\\?\"!@#%&/\\\\,><':;\\|_~])").toRegex()).containsMatchIn(password)) {
-            _passwordError.value += StringValue.StringResource(R.string.password_special).asString(context) + "\n"
+        if (!(("(?=.*[\\^\\$\\*\\.\\[\\]\\{\\}\\(\\)\\?\"!@#%&/\\\\,><':;\\|_~])").toRegex()).containsMatchIn(
+                password
+            )
+        ) {
+            _passwordError.value += StringValue.StringResource(R.string.password_special)
+                .asString(context) + "\n"
         }
         if (_passwordError.value.isNotEmpty()) {
             _passwordError.value.dropLast(1);
@@ -260,14 +329,17 @@ class AuthViewModel : ViewModel() {
 
     private fun validateUsername(username: String, context: Context) {
         _usernameError.value = ""
-        if(username.matches(".*[^A-Za-z0-9_].*".toRegex())) {
-            _usernameError.value += StringValue.StringResource(R.string.special_char_username).asString(context) + "\n"
+        if (username.matches(".*[^A-Za-z0-9_].*".toRegex())) {
+            _usernameError.value += StringValue.StringResource(R.string.special_char_username)
+                .asString(context) + "\n"
         }
-        if(username.length < 3) {
-            _usernameError.value += StringValue.StringResource(R.string.short_username).asString(context) + "\n"
+        if (username.length < 3) {
+            _usernameError.value += StringValue.StringResource(R.string.short_username)
+                .asString(context) + "\n"
         }
-        if(username.length > 20) {
-            _usernameError.value += StringValue.StringResource(R.string.long_username).asString(context) + "\n"
+        if (username.length > 20) {
+            _usernameError.value += StringValue.StringResource(R.string.long_username)
+                .asString(context) + "\n"
         }
         if (_usernameError.value.isNotEmpty()) {
             _usernameError.value.dropLast(1);
@@ -275,16 +347,17 @@ class AuthViewModel : ViewModel() {
     }
 
     private fun validateEmail(email: String, context: Context) {
-        if(email.isBlank() || !isValidEmail(email)) {
-            _emailError.value = StringValue.StringResource(R.string.invalid_email).asString(context) + "\n"
+        if (email.isBlank() || !isValidEmail(email)) {
+            _emailError.value =
+                StringValue.StringResource(R.string.invalid_email).asString(context) + "\n"
         } else {
             _emailError.value = ""
         }
     }
 
     // https://developer.android.com/reference/android/util/Patterns#EMAIL_ADDRESS
-    private fun isValidEmail(target: CharSequence) : Boolean {
-        return if(TextUtils.isEmpty(target)) {
+    private fun isValidEmail(target: CharSequence): Boolean {
+        return if (TextUtils.isEmpty(target)) {
             false
         } else {
             Patterns.EMAIL_ADDRESS.matcher(target).matches()
@@ -298,5 +371,5 @@ sealed class AuthState {
     data object Unauthenticated : AuthState()
     data object Loading : AuthState()
     data class Error(val message: StringValue) : AuthState()
-    data object ResetPassword: AuthState()
+    data object ResetPassword : AuthState()
 }

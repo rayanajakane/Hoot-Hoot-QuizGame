@@ -50,6 +50,7 @@ import java.util.Locale
 
 @Composable
 fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
+    // TODO : Update username when user changes username in userEditPage
     val username by remember { mutableStateOf(authViewModel.getUsername() )}
     val userId by remember { mutableStateOf(authViewModel.getUserId() )}
     val messages by ChatService.messages.observeAsState()
