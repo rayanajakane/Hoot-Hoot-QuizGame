@@ -1,37 +1,42 @@
 <ng-container *transloco="let t">
     <div id="main-container">
         <div class="nav">
-            <h1>Joindre une partie</h1>
+            <h1>{{ t('main-page.join-match') }}</h1>
             <div class="navigation-buttons">
                 <button mat-raised-button routerLink="/home"><mat-icon>home</mat-icon>{{ t('nav.main-page') }}</button>
             </div>
         </div>
 
-        <mat-form-field type="text">
-            <mat-label>Code de la partie</mat-label>
-            <input
-                id="code-input"
-                matInput
-                #inputCode
-                maxlength="200"
-                [placeholder]="'...'"
-                (keydown.enter)="submitCode(inputCode.value); inputCode.value = ''"
-            />
-        </mat-form-field>
-        <button mat-raised-button (click)="submitCode(input)" color="primary" class="match-button" id="join-button">
-            <mat-icon>play_circle</mat-icon>
-            {{ t('main-page.join-match') }}
-        </button>
+        <div id="join-with-code-container">
+            <mat-form-field type="text">
+                <mat-label>Code de la partie</mat-label>
+                <input
+                    id="code-input"
+                    matInput
+                    #inputCode
+                    maxlength="200"
+                    [placeholder]="'...'"
+                    (keydown.enter)="submitCode(inputCode.value); inputCode.value = ''"
+                />
+            </mat-form-field>
+            <button mat-raised-button (click)="submitCode(input)" color="primary" id="join-button">
+                <mat-icon>play_circle</mat-icon>
+                <p>Joindre</p>
+            </button>
+        </div>
         <h2>Parties en attente</h2>
         <div>
             <h3>Parties déverrouillées</h3>
             <div class="matches-container">
                 <div *ngFor="let match of matches">
-                    <mat-card *ngIf="!match.isPlaying && !match.isLocked" class="match-card">
+                    <mat-card *ngIf="!match.isPlaying && !match.isLocked" class="match-card clickable" (click)="submitCode(match.code)">
                         <h3>{{ match.gameTitle }}</h3>
-                        <p>{{ match.nPlayers }}</p>
-                        <button mat-raised-button color="primary" (click)="submitCode(match.code)" class="join-existing-match-button">
-                            <p>Rejoindre</p>
+                        <div class="nPlayers">
+                            <i class="material-icons">people_alt</i>
+                            <p>{{ match.nPlayers }}</p>
+                        </div>
+                        <button mat-raised-button color="primary" class="join-existing-match-button">
+                            <p>Joindre</p>
                         </button>
                     </mat-card>
                 </div>
@@ -41,7 +46,10 @@
                 <div *ngFor="let match of matches">
                     <mat-card *ngIf="!match.isPlaying && match.isLocked" class="match-card">
                         <h3>{{ match.gameTitle }}</h3>
-                        <p>{{ match.nPlayers }}</p>
+                        <div class="nPlayers">
+                            <i class="material-icons">people_alt</i>
+                            <p>{{ match.nPlayers }}</p>
+                        </div>
                     </mat-card>
                 </div>
             </div>
@@ -51,7 +59,10 @@
             <div *ngFor="let match of matches">
                 <mat-card *ngIf="match.isPlaying" class="match-card">
                     <h3>{{ match.gameTitle }}</h3>
-                    <p>{{ match.nPlayers }}</p>
+                    <div class="nPlayers">
+                        <i class="material-icons">people_alt</i>
+                        <p>{{ match.nPlayers }}</p>
+                    </div>
                 </mat-card>
             </div>
         </div>

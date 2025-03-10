@@ -3,11 +3,21 @@
     margin-bottom: 25vh;
 }
 
+#join-with-code-container {
+    display: flex;
+    flex-direction: row;
+}
+
+#join-button {
+    height: 3.5rem;
+}
+
 .matches-container {
     display: flex;
     flex-direction: row;
     overflow: auto;
     white-space: nowrap;
+    margin-bottom: 2rem;
 }
 
 .match-card {
@@ -25,4 +35,15 @@
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
+}
+
+.nPlayers {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.clickable {
+    cursor: pointer;
 }
