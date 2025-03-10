@@ -17,6 +17,8 @@ import { Feedback } from '@common/interfaces/feedback';
 import { LongAnswerInfo } from '@common/interfaces/long-answer-info';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
+import { SinonStubbedInstance, createStubInstance } from 'sinon';
+import { QrCodeService } from '../qr-code/qr-code.service';
 import { AnswerService } from './answer.service';
 
 describe('AnswerService', () => {
@@ -36,9 +38,11 @@ describe('AnswerService', () => {
     let player1;
     let player2;
     let updateChoiceMock;
+    let qrCodeService: SinonStubbedInstance<QrCodeService>;
     const randomDate = 100000;
 
     beforeEach(async () => {
+        qrCodeService = createStubInstance(QrCodeService);
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 AnswerService,
@@ -50,6 +54,7 @@ describe('AnswerService', () => {
                 MultipleChoiceStrategy,
                 LongAnswerStrategy,
                 EstimatedAnswerStrategy,
+                { provide: QrCodeService, useValue: qrCodeService },
             ],
         }).compile();
 

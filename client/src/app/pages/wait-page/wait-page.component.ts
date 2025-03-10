@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatchContext } from '@app/constants/states';
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { MatchService } from '@app/services/match/match.service';
@@ -15,6 +16,7 @@ import { HOST_USERNAME } from '@common/constants/match-constants';
 export class WaitPageComponent implements OnInit {
     isLocked: boolean;
     isHostPlaying: boolean;
+    qrCodeUrl: string;
 
     // permit more class parameters to decouple services
     // eslint-disable-next-line max-params
@@ -24,6 +26,7 @@ export class WaitPageComponent implements OnInit {
         public router: Router,
         public matchService: MatchService,
         private readonly matchContextService: MatchContextService,
+        public authenticationService: AuthenticationService,
     ) {}
 
     get time() {
@@ -38,9 +41,10 @@ export class WaitPageComponent implements OnInit {
         return this.matchService.currentGame;
     }
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         this.resetWaitPage();
         this.timeService.listenToTimerEvents();
+        this.qrCodeUrl = await this.authenticationService.getImageDownloadUrl(`qrCodes/${this.matchRoomService.getRoomCode()}.png`);
 
         if (this.isHost) {
             this.matchRoomService.gameTitle = this.currentGame.title;
