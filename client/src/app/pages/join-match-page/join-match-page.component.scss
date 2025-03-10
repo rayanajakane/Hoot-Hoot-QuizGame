@@ -6,6 +6,8 @@
 .matches-container {
     display: flex;
     flex-direction: row;
+    overflow: auto;
+    white-space: nowrap;
 }
 
 .match-card {
@@ -14,6 +16,7 @@
     flex-direction: column;
     padding: 0.5rem 1rem 1rem 1rem;
     margin-right: 1rem;
+    margin-bottom: 2rem;
 }
 
 .join-existing-match-button {
