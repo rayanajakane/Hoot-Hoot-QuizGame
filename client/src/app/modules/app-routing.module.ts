@@ -44,7 +44,7 @@ const routes: Routes = [
     },
     { path: 'host', component: MatchCreationPageComponent, canActivate: [authenticationGuard] },
     { path: 'match-room', canActivate: [matchLoginGuard], component: WaitPageComponent },
-    { path: 'join-match', component: JoinMatchPageComponent },
+    { path: 'join-match', canActivate: [authenticationGuard], component: JoinMatchPageComponent },
     { path: 'play-match', canActivate: [matchLoginGuard], component: QuestionAreaComponent },
     { path: 'results', canActivate: [matchLoginGuard], component: ResultsPageComponent },
     { path: 'edit-profile', component: UserEditPageComponent, canActivate: [authenticationGuard] },
