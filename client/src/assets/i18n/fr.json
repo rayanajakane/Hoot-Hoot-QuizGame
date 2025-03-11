@@ -90,6 +90,6 @@
         "locked-matches": "Parties verrouillées",
         "playing-matches": "Parties en cours",
         "no-match": "Aucune partie à afficher",
-        "join": "Joindre"
+        "join-action": "Joindre"
     }
 }

@@ -90,6 +90,6 @@
         "locked-matches": "Locked Matches",
         "playing-matches": "Playing Matches",
         "no-match": "No Match to Display",
-        "join": "Join"
+        "join-action": "Join"
     }
 }

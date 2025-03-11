@@ -20,7 +20,6 @@
                 />
             </mat-form-field>
             <button mat-raised-button (click)="submitCode(input)" color="primary" id="join-button">
-                <mat-icon>play_circle</mat-icon>
                 <p>Joindre</p>
             </button>
         </div>
@@ -44,7 +43,7 @@
                     </mat-card>
                 </div>
             </div>
-            <h3>{{ t('locked-matches') }}</h3>
+            <h3>{{ t('join.locked-matches') }}</h3>
             <div *ngIf="lockedMatches.length === 0" class="no-matches-container">
                 <p>{{ t('join.no-match') }}</p>
             </div>
