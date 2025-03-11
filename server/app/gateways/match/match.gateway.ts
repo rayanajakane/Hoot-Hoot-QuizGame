@@ -190,7 +190,7 @@ export class MatchGateway implements OnGatewayDisconnect {
             this.deleteRoom(roomCode);
             return;
         }
-        if (isRoomEmpty && !room.hostSocket.rooms.has(roomCode)) {
+        if (isRoomEmpty && (!room.hostSocket.connected || !room.hostSocket.rooms.has(roomCode))) {
             this.deleteRoom(roomCode);
             return;
         }
