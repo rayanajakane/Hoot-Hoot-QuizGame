@@ -36,6 +36,10 @@
     background-color: green;
 }
 
+.status-indicator.offline {
+    background-color: gray;
+}
+
 .action-buttons {
     display: flex;
     gap: 0.25rem;
