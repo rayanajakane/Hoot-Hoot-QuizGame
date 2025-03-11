@@ -18,9 +18,16 @@ export class FriendsService {
     async getAllUsers(): Promise<UserIdName[]> {
         console.log('Fetching all users...');
         const listUsersResult = await this.firebaseAuthService.getUsers();
+        console.log('listUsersResult', listUsersResult);
+
+        const snapshot = await this.database.ref('users').once('value');
+        const usersStatus = snapshot.exists() ? snapshot.val() : {};
+
         return listUsersResult.users.map((user) => ({
             id: user.uid,
-            name: user.displayName,
+            name: user.displayName || 'Unknown User',
+            photoUrl: user.photoURL || '',
+            isOnline: usersStatus[user.uid] ? usersStatus[user.uid].isOnline || false : false,
         }));
     }
 
@@ -31,7 +38,14 @@ export class FriendsService {
         const friends: UserIdName[] = await Promise.all(
             friendIds.map(async (id) => {
                 const userRecord = await this.firebaseAuthService.getUserById(id);
-                return { id, name: userRecord.displayName };
+                const userSnapshot = await this.database.ref(`users/${id}`).once('value');
+                const userData = userSnapshot.exists() ? userSnapshot.val() : {};
+                return {
+                    id,
+                    name: userRecord.displayName || 'Unknown User',
+                    photoUrl: userRecord.photoURL || '',
+                    isOnline: userData.isOnline || false,
+                };
             }),
         );
         return friends;
@@ -44,15 +58,17 @@ export class FriendsService {
         const requests: UserIdName[] = await Promise.all(
             requestIds.map(async (id) => {
                 const userRecord = await this.firebaseAuthService.getUserById(id);
-                return { id, name: userRecord.displayName };
+                const userSnapshot = await this.database.ref(`users/${id}`).once('value');
+                const userData = userSnapshot.exists() ? userSnapshot.val() : {};
+                return {
+                    id,
+                    name: userRecord.displayName || 'Unknown User',
+                    photoUrl: userRecord.photoURL || '',
+                    isOnline: userData.isOnline || false,
+                };
             }),
         );
         return requests;
-    }
-
-    async cancelRequest(userId: string, friendId: string): Promise<void> {
-        await this.database.ref(`users/${userId}/friend_requests_sent/${friendId}`).remove();
-        await this.database.ref(`users/${friendId}/friend_requests_received/${userId}`).remove();
     }
 
     async getSentRequests(userId: string): Promise<UserIdName[]> {
@@ -62,7 +78,14 @@ export class FriendsService {
         const requests: UserIdName[] = await Promise.all(
             requestIds.map(async (id) => {
                 const userRecord = await this.firebaseAuthService.getUserById(id);
-                return { id, name: userRecord.displayName };
+                const userSnapshot = await this.database.ref(`users/${id}`).once('value');
+                const userData = userSnapshot.exists() ? userSnapshot.val() : {};
+                return {
+                    id,
+                    name: userRecord.displayName || 'Unknown User',
+                    photoUrl: userRecord.photoURL || '',
+                    isOnline: userData.isOnline || false,
+                };
             }),
         );
         return requests;
@@ -85,6 +108,11 @@ export class FriendsService {
     async rejectFriendRequest(userId: string, friendId: string): Promise<void> {
         await this.database.ref(`users/${userId}/friend_requests_received/${friendId}`).remove();
         await this.database.ref(`users/${friendId}/friend_requests_sent/${userId}`).remove();
+    }
+
+    async cancelRequest(userId: string, friendId: string): Promise<void> {
+        await this.database.ref(`users/${userId}/friend_requests_sent/${friendId}`).remove();
+        await this.database.ref(`users/${friendId}/friend_requests_received/${userId}`).remove();
     }
 
     async removeFriend(userId: string, friendId: string): Promise<void> {
