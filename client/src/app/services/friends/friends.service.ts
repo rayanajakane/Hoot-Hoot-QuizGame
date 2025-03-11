@@ -30,7 +30,7 @@ export class FriendsService extends CommunicationService<any> {
     }
 
     cancelRequest(userId: string, friendId: string): Observable<void> {
-        return this.delete(`requests/cancel/${userId}/${friendId}`).pipe(map(() => undefined));
+        return this.delete(`cancel/${userId}/${friendId}`).pipe(map(() => undefined));
     }
 
     sendFriendRequest(fromUserId: string, toUserId: string): Observable<void> {
