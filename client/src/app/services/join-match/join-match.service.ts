@@ -36,7 +36,6 @@ export class JoinMatchService {
         this.socketService.on(MatchEvents.ReturnAllMatches, (data: MatchPageInfo[]) => {
             this.matchesInfo = data;
         });
-        console.log(this.matchesInfo);
     }
 
     validateMatchRoomCode(matchRoomCode: string) {
