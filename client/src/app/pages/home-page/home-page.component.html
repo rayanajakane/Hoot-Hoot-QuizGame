@@ -15,11 +15,19 @@
         </button>
     </div>
 
-    <button mat-raised-button color="basic" routerLink="/admin/games" class="match-button" id="admin-button">{{ t('admin-game') }}</button>
-    <button mat-raised-button color="basic" routerLink="/edit-profile" class="match-button" id="profile-button">{{ t('edit-profile') }}</button>
+    <button mat-raised-button color="basic" routerLink="/admin/games" class="match-button" id="admin-button">
+        {{ t('admin-game') }}
+    </button>
+    <button mat-raised-button color="basic" routerLink="/edit-profile" class="match-button" id="profile-button">
+        {{ t('edit-profile') }}
+    </button>
+
+    <button mat-raised-button color="accent" routerLink="/friends-search" class="match-button" id="friends-button">
+        <mat-icon>group</mat-icon>
+        {{ t('find-friends') }}
+    </button>
 
     <footer class="footer-container">
         <h4 class="team-name">{{ t('team-name') }}</h4>
-        <p></p>
     </footer>
 </div>

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { FriendsSearchComponent } from '@app/components/friends-search/friends-search.component';
 import { QuestionAreaComponent } from '@app/components/question-area/question-area.component';
 import { ManagementState } from '@app/constants/states';
 import { authenticationGuard } from '@app/guards/authentication/authentication.guard';
@@ -49,6 +50,7 @@ const routes: Routes = [
     { path: 'results', canActivate: [matchLoginGuard], component: ResultsPageComponent },
     { path: 'edit-profile', component: UserEditPageComponent, canActivate: [authenticationGuard] },
     { path: 'reset-password-email-sent', component: ForgotPasswordFeedbackPageComponent },
+    { path: 'friends-search', component: FriendsSearchComponent },
 ];
 
 @NgModule({
