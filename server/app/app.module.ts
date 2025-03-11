@@ -1,4 +1,5 @@
 import { BackupController } from '@app/controllers/backup/backup.controller';
+import { FriendsController } from '@app/controllers/friends/friends.controller';
 import { GameController } from '@app/controllers/game/game.controller';
 import { MatchController } from '@app/controllers/match/match.controller';
 import { QuestionController } from '@app/controllers/question/question.controller';
@@ -14,6 +15,7 @@ import { LongAnswerStrategy } from '@app/question-strategies/long-answer-strateg
 import { MultipleChoiceStrategy } from '@app/question-strategies/multiple-choice-strategy/multiple-choice-strategy';
 import { AnswerService } from '@app/services/answer/answer.service';
 import { ChatService } from '@app/services/chat/chat.service';
+import { FriendsService } from '@app/services/friends/friends.service';
 import { GameCreationService } from '@app/services/game-creation/game-creation.service';
 import { GameValidationService } from '@app/services/game-validation/game-validation.service';
 import { GameService } from '@app/services/game/game.service';
@@ -44,7 +46,7 @@ import { MongooseModule } from '@nestjs/mongoose';
         EventEmitterModule.forRoot(),
         FirebaseModule,
     ],
-    controllers: [GameController, QuestionController, MatchController, BackupController],
+    controllers: [GameController, QuestionController, MatchController, BackupController, FriendsController],
     providers: [
         Logger,
         ChatService,
@@ -66,6 +68,7 @@ import { MongooseModule } from '@nestjs/mongoose';
         LongAnswerStrategy,
         EstimatedAnswerStrategy,
         QuestionPicturesDeletionService,
+        FriendsService,
     ],
 })
 export class AppModule {}

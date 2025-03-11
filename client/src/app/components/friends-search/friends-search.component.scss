@@ -1,0 +1,38 @@
+.friends-search-container {
+    width: 50vw;
+    margin: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+}
+
+.search-field {
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+}
+
+.friends-section {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+
+    h3 {
+        margin-bottom: 0.5rem;
+        color: #333;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        app-friends-list-item {
+            display: block;
+        }
+    }
+}
