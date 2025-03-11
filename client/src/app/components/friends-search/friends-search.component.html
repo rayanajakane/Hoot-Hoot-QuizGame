@@ -41,6 +41,21 @@
         </ul>
     </div>
 
+    <div class="friends-section" *ngIf="sentRequests && sentRequests.length > 0">
+        <h3>Demandes d'amis envoyées</h3>
+        <ul>
+            <app-friends-list-item
+                *ngFor="let user of sentRequests"
+                [user]="user"
+                [isFriend]="false"
+                [isRequestPending]="false"
+                [isRequestSent]="true"
+                [isEligible]="false"
+                (cancelRequest)="cancelRequest($event)"
+            ></app-friends-list-item>
+        </ul>
+    </div>
+
     <div class="friends-section" *ngIf="friends && friends.length > 0">
         <h3>Mes Amis</h3>
         <ul>
