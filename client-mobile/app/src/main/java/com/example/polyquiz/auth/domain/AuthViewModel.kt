@@ -37,7 +37,6 @@ class AuthViewModel : ViewModel() {
     val authState: LiveData<AuthState> = _authState
     private var user: FirebaseUser? = null
     private val database = Firebase.database
-
     private val TAG = "EmailAuthActivity"
 
     // Reactive programming in Kotlin :
@@ -69,6 +68,10 @@ class AuthViewModel : ViewModel() {
 
     fun getUserDatabaseRef(uid: String): DatabaseReference {
         return database.getReference("users/${uid}")
+    }
+
+    fun getUserConfigsDatabaseRef() : DatabaseReference {
+        return database.getReference("users/${user?.uid}/configs")
     }
 
     fun getUsernameDatabaseRef(username: String): DatabaseReference {

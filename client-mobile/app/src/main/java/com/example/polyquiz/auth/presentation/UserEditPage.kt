@@ -48,6 +48,7 @@ import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.PresetAvatar
+import com.example.polyquiz.core.TranslationService
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,6 +60,7 @@ fun UserEditPage(
     context: Context,
 ) {
     val focusManager = LocalFocusManager.current
+    val translationService = TranslationService
 
     var currentLang by remember { mutableStateOf(Locale.getDefault().language) }
 
@@ -70,7 +72,6 @@ fun UserEditPage(
     var expandedLang by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    // TODO : Find way to get instead of hardcode
     val availableLangs = mapOf("en" to stringResource(R.string.english), "fr" to stringResource(R.string.french))
 
     val themes = listOf("light theme", "dark theme")
@@ -272,14 +273,12 @@ fun UserEditPage(
                             Button(
                                 onClick = {
                                     // Change app language
-                                    AppCompatDelegate.setApplicationLocales(
-                                        LocaleListCompat.forLanguageTags(currentLang)
-                                    )
+                                    translationService.setLanguage(currentLang)
+                                    translationService.saveLanguageToDB(currentLang, authViewModel.getUserConfigsDatabaseRef())
 
                                     // Change username
                                     if(oldUsername != username) {
                                         authViewModel.changeUsername(username, oldUsername)
-
                                     }
                                 },
                                 colors = ButtonDefaults.buttonColors(
