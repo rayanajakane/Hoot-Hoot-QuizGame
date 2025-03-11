@@ -9,7 +9,7 @@
 
         <div id="join-with-code-container">
             <mat-form-field type="text">
-                <mat-label>Code de la partie</mat-label>
+                <mat-label>{{ t('join.room-code') }}</mat-label>
                 <input
                     id="code-input"
                     matInput
@@ -24,11 +24,13 @@
                 <p>Joindre</p>
             </button>
         </div>
-        <h2>Parties en attente</h2>
+        <h2>{{ t('join.waiting-matches') }}</h2>
         <div>
-            <h3>Parties déverrouillées</h3>
+            <h3>{{ t('join.unlocked-matches') }}</h3>
             <div class="matches-container">
-                <div *ngIf="unlockedMatches.length === 0" class="no-matches-container"><p>Aucune partie à afficher</p></div>
+                <div *ngIf="unlockedMatches.length === 0" class="no-matches-container">
+                    <p>{{ t('join.no-match') }}</p>
+                </div>
                 <div *ngFor="let match of unlockedMatches">
                     <mat-card class="match-card clickable" (click)="submitCode(match.code)">
                         <h3>{{ match.gameTitle }}</h3>
@@ -37,13 +39,15 @@
                             <p>{{ match.nPlayers }}</p>
                         </div>
                         <button mat-raised-button color="primary" class="join-existing-match-button">
-                            <p>Joindre</p>
+                            <p>{{ t('join.join ') }}</p>
                         </button>
                     </mat-card>
                 </div>
             </div>
-            <h3>Parties verrouillées</h3>
-            <div *ngIf="lockedMatches.length === 0" class="no-matches-container"><p>Aucune partie à afficher</p></div>
+            <h3>{{ t('locked-matches') }}</h3>
+            <div *ngIf="lockedMatches.length === 0" class="no-matches-container">
+                <p>{{ t('join.no-match') }}</p>
+            </div>
             <div class="matches-container">
                 <div *ngFor="let match of lockedMatches">
                     <mat-card class="match-card">
@@ -56,9 +60,11 @@
                 </div>
             </div>
         </div>
-        <h2>Parties en cours</h2>
+        <h2>{{ t('join.playing-matches') }}</h2>
         <div class="matches-container">
-            <div *ngIf="playingMatches.length === 0" class="no-matches-container"><p>Aucune partie à afficher</p></div>
+            <div *ngIf="playingMatches.length === 0" class="no-matches-container">
+                <p>{{ t('join.no-match') }}</p>
+            </div>
             <div *ngFor="let match of playingMatches">
                 <mat-card class="match-card">
                     <h3>{{ match.gameTitle }}</h3>

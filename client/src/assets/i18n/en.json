@@ -82,5 +82,14 @@
     "common": {
         "cancel": "Cancel",
         "play": "Play"
+    },
+    "join": {
+        "room-code": "Room Code",
+        "waiting-matches": "Waiting Matches",
+        "unlocked-matches": "Unlocked Matches",
+        "locked-matches": "Locked Matches",
+        "playing-matches": "Playing Matches",
+        "no-match": "No Match to Display",
+        "join": "Join"
     }
 }
