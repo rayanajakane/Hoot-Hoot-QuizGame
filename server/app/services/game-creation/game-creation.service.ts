@@ -17,6 +17,7 @@ export class GameCreationService {
 
     generateId(game: Game): Game {
         game.id = uuidv4();
+        game.originalId = game.id;
         game.questions.forEach((question) => (question.id = uuidv4()));
         return game;
     }

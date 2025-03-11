@@ -85,6 +85,9 @@ export class MatchGateway implements OnGatewayDisconnect {
         this.matchRoomService.declareWinner(matchRoomCode);
         // this.historyService.createHistoryItem(this.matchRoomService.getRoom(matchRoomCode));
 
+        console.log(this.matchRoomService.matchRooms[roomIndex].game.originalId);
+        this.matchBackupService.updateNMatchesPlayed(this.matchRoomService.matchRooms[roomIndex].game.originalId);
+
         this.matchRoomService.matchRooms[roomIndex].players.forEach((player: Player) => {
             if (!player.isChatActive) {
                 player.isChatActive = true;

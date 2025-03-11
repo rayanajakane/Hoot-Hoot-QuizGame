@@ -13,6 +13,10 @@ export class Game {
 
     @ApiProperty()
     @Prop({ required: true })
+    originalId: string; // Used for game popularity feature (id cannot be reused because of backup game feature)
+
+    @ApiProperty()
+    @Prop({ required: true })
     title: string;
 
     @ApiProperty()
@@ -30,6 +34,9 @@ export class Game {
     @ApiProperty()
     @Prop({ required: true, default: true })
     isVisible: boolean;
+
+    @Prop({ required: true, default: 0 })
+    nMatchesPlayed: number;
 
     @Prop({ type: [questionSchema], default: [], required: true })
     questions: Question[];
