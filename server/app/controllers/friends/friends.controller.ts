@@ -42,6 +42,11 @@ export class FriendsController {
         return this.friendsService.rejectFriendRequest(userId, friendId);
     }
 
+    @Delete('cancel/:userId/:friendId')
+    async cancelRequest(@Param('userId') userId: string, @Param('friendId') friendId: string): Promise<void> {
+        return this.friendsService.cancelRequest(userId, friendId);
+    }
+
     @Delete('remove/:userId/:friendId')
     async removeFriend(@Param('userId') userId: string, @Param('friendId') friendId: string): Promise<void> {
         return this.friendsService.removeFriend(userId, friendId);
