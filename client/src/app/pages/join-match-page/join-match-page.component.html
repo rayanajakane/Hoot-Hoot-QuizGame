@@ -28,8 +28,9 @@
         <div>
             <h3>Parties déverrouillées</h3>
             <div class="matches-container">
-                <div *ngFor="let match of matches">
-                    <mat-card *ngIf="!match.isPlaying && !match.isLocked" class="match-card clickable" (click)="submitCode(match.code)">
+                <div *ngIf="unlockedMatches.length === 0" class="no-matches-container"><p>Aucune partie à afficher</p></div>
+                <div *ngFor="let match of unlockedMatches">
+                    <mat-card class="match-card clickable" (click)="submitCode(match.code)">
                         <h3>{{ match.gameTitle }}</h3>
                         <div class="nPlayers">
                             <i class="material-icons">people_alt</i>
@@ -42,9 +43,10 @@
                 </div>
             </div>
             <h3>Parties verrouillées</h3>
+            <div *ngIf="lockedMatches.length === 0" class="no-matches-container"><p>Aucune partie à afficher</p></div>
             <div class="matches-container">
-                <div *ngFor="let match of matches">
-                    <mat-card *ngIf="!match.isPlaying && match.isLocked" class="match-card">
+                <div *ngFor="let match of lockedMatches">
+                    <mat-card class="match-card">
                         <h3>{{ match.gameTitle }}</h3>
                         <div class="nPlayers">
                             <i class="material-icons">people_alt</i>
@@ -56,8 +58,9 @@
         </div>
         <h2>Parties en cours</h2>
         <div class="matches-container">
-            <div *ngFor="let match of matches">
-                <mat-card *ngIf="match.isPlaying" class="match-card">
+            <div *ngIf="playingMatches.length === 0" class="no-matches-container"><p>Aucune partie à afficher</p></div>
+            <div *ngFor="let match of playingMatches">
+                <mat-card class="match-card">
                     <h3>{{ match.gameTitle }}</h3>
                     <div class="nPlayers">
                         <i class="material-icons">people_alt</i>

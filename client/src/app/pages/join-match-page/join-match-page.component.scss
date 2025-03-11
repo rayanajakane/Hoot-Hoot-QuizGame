@@ -47,3 +47,12 @@
 .clickable {
     cursor: pointer;
 }
+
+.no-matches-container {
+    width: 100%;
+    display: flex;
+}
+
+.no-matches-container p {
+    font-style: italic;
+}

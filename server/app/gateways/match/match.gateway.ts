@@ -45,6 +45,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         } else {
             socket.join(data.roomCode);
             const newPlayer = this.playerRoomService.addPlayer(socket, data.roomCode, data.username);
+            this.returnAllMatches();
             return { code: data.roomCode, username: newPlayer.username };
         }
     }

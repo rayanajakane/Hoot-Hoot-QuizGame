@@ -19,75 +19,16 @@ export class JoinMatchPageComponent {
         private readonly authenticationService: AuthenticationService,
     ) {}
 
-    get matches(): MatchPageInfo[] {
-        const mocks = [
-            {
-                code: '1234',
-                isLocked: false,
-                isPlaying: false,
-                gameTitle: 'Jeu cute',
-                nPlayers: 1,
-            },
-            {
-                code: '1234',
-                isLocked: false,
-                isPlaying: false,
-                gameTitle: 'Jeu cute',
-                nPlayers: 1,
-            },
-            {
-                code: '1234',
-                isLocked: false,
-                isPlaying: false,
-                gameTitle: 'Jeu cute',
-                nPlayers: 1,
-            },
-            {
-                code: '1234',
-                isLocked: false,
-                isPlaying: false,
-                gameTitle: 'Jeu cute',
-                nPlayers: 1,
-            },
-            {
-                code: '1234',
-                isLocked: false,
-                isPlaying: false,
-                gameTitle: 'Jeu cute',
-                nPlayers: 1,
-            },
-            {
-                code: '1234',
-                isLocked: false,
-                isPlaying: false,
-                gameTitle: 'Jeu cute',
-                nPlayers: 1,
-            },
-            {
-                code: '1234',
-                isLocked: false,
-                isPlaying: false,
-                gameTitle: 'Jeu cute',
-                nPlayers: 1,
-            },
-            {
-                code: '1234',
-                isLocked: true,
-                isPlaying: false,
-                gameTitle: 'Jeu cute',
-                nPlayers: 1,
-            },
-            {
-                code: '1234',
-                isLocked: true,
-                isPlaying: true,
-                gameTitle: 'Jeu cute',
-                nPlayers: 1,
-            },
-        ];
-        console.log(mocks);
-        return this.joinMatchService.matchesInfo;
-        return mocks;
+    get unlockedMatches(): MatchPageInfo[] {
+        return this.joinMatchService.matchesInfo.filter((match: MatchPageInfo) => !match.isLocked && !match.isPlaying);
+    }
+
+    get lockedMatches(): MatchPageInfo[] {
+        return this.joinMatchService.matchesInfo.filter((match: MatchPageInfo) => match.isLocked && !match.isPlaying);
+    }
+
+    get playingMatches(): MatchPageInfo[] {
+        return this.joinMatchService.matchesInfo.filter((match: MatchPageInfo) => match.isPlaying);
     }
 
     ngOnInit() {
