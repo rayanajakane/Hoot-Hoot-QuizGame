@@ -1,0 +1,16 @@
+.user-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem;
+    border-bottom: 1px solid #ddd;
+
+    .username {
+        font-weight: bold;
+    }
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.25rem;
+}
