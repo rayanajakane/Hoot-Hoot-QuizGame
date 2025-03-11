@@ -468,7 +468,12 @@ describe('MatchGateway', () => {
     });
 
     it('should return all matches when get all matches event', () => {
-        const spy = jest.spyOn(gateway, 'returnAllMatches');
+        const spy = jest.spyOn(matchRoomSpy, 'getAllMatchesInfo');
+        server.to.returns({
+            emit: (event: string) => {
+                expect(event).toEqual(MatchEvents.ReturnAllMatches);
+            },
+        } as BroadcastOperator<unknown, unknown>);
         gateway.getAllMatches(socket);
         expect(spy).toHaveBeenCalled();
     });

@@ -64,7 +64,8 @@ export class MatchGateway implements OnGatewayDisconnect {
 
     @SubscribeMessage(MatchEvents.GetAllMatches)
     getAllMatches(@ConnectedSocket() socket: Socket) {
-        this.returnAllMatches();
+        const allMatches = this.matchRoomService.getAllMatchesInfo();
+        this.server.to(socket.id).emit(MatchEvents.ReturnAllMatches, allMatches);
     }
 
     returnAllMatches() {
