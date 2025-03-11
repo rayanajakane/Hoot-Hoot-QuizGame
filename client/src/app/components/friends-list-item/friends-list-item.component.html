@@ -1,19 +1,30 @@
 <li class="user-item">
-    <span class="username">{{ user.name }}</span>
+    <div class="user-info">
+        <!-- <img class="avatar" [src]="user.avatar ? user.avatar : defaultAvatar" alt="Avatar" /> -->
+        <img class="avatar" [src]="defaultAvatar" alt="Avatar" />
+
+        <span class="username">{{ user.name }}</span>
+        <!-- Fixed offline status indicator -->
+        <span class="status-indicator online"></span>
+    </div>
     <ng-container [ngSwitch]="true">
+        <!-- Already friends -->
         <button *ngSwitchCase="isFriend" mat-raised-button color="basic" disabled>✅ Amis</button>
+        <!-- Request pending (received) -->
         <ng-container *ngSwitchCase="isRequestPending">
             <div class="action-buttons">
                 <button mat-raised-button color="accent" (click)="onAccept()">Accepter</button>
                 <button mat-raised-button color="warn" (click)="onReject()">Refuser</button>
             </div>
         </ng-container>
+        <!-- Request sent -->
         <ng-container *ngSwitchCase="isRequestSent">
             <div class="action-buttons">
                 <button mat-raised-button color="warn" disabled>⏳ Demande envoyée</button>
                 <button mat-raised-button color="accent" (click)="onCancel()">Annuler</button>
             </div>
         </ng-container>
+        <!-- Eligible to send friend request -->
         <button *ngSwitchDefault mat-raised-button color="primary" (click)="onSend()" [disabled]="!isEligible">Ajouter</button>
     </ng-container>
 </li>
