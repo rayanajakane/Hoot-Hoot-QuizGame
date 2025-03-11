@@ -11,15 +11,15 @@
             <mat-form-field type="text">
                 <mat-label>{{ t('join.room-code') }}</mat-label>
                 <input
-                    id="code-input"
+                    id="input-code"
                     matInput
                     #inputCode
-                    maxlength="200"
+                    maxlength="4"
                     [placeholder]="'...'"
                     (keydown.enter)="submitCode(inputCode.value); inputCode.value = ''"
                 />
             </mat-form-field>
-            <button mat-raised-button (click)="submitCode(input)" color="primary" id="join-button">
+            <button mat-raised-button (click)="submitCode(inputCode.value)" color="primary" id="join-button">
                 <p>Joindre</p>
             </button>
         </div>
@@ -38,7 +38,7 @@
                             <p>{{ match.nPlayers }}</p>
                         </div>
                         <button mat-raised-button color="primary" class="join-existing-match-button">
-                            <p>{{ t('join.join ') }}</p>
+                            <p>{{ t('join.join-action') }}</p>
                         </button>
                     </mat-card>
                 </div>

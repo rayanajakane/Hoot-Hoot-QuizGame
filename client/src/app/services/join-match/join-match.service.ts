@@ -12,7 +12,7 @@ import { SocketHandlerService } from '../socket-handler/socket-handler.service';
 })
 export class JoinMatchService {
     matchRoomCode: string;
-    matchesInfo: MatchPageInfo[];
+    matchesInfo: MatchPageInfo[] = [];
 
     constructor(
         private readonly matchRoomService: MatchRoomService,

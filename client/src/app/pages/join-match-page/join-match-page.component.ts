@@ -11,8 +11,6 @@ import { MatchPageInfo } from '@common/interfaces/match-page-info';
     styleUrl: './join-match-page.component.scss',
 })
 export class JoinMatchPageComponent {
-    input: string;
-
     constructor(
         private readonly joinMatchService: JoinMatchService,
         private readonly notificationService: NotificationService,
@@ -39,7 +37,6 @@ export class JoinMatchPageComponent {
     }
 
     submitCode(roomCode: string): void {
-        this.input = '';
         this.joinMatchService.matchRoomCode = '';
         this.joinMatchService.validateMatchRoomCode(roomCode).subscribe({
             next: () => {
