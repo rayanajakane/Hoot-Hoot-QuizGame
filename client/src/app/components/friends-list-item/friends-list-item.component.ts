@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { PresetAvatar } from '@app/constants/image-constants';
 import { UserIdName } from '@common/interfaces/user-id-name';
 
 @Component({
@@ -7,6 +8,8 @@ import { UserIdName } from '@common/interfaces/user-id-name';
     styleUrls: ['./friends-list-item.component.scss'],
 })
 export class FriendsListItemComponent {
+    defaultAvatar = PresetAvatar.Default;
+
     @Input() user: UserIdName;
     @Input() isFriend: boolean;
     @Input() isRequestPending: boolean;
