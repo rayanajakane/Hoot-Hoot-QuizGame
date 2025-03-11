@@ -34,12 +34,7 @@
                 </div>
 
                 <div *ngIf="modificationState === managementState.GameCreate">
-                    <mat-slide-toggle
-                        [ngModelOptions]="{ standalone: true }"
-                        name="bankToggle"
-                        ngDefaultControl
-                        [(ngModel)]="bankService.addToBank"
-                        color="primary"
+                    <mat-slide-toggle [checked]="bankService.addToBank" color="primary" (click)="toggleBank()"
                         ><p>Ajouter à la banque</p></mat-slide-toggle
                     >
                 </div>

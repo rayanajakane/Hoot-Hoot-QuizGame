@@ -20,8 +20,8 @@
                 </div>
                 <img src="{{ qrCodeUrl }}" alt="" />
             </div>
-            <mat-slide-toggle *ngIf="isHost" [(ngModel)]="isLocked" (click)="toggleLock()">{{
-                isLocked ? 'Partie verrouillée' : 'Partie déverouillée'
+            <mat-slide-toggle *ngIf="isHost" [checked]="isLocked" (click)="toggleLock()">{{
+                isLocked ? 'Partie verrouillée' : 'Partie déverrouillée'
             }}</mat-slide-toggle>
             <button
                 *ngIf="isHost"

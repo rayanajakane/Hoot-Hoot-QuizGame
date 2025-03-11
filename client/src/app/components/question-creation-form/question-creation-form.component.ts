@@ -157,6 +157,10 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         return this.modificationState !== ManagementState.GameModify && this.modificationState !== ManagementState.BankModify;
     }
 
+    public toggleBank() {
+        this.bankService.addToBank = this.bankService.addToBank ? false : true;
+    }
+
     private initializeForm(): void {
         this.bankService.addToBank = false;
         this.questionForm = this.formBuilder.group(

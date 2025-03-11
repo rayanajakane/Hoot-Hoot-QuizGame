@@ -82,5 +82,14 @@
     "common": {
         "cancel": "Annuler",
         "play": "Jouer"
+    },
+    "join": {
+        "room-code": "Code de la partie",
+        "waiting-matches": "Parties en attente",
+        "unlocked-matches": "Parties déverrouillées",
+        "locked-matches": "Parties verrouillées",
+        "playing-matches": "Parties en cours",
+        "no-match": "Aucune partie à afficher",
+        "join-action": "Joindre"
     }
 }
