@@ -8,7 +8,7 @@
 }
 
 .header-row {
-    position: fixed;
+    position: absolute;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -166,4 +166,12 @@ img {
 
 .emojis-container button {
     border-radius: 100rem;
+}
+
+#channel-field-container {
+    display: flex;
+}
+
+#channel-field {
+    width: 8.5vw !important;
 }

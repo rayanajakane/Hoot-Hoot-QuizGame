@@ -155,4 +155,10 @@ describe('MatchBackupService', () => {
         const gameNoIsCorrect = service.removeIsCorrectField(GAME_WITHOUT_IS_CORRECT_FIELD);
         expect(JSON.stringify(gameNoIsCorrect)).toBe(JSON.stringify(GAME_WITHOUT_IS_CORRECT_FIELD));
     });
+
+    it('updateNMatchesPlayed() should update game nMatchesPlayed using original game ID', () => {
+        const spy = jest.spyOn(gameService, 'updateNMatchesPlayed').mockReturnThis();
+        service.updateNMatchesPlayed('');
+        expect(spy).toHaveBeenCalled();
+    });
 });

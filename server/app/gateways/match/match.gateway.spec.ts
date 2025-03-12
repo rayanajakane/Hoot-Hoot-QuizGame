@@ -150,6 +150,13 @@ describe('MatchGateway', () => {
         expect(result).toBe(true);
     });
 
+    it('isRoomEmpty() should return true if room is empty', () => {
+        const room = { ...MOCK_PLAYER_ROOM };
+        room.players = [];
+        const result = gateway['isRoomEmpty'](room);
+        expect(result).toBe(true);
+    });
+
     it('isRoomEmpty() should return false if room is not empty', () => {
         const room = { ...MOCK_PLAYER_ROOM };
         room.players[0].isPlaying = true;
@@ -237,6 +244,7 @@ describe('MatchGateway', () => {
     it('handleDisconnect() should disconnect host and all other players and delete the match room if the host disconnects', () => {
         matchRoomSpy.getRoomCodeByHostSocket.returns(MOCK_ROOM_CODE);
         matchRoomSpy.getRoom.resolves(MOCK_MATCH_ROOM);
+        jest.spyOn(gateway as any, 'isRoomEmpty').mockReturnThis();
         const sendErrorSpy = jest.spyOn(gateway, 'sendError').mockReturnThis();
         const deleteSpy = jest.spyOn(gateway, 'deleteRoom').mockReturnThis();
         gateway.handleDisconnect(socket);

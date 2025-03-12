@@ -292,4 +292,16 @@ describe('MatchCreationPageComponent', () => {
         expect(component.isRandomGame).toBeFalsy();
         expect(component.gameIsValid).toBeFalsy();
     });
+    it('should sort most popular games', () => {
+        const mostPopular = getMockGame();
+        mostPopular.nMatchesPlayed = 10;
+        const secondMostPopular = getMockGame();
+        secondMostPopular.nMatchesPlayed = 5;
+        const thirdMostPopular = getMockGame();
+        thirdMostPopular.nMatchesPlayed = 1;
+        const otherGame = getMockGame();
+        component.games = [mostPopular, secondMostPopular, thirdMostPopular, otherGame];
+        (component as any).sortMostPopularGames();
+        expect(component.mostPopularGames).toEqual([mostPopular, secondMostPopular, thirdMostPopular]);
+    });
 });
