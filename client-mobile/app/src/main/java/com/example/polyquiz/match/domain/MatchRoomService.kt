@@ -44,6 +44,8 @@ object MatchRoomService {
 
     private val socket = SocketHandler.getSocket()
 
+    val mSocket = SocketHandler.getSocket()
+
     val socketId: String
         get() = socket.id() ?: ""
 
@@ -105,7 +107,6 @@ object MatchRoomService {
         players.find { it.username == username }
 
     fun joinRoom(roomCode: String, username: String) {
-
         val sentInfo = JSONObject().apply {
             put("roomCode", roomCode)
             put("username", username)
