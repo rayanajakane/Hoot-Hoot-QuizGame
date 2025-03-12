@@ -10,10 +10,10 @@
         <div id="game-list-container">
             <h2>{{ t('match-creation-page.games-list-label') }}</h2>
             <app-pulse-loader *ngIf="isLoadingGames"></app-pulse-loader>
-            <h3>Jeux populaires</h3>
+            <h3>{{ t('match-creation-page.popular-games') }}</h3>
             <div class="popular-games-container">
                 <mat-card *ngFor="let game of mostPopularGames" (click)="loadSelectedGame(game)" class="popular-game-card">
-                    <h4>{{ game.title }}</h4>
+                    <h4>{{ t('match-creation-page.n-matches-played') }}</h4>
                     <p>Parties jouées: {{ game.nMatchesPlayed }}</p>
                 </mat-card>
             </div>
