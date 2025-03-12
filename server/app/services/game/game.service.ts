@@ -58,6 +58,7 @@ export class GameService {
             return Promise.reject(ERROR_GAME_SAME_TITLE);
         }
         newGame = this.creationService.updateDateAndVisibility(newGame);
+        newGame.nMatchesPlayed = 0;
         newGame = this.creationService.generateId(newGame);
         newGame = this.creationService.completeIsCorrectField(newGame);
         try {
@@ -82,6 +83,22 @@ export class GameService {
             return gameToToggleVisibility;
         } catch (error) {
             return Promise.reject(`${ERROR_DEFAULT} ${error}`);
+        }
+    }
+
+    async updateNMatchesPlayed(gameId: string): Promise<Game> {
+        const filterQuery = { id: gameId };
+        try {
+            const game = await this.getGameById(gameId);
+            game.nMatchesPlayed++;
+            await this.gameModel.findOneAndUpdate(filterQuery, game, {
+                new: true,
+                upsert: true,
+            });
+            return game;
+        } catch (error) {
+            // This can happen if game has been deleted during match (but this situation doesn't need to be handled further)
+            console.log(error);
         }
     }
 

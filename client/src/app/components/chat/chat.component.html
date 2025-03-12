@@ -1,8 +1,8 @@
 <div id="main-chat-container">
     <div class="header-row">
         <h2 id="header-title">{{ this.authenticationService.userDisplayName }}</h2>
-        <div>
-            <mat-form-field>
+        <div id="channel-field-container">
+            <mat-form-field id="channel-field">
                 <mat-label>Option</mat-label>
                 <mat-select [(value)]="channel">
                     <mat-option value="general">General</mat-option>

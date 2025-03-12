@@ -6,11 +6,19 @@
         </div>
     </div>
     <div id="match-creation-page">
+        <div id="popular-game-list-container"></div>
         <div id="game-list-container">
             <h2>{{ t('match-creation-page.games-list-label') }}</h2>
+            <app-pulse-loader *ngIf="isLoadingGames"></app-pulse-loader>
+            <h3>{{ t('match-creation-page.popular-games') }}</h3>
+            <div class="popular-games-container">
+                <mat-card *ngFor="let game of mostPopularGames" (click)="loadSelectedGame(game)" class="popular-game-card">
+                    <h4>{{ game.title }}</h4>
+                    <p>{{ t('match-creation-page.n-matches-played') }} {{ game.nMatchesPlayed }}</p>
+                </mat-card>
+            </div>
             <cdk-virtual-scroll-viewport class="virtual-scroll" itemSize="50">
-                <app-pulse-loader *ngIf="isLoadingGames"></app-pulse-loader>
-
+                <h3>Tous les jeux</h3>
                 <app-game-list-item
                     *cdkVirtualFor="let game of games"
                     [game]="game"
@@ -21,8 +29,14 @@
         </div>
 
         <div id="game-details-container">
-            <h2>{{ t('match-creation-page.game-details-label') }}{{ selectedGame ? '"' + selectedGame.title + '"' : '' }}</h2>
-
+            <div id="game-details-header">
+                <h2>{{ t('match-creation-page.game-details-label') }}{{ selectedGame ? '"' + selectedGame.title + '"' : '' }}</h2>
+                <div id="buttons-container">
+                    <button mat-raised-button color="primary" (click)="createMatch(matchContext.HostView)" *ngIf="gameIsValid && !isRandomGame">
+                        {{ t('common.play') }}
+                    </button>
+                </div>
+            </div>
             <cdk-virtual-scroll-viewport class="virtual-scroll" itemSize="50">
                 <div id="game-details" *ngIf="gameIsValid && !isLoadingSelectedGame; else elseBlock">
                     <div>
@@ -47,12 +61,5 @@
 
                 <app-pulse-loader *ngIf="isLoadingSelectedGame"></app-pulse-loader>
             </cdk-virtual-scroll-viewport>
-
-            <div id="buttons-container">
-                <button mat-raised-button color="primary" (click)="createMatch(matchContext.HostView)" *ngIf="gameIsValid && !isRandomGame">
-                    {{ t('common.play') }}
-                </button>
-            </div>
-        </div>
-    </div></ng-container
->
+        </div></div
+></ng-container>

@@ -13,6 +13,8 @@ import { QuestionService } from '@app/services/question/question.service';
 import { MINIMUM_QUESTIONS } from '@common/constants/match-constants';
 import { QuestionType } from '@common/constants/question-types';
 
+const N_POPULAR_GAMES = 3;
+
 @Component({
     selector: 'app-match-creation-page',
     templateUrl: './match-creation-page.component.html',
@@ -26,6 +28,7 @@ export class MatchCreationPageComponent implements OnInit {
     isRandomGame: boolean;
     isLoadingGames: boolean;
     isLoadingSelectedGame: boolean;
+    mostPopularGames: Game[] = [];
 
     // Services are required to decouple logic
     // eslint-disable-next-line max-params
@@ -51,6 +54,7 @@ export class MatchCreationPageComponent implements OnInit {
         this.matchService.getAllGames().subscribe((data: Game[]) => {
             this.games = data;
             this.isLoadingGames = false;
+            this.sortMostPopularGames();
         });
     }
 
@@ -83,7 +87,7 @@ export class MatchCreationPageComponent implements OnInit {
     }
 
     loadSelectedGame(selectedGame: Game): void {
-        this.isLoadingSelectedGame = true;
+        // this.isLoadingSelectedGame = true; // Deactivated animation because it looked weird on localhost. TODO: Check if it's still required on deployed app.
         this.isRandomGame = false;
         this.gameService.getGameById(selectedGame.id).subscribe({
             next: (data: Game) => {
@@ -166,5 +170,16 @@ export class MatchCreationPageComponent implements OnInit {
                 this.handleRevalidateRandomGame(data);
             },
         });
+    }
+
+    private sortMostPopularGames() {
+        if (this.games.length <= N_POPULAR_GAMES) this.mostPopularGames = this.games;
+        const sortedGames = this.games.sort((gameX: Game, gameY: Game) => {
+            if (!gameX.nMatchesPlayed) gameX.nMatchesPlayed = 0;
+            if (!gameY.nMatchesPlayed) gameY.nMatchesPlayed = 0;
+            return gameY.nMatchesPlayed - gameX.nMatchesPlayed;
+        });
+        this.mostPopularGames = sortedGames.slice(0, N_POPULAR_GAMES);
+        return this.mostPopularGames;
     }
 }

@@ -9,6 +9,10 @@ export class UpdateGameDto {
 
     @ApiProperty()
     @IsString()
+    originalId: string;
+
+    @ApiProperty()
+    @IsString()
     title: string;
 
     @ApiProperty()
@@ -24,6 +28,9 @@ export class UpdateGameDto {
 
     @ApiProperty()
     isVisible: boolean;
+
+    @ApiProperty()
+    nMatchesPlayed: number;
 
     @ApiProperty()
     questions: Question[];

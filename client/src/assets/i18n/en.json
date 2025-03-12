@@ -69,7 +69,9 @@
         "games-list": "Games list",
         "game-details": "Game details ",
         "select-game": "Select a game from the games list",
-        "time-per-QCM": "Time per QCM:"
+        "time-per-QCM": "Time per QCM:",
+        "popular-games": "Popular Games",
+        "n-matches-played": "Played Matches:"
     },
     "admin-main-page": {
         "admin-games": "Manage games",

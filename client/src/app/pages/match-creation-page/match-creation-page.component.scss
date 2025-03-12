@@ -128,3 +128,21 @@ app-game-list-item {
 #game-title {
     margin: 0;
 }
+
+.popular-games-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+}
+
+.popular-game-card {
+    padding: 1rem;
+    cursor: pointer;
+}
+
+#game-details-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
