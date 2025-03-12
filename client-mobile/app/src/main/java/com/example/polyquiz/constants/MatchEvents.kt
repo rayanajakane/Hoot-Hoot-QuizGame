@@ -20,6 +20,6 @@ enum class MatchEvents(val value: String) {
     HOST_QUIT_MATCH("hostQuitMatch"),
     DISCONNECT("disconnectFromRoom"),
     ERROR("error"),
-    GET_ALL_MATCHES("GETALLMATCHES"),
-    RETURN_ALL_MATCHES ("RETURN_ALL_MATCHES")
+    GET_ALL_MATCHES("getAllMatches"),
+    RETURN_ALL_MATCHES ("returnAllMatches")
 }
