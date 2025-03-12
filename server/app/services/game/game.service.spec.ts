@@ -215,6 +215,18 @@ describe('GameService', () => {
         expect(spyGet).toHaveBeenCalledWith(mockVisibleGame.id);
     });
 
+    it('updateNMatchesPlayed() should update game nMatchesPlayed', async () => {
+        const mockGame = getMockGame();
+        const expectedResult = mockGame;
+        expectedResult.nMatchesPlayed++;
+        const spyGet = jest.spyOn(service, 'getGameById').mockResolvedValue(mockGame);
+        const spyModel = jest.spyOn(gameModel, 'findOneAndUpdate').mockResolvedValue(expectedResult);
+        const upsertedGame = await service.updateNMatchesPlayed(mockGame.id);
+        expect(upsertedGame).toEqual(expectedResult);
+        expect(spyGet).toHaveBeenCalled();
+        expect(spyModel).toHaveBeenCalledWith({ id: mockGame.id }, mockGame, { new: true, upsert: true });
+    });
+
     it('upsertGame() should upsert the game if it is valid', async () => {
         const mockGame = getMockGame();
         const spyValidate = jest.spyOn(gameValidationService, 'findGameErrors').mockReturnValue([]);
