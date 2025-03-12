@@ -28,6 +28,10 @@ export class FriendsSearchComponent implements OnInit {
     ngOnInit(): void {
         this.searchControl.valueChanges.subscribe((query: string | null) => this.searchUsers(query || ''));
         this.loadData();
+        this.friendsService.listenToAllFriendEvents((update, event) => {
+            console.log(`Received event ${event}:`, update);
+            this.loadData();
+        });
     }
 
     loadData(): void {
@@ -36,7 +40,7 @@ export class FriendsSearchComponent implements OnInit {
         this.friendsService.getSentRequests(this.currentUserID).subscribe((sent) => (this.sentRequests = sent));
         this.friendsService.getAllUsers(this.currentUserID).subscribe((users) => {
             this.allUsers = users;
-            this.searchResults = users;
+            this.searchResults = this.allUsers.filter((user) => !this.isFriend(user));
         });
     }
 

@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CommunicationService } from '@app/services/communication/communication.service';
+import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
+import { FriendsEvents } from '@common/events/friends.events';
 import { UserIdName } from '@common/interfaces/user-id-name';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -9,8 +11,11 @@ import { map } from 'rxjs/operators';
     providedIn: 'root',
 })
 export class FriendsService extends CommunicationService<any> {
-    constructor(http: HttpClient) {
-        super(http, 'friends');
+    constructor(
+        http: HttpClient,
+        private socketHandler: SocketHandlerService,
+    ) {
+        super(http, 'friends'); // Base URL: {serverUrl}/friends
     }
 
     getAllUsers(userId: string): Observable<UserIdName[]> {
@@ -47,5 +52,33 @@ export class FriendsService extends CommunicationService<any> {
 
     removeFriend(userId: string, friendId: string): Observable<void> {
         return this.delete(`remove/${userId}/${friendId}`).pipe(map(() => undefined));
+    }
+
+    listenToRequestSent(callback: (update: any) => void): void {
+        this.socketHandler.on<any>(FriendsEvents.RequestSent, callback);
+    }
+
+    listenToRequestAccepted(callback: (update: any) => void): void {
+        this.socketHandler.on<any>(FriendsEvents.RequestAccepted, callback);
+    }
+
+    listenToRequestRejected(callback: (update: any) => void): void {
+        this.socketHandler.on<any>(FriendsEvents.RequestRejected, callback);
+    }
+
+    listenToRequestCanceled(callback: (update: any) => void): void {
+        this.socketHandler.on<any>(FriendsEvents.RequestCanceled, callback);
+    }
+
+    listenToFriendRemoved(callback: (update: any) => void): void {
+        this.socketHandler.on<any>(FriendsEvents.FriendRemoved, callback);
+    }
+
+    listenToAllFriendEvents(callback: (update: any, event: string) => void): void {
+        this.listenToRequestSent((update) => callback(update, FriendsEvents.RequestSent));
+        this.listenToRequestAccepted((update) => callback(update, FriendsEvents.RequestAccepted));
+        this.listenToRequestRejected((update) => callback(update, FriendsEvents.RequestRejected));
+        this.listenToRequestCanceled((update) => callback(update, FriendsEvents.RequestCanceled));
+        this.listenToFriendRemoved((update) => callback(update, FriendsEvents.FriendRemoved));
     }
 }
