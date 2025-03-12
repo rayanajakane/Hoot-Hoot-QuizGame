@@ -29,7 +29,6 @@ export class FriendsSearchComponent implements OnInit {
         this.searchControl.valueChanges.subscribe((query: string | null) => this.searchUsers(query || ''));
         this.loadData();
         this.friendsService.listenToAllFriendEvents((update, event) => {
-            console.log(`Received event ${event}:`, update);
             this.loadData();
         });
     }
