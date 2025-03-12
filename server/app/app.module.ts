@@ -33,6 +33,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MongooseModule } from '@nestjs/mongoose';
 import { QuestionsGeneratorController } from './controllers/questions-generator/questions-generator.controller';
 import { QuestionsGeneratorService } from './services/questions-generator/questions-generator.service';
+import { FriendsGateway } from './gateways/friends/friends.gateway';
 
 @Module({
     imports: [
@@ -72,6 +73,7 @@ import { QuestionsGeneratorService } from './services/questions-generator/questi
         EstimatedAnswerStrategy,
         QuestionPicturesDeletionService,
         FriendsService,
+        FriendsGateway,
         QrCodeService,
         QuestionsGeneratorService,
     ],
