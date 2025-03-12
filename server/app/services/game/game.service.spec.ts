@@ -148,6 +148,7 @@ describe('GameService', () => {
     });
     it('addGame should not add the game to the database if it is invalid', async () => {
         const mockGame = new Game();
+        mockGame.nMatchesPlayed = 0;
         const spyGet = jest.spyOn(service, 'getGameByTitle').mockResolvedValue(null);
         const mockErrorMessages = ['mock'];
         const spyCompleteIsCorrect = jest.spyOn(gameCreationService, 'completeIsCorrectField').mockReturnValue(mockGame);
