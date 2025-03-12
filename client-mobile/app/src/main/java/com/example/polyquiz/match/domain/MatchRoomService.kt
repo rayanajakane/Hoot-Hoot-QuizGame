@@ -67,7 +67,6 @@ object MatchRoomService {
             handleError()
 //            onPlayerChatStateToggle()
             onRouteToResultsPage()
-            //println("we just set time to go to wait page to true")
             timeToGoToWaitPage = true
         }
     }
@@ -141,7 +140,6 @@ object MatchRoomService {
         socket.on(MatchEvents.ERROR.value) { args ->
             if (args.isNotEmpty()) {
                 val errorMessage = args[0] as? String ?: "Unknown error"
-//                notificationService.displayErrorMessage(errorMessage)
             }
         }
     }
@@ -268,11 +266,7 @@ object MatchRoomService {
     }
 
     fun toggleLock() {
-        //if (username == HOST_USERNAME) {
         socket.emit(MatchEvents.TOGGLE_LOCK.value, matchRoomCode)
         isLocked = !isLocked
-        println(username)
-        println(matchRoomCode)
-       // println(isLocked)
     }
 }

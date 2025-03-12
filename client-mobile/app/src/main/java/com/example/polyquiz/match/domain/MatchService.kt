@@ -10,28 +10,12 @@ import com.google.gson.Gson
 
 object MatchService {
     val gameService = GameService()
-   // var games by  mutableStateOf<List<Game>>(emptyList())
     var currentGame by mutableStateOf<Game?>(null)
     var matchRoomService = MatchRoomService
 
     val backupService = object : CommunicationService("match/backups") {
         override val apiService: ApiService = retrofit.create(ApiService::class.java)
     }
-
-
-//    fun getAllGames()
-//    {
-//        gameService.getGames(
-//            onSuccess = { fetchedGames ->
-//                val gson = Gson()
-//                val json = gson.toJson(fetchedGames)
-//                val listType = object : TypeToken<List<Game>>() {}.type
-//                games = gson.fromJson(json, listType)
-//            },
-//            onError = { errorMessage -> println("Error: $errorMessage") }
-//        )
-//    }
-
 
     fun createMatch(){
         matchRoomService.connect()
@@ -56,7 +40,7 @@ object MatchService {
                     val game = gson.fromJson(gson.toJson(response), Game::class.java)
                     currentGame = game
                     createMatch()
-                    backupService.getAll(onSuccess = { response -> println("games$response")}, onError = { error -> println(error)})
+                    backupService.getAll(onSuccess = { response -> println(response)}, onError = { error -> println(error)})
                 },
                 onError = { error -> println(error)
 

@@ -61,11 +61,9 @@ fun QuestionArea(
         matchRoomService.isQuitting = false
         answerService.playerScore = 0
         context = matchContextService.getContext()
-        println("is this$context")
 
         when (MatchRoomService.hasBeenKickedOut) {
             true -> {
-                println("MatchRoomService.isTimeToNavigate is true")
                 MatchRoomService.hasBeenKickedOut = false
                 navigateToHome()
             }
@@ -79,7 +77,6 @@ fun QuestionArea(
     }
 
     Row(modifier = Modifier.fillMaxSize()) {
-        //TODO: REMOVE WHEN DONE
         if ( question == null){
             TextField(
                 value = room,
@@ -103,7 +100,7 @@ fun QuestionArea(
                 modifier = Modifier.fillMaxWidth(0.5f),
                 shape = RoundedCornerShape(8.dp)
             ) {
-                Text("join")
+                Text("Joindre")
             }
         }
 
@@ -153,7 +150,6 @@ fun QuestionArea(
             }
 
             Spacer(modifier = Modifier.height(12.dp))
-            println(context)
             if (context != MatchContext.HOSTVIEW) {
                 Text(
                     text = "SCORE : $score",
@@ -248,9 +244,6 @@ fun QuestionArea(
             }
         }
 
-        println("ismatch${matchRoomService.isMatchStarted}")
-        println("ismatch${MatchRoomService.isMatchStarted}")
-
         if(MatchRoomService.isMatchStarted)
         {
             PlayersListComponent(
@@ -267,7 +260,6 @@ fun QuestionArea(
                                 (answerService.isGradingComplete && question?.type == QuestionType.LONG_ANSWER.value)
                             )
                     ) {
-                        println("fuck${matchRoomService.getUsername()}")
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(onClick = { matchRoomService.goToNextQuestion() }) {
                             Text("QUESTION SUIVANTE")

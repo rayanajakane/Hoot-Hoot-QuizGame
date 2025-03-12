@@ -11,17 +11,17 @@ import com.example.polyquiz.auth.presentation.LoginPage
 import com.example.polyquiz.auth.presentation.ForgotPasswordFeedbackPage
 import com.example.polyquiz.auth.presentation.SignupPage
 import com.example.polyquiz.auth.presentation.UserEditPage
-import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.Route
 import com.example.polyquiz.match.domain.AnswerService
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
-import com.example.polyquiz.match.domain.Player
+import com.example.polyquiz.match.domain.MatchRoomService.players
 import com.example.polyquiz.match.presentation.QuestionArea
+import com.example.polyquiz.match.presentation.ResultsPage
 import com.example.polyquiz.pages.presentation.MatchCreationPage
 import com.example.polyquiz.pages.presentation.WaitPage
-import com.example.polyquiz.results.presentation.ResultsPage
+
 
 
 // References: https://youtu.be/AIC_OFQ1r3k  and  https://youtu.be/lv1raAvwcgI
@@ -72,8 +72,6 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
             )
         }
         composable<Route.MatchRoom> {
-            //val matchContextService = MatchContextService()
-            //matchContextService.setContext(MatchContext.PLAYERVIEW)
             QuestionArea(
                 modifier = modifier,
                 navigateToHome = {
@@ -124,9 +122,11 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
             )
         }
         composable<Route.ResultsPage> {
-            ResultsPage(modifier,
-                matchRoomService = MatchRoomService,
-                //matchContextService = MatchContextService,
+           ResultsPage(
+               matchRoomService = MatchRoomService,
+               players,
+               modifier,
+               extraContent ={}
             )
         }
 

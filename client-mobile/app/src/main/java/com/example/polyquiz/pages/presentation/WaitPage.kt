@@ -99,21 +99,10 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
     LaunchedEffect(Unit) {
         resetWaitPage()
         timeService.listenToTimerEvents()
-
-
-//        if (isHost()) {
-//            gameTitle = getCurrentGame().title
-//            println(gameTitle)
-//            MatchContextService.setContext(MatchContext.HOSTVIEW)
-//        } else {
-//            MatchContextService.setContext(MatchContext.PLAYERVIEW)
-//        }
     }
 
     fun toggleLock() {
-       //isLocked = true
         MatchRoomService.toggleLock()
-        //MatchRoomService.isLocked = !MatchRoomService.isLocked
     }
 
     fun banPlayerUsername(username: String) {
@@ -179,7 +168,6 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(StartMatchFeedback.LOCK_MATCH.value)
                             Spacer(modifier = Modifier.width(8.dp))
-                            //isLocked = false
                              Switch(checked = MatchRoomService.isLocked, onCheckedChange = { toggleLock() })
                         }
                         Button(
@@ -192,7 +180,6 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
                         }
                     }
                     players.forEach { player ->
-                        println(player)
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,

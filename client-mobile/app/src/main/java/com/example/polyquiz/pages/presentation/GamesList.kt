@@ -36,7 +36,6 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit) {
     val contextService = MatchContextService
 
     LaunchedEffect(Unit) {
-       // matchService.getAllGames()
         gameService.getGames(
             onSuccess = { fetchedGames ->
                 val gson = Gson()

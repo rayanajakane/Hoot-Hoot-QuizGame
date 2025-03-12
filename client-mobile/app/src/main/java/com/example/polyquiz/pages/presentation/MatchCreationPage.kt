@@ -29,8 +29,6 @@ import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
-import com.example.polyquiz.constants.AuthFeedbackText
-import com.example.polyquiz.constants.DisplayAuthenticationText
 import kotlinx.coroutines.launch
 
 
@@ -44,16 +42,6 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
 
     LaunchedEffect(authState.value) {
         when (authState.value) {
-            is AuthState.Unauthenticated -> {
-                scope.launch {
-                    SnackbarController.sendEvent(
-                        event = SnackbarEvent(
-                            message = AuthFeedbackText.SIGN_OUT.value,
-                        )
-                    )
-                }
-                navigateToLogin()
-            }
 
             is AuthState.Error -> {
                 scope.launch {
@@ -114,7 +102,7 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
                     contentColor = MaterialTheme.colorScheme.onSurface
                 )
             ) {
-                Text(text = DisplayAuthenticationText.LOGOUT.value)
+                Text(text = "Se déconnecter")
             }
             GameList(modifier = modifier.weight(1f).fillMaxHeight(0.2f), navigateToWaitPage)
         }
