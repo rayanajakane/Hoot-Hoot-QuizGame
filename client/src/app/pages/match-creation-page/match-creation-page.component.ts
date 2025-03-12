@@ -179,7 +179,7 @@ export class MatchCreationPageComponent implements OnInit {
             if (!gameY.nMatchesPlayed) gameY.nMatchesPlayed = 0;
             return gameY.nMatchesPlayed - gameX.nMatchesPlayed;
         });
-        console.log(sortedGames);
         this.mostPopularGames = sortedGames.slice(0, N_POPULAR_GAMES);
+        return this.mostPopularGames;
     }
 }
