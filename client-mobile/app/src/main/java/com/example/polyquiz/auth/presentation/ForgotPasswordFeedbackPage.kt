@@ -17,12 +17,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
-import com.example.polyquiz.constants.DisplayAuthenticationText
+
 
 @Composable
 fun ForgotPasswordFeedbackPage(
@@ -54,14 +56,14 @@ fun ForgotPasswordFeedbackPage(
                     .fillMaxWidth(0.5f)
             ) {
                 Text(
-                    text = DisplayAuthenticationText.SENT_EMAIL.value,
+                    text = stringResource(R.string.sent_email),
                     fontSize = 35.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
                 Text(
-                    text = DisplayAuthenticationText.SENT_EMAIL_EXTRA_INFO.value,
+                    text = stringResource(R.string.sent_email_extra_info),
                     textAlign = TextAlign.Center
                 )
 
@@ -79,7 +81,7 @@ fun ForgotPasswordFeedbackPage(
 
                     )
                 ) {
-                    Text(DisplayAuthenticationText.RETURN_TO_LOGIN.value)
+                    Text(stringResource(R.string.return_to_login))
                 }
             }
         }

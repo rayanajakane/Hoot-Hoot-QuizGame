@@ -341,6 +341,11 @@ export class AuthenticationService {
         return url;
     }
 
+    async uploadQuestionPicture(questionId: string, file: any): Promise<string> {
+        const url: string = await this.uploadImage(`questionPictures/${questionId}`, file);
+        return url;
+    }
+
     async uploadImage(path: string, file: any): Promise<string> {
         const storageRef = firebaseStorageRef(this.storage, path);
         const uploadTask = uploadBytes(storageRef, file);
@@ -350,7 +355,6 @@ export class AuthenticationService {
             .then(async () => {
                 // Handle successful uploads on complete
                 const downloadURL = getDownloadURL((await uploadTask).ref);
-                console.log('File available at', downloadURL);
                 return downloadURL;
             })
             .catch(() => {
@@ -358,6 +362,10 @@ export class AuthenticationService {
                 this.notificationService.displayErrorMessage('TODO');
                 return '';
             });
+    }
+
+    isImageToUpload(imageUrl: string) {
+        return imageUrl.startsWith('data:image/');
     }
 
     async deleteUserAvatar(userId: string) {
@@ -368,6 +376,14 @@ export class AuthenticationService {
         const storageRef = firebaseStorageRef(this.storage, path);
         deleteObject(storageRef)
             .then(() => {})
-            .catch((error: Error) => {});
+            .catch((error: Error) => {
+                console.log(error);
+            });
+    }
+
+    async getImageDownloadUrl(path: string) {
+        const storageRef = firebaseStorageRef(this.storage, path);
+        const downloadUrl = await getDownloadURL(storageRef);
+        return downloadUrl;
     }
 }

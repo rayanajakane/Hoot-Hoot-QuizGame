@@ -1,0 +1,26 @@
+<div id="main-container">
+    <div id="estimated-answer-area" *ngIf="matchContextService.getContext() !== contextOptions.HostView">
+        <p *ngIf="answerService.showFeedback" class="correct-answer">
+            Réponse correcte : {{ answerService.feedback.correctAnswer }}. La marge est de +/-
+            {{ matchRoomService.currentQuestion.estimatedParameters?.margin }}
+        </p>
+        <p *ngIf="!answerService.showFeedback" class="instruction">
+            Choisissez une valeur estimée. La marge est de +/- {{ matchRoomService.currentQuestion.estimatedParameters?.margin }}
+        </p>
+
+        <mat-form-field appearance="outline" class="number-input">
+            <mat-label>Réponse</mat-label>
+            <input matInput type="text" [formControl]="currentLongAnswerControl" (input)="onInputChange()" [class.error]="isOutOfBounds" />
+        </mat-form-field>
+
+        <p *ngIf="isOutOfBounds" class="error-message">Valeur hors limites ! Doit être entre {{ lowerBound }} et {{ upperBound }}</p>
+
+        <div class="slider-container">
+            <span class="bound-label">{{ lowerBound }}</span>
+            <mat-slider class="full-width" [min]="lowerBound" [max]="upperBound" [step]="1">
+                <input matSliderThumb [formControl]="currentLongAnswerControl" (input)="onSliderChange($event)" />
+            </mat-slider>
+            <span class="bound-label">{{ upperBound }}</span>
+        </div>
+    </div>
+</div>

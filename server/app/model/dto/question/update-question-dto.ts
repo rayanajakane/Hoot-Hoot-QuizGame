@@ -28,4 +28,10 @@ export class UpdateQuestionDto {
 
     @ApiProperty()
     lastModification: Date;
+
+    @ApiProperty()
+    pictureUrl: string;
+
+    @ApiProperty()
+    creatorName: string;
 }

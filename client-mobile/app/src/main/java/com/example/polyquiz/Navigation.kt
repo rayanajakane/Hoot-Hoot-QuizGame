@@ -10,6 +10,7 @@ import com.example.polyquiz.auth.presentation.ForgotPasswordPage
 import com.example.polyquiz.auth.presentation.LoginPage
 import com.example.polyquiz.auth.presentation.ForgotPasswordFeedbackPage
 import com.example.polyquiz.auth.presentation.SignupPage
+import com.example.polyquiz.auth.presentation.UserEditPage
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.Route
@@ -101,13 +102,17 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                 navigateToHome = {
                     navController.navigate(Route.Home)
                 },
+                navigateToUserEdit = {
+                    navController.navigate(Route.UserEditPage)
+                },
                 navigateToWaitPage = {
                     navController.navigate(Route.WaitPage)
                 }
             )
         }
         composable<Route.MatchCreation> {
-            MatchCreationPage(modifier,
+            MatchCreationPage(
+                modifier,
                 navigateToLogin = {
                     navController.navigate(Route.Login)
                 },
@@ -126,7 +131,8 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
         }
 
         composable<Route.ForgotPassword> {
-            ForgotPasswordPage(modifier,
+            ForgotPasswordPage(
+                modifier,
                 navigateToForgotPasswordFeedback = {
                     navController.navigate(Route.ForgotPasswordFeedbackPage)
                 },
@@ -142,6 +148,16 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                 modifier,
                 navigateToLogin = {
                     navController.navigate(Route.Login)
+                },
+                authViewModel = authViewModel
+            )
+        }
+
+        composable<Route.UserEditPage> {
+            UserEditPage(
+                modifier,
+                navigateToHome = {
+                    navController.navigate(Route.Home)
                 },
                 authViewModel = authViewModel
             )

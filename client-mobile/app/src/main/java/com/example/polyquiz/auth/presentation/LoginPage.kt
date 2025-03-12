@@ -1,6 +1,5 @@
 package com.example.polyquiz.auth.presentation
-import android.graphics.fonts.FontStyle
-import android.widget.Toast
+import StringValue
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
@@ -26,17 +25,18 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.polyquiz.R
 import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
-import com.example.polyquiz.constants.AuthFeedbackText
-import com.example.polyquiz.constants.DisplayAuthenticationText
 import com.example.polyquiz.constants.SIZE_CONSTANTS
 import kotlinx.coroutines.launch
 
@@ -48,10 +48,10 @@ fun LoginPage(
     navigateToHome: () -> Unit,
     authViewModel: AuthViewModel
 ) {
+    val context = LocalContext.current
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-
 
     val authState = authViewModel.authState.observeAsState()
     val scope = rememberCoroutineScope()
@@ -64,7 +64,7 @@ fun LoginPage(
                 scope.launch {
                     SnackbarController.sendEvent(
                         event = SnackbarEvent(
-                            message = AuthFeedbackText.SIGN_IN.value,
+                            message = StringValue.StringResource(R.string.sign_in_feedback)
                         )
                     )
                 }
@@ -113,18 +113,17 @@ fun LoginPage(
                     .padding(60.dp)
             ) {
                 Text(
-                    text = DisplayAuthenticationText.LOGIN_TITLE.value,
+                    text = stringResource(R.string.login_title),
                     fontSize = 35.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
-
                 TextField(
                     value = email,
                     onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) email = it },
                     singleLine = true,
-                    label = { Text(DisplayAuthenticationText.EMAIL.value) },
+                    label = { Text(stringResource(R.string.email)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -134,10 +133,10 @@ fun LoginPage(
                     value = password,
                     onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) password = it },
                     singleLine = true,
-                    label = { Text(DisplayAuthenticationText.PASSWORD.value) },
+                    label = { Text(stringResource(R.string.password),) },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardActions = KeyboardActions(onDone = {
-                        authViewModel.signIn(email, password)
+                        authViewModel.signIn(email, password, context)
                         keyboardController?.hide()
                     }),
                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -159,20 +158,19 @@ fun LoginPage(
                     },
                     modifier = Modifier.align(Alignment.End)
                 ) {
-                    Text(text = DisplayAuthenticationText.FORGOT_PASSWORD.value,
-                    //    fontStyle = FontStyle.Italic
-                    )
+                    Text(text = stringResource(R.string.forgot_password),
+                        fontStyle = FontStyle.Italic)
                 }
 
                 Button(
                     onClick =
                     {
-                        authViewModel.signIn(email, password)
+                        authViewModel.signIn(email, password, context)
                         keyboardController?.hide()
                     },
                     enabled = authState.value != AuthState.Loading
                 ) {
-                    Text(DisplayAuthenticationText.LOGIN_ACTION.value)
+                    Text(text = stringResource(R.string.login_action))
                 }
 
                 ElevatedButton(
@@ -187,7 +185,7 @@ fun LoginPage(
 
                     )
                 ) {
-                    Text(DisplayAuthenticationText.SIGNUP_ACTION.value)
+                    Text(text = stringResource(R.string.signup_action))
                 }
             }
         }

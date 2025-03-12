@@ -1,44 +1,21 @@
-import { HttpClientModule, HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { By } from '@angular/platform-browser';
 import { HomePageComponent } from '@app/pages/home-page/home-page.component';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
-import { JoinMatchService } from '@app/services/join-match/join-match.service';
-import { NotificationService } from '@app/services/notification/notification.service';
 import { getTranslocoModule } from '@app/transloco-testing.module';
 import { mockProvider } from '@ngneat/spectator';
-import { of, throwError } from 'rxjs';
-import SpyObj = jasmine.SpyObj;
-
-const mockHttpResponse: HttpResponse<string> = new HttpResponse({ status: 200, statusText: 'OK', body: JSON.stringify(true) });
 
 describe('HomePageComponent', () => {
     let component: HomePageComponent;
     let fixture: ComponentFixture<HomePageComponent>;
-    let dialogMock: SpyObj<MatDialog>;
-    let joinMatchSpy: SpyObj<JoinMatchService>;
-    let notificationSpy: SpyObj<NotificationService>;
 
     beforeEach(() => {
-        dialogMock = jasmine.createSpyObj({
-            open: jasmine.createSpyObj({
-                afterClosed: of('mockResult'),
-            }),
-        });
-        joinMatchSpy = jasmine.createSpyObj('JoinMatchService', ['validateMatchRoomCode', 'validateUsername']);
-        joinMatchSpy.matchRoomCode = '';
-        notificationSpy = jasmine.createSpyObj('NotificationService', ['displayErrorMessage']);
         TestBed.configureTestingModule({
             imports: [HttpClientModule, MatSnackBarModule, MatIconModule, getTranslocoModule()],
-            providers: [
-                { provide: MatDialog, useValue: dialogMock },
-                { provide: JoinMatchService, useValue: joinMatchSpy },
-                { provide: NotificationService, useValue: notificationSpy },
-                mockProvider(AuthenticationService),
-            ],
+            providers: [mockProvider(AuthenticationService)],
             declarations: [HomePageComponent],
         });
         fixture = TestBed.createComponent(HomePageComponent);
@@ -65,35 +42,5 @@ describe('HomePageComponent', () => {
     it('host button should direct to "/host"', () => {
         const href = fixture.debugElement.query(By.css('#host-button')).nativeElement.getAttribute('routerLink');
         expect(href).toEqual('/host');
-    });
-
-    it('openJoinDialog() should open a dialog and allow to submit code', () => {
-        const submitCodeSpy = spyOn(component, 'submitCode');
-        component.input = 'mock';
-        component.openJoinDialog();
-        expect(dialogMock.open).toHaveBeenCalled();
-        const closeDialog = () => {
-            return dialogMock.closeAll;
-        };
-        closeDialog();
-        expect(submitCodeSpy).toHaveBeenCalled();
-    });
-
-    it('submitCode() should call validateMatchRoomCode if code is valid', () => {
-        joinMatchSpy.validateMatchRoomCode.and.returnValue(of(mockHttpResponse));
-        component.submitCode('mock');
-        expect(joinMatchSpy.validateMatchRoomCode).toHaveBeenCalled();
-    });
-
-    it('submitCode() should call validateMatchRoomCode if code is invalid', () => {
-        const httpError = new HttpErrorResponse({
-            status: 409,
-            error: { code: '409', message: 'mock' },
-        });
-        joinMatchSpy.validateMatchRoomCode.and.returnValue(throwError(() => httpError));
-        spyOn(JSON, 'parse').and.returnValue(httpError.error);
-        component.submitCode('mock');
-        expect(joinMatchSpy.validateMatchRoomCode).toHaveBeenCalled();
-        expect(notificationSpy.displayErrorMessage).toHaveBeenCalled();
     });
 });

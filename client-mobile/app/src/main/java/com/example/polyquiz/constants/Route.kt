@@ -32,4 +32,7 @@ object Route {
 
     @Serializable
     object ResultsPage
+
+    @Serializable
+    object UserEditPage
 }

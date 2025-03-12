@@ -1,5 +1,5 @@
 import { CdkDragDrop, CdkDragEnd, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -8,7 +8,9 @@ import { QuestionCreationFormComponent } from '@app/components/question-creation
 import { BankStatus, QuestionStatus } from '@app/constants/feedback-messages';
 import { ManagementState } from '@app/constants/states';
 import { Game } from '@app/interfaces/game';
+import { PictureUploadData } from '@app/interfaces/picture-upload-data';
 import { Question } from '@app/interfaces/question';
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { BankService } from '@app/services/bank/bank.service';
 import { GameService } from '@app/services/game/game.service';
 import { NotificationService } from '@app/services/notification/notification.service';
@@ -59,6 +61,7 @@ export class GameModificationService {
         private readonly notificationService: NotificationService,
         private readonly questionService: QuestionService,
         private readonly router: Router,
+        private authenticationService: AuthenticationService,
     ) {}
 
     setGame(id: string) {
@@ -88,15 +91,52 @@ export class GameModificationService {
         this.markPendingChanges();
     }
 
+    getPictureUploads() {
+        const pictureUploads: PictureUploadData[] = [];
+        this.game.questions.forEach((question: Question, index: number) => {
+            if (question.pictureFile && this.authenticationService.isImageToUpload(question.pictureUrl)) {
+                pictureUploads.push({ index, pictureFile: question.pictureFile });
+                this.game.questions[index].pictureUrl = '';
+            }
+            this.game.questions[index].pictureFile = null;
+            delete this.game.questions[index]['pictureFile'];
+        });
+        return pictureUploads;
+    }
+
+    async updatePictureUploads(game: Game, pictureUploads: PictureUploadData[]) {
+        this.game = game;
+        for (let pictureUpload of pictureUploads) {
+            const pictureUrl = await this.authenticationService.uploadQuestionPicture(
+                this.game.questions[pictureUpload.index].id,
+                pictureUpload.pictureFile,
+            );
+            this.game.questions[pictureUpload.index].pictureUrl = pictureUrl;
+        }
+        this.gameService.submitGame(this.game, ManagementState.GameModify).subscribe({
+            next: (response: HttpResponse<string>) => {
+                if (!response.body) return;
+                this.resetPendingChanges();
+                this.router.navigate(['/admin/games/']);
+            },
+            error: (error: HttpErrorResponse) =>
+                this.notificationService.displayErrorMessage(
+                    `Le jeu n'a pas pu être ${this.state === ManagementState.GameModify ? 'modifié' : 'créé'}. 😿 \n ${error.message}`,
+                ),
+        });
+    }
+
     handleSubmit() {
+        const pictureUploads = this.getPictureUploads();
         if (this.game.title && this.game.description && this.game.duration) {
             this.gameService.submitGame(this.game, this.state).subscribe({
-                next: () => {
+                next: (response: HttpResponse<string>) => {
+                    if (!response.body) return;
+                    const updatedGame = JSON.parse(response.body);
                     this.notificationService.displaySuccessMessage(
-                        `Jeux ${this.state === ManagementState.GameModify ? 'modifié' : 'créé'} avec succès! 😺`,
+                        `Jeu ${this.state === ManagementState.GameModify ? 'modifié' : 'créé'} avec succès! 😺`,
                     );
-                    this.resetPendingChanges();
-                    this.router.navigate(['/admin/games/']);
+                    this.updatePictureUploads(updatedGame, pictureUploads);
                 },
                 error: (error: HttpErrorResponse) =>
                     this.notificationService.displayErrorMessage(
@@ -109,6 +149,7 @@ export class GameModificationService {
     dropInQuizList(event: CdkDragDrop<Question[]>) {
         this.isFirstInteraction = false;
         const droppedQuestion: Question = event.previousContainer.data[event.previousIndex];
+        droppedQuestion.creatorName = ''; // If we want to reset the author when we add a bank question to the game
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
             this.markPendingChanges();
@@ -216,6 +257,7 @@ export class GameModificationService {
     private addQuestionToBank(newQuestion: Question) {
         if (!this.isDuplicateQuestion(newQuestion, this.originalBankQuestions)) {
             this.bankService.addQuestion(newQuestion);
+            // TODO: If existing question already has image, it needs to be copied to the bank.
             this.originalBankQuestions.push(newQuestion);
         }
     }
@@ -226,13 +268,26 @@ export class GameModificationService {
     }
 
     private addQuestionToGame(newQuestion: Question) {
+        newQuestion.creatorName = '';
+
+        // Save old values and replace them to avoid submitting too large data to server
+        const pictureFile = newQuestion.pictureFile;
+        const pictureUrl = newQuestion.pictureUrl;
+
+        newQuestion.pictureUrl = '';
+        newQuestion.pictureFile = null;
+        delete newQuestion['pictureFile'];
+
         this.questionService.verifyQuestion(newQuestion).subscribe({
             next: () => {
+                newQuestion.pictureUrl = pictureUrl;
+                newQuestion.pictureFile = pictureFile;
                 if (!this.bankService.addToBank) this.notificationService.displaySuccessMessage(QuestionStatus.VERIFIED);
-                this.game.questions.push(newQuestion);
+                const questionCopy: Question = { ...newQuestion };
+                this.game.questions.push(questionCopy);
                 this.markPendingChanges();
                 if (this.bankService.addToBank) {
-                    this.originalBankQuestions.push(newQuestion);
+                    this.addQuestionToBank(newQuestion);
                 }
             },
             error: (error: HttpErrorResponse) => this.notificationService.displayErrorMessage(`${QuestionStatus.UNVERIFIED} \n ${error.message}`),

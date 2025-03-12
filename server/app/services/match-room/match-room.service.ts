@@ -1,17 +1,20 @@
 import { ExpiredTimerEvents } from '@app/constants/expired-timer-events';
 import { INVALID_CODE, LOCKED_ROOM } from '@app/constants/match-login-errors';
+import { QuestionType } from '@app/constants/question-types';
 import { Choice } from '@app/model/database/choice';
 import { Game } from '@app/model/database/game';
 import { Question } from '@app/model/database/question';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
 import { Player } from '@app/model/schema/player.schema';
 import { ChoiceTracker } from '@app/model/tally-trackers/choice-tracker/choice-tracker';
+import { QrCodeService } from '@app/services/qr-code/qr-code.service';
 import { QuestionStrategyContext } from '@app/services/question-strategy-context/question-strategy-context.service';
 import { TimeService } from '@app/services/time/time.service';
 import { COOLDOWN_TIME, COUNTDOWN_TIME, FACTOR, MAXIMUM_CODE_LENGTH } from '@common/constants/match-constants';
 import { MatchEvents } from '@common/events/match.events';
 import { TimerEvents } from '@common/events/timer.events';
 import { GameInfo } from '@common/interfaces/game-info';
+import { MatchPageInfo } from '@common/interfaces/match-page-info';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Server, Socket } from 'socket.io';
@@ -25,6 +28,7 @@ export class MatchRoomService {
         private readonly eventEmitter: EventEmitter2,
         private readonly timeService: TimeService,
         private readonly questionStrategyService: QuestionStrategyContext,
+        private qrCodeService: QrCodeService,
     ) {
         this.matchRooms = [];
     }
@@ -54,12 +58,15 @@ export class MatchRoomService {
 
     // allow more parameters to make method more reusable
     // eslint-disable-next-line max-params
-    addRoom(selectedGame: Game, socket: Socket, isClassicMode: boolean = true): MatchRoom {
+    async addRoom(selectedGame: Game, socket: Socket, isClassicMode: boolean = true): Promise<MatchRoom> {
         const isLocked = false;
         const isPlaying = false;
 
+        const roomCode = this.generateRoomCode();
+        const qrCodeUrl = await this.qrCodeService.generateQrCode(roomCode);
+
         const newRoom: MatchRoom = {
-            code: this.generateRoomCode(),
+            code: roomCode,
             hostSocket: socket,
             isLocked,
             isPlaying,
@@ -78,6 +85,7 @@ export class MatchRoomService {
             messages: [],
             isClassicMode,
             startTime: new Date(),
+            qrCodeUrl,
         };
         this.matchRooms.push(newRoom);
         this.setQuestionStrategy(newRoom);
@@ -96,12 +104,13 @@ export class MatchRoomService {
         this.getRoom(matchRoomCode).isLocked = !this.getRoom(matchRoomCode).isLocked;
     }
 
-    deleteRoom(matchRoomCode: string): void {
+    async deleteRoom(matchRoomCode: string): Promise<void> {
         this.timeService.terminateTimer(matchRoomCode);
         this.questionStrategyService.deleteRoom(matchRoomCode);
         this.matchRooms = this.matchRooms.filter((room: MatchRoom) => {
             return room.code !== matchRoomCode;
         });
+        this.qrCodeService.deleteQrCode(matchRoomCode);
     }
 
     getRoomCodeErrors(matchRoomCode: string): string {
@@ -150,8 +159,8 @@ export class MatchRoomService {
         const firstQuestion = matchRoom.game.questions[0];
         const gameDuration: number = matchRoom.game.duration;
         this.setQuestionStrategy(matchRoom);
-        matchRoom.currentQuestionAnswer = this.filterCorrectChoices(firstQuestion);
-        this.removeIsCorrectField(firstQuestion);
+        this.defineCurrentQuestionAnswer(matchRoomCode, firstQuestion);
+        this.removeAnswerField(firstQuestion);
         matchRoom.hostSocket.send(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
         const isClassicMode: boolean = matchRoom.isClassicMode;
         server.in(matchRoomCode).emit(MatchEvents.BeginQuiz, { firstQuestion, gameDuration, isClassicMode });
@@ -168,13 +177,29 @@ export class MatchRoomService {
 
         const nextQuestion = this.getCurrentQuestion(matchRoomCode);
         matchRoom.currentQuestion = nextQuestion;
-        matchRoom.currentQuestionAnswer = this.filterCorrectChoices(nextQuestion);
+
+        this.defineCurrentQuestionAnswer(matchRoomCode, matchRoom.currentQuestion);
         this.setQuestionStrategy(matchRoom);
 
-        this.removeIsCorrectField(nextQuestion);
+        this.removeAnswerField(nextQuestion);
         server.in(matchRoomCode).emit(MatchEvents.GoToNextQuestion, nextQuestion);
         matchRoom.hostSocket.send(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
         this.timeService.startTimer(server, matchRoomCode, matchRoom.questionDuration, ExpiredTimerEvents.QuestionTimerExpired);
+    }
+
+    defineCurrentQuestionAnswer(matchRoomCode: string, question: Question) {
+        const matchRoom: MatchRoom = this.getRoom(matchRoomCode);
+        switch (question.type) {
+            case QuestionType.MultipleChoice:
+                matchRoom.currentQuestionAnswer = this.filterCorrectChoices(question);
+                break;
+            case QuestionType.EstimatedAnswer:
+                matchRoom.currentQuestionAnswer = [String(question.estimatedParameters.correctAnswer)];
+                break;
+            default:
+                matchRoom.currentQuestionAnswer = [];
+                break;
+        }
     }
 
     resetPlayerSubmissionCount(matchRoomCode: string) {
@@ -210,6 +235,20 @@ export class MatchRoomService {
         playersWithMaxScore.forEach((player) => player.socket.emit(MatchEvents.Winner));
     }
 
+    getAllMatchesInfo() {
+        const matchPagesInfo: MatchPageInfo[] = [];
+        this.matchRooms.forEach((matchRoom: MatchRoom) => {
+            matchPagesInfo.push({
+                code: matchRoom.code,
+                isLocked: matchRoom.isLocked,
+                isPlaying: matchRoom.isPlaying,
+                gameTitle: matchRoom.game.title,
+                nPlayers: matchRoom.players.length,
+            });
+        });
+        return matchPagesInfo;
+    }
+
     private filterCorrectChoices(question: Question) {
         const correctChoices = [];
         question.choices.forEach((choice) => {
@@ -220,8 +259,9 @@ export class MatchRoomService {
         return correctChoices;
     }
 
-    private removeIsCorrectField(question: Question) {
+    private removeAnswerField(question: Question) {
         question.choices.forEach((choice: Choice) => delete choice.isCorrect);
+        question.estimatedParameters.correctAnswer = undefined;
     }
 
     private setQuestionStrategy(matchRoom: MatchRoom) {

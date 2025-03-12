@@ -45,6 +45,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         } else {
             socket.join(data.roomCode);
             const newPlayer = this.playerRoomService.addPlayer(socket, data.roomCode, data.username);
+            this.returnAllMatches();
             return { code: data.roomCode, username: newPlayer.username };
         }
     }
@@ -54,11 +55,22 @@ export class MatchGateway implements OnGatewayDisconnect {
         let selectedGame: Game = {} as Game;
         selectedGame = this.matchBackupService.getBackupGame(data.gameId);
 
-        // TODO : Remove all mention of randomMode
-        const newMatchRoom: MatchRoom = this.matchRoomService.addRoom(selectedGame, socket, data.isClassicMode);
+        const newMatchRoom: MatchRoom = await this.matchRoomService.addRoom(selectedGame, socket, data.isClassicMode);
 
         socket.join(newMatchRoom.code);
+        this.returnAllMatches();
         return { code: newMatchRoom.code };
+    }
+
+    @SubscribeMessage(MatchEvents.GetAllMatches)
+    getAllMatches(@ConnectedSocket() socket: Socket) {
+        const allMatches = this.matchRoomService.getAllMatchesInfo();
+        this.server.to(socket.id).emit(MatchEvents.ReturnAllMatches, allMatches);
+    }
+
+    returnAllMatches() {
+        const allMatches = this.matchRoomService.getAllMatchesInfo();
+        this.server.emit(MatchEvents.ReturnAllMatches, allMatches);
     }
 
     @SubscribeMessage(MatchEvents.RouteToResultsPage)
@@ -84,6 +96,7 @@ export class MatchGateway implements OnGatewayDisconnect {
     @SubscribeMessage(MatchEvents.ToggleLock)
     toggleLock(@ConnectedSocket() socket: Socket, @MessageBody() matchRoomCode: string) {
         this.matchRoomService.toggleLock(matchRoomCode);
+        this.returnAllMatches();
     }
 
     @SubscribeMessage(MatchEvents.BanUsername)
@@ -97,6 +110,7 @@ export class MatchGateway implements OnGatewayDisconnect {
             // this.server.in(playerToBan.socket.id).disconnectSockets();
         }
         this.sendPlayersData(socket, data.roomCode);
+        this.returnAllMatches();
     }
 
     @SubscribeMessage(MatchEvents.SendPlayersData)
@@ -111,6 +125,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         this.matchRoomService.markGameAsPlaying(roomCode);
         this.matchRoomService.startMatch(socket, this.server, roomCode);
         this.playerRoomService.setStateForAll(roomCode, PlayerState.noInteraction);
+        this.returnAllMatches();
     }
 
     @SubscribeMessage(MatchEvents.GoToNextQuestion)
@@ -176,18 +191,20 @@ export class MatchGateway implements OnGatewayDisconnect {
             this.deleteRoom(roomCode);
             return;
         }
-        if (isRoomEmpty && !room.hostSocket.connected) {
+        if (isRoomEmpty && (!room.hostSocket.connected || !room.hostSocket.rooms.has(roomCode))) {
             this.deleteRoom(roomCode);
             return;
         }
         this.handleSendPlayersData(roomCode);
         this.sendMessageOnDisconnect(roomCode, player.username);
+        this.returnAllMatches();
     }
 
     deleteRoom(matchRoomCode: string) {
         this.server.to(matchRoomCode).emit(MatchEvents.HostQuitMatch);
         // this.server.in(matchRoomCode).disconnectSockets(); // TODO: Check if we need to manually remove from room instead.
         this.matchRoomService.deleteRoom(matchRoomCode);
+        this.returnAllMatches();
     }
 
     handleSendPlayersData(matchRoomCode: string) {

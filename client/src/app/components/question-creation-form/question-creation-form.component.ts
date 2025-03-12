@@ -3,6 +3,7 @@ import { Component, EventEmitter, Inject, Input, OnChanges, OnInit, Optional, Ou
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { IMAGE_MAX_FILE_SIZE } from '@app/constants/image-constants';
 import { MAX_CHOICES, MIN_CHOICES, SNACK_BAR_DISPLAY_TIME, VALID_MARGIN_FRACTION } from '@app/constants/question-creation';
 import { ManagementState } from '@app/constants/states';
 import { Question } from '@app/interfaces/question';
@@ -31,6 +32,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
     checked: boolean;
     disabled: boolean;
     notificationShown: boolean = false;
+    loadedImageFile: File | null = null;
 
     // Allow more constructor parameters to reduce logic in the component
     // eslint-disable-next-line max-params
@@ -84,18 +86,15 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         }
     }
 
-    onSubmit() {
+    submitForm() {
         if (this.questionForm.valid) {
             const newQuestion: Question = this.questionForm.value;
+            newQuestion.pictureFile = this.loadedImageFile;
             newQuestion.lastModification = new Date().toLocaleDateString();
-
             if (this.modificationState === ManagementState.BankModify) {
                 this.modifyQuestionEvent.emit(newQuestion);
             } else {
                 this.createQuestionEvent.emit(newQuestion);
-            }
-            if (this.bankService.addToBank) {
-                this.bankService.addQuestion(newQuestion, true);
             }
         }
     }
@@ -122,6 +121,8 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
                 this.question.text = formValue?.text;
                 this.question.type = formValue?.type;
                 this.question.points = formValue?.points;
+                this.question.pictureUrl = formValue?.pictureUrl;
+                this.question.pictureFile = formValue?.pictureFile;
                 this.question.lastModification = new Date().toLocaleDateString();
                 if (this.question.type === QuestionType.MultipleChoice) {
                     this.question.choices = formValue?.choices;
@@ -156,6 +157,10 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         return this.modificationState !== ManagementState.GameModify && this.modificationState !== ManagementState.BankModify;
     }
 
+    public toggleBank() {
+        this.bankService.addToBank = this.bankService.addToBank ? false : true;
+    }
+
     private initializeForm(): void {
         this.bankService.addToBank = false;
         this.questionForm = this.formBuilder.group(
@@ -163,6 +168,8 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
                 text: ['', Validators.required],
                 points: ['', Validators.required],
                 type: ['', Validators.required],
+                pictureUrl: [''],
+                pictureFile: [],
             },
             { validators: this.questionService.validateChoicesLength },
         );
@@ -318,6 +325,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
             points: this.question?.points,
             type: this.question?.type,
             lastModification: this.question?.lastModification,
+            pictureUrl: this.question?.pictureUrl,
         });
         if (this.questionForm.get('type')?.value === QuestionType.MultipleChoice) {
             const choicesArray = this.questionForm.get('choices') as FormArray;
@@ -344,5 +352,30 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
                 margin: this.question.estimatedParameters?.margin,
             });
         }
+    }
+
+    public setPicture(event: Event) {
+        const eventTarget: HTMLInputElement | null = event.target as HTMLInputElement | null;
+        if (eventTarget?.files?.[0]) {
+            const file: File = eventTarget.files[0];
+            if (file.size > IMAGE_MAX_FILE_SIZE) {
+                // TODO: Transloco
+                this.openSnackBar('Le fichier est trop grand.', SNACK_BAR_DISPLAY_TIME);
+                return;
+            }
+            const reader = new FileReader();
+            reader.addEventListener('load', () => {
+                this.questionForm.get('pictureUrl')?.setValue(reader.result as null);
+                this.questionForm.get('pictureFile')?.setValue(file);
+                this.loadedImageFile = file;
+            });
+            reader.readAsDataURL(file);
+        }
+    }
+
+    public removePicture() {
+        this.questionForm.get('pictureUrl')?.setValue('');
+        this.questionForm.get('pictureFile')?.setValue(null);
+        this.loadedImageFile = null;
     }
 }

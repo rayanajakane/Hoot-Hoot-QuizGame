@@ -27,6 +27,12 @@ export class Question {
 
     @Prop({ required: false })
     lastModification: Date;
+
+    @Prop({ default: '' })
+    pictureUrl: string;
+
+    @Prop({ default: '' })
+    creatorName: string;
 }
 
 export const questionSchema = SchemaFactory.createForClass(Question);

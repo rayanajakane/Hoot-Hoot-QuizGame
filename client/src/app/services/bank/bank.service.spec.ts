@@ -12,15 +12,18 @@ import { getMockQuestion } from '@app/constants/question-mocks';
 import { ManagementState } from '@app/constants/states';
 import { Question } from '@app/interfaces/question';
 import { SortByLastModificationPipe } from '@app/pipes/sort-by-last-modification.pipe';
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { BankService } from '@app/services/bank/bank.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { QuestionService } from '@app/services/question/question.service';
+import { getTranslocoModule } from '@app/transloco-testing.module';
 import { of, throwError } from 'rxjs';
 
 describe('BankService', () => {
     let service: BankService;
     let questionSpy: jasmine.SpyObj<QuestionService>;
     let notificationSpy: jasmine.SpyObj<NotificationService>;
+    let authenticationSpy: jasmine.SpyObj<AuthenticationService>;
 
     const mockQuestions: Question[] = [
         {
@@ -29,6 +32,9 @@ describe('BankService', () => {
             text: 'Combien de motifs blancs et noirs y a-t-il respectivement sur un ballon de soccer?',
             points: 20,
             lastModification: '2024-11-13T20:20:39+00:00',
+            pictureUrl: '',
+            pictureFile: null,
+            creatorName: '',
         },
         {
             id: '2',
@@ -36,6 +42,9 @@ describe('BankService', () => {
             text: "Le ratio d'or est de 1:1.618, mais connaissez-vous le ratio d'argent?",
             points: 40,
             lastModification: '2018-01-20T14:17:39+00:00',
+            pictureUrl: '',
+            pictureFile: null,
+            creatorName: '',
         },
     ];
 
@@ -45,6 +54,9 @@ describe('BankService', () => {
         text: 'Quelle est la capitale du canada?',
         points: 20,
         lastModification: '2024-01-26T14:21:19+00:00',
+        pictureUrl: '',
+        pictureFile: null,
+        creatorName: '',
     };
     const mockHttpResponse: HttpResponse<string> = new HttpResponse({ status: 200, statusText: 'OK', body: JSON.stringify(newQuestionMock) });
     @Component({
@@ -64,6 +76,7 @@ describe('BankService', () => {
             'updateQuestion',
             'openCreateQuestionModal',
         ]);
+        authenticationSpy = jasmine.createSpyObj('AuthenticationService', ['isImageToUpload', 'uploadQuestionPicture']);
         notificationSpy = jasmine.createSpyObj('NotificationService', ['displayErrorMessage', 'displaySuccessMessage']);
         questionSpy.getAllQuestions.and.returnValue(of(mockQuestions));
         questionSpy.deleteQuestion.and.returnValue(of(mockHttpResponse));
@@ -71,10 +84,11 @@ describe('BankService', () => {
 
         TestBed.configureTestingModule({
             declarations: [SortByLastModificationPipe, QuestionListItemComponent, MockCreateQuestionComponent],
-            imports: [MatExpansionModule, MatIconModule, BrowserAnimationsModule, MatCardModule],
+            imports: [MatExpansionModule, MatIconModule, BrowserAnimationsModule, MatCardModule, getTranslocoModule()],
             providers: [
                 { provide: QuestionService, useValue: questionSpy },
                 { provide: NotificationService, useValue: notificationSpy },
+                { provide: AuthenticationService, useValue: authenticationSpy },
             ],
         });
         service = TestBed.inject(BankService);
@@ -123,7 +137,16 @@ describe('BankService', () => {
     });
 
     it('should return false when questionList is empty', () => {
-        const newQuestion: Question = { id: '1', text: 'New question', type: 'QCM', points: 10, lastModification: '' };
+        const newQuestion: Question = {
+            id: '1',
+            text: 'New question',
+            type: 'QCM',
+            points: 10,
+            lastModification: '',
+            pictureUrl: '',
+            pictureFile: null,
+            creatorName: '',
+        };
         const questionList: Question[] = [];
         const result = service['isDuplicateQuestion'](newQuestion, questionList);
         expect(result).toBeFalse();
@@ -141,6 +164,9 @@ describe('BankService', () => {
             type: 'QCM',
             points: 10,
             lastModification: '',
+            pictureUrl: '',
+            pictureFile: null,
+            creatorName: '',
         };
         const result = service['isDuplicateQuestion'](newQuestion, mockQuestions);
         expect(result).toBeTrue();
