@@ -1,5 +1,7 @@
+import { FriendsGateway } from '@app/gateways/friends/friends.gateway';
 import { FirebaseAuthService } from '@app/modules/firebase/firebase-auth/firebase-auth.service';
 import { FirebaseRepositoryService } from '@app/modules/firebase/firebase-repository/firebase-repository.service';
+import { FriendsEvents } from '@common/events/friends.events';
 import { UserIdName } from '@common/interfaces/user-id-name';
 import { Injectable } from '@nestjs/common';
 import { Database } from 'firebase-admin/lib/database/database';
@@ -11,6 +13,7 @@ export class FriendsService {
     constructor(
         private readonly firebaseService: FirebaseRepositoryService,
         private readonly firebaseAuthService: FirebaseAuthService,
+        private readonly friendsGateway: FriendsGateway,
     ) {
         this.database = this.firebaseService.database;
     }
@@ -18,11 +21,8 @@ export class FriendsService {
     async getAllUsers(): Promise<UserIdName[]> {
         console.log('Fetching all users...');
         const listUsersResult = await this.firebaseAuthService.getUsers();
-        console.log('listUsersResult', listUsersResult);
-
         const snapshot = await this.database.ref('users').once('value');
         const usersStatus = snapshot.exists() ? snapshot.val() : {};
-
         return listUsersResult.users.map((user) => ({
             id: user.uid,
             name: user.displayName || 'Unknown User',
@@ -96,6 +96,7 @@ export class FriendsService {
         await this.database.ref(`users/${fromUserId}/friend_requests_sent/${toUserId}`).set(true);
         await this.database.ref(`users/${toUserId}/friend_requests_received/${fromUserId}`).set(true);
         // TODO: add a notification for the recipient here.
+        this.friendsGateway.broadcastEvent(FriendsEvents.RequestSent, { from: fromUserId, to: toUserId });
     }
 
     async acceptFriendRequest(userId: string, friendId: string): Promise<void> {
@@ -103,20 +104,24 @@ export class FriendsService {
         await this.database.ref(`users/${friendId}/friends/${userId}`).set(true);
         await this.database.ref(`users/${userId}/friend_requests_received/${friendId}`).remove();
         await this.database.ref(`users/${friendId}/friend_requests_sent/${userId}`).remove();
+        this.friendsGateway.broadcastEvent(FriendsEvents.RequestAccepted, { user: userId, friend: friendId });
     }
 
     async rejectFriendRequest(userId: string, friendId: string): Promise<void> {
         await this.database.ref(`users/${userId}/friend_requests_received/${friendId}`).remove();
         await this.database.ref(`users/${friendId}/friend_requests_sent/${userId}`).remove();
+        this.friendsGateway.broadcastEvent(FriendsEvents.RequestRejected, { user: userId, friend: friendId });
     }
 
     async cancelRequest(userId: string, friendId: string): Promise<void> {
         await this.database.ref(`users/${userId}/friend_requests_sent/${friendId}`).remove();
         await this.database.ref(`users/${friendId}/friend_requests_received/${userId}`).remove();
+        this.friendsGateway.broadcastEvent(FriendsEvents.RequestCanceled, { user: userId, friend: friendId });
     }
 
     async removeFriend(userId: string, friendId: string): Promise<void> {
         await this.database.ref(`users/${userId}/friends/${friendId}`).remove();
         await this.database.ref(`users/${friendId}/friends/${userId}`).remove();
+        this.friendsGateway.broadcastEvent(FriendsEvents.FriendRemoved, { user: userId, friend: friendId });
     }
 }

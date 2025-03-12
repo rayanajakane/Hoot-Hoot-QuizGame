@@ -31,6 +31,7 @@ import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MongooseModule } from '@nestjs/mongoose';
+import { FriendsGateway } from './gateways/friends/friends.gateway';
 
 @Module({
     imports: [
@@ -70,6 +71,7 @@ import { MongooseModule } from '@nestjs/mongoose';
         EstimatedAnswerStrategy,
         QuestionPicturesDeletionService,
         FriendsService,
+        FriendsGateway,
         QrCodeService,
     ],
 })
