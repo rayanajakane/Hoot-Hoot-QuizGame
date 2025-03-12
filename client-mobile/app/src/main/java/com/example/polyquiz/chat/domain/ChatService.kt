@@ -70,7 +70,9 @@ object ChatService {
         }
     }
     fun sendGeneralMessage(newMessage: Message) {
-        mSocket.emit(ChatEvents.GENERAL_MESSAGE.value, newMessage)
+        val newMessageStringified = Gson().toJson(newMessage)
+        val newMessageJsonObject = JSONObject(newMessageStringified)
+        mSocket.emit(ChatEvents.GENERAL_MESSAGE.value, newMessageJsonObject)
     }
 
     fun sendRoomMessage(roomCode: String, newMessage: Message) {
@@ -92,7 +94,7 @@ object ChatService {
             sendMessage(newMessage, roomCode)
             val newMessageStringified = Gson().toJson(newMessage)
             val newMessageJsonObject = JSONObject(newMessageStringified)
-            mSocket.emit(ChatEvents.GENERAL_MESSAGE.value, newMessageJsonObject)
+            // mSocket.emit(ChatEvents.GENERAL_MESSAGE.value, newMessageJsonObject)
         }
     }
     fun reactToMessage(messageId: String, chatEmoji: ChatEmoji, userId: String, username: String, roomCode: String?) {
