@@ -58,7 +58,6 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit) {
             gamesIsValid = true
             matchService.currentGame = selectedGame
             matchService.saveBackupGame(selectedGame!!.id!!)
-            matchService.createMatch()
         }
     }
 
@@ -79,7 +78,6 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit) {
             val gson = Gson()
             val game = gson.fromJson(gson.toJson(response), Game::class.java)
             selectedGame = game
-            println(selectedGame)
             revalidateGame()
         }, onError = {})
 
@@ -88,7 +86,6 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit) {
     fun createMatch(context: MatchContext){
         contextService.setContext(context)
         reloadSelectedGame()
-        println(context)
     }
 
     Row(
