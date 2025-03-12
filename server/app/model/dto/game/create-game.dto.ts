@@ -10,6 +10,11 @@ export class CreateGameDto {
     id: string;
 
     @ApiProperty()
+    @IsOptional()
+    @Prop({ required: false })
+    originalId: string;
+
+    @ApiProperty()
     @IsString()
     @Prop({ required: true })
     title: string;
@@ -32,6 +37,11 @@ export class CreateGameDto {
     @IsOptional()
     @Prop({ required: false })
     isVisible: boolean;
+
+    @ApiProperty()
+    @IsOptional()
+    @Prop({ required: false })
+    nMatchesPlayed: number;
 
     @ApiProperty()
     @Prop({ required: true })

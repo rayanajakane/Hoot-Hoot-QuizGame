@@ -4,11 +4,12 @@ import com.example.polyquiz.match.domain.Question
 
 data class Game(
     val id: String? ="",
-    //TODO: add mode
+    val originalId: String,
     val title: String,
     val description: String,
-    val questions: List<Question>,
+    val questions: List<Question>? = null,
     val lastModification: String?,
     val isVisible: Boolean?,
+    val nMatchesPlayed: Number,
     val duration: Number,
 )

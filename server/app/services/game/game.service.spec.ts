@@ -148,6 +148,7 @@ describe('GameService', () => {
     });
     it('addGame should not add the game to the database if it is invalid', async () => {
         const mockGame = new Game();
+        mockGame.nMatchesPlayed = 0;
         const spyGet = jest.spyOn(service, 'getGameByTitle').mockResolvedValue(null);
         const mockErrorMessages = ['mock'];
         const spyCompleteIsCorrect = jest.spyOn(gameCreationService, 'completeIsCorrectField').mockReturnValue(mockGame);
@@ -212,6 +213,18 @@ describe('GameService', () => {
             expect(error).toBe(`${ERROR_DEFAULT} `);
         });
         expect(spyGet).toHaveBeenCalledWith(mockVisibleGame.id);
+    });
+
+    it('updateNMatchesPlayed() should update game nMatchesPlayed', async () => {
+        const mockGame = getMockGame();
+        const expectedResult = mockGame;
+        expectedResult.nMatchesPlayed++;
+        const spyGet = jest.spyOn(service, 'getGameById').mockResolvedValue(mockGame);
+        const spyModel = jest.spyOn(gameModel, 'findOneAndUpdate').mockResolvedValue(expectedResult);
+        const upsertedGame = await service.updateNMatchesPlayed(mockGame.id);
+        expect(upsertedGame).toEqual(expectedResult);
+        expect(spyGet).toHaveBeenCalled();
+        expect(spyModel).toHaveBeenCalledWith({ id: mockGame.id }, mockGame, { new: true, upsert: true });
     });
 
     it('upsertGame() should upsert the game if it is valid', async () => {
