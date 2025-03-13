@@ -247,8 +247,6 @@ export class MatchRoomService {
 
     toggleLock() {
         // TODO: Migrate the logic to server, use UserID instead (need to track Host User ID in match room)
-        if (this.username === HOST_USERNAME) {
-            this.socketService.send(MatchEvents.ToggleLock, this.matchRoomCode);
-        }
+        this.socketService.send(MatchEvents.ToggleLock, this.matchRoomCode);
     }
 }

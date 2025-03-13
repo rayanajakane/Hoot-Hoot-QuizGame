@@ -1,0 +1,59 @@
+#main-container {
+    padding: 1rem 8rem;
+    margin-bottom: 25vh;
+}
+
+#join-with-code-container {
+    display: flex;
+    flex-direction: row;
+}
+
+#join-button {
+    height: 3.5rem;
+}
+
+.matches-container {
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+    white-space: nowrap;
+    margin-bottom: 2rem;
+}
+
+.match-card {
+    display: flex;
+    width: 15vw;
+    flex-direction: column;
+    padding: 0.5rem 1rem 1rem 1rem;
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+    text-wrap: wrap;
+}
+
+.join-existing-match-button {
+    padding: 1rem;
+    width: 6rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.nPlayers {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.no-matches-container {
+    width: 100%;
+    display: flex;
+}
+
+.no-matches-container p {
+    font-style: italic;
+}

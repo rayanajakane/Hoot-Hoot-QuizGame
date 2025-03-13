@@ -8,6 +8,7 @@ import { Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Game } from '@app/interfaces/game';
 import { WaitPageComponent } from '@app/pages/wait-page/wait-page.component';
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { MatchService } from '@app/services/match/match.service';
@@ -30,10 +31,12 @@ describe('WaitPageComponent', () => {
     let timeSpy: SpyObj<TimeService>;
     let questionContextSpy: SpyObj<MatchContextService>;
     let notificationServiceSpy: SpyObj<NotificationService>;
+    let authenticationServiceSpy: SpyObj<AuthenticationService>;
 
     const routes: Routes = [{ path: 'home', component: WaitPageComponent }];
 
     beforeEach(() => {
+        authenticationServiceSpy = jasmine.createSpyObj('AuthenticationService', ['getImageDownloadUrl']);
         matchRoomSpy = jasmine.createSpyObj('MatchRoomService', [
             'getUsername',
             'banUsername',
@@ -47,6 +50,7 @@ describe('WaitPageComponent', () => {
             'goToNextQuestion',
             'gameOver',
             'disconnectFromRoom',
+            'getRoomCode',
         ]);
         matchSpy = jasmine.createSpyObj('MatchService', ['']);
         questionContextSpy = jasmine.createSpyObj('QuestionContextService', ['setContext', 'getContext']);
@@ -63,6 +67,7 @@ describe('WaitPageComponent', () => {
                 { provide: MatchContextService, useValue: questionContextSpy },
                 { provide: TimeService, useValue: timeSpy },
                 { provide: NotificationService, useValue: notificationServiceSpy },
+                { provide: AuthenticationService, useValue: authenticationServiceSpy },
             ],
         });
 
@@ -75,7 +80,7 @@ describe('WaitPageComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should initalize correctly for the host', () => {
+    it('should initalize correctly for the host', async () => {
         const mockGame: Game = {
             id: '1',
             title: 'test',
@@ -88,7 +93,7 @@ describe('WaitPageComponent', () => {
         spyOnProperty(component, 'isHost').and.returnValue(true);
         spyOnProperty(component, 'currentGame').and.returnValue(mockGame);
 
-        component.ngOnInit();
+        await component.ngOnInit();
 
         expect(matchRoomSpy.gameTitle).toEqual(mockGame.title);
     });

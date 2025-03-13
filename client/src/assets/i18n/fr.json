@@ -69,7 +69,9 @@
         "games-list-label": "Liste des jeux",
         "game-details-label": "Détails du jeu ",
         "select-game-label": "Sélectionner un jeu dans la liste des jeux",
-        "time-per-QCM": "Temps par QCM:"
+        "time-per-QCM": "Temps par QCM:",
+        "popular-games": "Jeux populaires",
+        "n-matches-played": "Parties jouées:"
     },
     "admin-main-page": {
         "admin-games": "Administration des jeux",
@@ -82,5 +84,14 @@
     "common": {
         "cancel": "Annuler",
         "play": "Jouer"
+    },
+    "join": {
+        "room-code": "Code de la partie",
+        "waiting-matches": "Parties en attente",
+        "unlocked-matches": "Parties déverrouillées",
+        "locked-matches": "Parties verrouillées",
+        "playing-matches": "Parties en cours",
+        "no-match": "Aucune partie à afficher",
+        "join-action": "Joindre"
     }
 }

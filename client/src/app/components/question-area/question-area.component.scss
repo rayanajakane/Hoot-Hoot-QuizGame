@@ -214,6 +214,9 @@ img {
 
 .one-column {
     display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 .two-columns {
     display: flex;

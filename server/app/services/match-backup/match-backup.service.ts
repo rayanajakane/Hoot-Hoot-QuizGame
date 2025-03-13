@@ -85,4 +85,9 @@ export class MatchBackupService {
         });
         return JSON.parse(stringifiedGame);
     }
+
+    updateNMatchesPlayed(originalGameId: string) {
+        // Original Game ID refers to the initial game ID (not the backup game ID)
+        this.gameService.updateNMatchesPlayed(originalGameId);
+    }
 }

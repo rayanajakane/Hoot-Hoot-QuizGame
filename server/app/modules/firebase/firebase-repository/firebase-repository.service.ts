@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { app } from 'firebase-admin';
 import { Database } from 'firebase-admin/lib/database/database';
 import { Storage } from 'firebase-admin/lib/storage/storage';
+import { getDownloadURL } from 'firebase-admin/storage';
 
 // REFERENCE: https://medium.com/@elangoram1998/getting-started-with-firebase-admin-in-nest-js-71f676e73e6
 @Injectable()
@@ -18,12 +19,32 @@ export class FirebaseRepositoryService {
         this.storage = firebaseApp.storage();
     }
 
-    async deleteImage(url: string) {
+    // Reference: https://stackoverflow.com/questions/55111346/upload-file-to-firebase-storage-using-admin-sdk
+    async uploadImage(path: string, imageLocalUrl: any): Promise<string> {
+        const fileContent = await fetch(imageLocalUrl);
+        const buffer = await fileContent.arrayBuffer();
+        const bf = Buffer.from(buffer);
+
+        const fileRef = this.storage.bucket().file(path);
+
+        await fileRef.save(bf, {
+            contentType: 'image/png',
+        });
+
+        const downloadUrl = await getDownloadURL(fileRef);
+        return downloadUrl;
+    }
+
+    async deleteQuestionImage(url: string) {
         // Inspired by: https://stackoverflow.com/questions/47375945/delete-firebase-storage-image-url-with-download-url
         let name = url.substring(url.indexOf('%2F') + 3, url.indexOf('?'));
         name = name.replace('%20', ' ');
+        await this.deleteImage(`questionPictures/${name}`);
+    }
+
+    async deleteImage(path: string) {
         try {
-            await this.storage.bucket().file(`questionPictures/${name}`).delete();
+            await this.storage.bucket().file(path).delete();
         } catch (error) {
             // IMPORTANT to catch to avoid server crash
             console.log(error);

@@ -18,4 +18,6 @@ export enum MatchEvents {
     HostQuitMatch = 'hostQuitMatch',
     Disconnect = 'disconnectFromRoom',
     Error = 'error',
+    GetAllMatches = 'getAllMatches',
+    ReturnAllMatches = 'returnAllMatches',
 }

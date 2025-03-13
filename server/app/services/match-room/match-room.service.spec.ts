@@ -20,6 +20,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { SinonStubbedInstance, createStubInstance } from 'sinon';
 import { Socket } from 'socket.io';
+import { QrCodeService } from '../qr-code/qr-code.service';
 import { MatchRoomService } from './match-room.service';
 
 const MAXIMUM_CODE_LENGTH = 4;
@@ -28,6 +29,7 @@ const MOCK_DATE = new Date(MOCK_YEAR, 1, 1);
 describe('MatchRoomService', () => {
     let service: MatchRoomService;
     let timeService: TimeService;
+    let qrCodeSpy: SinonStubbedInstance<QrCodeService>;
     let questionStrategyService: QuestionStrategyContext;
     let socket: SinonStubbedInstance<Socket>;
     let startTimerMock: jest.Mock;
@@ -39,6 +41,7 @@ describe('MatchRoomService', () => {
 
     beforeEach(async () => {
         socket = createStubInstance<Socket>(Socket);
+        qrCodeSpy = createStubInstance(QrCodeService);
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 MatchRoomService,
@@ -48,6 +51,10 @@ describe('MatchRoomService', () => {
                 MultipleChoiceStrategy,
                 LongAnswerStrategy,
                 EstimatedAnswerStrategy,
+                {
+                    provide: QrCodeService,
+                    useValue: qrCodeSpy,
+                },
             ],
         }).compile();
 
@@ -141,10 +148,11 @@ describe('MatchRoomService', () => {
         expect(result).toEqual(0);
     });
 
-    it('addRoom() should generate a room code add the new MatchRoom in the rooms list', () => {
+    it('addRoom() should generate a room code add the new MatchRoom in the rooms list', async () => {
         service.matchRooms = [];
         const generateSpy = jest.spyOn(service, 'generateRoomCode').mockReturnValue(MOCK_ROOM_CODE);
-        const strategySpy = jest.spyOn<any, any>(service, 'setQuestionStrategy').mockImplementation();
+        const strategySpy = jest.spyOn(service as any, 'setQuestionStrategy').mockReturnThis();
+        jest.spyOn(qrCodeSpy, 'generateQrCode').mockResolvedValue('');
         const mockGame = getMockGame();
         const expectedResult: MatchRoom = {
             code: MOCK_ROOM_CODE,
@@ -166,13 +174,14 @@ describe('MatchRoomService', () => {
             messages: [],
             isClassicMode: true,
             startTime: new Date(),
+            qrCodeUrl: '',
         };
 
-        const result = service.addRoom(mockGame, socket);
+        const result = await service.addRoom(mockGame, socket);
         expect(generateSpy).toHaveBeenCalled();
-        expect(strategySpy).toHaveBeenCalled();
         expect(result).toEqual(expectedResult);
         expect(service.matchRooms.length).toEqual(1);
+        expect(strategySpy).toHaveBeenCalled();
     });
 
     it('getRoomCodeByHostSocket() should return code of the room where the host belongs', () => {
@@ -213,7 +222,9 @@ describe('MatchRoomService', () => {
             players: [],
             messages: [],
             hostSocket: undefined,
+            qrCodeUrl: '',
         } as MatchRoom;
+        jest.spyOn(qrCodeSpy, 'deleteQrCode').mockResolvedValue();
         service.matchRooms = [otherMatchRoom, deletedMatchRoom];
         service.deleteRoom(MOCK_ROOM_CODE);
         expect(service.matchRooms.length).toEqual(1);

@@ -154,7 +154,13 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
     }
 
     isActiveSubmit() {
-        return this.modificationState !== ManagementState.GameModify && this.modificationState !== ManagementState.BankModify;
+        return true;
+        // Previously used to forbid changing question type
+        // return this.modificationState !== ManagementState.GameModify && this.modificationState !== ManagementState.BankModify;
+    }
+
+    public toggleBank() {
+        this.bankService.addToBank = this.bankService.addToBank ? false : true;
     }
 
     private initializeForm(): void {

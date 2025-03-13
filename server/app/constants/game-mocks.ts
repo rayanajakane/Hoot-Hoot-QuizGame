@@ -7,11 +7,13 @@ const gameYear = 2020;
 
 const getMockGame = (): Game => ({
     id: getRandomString(),
+    originalId: getRandomString(),
     title: getRandomString(),
     description: getRandomString(),
     lastModification: new Date(gameYear, 1, 1),
     duration: 30,
     isVisible: true,
+    nMatchesPlayed: 0,
     questions: [getMockQuestion()],
 });
 
@@ -25,11 +27,13 @@ GAME_VALID_QUESTION.questions = [VALID_QUESTION];
 const pastYear = 2020;
 const GAME_WITH_IS_CORRECT_FIELD: Game = {
     id: '',
+    originalId: '',
     title: '',
     description: '',
     lastModification: new Date(pastYear, 1, 1),
     duration: 0,
     isVisible: true,
+    nMatchesPlayed: 0,
     questions: [
         {
             id: '0',
@@ -86,11 +90,13 @@ const GAME_WITH_IS_CORRECT_FIELD: Game = {
 
 const GAME_WITHOUT_IS_CORRECT_FIELD: Game = {
     id: '',
+    originalId: '',
     title: '',
     description: '',
     lastModification: new Date(pastYear, 1, 1),
     duration: 0,
     isVisible: true,
+    nMatchesPlayed: 0,
     questions: [
         {
             id: '0',

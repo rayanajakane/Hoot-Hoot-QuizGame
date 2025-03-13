@@ -22,6 +22,7 @@ import { GameService } from '@app/services/game/game.service';
 import { MatchBackupService } from '@app/services/match-backup/match-backup.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { PlayerRoomService } from '@app/services/player-room/player-room.service';
+import { QrCodeService } from '@app/services/qr-code/qr-code.service';
 import { QuestionPicturesDeletionService } from '@app/services/question-pictures-deletion/question-pictures-deletion.service';
 import { QuestionStrategyContext } from '@app/services/question-strategy-context/question-strategy-context.service';
 import { QuestionService } from '@app/services/question/question.service';
@@ -71,6 +72,7 @@ import { FriendsGateway } from './gateways/friends/friends.gateway';
         QuestionPicturesDeletionService,
         FriendsService,
         FriendsGateway,
+        QrCodeService,
     ],
 })
 export class AppModule {}
