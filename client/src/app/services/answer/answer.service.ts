@@ -101,7 +101,6 @@ export class AnswerService {
     updateLongAnswer() {
         if (!this.isSelectionEnabled) return;
         const userInfo = { userId: this.matchRoomService.getUserId(), roomCode: this.matchRoomService.getRoomCode() };
-        console.log(userInfo);
         const choiceInfo: ChoiceInfo = { choice: this.currentLongAnswer, userInfo };
         this.socketService.send(AnswerEvents.UpdateLongAnswer, choiceInfo);
     }

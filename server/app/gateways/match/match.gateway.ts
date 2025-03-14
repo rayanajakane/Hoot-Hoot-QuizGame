@@ -54,7 +54,6 @@ export class MatchGateway implements OnGatewayDisconnect {
     async createRoom(@ConnectedSocket() socket: Socket, @MessageBody() data: { gameId: string; hostId: string; isClassicMode: boolean }) {
         let selectedGame: Game = {} as Game;
         selectedGame = this.matchBackupService.getBackupGame(data.gameId);
-        console.log(data.hostId);
         const newMatchRoom: MatchRoom = await this.matchRoomService.addRoom(selectedGame, socket, data.hostId, data.isClassicMode);
 
         socket.join(newMatchRoom.code);
@@ -198,7 +197,6 @@ export class MatchGateway implements OnGatewayDisconnect {
             return;
         }
         this.handleSendPlayersData(roomCode);
-        console.log('Player disconnected:', player.username);
         // this.sendMessageOnDisconnect(roomCode, player.username);
         this.returnAllMatches();
     }
@@ -211,8 +209,6 @@ export class MatchGateway implements OnGatewayDisconnect {
     }
 
     handleSendPlayersData(matchRoomCode: string) {
-        console.log('Sending players data');
-        console.log(this.playerRoomService.getPlayersStringified(matchRoomCode));
         this.server.to(matchRoomCode).emit(MatchEvents.FetchPlayersData, this.playerRoomService.getPlayersStringified(matchRoomCode));
     }
 
