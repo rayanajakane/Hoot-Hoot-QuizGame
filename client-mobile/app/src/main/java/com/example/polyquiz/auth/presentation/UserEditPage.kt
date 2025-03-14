@@ -36,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -65,7 +66,8 @@ fun UserEditPage(
     var currentLang by remember { mutableStateOf(Locale.getDefault().language) }
 
     val email by authViewModel.email.collectAsState()
-    val username by authViewModel.username.collectAsState()
+    var username by remember { mutableStateOf(authViewModel.getUsername())}
+    val usernameError by authViewModel.usernameError.collectAsState()
     val oldUsername = authViewModel.getUsername()
 
     var expandedTheme by remember { mutableStateOf(false) }
@@ -159,7 +161,6 @@ fun UserEditPage(
                                 onValueChange = {
                                     //TODO
                                 },
-//                            isError = emailError.isNotEmpty(),
                                 singleLine = true,
                                 enabled = false,
                                 label = { Text(stringResource(R.string.email)) },
@@ -169,13 +170,17 @@ fun UserEditPage(
                             TextField(
                                 value = username,
                                 onValueChange = {
+                                    username = it
                                     authViewModel.updateUsername(it, context)
                                 },
-//                            isError = usernameError.isNotEmpty(),
+                                isError = usernameError.isNotEmpty(),
                                 singleLine = true,
                                 label = { Text(stringResource(R.string.username)) },
                                 modifier = Modifier.fillMaxWidth()
                             )
+                            if(usernameError.isNotEmpty()) {
+                                Text(text = usernameError, color = Color.Red)
+                            }
                             Spacer(modifier = Modifier.height(8.dp))
                             // REF : https://composables.com/material3/exposeddropdownmenubox
                             // Visual themes menu
@@ -278,7 +283,7 @@ fun UserEditPage(
 
                                     // Change username
                                     if(oldUsername != username) {
-                                        authViewModel.changeUsername(username, oldUsername)
+                                        authViewModel.changeUsername(username, authViewModel.getUsername())
                                     }
                                 },
                                 colors = ButtonDefaults.buttonColors(
