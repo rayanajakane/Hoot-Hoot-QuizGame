@@ -18,18 +18,18 @@ export class AnswerGateway {
 
     @SubscribeMessage(AnswerEvents.SelectChoice)
     selectChoice(@ConnectedSocket() socket: Socket, @MessageBody() choice: ChoiceInfo) {
-        this.answerService.updateChoice(choice.choice, true, choice.userInfo.username, choice.userInfo.roomCode);
+        this.answerService.updateChoice(choice.choice, true, choice.userInfo.userId, choice.userInfo.roomCode);
         this.playerRoomService.setState(socket.id, PlayerState.firstInteraction);
     }
 
     @SubscribeMessage(AnswerEvents.DeselectChoice)
     deselectChoice(@ConnectedSocket() socket: Socket, @MessageBody() choice: ChoiceInfo) {
-        this.answerService.updateChoice(choice.choice, false, choice.userInfo.username, choice.userInfo.roomCode);
+        this.answerService.updateChoice(choice.choice, false, choice.userInfo.userId, choice.userInfo.roomCode);
     }
 
     @SubscribeMessage(AnswerEvents.SubmitAnswer)
     submitAnswer(@ConnectedSocket() socket: Socket, @MessageBody() userInfo: UserInfo) {
-        this.answerService.submitAnswer(userInfo.username, userInfo.roomCode);
+        this.answerService.submitAnswer(userInfo.userId, userInfo.roomCode);
         this.playerRoomService.setState(socket.id, PlayerState.finalAnswer);
     }
 
@@ -40,7 +40,7 @@ export class AnswerGateway {
 
     @SubscribeMessage(AnswerEvents.UpdateLongAnswer)
     updateLongAnswer(@ConnectedSocket() socket: Socket, @MessageBody() choice: ChoiceInfo) {
-        this.answerService.updateChoice(choice.choice, true, choice.userInfo.username, choice.userInfo.roomCode);
+        this.answerService.updateChoice(choice.choice, true, choice.userInfo.userId, choice.userInfo.roomCode);
         this.playerRoomService.setState(socket.id, PlayerState.firstInteraction);
     }
 }

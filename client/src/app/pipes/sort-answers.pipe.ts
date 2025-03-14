@@ -6,6 +6,6 @@ import { LongAnswerInfo } from '@common/interfaces/long-answer-info';
 })
 export class SortAnswersPipe implements PipeTransform {
     transform(info: LongAnswerInfo[]): LongAnswerInfo[] {
-        return info.sort((firstInfo: LongAnswerInfo, secondInfo: LongAnswerInfo) => firstInfo.username.localeCompare(secondInfo.username));
+        return info.sort((firstInfo: LongAnswerInfo, secondInfo: LongAnswerInfo) => firstInfo.userId.localeCompare(secondInfo.userId));
     }
 }

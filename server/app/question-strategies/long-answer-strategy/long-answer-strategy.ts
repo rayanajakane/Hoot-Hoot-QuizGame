@@ -32,7 +32,7 @@ export class LongAnswerStrategy extends QuestionStrategy {
             const score = parseInt(grade.score, 10);
             gradeTracker.incrementCount(grade.score);
 
-            const currentPlayer = players.find((player) => player.username === grade.username);
+            const currentPlayer = players.find((player) => player.id === grade.userId);
             currentPlayer.answerCorrectness = score;
             currentPlayer.score += currentQuestionPoints * (score / MULTIPLICATION_FACTOR);
         });
@@ -81,7 +81,8 @@ export class LongAnswerStrategy extends QuestionStrategy {
         const playerAnswers = playingPlayers.map((player: Player) => {
             const answer: string = (player.answer as LongAnswer).answer;
             const username: string = player.username;
-            const longAnswerInfo: LongAnswerInfo = { username, answer, score: null };
+            const userId: string = player.id;
+            const longAnswerInfo: LongAnswerInfo = { userId, username, answer, score: null };
             player.socket.emit(AnswerEvents.TimesUp);
             return longAnswerInfo;
         });

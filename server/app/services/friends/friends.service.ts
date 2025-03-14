@@ -19,7 +19,6 @@ export class FriendsService {
     }
 
     async getAllUsers(): Promise<UserIdName[]> {
-        console.log('Fetching all users...');
         const listUsersResult = await this.firebaseAuthService.getUsers();
         const snapshot = await this.database.ref('users').once('value');
         const usersStatus = snapshot.exists() ? snapshot.val() : {};
@@ -92,7 +91,6 @@ export class FriendsService {
     }
 
     async sendFriendRequest(fromUserId: string, toUserId: string): Promise<void> {
-        console.log(`Sending friend request from ${fromUserId} to ${toUserId}`);
         await this.database.ref(`users/${fromUserId}/friend_requests_sent/${toUserId}`).set(true);
         await this.database.ref(`users/${toUserId}/friend_requests_received/${fromUserId}`).set(true);
         // TODO: add a notification for the recipient here.
