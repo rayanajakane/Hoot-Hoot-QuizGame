@@ -15,11 +15,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.platform.LocalContext
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.example.polyquiz.ui.theme.AndroidGreen
 import com.example.polyquiz.ui.theme.BrightRed
 import com.example.polyquiz.ui.theme.HotPink
 import com.example.polyquiz.ui.theme.LightGray
-
+import com.example.polyquiz.constants.PresetAvatar
 
 @Composable
 fun FriendsListItem(
@@ -41,9 +44,11 @@ fun FriendsListItem(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-            val painter = rememberImagePainter(
-                data = user.photoUrl ?: "https://via.placeholder.com/40",
-                builder = { crossfade(true) }
+            val painter = rememberAsyncImagePainter(
+                ImageRequest.Builder(LocalContext.current)
+                    .data(data = user.photoUrl ?: PresetAvatar.DEFAULT.value).apply(block = fun ImageRequest.Builder.() {
+                        crossfade(true)
+                    }).build()
             )
             Image(
                 painter = painter,

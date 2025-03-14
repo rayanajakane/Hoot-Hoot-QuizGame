@@ -39,16 +39,19 @@ export class FriendsSearchComponent implements OnInit {
         this.friendsService.getSentRequests(this.currentUserID).subscribe((sent) => (this.sentRequests = sent));
         this.friendsService.getAllUsers(this.currentUserID).subscribe((users) => {
             this.allUsers = users;
-            this.searchResults = this.allUsers.filter((user) => !this.isFriend(user));
+            // this.searchResults = this.allUsers.filter((user) => !this.isFriend(user));
+            this.searchResults = this.allUsers;
         });
     }
 
     searchUsers(query: string): void {
         if (!query.trim()) {
-            this.searchResults = this.allUsers.filter((user) => !this.isFriend(user));
+            // this.searchResults = this.allUsers.filter((user) => !this.isFriend(user));
+            this.searchResults = this.allUsers;
         } else {
             const q = query.toLowerCase();
-            this.searchResults = this.allUsers.filter((user) => (user.name || '').toLowerCase().includes(q) && !this.isFriend(user));
+            // this.searchResults = this.allUsers.filter((user) => (user.name || '').toLowerCase().includes(q) && !this.isFriend(user));
+            this.searchResults = this.allUsers.filter((user) => (user.name || '').toLowerCase().includes(q));
         }
     }
 
