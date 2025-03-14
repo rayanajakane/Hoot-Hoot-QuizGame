@@ -2,6 +2,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { CommunicationService } from '@app/services/communication/communication.service';
+import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { FriendsEvents } from '@common/events/friends.events';
 import { FriendsInfo } from '@common/interfaces/friends-info';
@@ -23,11 +24,13 @@ export class FriendsService extends CommunicationService<UserIdName> {
         http: HttpClient,
         private readonly authService: AuthenticationService,
         private readonly socketHandler: SocketHandlerService,
+        private readonly notificationService: NotificationService,
     ) {
         super(http, 'friends');
         this.loadUsers();
         this.listenToAllFriendEvents((update, event) => {
             this.loadUsers();
+            this.notificationService.displaySuccessMessage(`${event} from ${update.friend}`);
         });
     }
 
@@ -35,8 +38,11 @@ export class FriendsService extends CommunicationService<UserIdName> {
         this.handleRequest(`send/${this.authService.userId}/${toUserId}`)
             .pipe(take(1))
             .subscribe({
-                next: () => this.loadUsers(),
-                error: (error) => console.error('Failed to send friend request', error),
+                next: () => {
+                    this.loadUsers();
+                    this.notificationService.displaySuccessMessage('Friend request sent 🎉');
+                },
+                error: (error) => this.notificationService.displayErrorMessage(`Failed to send friend request 😿\n ${error.message}`),
             });
     }
 
@@ -44,8 +50,11 @@ export class FriendsService extends CommunicationService<UserIdName> {
         this.handleRequest(`accept/${this.authService.userId}/${friendId}`)
             .pipe(take(1))
             .subscribe({
-                next: () => this.loadUsers(),
-                error: (error) => console.error('Failed to accept friend request', error),
+                next: () => {
+                    this.loadUsers();
+                    this.notificationService.displaySuccessMessage('Friend request accepted 🎉');
+                },
+                error: (error) => this.notificationService.displayErrorMessage(`Failed to accept friend request 😿\n ${error.message}`),
             });
     }
 
@@ -53,8 +62,11 @@ export class FriendsService extends CommunicationService<UserIdName> {
         this.handleRequest(`reject/${this.authService.userId}/${friendId}`)
             .pipe(take(1))
             .subscribe({
-                next: () => this.loadUsers(),
-                error: (error) => console.error('Failed to reject friend request', error),
+                next: () => {
+                    this.loadUsers();
+                    this.notificationService.displaySuccessMessage('Friend request rejected');
+                },
+                error: (error) => this.notificationService.displayErrorMessage(`Failed to reject friend request 😿\n ${error.message}`),
             });
     }
 
@@ -62,8 +74,11 @@ export class FriendsService extends CommunicationService<UserIdName> {
         this.delete(`cancel/${this.authService.userId}/${friendId}`)
             .pipe(take(1))
             .subscribe({
-                next: () => this.loadUsers(),
-                error: (error) => console.error('Failed to cancel friend request', error),
+                next: () => {
+                    this.loadUsers();
+                    this.notificationService.displaySuccessMessage('Friend request canceled');
+                },
+                error: (error) => this.notificationService.displayErrorMessage(`Failed to cancel friend request 😿\n ${error.message}`),
             });
     }
 
@@ -71,8 +86,11 @@ export class FriendsService extends CommunicationService<UserIdName> {
         this.delete(`remove/${this.authService.userId}/${friendId}`)
             .pipe(take(1))
             .subscribe({
-                next: () => this.loadUsers(),
-                error: (error) => console.error('Failed to remove friend', error),
+                next: () => {
+                    this.loadUsers();
+                    this.notificationService.displaySuccessMessage('Friend removed');
+                },
+                error: (error) => this.notificationService.displayErrorMessage(`Failed to remove friend 😿\n ${error.message}`),
             });
     }
 
@@ -110,7 +128,7 @@ export class FriendsService extends CommunicationService<UserIdName> {
                     // this.searchResults = this.allUsers.filter((user) => !this.isFriend(user));
                     this.searchResults = this.allUsers;
                 },
-                error: (error) => console.error('Failed to fetch all users', error),
+                error: (error) => this.notificationService.displayErrorMessage(`Failed to fetch users 😿\n ${error.message}`),
             });
     }
 
@@ -119,7 +137,7 @@ export class FriendsService extends CommunicationService<UserIdName> {
             .pipe(take(1))
             .subscribe({
                 next: (friends) => (this.friends = friends),
-                error: (error) => console.error('Failed to fetch friends list', error),
+                error: (error) => this.notificationService.displayErrorMessage(`Failed to fetch friends 😿\n ${error.message}`),
             });
     }
 
@@ -128,7 +146,7 @@ export class FriendsService extends CommunicationService<UserIdName> {
             .pipe(take(1))
             .subscribe({
                 next: (requests) => (this.pendingRequests = requests),
-                error: (error) => console.error('Failed to fetch pending requests', error),
+                error: (error) => this.notificationService.displayErrorMessage(`Failed to fetch pending requests 😿\n ${error.message}`),
             });
     }
 
@@ -137,7 +155,7 @@ export class FriendsService extends CommunicationService<UserIdName> {
             .pipe(take(1))
             .subscribe({
                 next: (requests) => (this.sentRequests = requests),
-                error: (error) => console.error('Failed to fetch sent requests', error),
+                error: (error) => this.notificationService.displayErrorMessage(`Failed to fetch sent requests 😿\n ${error.message}`),
             });
     }
 
