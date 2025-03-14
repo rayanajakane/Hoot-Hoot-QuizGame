@@ -37,6 +37,9 @@ object Route {
     object UserEditPage
 
     @Serializable
+    object FriendsSearchScreen
+
+	@Serializable
     object MainCameraScreen
 
     @Serializable
