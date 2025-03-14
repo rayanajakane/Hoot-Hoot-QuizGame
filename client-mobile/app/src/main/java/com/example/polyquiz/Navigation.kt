@@ -14,11 +14,13 @@ import com.example.polyquiz.auth.presentation.UserEditPage
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.Route
+import com.example.polyquiz.friends.domain.FriendsService
 import com.example.polyquiz.match.domain.AnswerService
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.presentation.QuestionArea
 import com.example.polyquiz.pages.presentation.WaitPage
+import com.example.polyquiz.friends.presentation.FriendsSearchScreen
 
 // References: https://youtu.be/AIC_OFQ1r3k  and  https://youtu.be/lv1raAvwcgI
 @Composable
@@ -100,6 +102,9 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                 },
                 navigateToWaitPage = {
                     navController.navigate(Route.WaitPage)
+                },
+                navigateToFriendsPage = {
+                    navController.navigate(Route.FriendsSearchScreen)
                 }
             )
         }
@@ -146,6 +151,11 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                     navController.navigate(Route.Home)
                 },
                 authViewModel = authViewModel
+            )
+        }
+        composable<Route.FriendsSearchScreen> {
+            FriendsSearchScreen(
+                currentUserID = authViewModel.getUserId()
             )
         }
     }
