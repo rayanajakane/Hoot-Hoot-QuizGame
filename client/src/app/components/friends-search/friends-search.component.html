@@ -6,16 +6,16 @@
         <input matInput [formControl]="searchControl" placeholder="Nom d'utilisateur" />
     </mat-form-field>
 
-    <div class="friends-section" *ngIf="searchResults && searchResults.length > 0">
+    <div class="friends-section" *ngIf="friendsService.searchResults && friendsService.searchResults.length > 0">
         <h3>Utilisateurs trouvés</h3>
         <ul>
             <app-friends-list-item
-                *ngFor="let user of searchResults"
+                *ngFor="let user of friendsService.searchResults"
                 [user]="user"
-                [isFriend]="isFriend(user)"
-                [isRequestPending]="isRequestPending(user)"
-                [isRequestSent]="isRequestSent(user)"
-                [isEligible]="isEligible(user)"
+                [isFriend]="friendsService.isFriend(user)"
+                [isRequestPending]="friendsService.isRequestPending(user)"
+                [isRequestSent]="friendsService.isRequestSent(user)"
+                [isEligible]="friendsService.isEligible(user)"
                 (sendRequest)="sendFriendRequest($event)"
                 (cancelRequest)="cancelRequest($event)"
                 (acceptRequest)="acceptFriendRequest($event)"
@@ -25,11 +25,11 @@
         </ul>
     </div>
 
-    <div class="friends-section" *ngIf="pendingRequests && pendingRequests.length > 0">
+    <div class="friends-section" *ngIf="friendsService.pendingRequests && friendsService.pendingRequests.length > 0">
         <h3>Demandes d'amis reçues</h3>
         <ul>
             <app-friends-list-item
-                *ngFor="let user of pendingRequests"
+                *ngFor="let user of friendsService.pendingRequests"
                 [user]="user"
                 [isFriend]="false"
                 [isRequestPending]="true"
@@ -41,11 +41,11 @@
         </ul>
     </div>
 
-    <div class="friends-section" *ngIf="sentRequests && sentRequests.length > 0">
+    <div class="friends-section" *ngIf="friendsService.sentRequests && friendsService.sentRequests.length > 0">
         <h3>Demandes d'amis envoyées</h3>
         <ul>
             <app-friends-list-item
-                *ngFor="let user of sentRequests"
+                *ngFor="let user of friendsService.sentRequests"
                 [user]="user"
                 [isFriend]="false"
                 [isRequestPending]="false"
@@ -56,11 +56,11 @@
         </ul>
     </div>
 
-    <div class="friends-section" *ngIf="friends && friends.length > 0">
+    <div class="friends-section" *ngIf="friendsService.friends && friendsService.friends.length > 0">
         <h3>Mes Amis</h3>
         <ul>
             <app-friends-list-item
-                *ngFor="let user of friends"
+                *ngFor="let user of friendsService.friends"
                 [user]="user"
                 [isFriend]="true"
                 [isRequestPending]="false"
