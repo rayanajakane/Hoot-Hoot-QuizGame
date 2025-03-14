@@ -43,7 +43,8 @@
         <mat-card *ngFor="let player of matchRoomService.players" class="player-username-card">
             <p>{{ player.username }}</p>
             <button mat-icon-button (click)="banPlayerId(player.id)" color="warn" *ngIf="isHost">
-                <mat-icon *ngIf="player.username !== 'Organisateur'">delete</mat-icon>
+                <!-- <mat-icon *ngIf="player.username !== 'Organisateur'">delete</mat-icon> -->
+                <mat-icon>delete</mat-icon>
             </button>
         </mat-card>
     </div>
