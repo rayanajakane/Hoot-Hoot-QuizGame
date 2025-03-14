@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.polyquiz.auth.domain.UserIdName
+import com.example.polyquiz.constants.FriendsDisplayText
 import com.example.polyquiz.friends.domain.FriendsService
 import kotlinx.coroutines.launch
 
@@ -49,7 +50,6 @@ fun FriendsSearchScreen(
         }
     }
 
-
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
@@ -69,11 +69,11 @@ fun FriendsSearchScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text("🔍 Rechercher des amis", style = MaterialTheme.typography.headlineLarge)
+        Text(FriendsDisplayText.SEARCH_FRIENDS.value, style = MaterialTheme.typography.headlineLarge)
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
-            label = { Text("Recherche") },
+            label = { Text(FriendsDisplayText.SEARCH_FRIENDS_PLACEHOLDER.value) },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
