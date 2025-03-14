@@ -85,7 +85,6 @@ export class ChatComponent implements AfterViewChecked {
 
     // REFERENCE: https://stackoverflow.com/questions/67600158/how-to-display-multiple-values-in-angular-material-tool-tip
     public getReactionsToolTip(userReactions: UserIdName[]) {
-        console.log(userReactions);
         let toolTip = '';
         for (let i = 0; i < userReactions.length; i++) {
             toolTip = toolTip + '\n' + userReactions[i].name;

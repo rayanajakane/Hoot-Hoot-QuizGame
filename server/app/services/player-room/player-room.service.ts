@@ -105,7 +105,6 @@ export class PlayerRoomService {
     }
 
     deletePlayer(matchRoomCode: string, userId: string): void {
-        console.log('Deleting player deleteplayer', userId);
         const roomIndex = this.matchRoomService.getRoomIndex(matchRoomCode);
         this.matchRoomService.matchRooms[roomIndex].activePlayers--;
         this.matchRoomService.matchRooms[roomIndex].players = this.matchRoomService.matchRooms[roomIndex].players.filter((player) => {
@@ -119,11 +118,9 @@ export class PlayerRoomService {
 
     addBannedPlayers(matchRoomCode: string, userId: string) {
         const room = this.matchRoomService.getRoom(matchRoomCode);
-        console.log('banned', userId);
         if (room) {
             room.bannedIds.push(userId);
         }
-        console.log('banned estupidos', room.bannedIds);
     }
 
     isBannedPlayer(matchRoomCode: string, userId: string): boolean {
