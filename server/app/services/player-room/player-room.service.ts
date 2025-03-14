@@ -10,7 +10,7 @@ import { Injectable } from '@nestjs/common';
 import { Socket } from 'socket.io';
 
 const INDEX_NOT_FOUND = -1;
-const HOST_USERNAME = 'ORGANISATEUR';
+// const HOST_USERNAME = 'ORGANISATEUR';
 
 @Injectable()
 export class PlayerRoomService {
