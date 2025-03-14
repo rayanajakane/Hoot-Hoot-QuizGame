@@ -67,9 +67,9 @@ export class PlayerRoomService {
             }
         });
         if (foundPlayer && foundMatchRoom && !foundMatchRoom.isPlaying) {
-            this.deletePlayer(foundMatchRoom.code, foundPlayer.username);
+            this.deletePlayer(foundMatchRoom.code, foundPlayer.id);
         } else if (foundPlayer && foundMatchRoom && foundMatchRoom.isPlaying) {
-            this.makePlayerInactive(foundMatchRoom.code, foundPlayer.username);
+            this.makePlayerInactive(foundMatchRoom.code, foundPlayer.id);
         }
         return foundMatchRoom ? foundMatchRoom.code : undefined;
     }
@@ -92,10 +92,10 @@ export class PlayerRoomService {
         return foundPlayer;
     }
 
-    makePlayerInactive(matchRoomCode: string, username: string): void {
+    makePlayerInactive(matchRoomCode: string, userId: string): void {
         const roomIndex = this.matchRoomService.getRoomIndex(matchRoomCode);
         const playerIndex = this.matchRoomService.getRoom(matchRoomCode).players.findIndex((player: Player) => {
-            return player.username === username;
+            return player.id === userId;
         });
         if (roomIndex !== INDEX_NOT_FOUND && playerIndex !== INDEX_NOT_FOUND) {
             this.matchRoomService.matchRooms[roomIndex].players[playerIndex].state = PlayerState.exit;
@@ -105,6 +105,7 @@ export class PlayerRoomService {
     }
 
     deletePlayer(matchRoomCode: string, userId: string): void {
+        console.log('Deleting player deleteplayer', userId);
         const roomIndex = this.matchRoomService.getRoomIndex(matchRoomCode);
         this.matchRoomService.matchRooms[roomIndex].activePlayers--;
         this.matchRoomService.matchRooms[roomIndex].players = this.matchRoomService.matchRooms[roomIndex].players.filter((player) => {
@@ -122,6 +123,7 @@ export class PlayerRoomService {
         if (room) {
             room.bannedIds.push(userId);
         }
+        console.log('banned estupidos', room.bannedIds);
     }
 
     isBannedPlayer(matchRoomCode: string, userId: string): boolean {

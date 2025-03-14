@@ -52,6 +52,7 @@ export class ChatService {
 
     handleRoomMessages() {
         this.socketHandler.on(ChatEvents.NewMessage, (messageInfo: MessageInfo) => {
+            console.log('New message', messageInfo);
             this.matchRoomMessages.push(messageInfo.message);
             if (this.channel === ChatChannel.ROOM) {
                 this.updateChatScroll.next(null);

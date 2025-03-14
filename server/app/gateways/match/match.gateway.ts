@@ -37,7 +37,7 @@ export class MatchGateway implements OnGatewayDisconnect {
     @SubscribeMessage(MatchEvents.JoinRoom)
     joinRoom(@ConnectedSocket() socket: Socket, @MessageBody() data: UserInfo) {
         const codeErrors = this.matchRoomService.getRoomCodeErrors(data.roomCode);
-        const usernameErrors = this.playerRoomService.getUsernameErrors(data.roomCode, data.username);
+        const usernameErrors = this.playerRoomService.getUsernameErrors(data.roomCode, data.userId);
         const errorMessage = codeErrors + usernameErrors;
         if (errorMessage) {
             this.sendError(socket.id, errorMessage);
@@ -106,7 +106,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         this.playerRoomService.addBannedPlayers(data.roomCode, data.userId);
         const playerToBan = this.playerRoomService.getPlayerById(data.roomCode, data.userId);
         if (playerToBan) {
-            this.playerRoomService.deletePlayer(data.roomCode, data.username);
+            this.playerRoomService.deletePlayer(data.roomCode, data.userId);
             this.sendError(playerToBan.socket.id, BAN_PLAYER);
             this.server.in(playerToBan.socket.id).emit(MatchEvents.KickPlayer);
             // this.server.in(playerToBan.socket.id).disconnectSockets();
@@ -198,7 +198,8 @@ export class MatchGateway implements OnGatewayDisconnect {
             return;
         }
         this.handleSendPlayersData(roomCode);
-        this.sendMessageOnDisconnect(roomCode, player.username);
+        console.log('Player disconnected:', player.username);
+        // this.sendMessageOnDisconnect(roomCode, player.username);
         this.returnAllMatches();
     }
 
@@ -210,6 +211,8 @@ export class MatchGateway implements OnGatewayDisconnect {
     }
 
     handleSendPlayersData(matchRoomCode: string) {
+        console.log('Sending players data');
+        console.log(this.playerRoomService.getPlayersStringified(matchRoomCode));
         this.server.to(matchRoomCode).emit(MatchEvents.FetchPlayersData, this.playerRoomService.getPlayersStringified(matchRoomCode));
     }
 
@@ -217,11 +220,11 @@ export class MatchGateway implements OnGatewayDisconnect {
         this.server.to(socketId).emit(MatchEvents.Error, error);
     }
 
-    sendMessageOnDisconnect(roomCode: string, username: string) {
-        this.server
-            .to(roomCode)
-            .emit(ChatEvents.NewMessage, { roomCode, message: { author: '', text: `${username} a quitté la partie.`, date: new Date() } });
-    }
+    // sendMessageOnDisconnect(roomCode: string, username: string) {
+    //     this.server
+    //         .to(roomCode)
+    //         .emit(ChatEvents.NewMessage, { roomCode, message: { author: '', text: `${username} a quitté la partie.`, date: new Date() } });
+    // }
 
     private isRoomEmpty(room: MatchRoom) {
         return room.players.every((player) => !player.isPlaying);

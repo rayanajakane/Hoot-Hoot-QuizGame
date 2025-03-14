@@ -9,6 +9,7 @@ import { ChatService } from '@app/services/chat/chat.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
+import { HOST_USERNAME } from '@common/constants/match-constants';
 import { ChatEvents } from '@common/events/chat.events';
 import { MatchEvents } from '@common/events/match.events';
 import { UserInfo } from '@common/interfaces/user-info';
@@ -60,6 +61,11 @@ export class MatchRoomService {
         return this.username;
     }
 
+    getUserId() {
+        console.log('User ID:', this.userId);
+        return this.userId;
+    }
+
     connect() {
         if (!this.hasEnteredRoom) {
             this.hasEnteredRoom = true;
@@ -103,7 +109,7 @@ export class MatchRoomService {
             this.matchRoomCode = res.code;
             // TODO: Migrate the logic to server, use UserID instead (need to track Host User ID in match room)
             // this.username = HOST_USERNAME; // This could cause problem if there is a user called 'Organisateur'. It won't synergize with Transloco too.
-            this.username = hostUsername;
+            this.username = HOST_USERNAME;
             this.hostId = hostId;
             this.userId = hostId;
 
