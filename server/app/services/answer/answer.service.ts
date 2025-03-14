@@ -48,7 +48,7 @@ export class AnswerService {
     // permit more parameters to make method reusable
     // eslint-disable-next-line max-params
     updateChoice(choice: string, selection: boolean, username: string, roomCode: string) {
-        const player: Player = this.playerService.getPlayerByUsername(roomCode, username);
+        const player: Player = this.playerService.getPlayerById(roomCode, username);
         if (!player.answer.isSubmitted) {
             player.answer.updateChoice(choice, selection);
             player.answer.timestamp = Date.now();
@@ -62,7 +62,7 @@ export class AnswerService {
     }
 
     submitAnswer(username: string, roomCode: string) {
-        const player: Player = this.playerService.getPlayerByUsername(roomCode, username);
+        const player: Player = this.playerService.getPlayerById(roomCode, username);
         const matchRoom = this.getRoom(roomCode);
 
         player.answer.timestamp = Date.now();

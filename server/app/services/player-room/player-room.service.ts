@@ -1,4 +1,4 @@
-import { BANNED_USERNAME, EMPTY_USERNAME, HOST_CONFLICT, USED_USERNAME } from '@app/constants/match-login-errors';
+import { BANNED_USERNAME } from '@app/constants/match-login-errors';
 import { MultipleChoiceAnswer } from '@app/model/answer-types/multiple-choice-answer/multiple-choice-answer';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
 import { Player } from '@app/model/schema/player.schema';
@@ -14,7 +14,9 @@ const HOST_USERNAME = 'ORGANISATEUR';
 
 @Injectable()
 export class PlayerRoomService {
-    constructor(private readonly matchRoomService: MatchRoomService) {}
+    constructor(
+        private readonly matchRoomService: MatchRoomService, // private readonly firebaseAuthService: FirebaseAuthService,
+    ) {}
 
     getPlayers(code: string): Player[] {
         return this.matchRoomService.getRoom(code).players;
@@ -29,13 +31,14 @@ export class PlayerRoomService {
         });
     }
 
-    addPlayer(playerSocket: Socket, matchRoomCode: string, newUsername: string): Player | undefined {
+    addPlayer(playerSocket: Socket, matchRoomCode: string, newid: string, newUsername: string): Player {
         if (this.getUsernameErrors(matchRoomCode, newUsername)) {
             return undefined;
         }
 
         const newPlayer: Player = {
             username: newUsername,
+            id: newid,
             answer: new MultipleChoiceAnswer(),
             score: 0,
             answerCorrectness: AnswerCorrectness.WRONG,
@@ -71,9 +74,9 @@ export class PlayerRoomService {
         return foundMatchRoom ? foundMatchRoom.code : undefined;
     }
 
-    getPlayerByUsername(matchRoomCode: string, username: string): Player | undefined {
+    getPlayerById(matchRoomCode: string, userId: string): Player | undefined {
         return this.getPlayers(matchRoomCode).find((player: Player) => {
-            return player.username.toUpperCase() === username.toUpperCase();
+            return player.id === userId;
         });
     }
 
@@ -101,45 +104,46 @@ export class PlayerRoomService {
         }
     }
 
-    deletePlayer(matchRoomCode: string, username: string): void {
+    deletePlayer(matchRoomCode: string, userId: string): void {
         const roomIndex = this.matchRoomService.getRoomIndex(matchRoomCode);
         this.matchRoomService.matchRooms[roomIndex].activePlayers--;
         this.matchRoomService.matchRooms[roomIndex].players = this.matchRoomService.matchRooms[roomIndex].players.filter((player) => {
-            return player.username.toUpperCase() !== username.toUpperCase();
+            return player.id !== userId;
         });
     }
 
-    getBannedUsernames(matchRoomCode: string): string[] {
-        return this.matchRoomService.getRoom(matchRoomCode).bannedUsernames;
+    getBannedPlayers(matchRoomCode: string): string[] {
+        return this.matchRoomService.getRoom(matchRoomCode).bannedIds;
     }
 
-    addBannedUsername(matchRoomCode: string, username: string) {
+    addBannedPlayers(matchRoomCode: string, userId: string) {
         const room = this.matchRoomService.getRoom(matchRoomCode);
+        console.log('banned', userId);
         if (room) {
-            room.bannedUsernames.push(username.toUpperCase());
+            room.bannedIds.push(userId);
         }
     }
 
-    isBannedUsername(matchRoomCode: string, username: string): boolean {
-        const bannedUsernames = this.getBannedUsernames(matchRoomCode);
-        const usernameIndex = bannedUsernames.findIndex((name: string) => {
-            return name.toUpperCase() === username.toUpperCase();
+    isBannedPlayer(matchRoomCode: string, userId: string): boolean {
+        const bannedUsernames = this.getBannedPlayers(matchRoomCode);
+        const idIndex = bannedUsernames.findIndex((id: string) => {
+            return id === userId;
         });
-        return usernameIndex !== INDEX_NOT_FOUND;
+        return idIndex !== INDEX_NOT_FOUND;
     }
 
     isHostPlayer(matchRoomCode: string): boolean {
-        return !!this.getPlayerByUsername(matchRoomCode, HOST_USERNAME);
+        return !!this.getPlayerById(matchRoomCode, this.matchRoomService.getRoom(matchRoomCode).hostId);
     }
 
-    getUsernameErrors(matchRoomCode: string, username: string): string {
+    getUsernameErrors(matchRoomCode: string, userId: string): string {
         let errors = '';
-        const usernameToValidate = username.trim().toUpperCase();
+        // const usernameToValidate = username.trim().toUpperCase();
         const errorConditions: Map<string, boolean> = new Map([
-            [EMPTY_USERNAME, !usernameToValidate],
-            [HOST_CONFLICT, usernameToValidate === HOST_USERNAME],
-            [BANNED_USERNAME, this.isBannedUsername(matchRoomCode, usernameToValidate)],
-            [USED_USERNAME, !!this.getPlayerByUsername(matchRoomCode, usernameToValidate)],
+            // [EMPTY_USERNAME, !usernameToValidate],
+            // [HOST_CONFLICT, usernameToValidate === HOST_USERNAME],
+            [BANNED_USERNAME, this.isBannedPlayer(matchRoomCode, userId)],
+            // [USED_USERNAME, !!this.getPlayerByUsername(matchRoomCode, usernameToValidate)],
         ]);
         errorConditions.forEach((hasError: boolean, message: string) => {
             if (hasError) errors += message;

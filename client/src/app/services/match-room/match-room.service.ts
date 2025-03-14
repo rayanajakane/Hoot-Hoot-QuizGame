@@ -9,7 +9,6 @@ import { ChatService } from '@app/services/chat/chat.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
-import { HOST_USERNAME } from '@common/constants/match-constants';
 import { ChatEvents } from '@common/events/chat.events';
 import { MatchEvents } from '@common/events/match.events';
 import { UserInfo } from '@common/interfaces/user-info';
@@ -30,9 +29,11 @@ export class MatchRoomService {
     isHostPlaying: boolean;
     isCooldown: boolean;
     isQuitting: boolean;
+    hostId: string;
 
     private matchRoomCode: string;
     private username: string;
+    private userId: string;
     private hasEnteredRoom: boolean;
 
     // Allow more constructor parameters
@@ -97,11 +98,15 @@ export class MatchRoomService {
         // this.socketService.socket.removeListener(MatchEvents.Disconnect);
     }
 
-    createRoom(gameId: string, isClassicMode: boolean = true) {
-        this.socketService.send(MatchEvents.CreateRoom, { gameId, isClassicMode }, (res: { code: string }) => {
+    createRoom(gameId: string, hostId: string, hostUsername: string, isClassicMode: boolean = true) {
+        this.socketService.send(MatchEvents.CreateRoom, { gameId, hostId, isClassicMode }, (res: { code: string }) => {
             this.matchRoomCode = res.code;
             // TODO: Migrate the logic to server, use UserID instead (need to track Host User ID in match room)
-            this.username = HOST_USERNAME; // This could cause problem if there is a user called 'Organisateur'. It won't synergize with Transloco too.
+            // this.username = HOST_USERNAME; // This could cause problem if there is a user called 'Organisateur'. It won't synergize with Transloco too.
+            this.username = hostUsername;
+            this.hostId = hostId;
+            this.userId = hostId;
+
             this.sendPlayersData(this.matchRoomCode);
             this.router.navigateByUrl('/match-room');
         });
@@ -121,11 +126,13 @@ export class MatchRoomService {
         });
     }
 
-    joinRoom(roomCode: string, username: string) {
-        const sentInfo: UserInfo = { roomCode, username };
-        this.socketService.send(MatchEvents.JoinRoom, sentInfo, (res: { code: string; username: string }) => {
+    joinRoom(roomCode: string, username: string, userId: string) {
+        const sentInfo: UserInfo = { roomCode, username, userId };
+
+        this.socketService.send(MatchEvents.JoinRoom, sentInfo, (res: { code: string; userId: string; username: string }) => {
             this.matchRoomCode = res.code;
             this.username = res.username;
+            this.userId = res.userId;
             this.router.navigateByUrl('/match-room');
         });
         this.sendPlayersData(roomCode);
@@ -135,10 +142,11 @@ export class MatchRoomService {
         this.socketService.send(MatchEvents.SendPlayersData, roomCode);
     }
 
-    banUsername(username: string) {
+    banUser(userId: string) {
         // TODO: Migrate the logic to server, use UserID instead (need to track Host User ID in match room)
-        if (this.username === HOST_USERNAME) {
-            const sentInfo: UserInfo = { roomCode: this.matchRoomCode, username };
+        if (this.userId === this.hostId) {
+            console.log('Banning user with ID inside:', userId);
+            const sentInfo: UserInfo = { roomCode: this.matchRoomCode, userId };
             this.socketService.send(MatchEvents.BanUsername, sentInfo);
         }
     }
@@ -198,6 +206,7 @@ export class MatchRoomService {
 
     onFetchPlayersData() {
         this.socketService.on(MatchEvents.FetchPlayersData, (res: string) => {
+            console.log('Players:', res);
             this.players = JSON.parse(res);
         });
     }
