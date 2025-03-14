@@ -1,126 +1,79 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { CommunicationService } from '@app/services/communication/communication.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { FriendsEvents } from '@common/events/friends.events';
 import { FriendsInfo } from '@common/interfaces/friends-info';
 import { UserIdName } from '@common/interfaces/user-id-name';
 import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, take } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root',
 })
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class FriendsService extends CommunicationService<any> {
+export class FriendsService extends CommunicationService<UserIdName> {
     allUsers: UserIdName[] = [];
     friends: UserIdName[] = [];
     pendingRequests: UserIdName[] = [];
     sentRequests: UserIdName[] = [];
     searchResults: UserIdName[] = [];
-    currentUserID: string;
 
     constructor(
         http: HttpClient,
-        private socketHandler: SocketHandlerService,
+        private readonly authService: AuthenticationService,
+        private readonly socketHandler: SocketHandlerService,
     ) {
         super(http, 'friends');
-    }
-
-    getAllUsers(): Observable<UserIdName[]> {
-        return this.getAll(`all/${this.currentUserID}`);
-    }
-
-    getFriendsList(userId: string): Observable<UserIdName[]> {
-        return this.getAll(`list/${userId}`);
-    }
-
-    getPendingRequests(userId: string): Observable<UserIdName[]> {
-        return this.getAll(`requests/pending/${userId}`);
-    }
-
-    getSentRequests(userId: string): Observable<UserIdName[]> {
-        return this.getAll(`requests/sent/${userId}`);
+        this.loadUsers();
+        this.listenToAllFriendEvents((update, event) => {
+            this.loadUsers();
+        });
     }
 
     sendFriendRequest(toUserId: string): void {
-        this.handleRequest(`send/${this.currentUserID}/${toUserId}`).subscribe({
-            next: () => this.loadData(),
-            error: (error) => console.error('Failed to send friend request', error),
-        });
+        this.handleRequest(`send/${this.authService.userId}/${toUserId}`)
+            .pipe(take(1))
+            .subscribe({
+                next: () => this.loadUsers(),
+                error: (error) => console.error('Failed to send friend request', error),
+            });
     }
 
     acceptFriendRequest(friendId: string): void {
-        this.handleRequest(`accept/${this.currentUserID}/${friendId}`).subscribe({
-            next: () => this.loadData(),
-            error: (error) => console.error('Failed to accept friend request', error),
-        });
+        this.handleRequest(`accept/${this.authService.userId}/${friendId}`)
+            .pipe(take(1))
+            .subscribe({
+                next: () => this.loadUsers(),
+                error: (error) => console.error('Failed to accept friend request', error),
+            });
     }
 
     rejectFriendRequest(friendId: string): void {
-        this.handleRequest(`reject/${this.currentUserID}/${friendId}`).subscribe({
-            next: () => this.loadData(),
-            error: (error) => console.error('Failed to reject friend request', error),
-        });
+        this.handleRequest(`reject/${this.authService.userId}/${friendId}`)
+            .pipe(take(1))
+            .subscribe({
+                next: () => this.loadUsers(),
+                error: (error) => console.error('Failed to reject friend request', error),
+            });
     }
 
     cancelRequest(friendId: string): void {
-        this.delete(`cancel/${this.currentUserID}/${friendId}`).subscribe({
-            next: () => this.loadData(),
-            error: (error) => console.error('Failed to cancel friend request', error),
-        });
+        this.delete(`cancel/${this.authService.userId}/${friendId}`)
+            .pipe(take(1))
+            .subscribe({
+                next: () => this.loadUsers(),
+                error: (error) => console.error('Failed to cancel friend request', error),
+            });
     }
 
     removeFriend(friendId: string): void {
-        this.delete(`remove/${this.currentUserID}/${friendId}`).subscribe({
-            next: () => this.loadData(),
-            error: (error) => console.error('Failed to remove friend', error),
-        });
-    }
-
-    handleRequest(endpoint: string = ''): Observable<HttpResponse<string>> {
-        return this.http
-            .post(`${this.serverUrl}/${this.baseUrl}/${endpoint}`, null, this.httpOptions)
-            .pipe(catchError(this.handleError<HttpResponse<string>>()));
-    }
-
-    listenToRequestSent(callback: (update: FriendsInfo) => void): void {
-        this.socketHandler.on<FriendsInfo>(FriendsEvents.RequestSent, callback);
-    }
-
-    listenToRequestAccepted(callback: (update: FriendsInfo) => void): void {
-        this.socketHandler.on<FriendsInfo>(FriendsEvents.RequestAccepted, callback);
-    }
-
-    listenToRequestRejected(callback: (update: FriendsInfo) => void): void {
-        this.socketHandler.on<FriendsInfo>(FriendsEvents.RequestRejected, callback);
-    }
-
-    listenToRequestCanceled(callback: (update: FriendsInfo) => void): void {
-        this.socketHandler.on<FriendsInfo>(FriendsEvents.RequestCanceled, callback);
-    }
-
-    listenToFriendRemoved(callback: (update: FriendsInfo) => void): void {
-        this.socketHandler.on<FriendsInfo>(FriendsEvents.FriendRemoved, callback);
-    }
-
-    listenToAllFriendEvents(callback: (update: FriendsInfo, event: string) => void): void {
-        this.listenToRequestSent((update) => callback(update, FriendsEvents.RequestSent));
-        this.listenToRequestAccepted((update) => callback(update, FriendsEvents.RequestAccepted));
-        this.listenToRequestRejected((update) => callback(update, FriendsEvents.RequestRejected));
-        this.listenToRequestCanceled((update) => callback(update, FriendsEvents.RequestCanceled));
-        this.listenToFriendRemoved((update) => callback(update, FriendsEvents.FriendRemoved));
-    }
-
-    loadData(): void {
-        this.getFriendsList(this.currentUserID).subscribe((friends) => (this.friends = friends));
-        this.getPendingRequests(this.currentUserID).subscribe((requests) => (this.pendingRequests = requests));
-        this.getSentRequests(this.currentUserID).subscribe((sent) => (this.sentRequests = sent));
-        this.getAllUsers().subscribe((users) => {
-            this.allUsers = users;
-            // this.searchResults = this.allUsers.filter((user) => !this.isFriend(user));
-            this.searchResults = this.allUsers;
-        });
+        this.delete(`remove/${this.authService.userId}/${friendId}`)
+            .pipe(take(1))
+            .subscribe({
+                next: () => this.loadUsers(),
+                error: (error) => console.error('Failed to remove friend', error),
+            });
     }
 
     searchUsers(query: string): void {
@@ -146,5 +99,72 @@ export class FriendsService extends CommunicationService<any> {
 
     isEligible(user: UserIdName): boolean {
         return !this.isFriend(user) && !this.isRequestPending(user) && !this.isRequestSent(user);
+    }
+
+    private getAllUsers(): void {
+        this.getAll(`all/${this.authService.userId}`)
+            .pipe(take(1))
+            .subscribe({
+                next: (users) => {
+                    this.allUsers = users;
+                    // this.searchResults = this.allUsers.filter((user) => !this.isFriend(user));
+                    this.searchResults = this.allUsers;
+                },
+                error: (error) => console.error('Failed to fetch all users', error),
+            });
+    }
+
+    private getFriendsList(): void {
+        this.getAll(`list/${this.authService.userId}`)
+            .pipe(take(1))
+            .subscribe({
+                next: (friends) => (this.friends = friends),
+                error: (error) => console.error('Failed to fetch friends list', error),
+            });
+    }
+
+    private getPendingRequests(): void {
+        this.getAll(`requests/pending/${this.authService.userId}`)
+            .pipe(take(1))
+            .subscribe({
+                next: (requests) => (this.pendingRequests = requests),
+                error: (error) => console.error('Failed to fetch pending requests', error),
+            });
+    }
+
+    private getSentRequests(): void {
+        this.getAll(`requests/sent/${this.authService.userId}`)
+            .pipe(take(1))
+            .subscribe({
+                next: (requests) => (this.sentRequests = requests),
+                error: (error) => console.error('Failed to fetch sent requests', error),
+            });
+    }
+
+    private handleRequest(endpoint: string = ''): Observable<HttpResponse<string>> {
+        return this.http
+            .post(`${this.serverUrl}/${this.baseUrl}/${endpoint}`, null, this.httpOptions)
+            .pipe(catchError(this.handleError<HttpResponse<string>>()));
+    }
+
+    private loadUsers(): void {
+        this.getAllUsers();
+        this.getFriendsList();
+        this.getPendingRequests();
+        this.getSentRequests();
+    }
+
+    private listenToAllFriendEvents(callback: (update: FriendsInfo, event: string) => void): void {
+        const events = [
+            FriendsEvents.RequestSent,
+            FriendsEvents.RequestAccepted,
+            FriendsEvents.RequestRejected,
+            FriendsEvents.RequestCanceled,
+            FriendsEvents.FriendRemoved,
+        ];
+
+        events.forEach((event) => {
+            this.socketHandler.on<FriendsInfo>(event, (update) => callback(update, event));
+        });
     }
 }
