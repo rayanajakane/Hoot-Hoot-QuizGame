@@ -64,9 +64,11 @@ export class ChatService {
         var messageEmojiInfo: MessageEmojiInfo;
         if (this.channel === ChatChannel.GENERAL) {
             messageEmojiInfo = { messageId, chatEmoji, userIdName };
+            console.log('Message emo info', messageEmojiInfo);
             this.socketHandler.send(ChatEvents.GeneralEmoji, messageEmojiInfo);
         } else if (this.channel === ChatChannel.ROOM && this.matchContextService.getContext() !== MatchContext.Null) {
             messageEmojiInfo = { messageId, chatEmoji, userIdName, roomCode };
+            console.log('Message emo info', messageEmojiInfo);
             this.socketHandler.send(ChatEvents.RoomEmoji, messageEmojiInfo);
         }
     }

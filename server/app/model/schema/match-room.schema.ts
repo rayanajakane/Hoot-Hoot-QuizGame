@@ -18,12 +18,13 @@ export interface MatchRoom {
     currentQuestionAnswer: string[];
     choiceTracker: ChoiceTracker;
     matchHistograms: Histogram[];
-    bannedUsernames: string[];
+    bannedIds: string[];
     players: Player[];
     activePlayers: number;
     submittedPlayers: number;
     messages: Message[];
     hostSocket: Socket;
+    hostId: string;
     isClassicMode: boolean;
     startTime: Date;
     qrCodeUrl: string;

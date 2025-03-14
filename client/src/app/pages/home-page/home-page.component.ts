@@ -47,7 +47,7 @@ export class HomePageComponent {
         this.joinMatchService.validateMatchRoomCode(roomCode).subscribe({
             next: () => {
                 this.joinMatchService.matchRoomCode = roomCode;
-                this.joinMatchService.validateUsername(this.authenticationService.userDisplayName);
+                this.joinMatchService.validateUsername(this.authenticationService.userDisplayName, this.authenticationService.userId);
             },
             error: (error: HttpErrorResponse) => {
                 this.notificationService.displayErrorMessage(`${JSON.parse(error.error)['message']}`);

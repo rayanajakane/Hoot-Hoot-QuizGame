@@ -12,6 +12,7 @@ const MOCK_USER_INFO = { roomCode: '', username: '' };
 const MOCK_MESSAGE_INFO = { roomCode: '', message: MOCK_MESSAGE };
 const MOCK_PLAYER: Player = {
     username: '',
+    id: '',
     answer: new MultipleChoiceAnswer(),
     score: 0,
     answerCorrectness: AnswerCorrectness.WRONG,
@@ -33,7 +34,7 @@ const MOCK_MATCH_ROOM: MatchRoom = {
     currentQuestionAnswer: [],
     choiceTracker: new ChoiceTracker(),
     matchHistograms: [],
-    bannedUsernames: [],
+    bannedIds: [],
     players: [],
     activePlayers: 0,
     submittedPlayers: 0,
@@ -42,6 +43,7 @@ const MOCK_MATCH_ROOM: MatchRoom = {
     isClassicMode: true,
     startTime: new Date(),
     qrCodeUrl: '',
+    hostId: '',
 };
 
 const MOCK_TEST_MATCH_ROOM: MatchRoom = {
@@ -56,7 +58,7 @@ const MOCK_TEST_MATCH_ROOM: MatchRoom = {
     currentQuestionAnswer: [],
     choiceTracker: new ChoiceTracker(),
     matchHistograms: [],
-    bannedUsernames: [],
+    bannedIds: [],
     players: [],
     activePlayers: 0,
     submittedPlayers: 0,
@@ -65,6 +67,7 @@ const MOCK_TEST_MATCH_ROOM: MatchRoom = {
     isClassicMode: true,
     startTime: new Date(),
     qrCodeUrl: '',
+    hostId: '',
 };
 
 const MOCK_RANDOM_MATCH_ROOM: MatchRoom = {
@@ -79,7 +82,7 @@ const MOCK_RANDOM_MATCH_ROOM: MatchRoom = {
     currentQuestionAnswer: [],
     choiceTracker: new ChoiceTracker(),
     matchHistograms: [],
-    bannedUsernames: [],
+    bannedIds: [],
     players: [],
     activePlayers: 0,
     submittedPlayers: 0,
@@ -88,6 +91,7 @@ const MOCK_RANDOM_MATCH_ROOM: MatchRoom = {
     isClassicMode: true,
     startTime: new Date(),
     qrCodeUrl: '',
+    hostId: '',
 };
 
 const MOCK_PLAYER_ROOM: MatchRoom = {
@@ -102,7 +106,7 @@ const MOCK_PLAYER_ROOM: MatchRoom = {
     currentQuestionAnswer: [],
     choiceTracker: new ChoiceTracker(),
     matchHistograms: [],
-    bannedUsernames: [],
+    bannedIds: [],
     players: [MOCK_PLAYER],
     activePlayers: 1,
     submittedPlayers: 0,
@@ -111,6 +115,7 @@ const MOCK_PLAYER_ROOM: MatchRoom = {
     isClassicMode: true,
     startTime: new Date(),
     qrCodeUrl: '',
+    hostId: '',
 };
 
 const MOCK_ROOM_CODE = 'mockCode';
