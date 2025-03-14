@@ -18,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.example.polyquiz.constants.FriendsDisplayText
 import com.example.polyquiz.ui.theme.AndroidGreen
 import com.example.polyquiz.ui.theme.BrightRed
 import com.example.polyquiz.ui.theme.HotPink
@@ -74,13 +75,13 @@ fun FriendsListItem(
                         enabled = false,
                         colors = ButtonDefaults.buttonColors(containerColor = LightGray))
                     {
-                        Text("✅ Amis")
+                        Text(FriendsDisplayText.FRIENDS.value)
                     }
                     Spacer(modifier = Modifier.width(4.dp))
                     Button(onClick = { onRemoveFriend(user.id) },
                         colors = ButtonDefaults.buttonColors(containerColor = BrightRed)
                         ) {
-                        Text("Supprimer")
+                        Text(FriendsDisplayText.REMOVE_FRIEND.value)
                     }
                 }
 
@@ -90,13 +91,13 @@ fun FriendsListItem(
                     Button(onClick = { onAcceptRequest(user.id) },
                         colors = ButtonDefaults.buttonColors(containerColor = HotPink)
                     ) {
-                        Text("Accepter")
+                        Text(FriendsDisplayText.ACCEPT_REQUEST.value)
                     }
                     Spacer(modifier = Modifier.width(4.dp))
                     Button(onClick = { onRejectRequest(user.id) },
                         colors = ButtonDefaults.buttonColors(containerColor = BrightRed)
                     ) {
-                        Text("Refuser")
+                        Text(FriendsDisplayText.REJECT_REQUEST.value)
                     }
                 }
             }
@@ -106,20 +107,20 @@ fun FriendsListItem(
                         enabled = false,
                         colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
                     ) {
-                        Text("⏳ Demande envoyée")
+                        Text(FriendsDisplayText.REQUEST_SENT.value)
 
                     }
                     Spacer(modifier = Modifier.width(4.dp))
                     Button(onClick = { onCancelRequest(user.id) },
                         colors = ButtonDefaults.buttonColors(containerColor = HotPink)
                     ) {
-                        Text("Annuler")
+                        Text(FriendsDisplayText.CANCEL_REQUEST.value)
                     }
                 }
             }
             isEligible -> {
                 Button(onClick = { onSendRequest(user.id) }) {
-                    Text("Ajouter")
+                    Text(FriendsDisplayText.ADD_FRIEND.value)
                 }
             }
         }
