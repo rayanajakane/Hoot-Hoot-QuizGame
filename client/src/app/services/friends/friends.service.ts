@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CommunicationService } from '@app/services/communication/communication.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
@@ -6,10 +6,11 @@ import { FriendsEvents } from '@common/events/friends.events';
 import { FriendsInfo } from '@common/interfaces/friends-info';
 import { UserIdName } from '@common/interfaces/user-id-name';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 @Injectable({
     providedIn: 'root',
 })
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class FriendsService extends CommunicationService<any> {
     constructor(
         http: HttpClient,
@@ -34,24 +35,30 @@ export class FriendsService extends CommunicationService<any> {
         return this.getAll(`requests/sent/${userId}`);
     }
 
-    cancelRequest(userId: string, friendId: string): Observable<void> {
-        return this.delete(`cancel/${userId}/${friendId}`).pipe(map(() => undefined));
+    sendFriendRequest(fromUserId: string, toUserId: string) {
+        return this.handleRequest(`send/${fromUserId}/${toUserId}`);
     }
 
-    sendFriendRequest(fromUserId: string, toUserId: string): Observable<void> {
-        return this.add({}, `send/${fromUserId}/${toUserId}`).pipe(map(() => undefined));
+    acceptFriendRequest(userId: string, friendId: string) {
+        return this.handleRequest(`accept/${userId}/${friendId}`);
     }
 
-    acceptFriendRequest(userId: string, friendId: string): Observable<void> {
-        return this.add({}, `accept/${userId}/${friendId}`).pipe(map(() => undefined));
+    rejectFriendRequest(userId: string, friendId: string) {
+        return this.handleRequest(`reject/${userId}/${friendId}`);
     }
 
-    rejectFriendRequest(userId: string, friendId: string): Observable<void> {
-        return this.add({}, `reject/${userId}/${friendId}`).pipe(map(() => undefined));
+    cancelRequest(userId: string, friendId: string) {
+        return this.delete(`cancel/${userId}/${friendId}`);
     }
 
-    removeFriend(userId: string, friendId: string): Observable<void> {
-        return this.delete(`remove/${userId}/${friendId}`).pipe(map(() => undefined));
+    removeFriend(userId: string, friendId: string) {
+        return this.delete(`remove/${userId}/${friendId}`);
+    }
+
+    handleRequest(endpoint: string = ''): Observable<HttpResponse<string>> {
+        return this.http
+            .post(`${this.serverUrl}/${this.baseUrl}/${endpoint}`, null, this.httpOptions)
+            .pipe(catchError(this.handleError<HttpResponse<string>>()));
     }
 
     listenToRequestSent(callback: (update: FriendsInfo) => void): void {
