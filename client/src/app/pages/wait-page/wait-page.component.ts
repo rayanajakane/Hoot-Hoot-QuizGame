@@ -60,8 +60,7 @@ export class WaitPageComponent implements OnInit {
     }
 
     banPlayerId(userId: string) {
-        if (userId === this.matchRoomService.hostId) return; // TODO: Migrate the logic to server, use UserID instead (need to track Host User ID in match room)
-        console.log('Banning user with ID:', userId);
+        if (userId === this.matchRoomService.getHostId()) return; // TODO: Migrate the logic to server, use UserID instead (need to track Host User ID in match room)
         this.matchRoomService.banUser(userId);
     }
 
