@@ -1,10 +1,10 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
-import { NotificationService } from '@app/services/notification/notification.service';
 import { MatchEvents } from '@common/events/match.events';
 import { MatchPageInfo } from '@common/interfaces/match-page-info';
 import { environment } from 'src/environments/environment';
+import { NotificationService } from '../notification/notification.service';
 import { SocketHandlerService } from '../socket-handler/socket-handler.service';
 
 @Injectable({
@@ -52,10 +52,10 @@ export class JoinMatchService {
         );
     }
 
-    postUsername(username: string) {
+    postUsername(username: string, userId: string) {
         return this.http.post(
             `${environment.serverUrl}/match/validate-username`,
-            { matchRoomCode: this.matchRoomCode, username },
+            { matchRoomCode: this.matchRoomCode, username, userId },
             {
                 headers: new HttpHeaders({
                     contentType: 'application/json',
@@ -66,12 +66,12 @@ export class JoinMatchService {
         );
     }
 
-    validateUsername(username: string): void {
-        this.postUsername(username).subscribe({
+    validateUsername(username: string, userId: string): void {
+        this.postUsername(username, userId).subscribe({
             next: () => {
                 const matchRoomCode = this.matchRoomCode;
                 this.matchRoomCode = '';
-                this.addPlayerToMatchRoom(matchRoomCode, username);
+                this.addPlayerToMatchRoom(matchRoomCode, username, userId);
             },
             error: (error: HttpErrorResponse) => {
                 this.notificationService.displayErrorMessage(`${JSON.parse(error.error)['message']}`);
@@ -79,8 +79,8 @@ export class JoinMatchService {
         });
     }
 
-    addPlayerToMatchRoom(matchRoomCode: string, username: string): void {
+    addPlayerToMatchRoom(matchRoomCode: string, username: string, userId: string): void {
         this.matchRoomService.connect();
-        this.matchRoomService.joinRoom(matchRoomCode, username);
+        this.matchRoomService.joinRoom(matchRoomCode, username, userId);
     }
 }

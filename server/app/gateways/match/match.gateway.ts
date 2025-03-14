@@ -44,18 +44,18 @@ export class MatchGateway implements OnGatewayDisconnect {
             // this.server.in(socket.id).disconnectSockets();
         } else {
             socket.join(data.roomCode);
-            const newPlayer = this.playerRoomService.addPlayer(socket, data.roomCode, data.username);
+            const newPlayer = this.playerRoomService.addPlayer(socket, data.roomCode, data.userId, data.username);
             this.returnAllMatches();
-            return { code: data.roomCode, username: newPlayer.username };
+            return { code: data.roomCode, username: newPlayer.username, userId: newPlayer.id };
         }
     }
 
     @SubscribeMessage(MatchEvents.CreateRoom)
-    async createRoom(@ConnectedSocket() socket: Socket, @MessageBody() data: { gameId: string; isClassicMode: boolean }) {
+    async createRoom(@ConnectedSocket() socket: Socket, @MessageBody() data: { gameId: string; hostId: string; isClassicMode: boolean }) {
         let selectedGame: Game = {} as Game;
         selectedGame = this.matchBackupService.getBackupGame(data.gameId);
-
-        const newMatchRoom: MatchRoom = await this.matchRoomService.addRoom(selectedGame, socket, data.isClassicMode);
+        console.log(data.hostId);
+        const newMatchRoom: MatchRoom = await this.matchRoomService.addRoom(selectedGame, socket, data.hostId, data.isClassicMode);
 
         socket.join(newMatchRoom.code);
         this.returnAllMatches();
@@ -103,8 +103,8 @@ export class MatchGateway implements OnGatewayDisconnect {
 
     @SubscribeMessage(MatchEvents.BanUsername)
     banUsername(@ConnectedSocket() socket: Socket, @MessageBody() data: UserInfo) {
-        this.playerRoomService.addBannedUsername(data.roomCode, data.username);
-        const playerToBan = this.playerRoomService.getPlayerByUsername(data.roomCode, data.username);
+        this.playerRoomService.addBannedPlayers(data.roomCode, data.userId);
+        const playerToBan = this.playerRoomService.getPlayerById(data.roomCode, data.userId);
         if (playerToBan) {
             this.playerRoomService.deletePlayer(data.roomCode, data.username);
             this.sendError(playerToBan.socket.id, BAN_PLAYER);
