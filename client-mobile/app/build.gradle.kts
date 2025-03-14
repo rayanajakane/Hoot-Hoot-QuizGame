@@ -81,5 +81,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0") // Gson Converter (for JSON serialization/deserialization)
     implementation("com.squareup.okhttp3:okhttp:4.11.0")  // OkHttp (Retrofit's underlying networking library)
-    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0") // For logging network requests (optional but recommended)
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+    implementation("io.coil-kt:coil-compose:2.2.2")
+// For logging network requests (optional but recommended)
 }

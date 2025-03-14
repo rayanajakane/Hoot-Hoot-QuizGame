@@ -16,3 +16,5 @@ val BrightRed = Color(0xFFe91b0c)
 
 val DarkGrey = Color(0xFFA9A9A9)
 val LightGray = Color(0xFFD3D3D3)
+
+val HotPink = Color(0xFFf24788)
