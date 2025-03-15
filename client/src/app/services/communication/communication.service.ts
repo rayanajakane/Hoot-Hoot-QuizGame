@@ -18,8 +18,8 @@ export class CommunicationService<T> {
     };
 
     constructor(
-        protected readonly http: HttpClient,
-        @Inject('BASE_URL') protected baseUrl: string,
+        private readonly http: HttpClient,
+        @Inject('BASE_URL') private baseUrl: string,
     ) {}
 
     getAll(endpoint: string = ''): Observable<T[]> {

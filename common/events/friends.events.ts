@@ -4,4 +4,9 @@ export enum FriendsEvents {
     RequestRejected = 'requestRejected',
     RequestCanceled = 'requestCanceled',
     FriendRemoved = 'friendRemoved',
+    ReturnAllUsers = 'returnAllUsers',
+    ReturnAllFriends = 'returnAllFriends',
+    ReturnAllPendingRequests = 'returnAllPendingRequests',
+    ReturnAllSentRequests = 'returnAllSentRequests',
+    ReturnAllData = 'returnAllData',
 }
