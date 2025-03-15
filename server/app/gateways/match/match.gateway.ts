@@ -42,7 +42,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         const codeErrors = this.matchRoomService.getRoomCodeErrors(data.roomCode);
         const usernameErrors = this.playerRoomService.getUsernameErrors(data.roomCode, data.userId);
         let errorMessage = codeErrors + usernameErrors;
-        if (matchRoom && matchRoom.isFriendsOnly) {
+        if (matchRoom.isFriendsOnly) {
             const friendshipErrors = await this.friendService.getFriendshipErrors(matchRoom.hostId, false, data.userId);
             if (friendshipErrors) {
                 errorMessage += friendshipErrors;
