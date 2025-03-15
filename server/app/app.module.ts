@@ -1,5 +1,4 @@
 import { BackupController } from '@app/controllers/backup/backup.controller';
-import { FriendsController } from '@app/controllers/friends/friends.controller';
 import { GameController } from '@app/controllers/game/game.controller';
 import { MatchController } from '@app/controllers/match/match.controller';
 import { QuestionController } from '@app/controllers/question/question.controller';
@@ -50,7 +49,7 @@ import { FriendsGateway } from './gateways/friends/friends.gateway';
         EventEmitterModule.forRoot(),
         FirebaseModule,
     ],
-    controllers: [GameController, QuestionController, MatchController, BackupController, FriendsController, QuestionsGeneratorController],
+    controllers: [GameController, QuestionController, MatchController, BackupController, QuestionsGeneratorController],
     providers: [
         Logger,
         ChatService,
