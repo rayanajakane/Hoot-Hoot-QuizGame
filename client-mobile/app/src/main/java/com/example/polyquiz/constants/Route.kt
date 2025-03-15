@@ -32,4 +32,7 @@ object Route {
 
     @Serializable
     object UserEditPage
+
+    @Serializable
+    object MainCameraScreen
 }

@@ -51,24 +51,31 @@ import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.PresetAvatar
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.android.gms.auth.api.phone.SmsCodeAutofillClient.PermissionState
 import com.example.polyquiz.core.TranslationService
 import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun UserEditPage(
     modifier: Modifier,
     navigateToHome: () -> Unit,
     authViewModel: AuthViewModel,
     context: Context,
+    navigateToCamera: () -> Unit,
 ) {
+    // Camera stuff
+    val cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA)
+
     val focusManager = LocalFocusManager.current
     val translationService = TranslationService
 
     var currentLang by remember { mutableStateOf(Locale.getDefault().language) }
 
     val email by authViewModel.email.collectAsState()
-    var username by remember { mutableStateOf(authViewModel.getUsername()) }
+    val username by authViewModel.username.collectAsState()
     val usernameError by authViewModel.usernameError.collectAsState()
 
     var expandedTheme by remember { mutableStateOf(false) }
@@ -89,7 +96,8 @@ fun UserEditPage(
         }
     }
 
-    Row(horizontalArrangement = Arrangement.SpaceBetween,
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxSize()
             .pointerInput(Unit) {
@@ -97,7 +105,8 @@ fun UserEditPage(
                     focusManager.clearFocus()
                     keyboardController?.hide()
                 })
-            }) {
+            }
+    ) {
         ChatComponent(modifier = modifier, authViewModel = authViewModel)
         Box(
             contentAlignment = Alignment.Center, modifier = Modifier
@@ -140,7 +149,7 @@ fun UserEditPage(
                             AvatarPlaceholder(128.dp, PresetAvatar.DEFAULT.value)
                             Button(
                                 onClick = {
-                                    //TODO
+                                    navigateToCamera()
                                 },
                             ) { Text(stringResource(R.string.upload_avatar)) }
                             Text(stringResource(R.string.preset_avatars))
@@ -205,7 +214,8 @@ fun UserEditPage(
                                     colors = ExposedDropdownMenuDefaults.textFieldColors(),
 
                                     )
-                                ExposedDropdownMenu(expanded = expandedTheme,
+                                ExposedDropdownMenu(
+                                    expanded = expandedTheme,
                                     onDismissRequest = { expandedTheme = false }) {
                                     themes.forEach { theme ->
                                         DropdownMenuItem(
@@ -248,7 +258,8 @@ fun UserEditPage(
                                     },
                                     colors = ExposedDropdownMenuDefaults.textFieldColors(),
                                 )
-                                ExposedDropdownMenu(expanded = expandedLang,
+                                ExposedDropdownMenu(
+                                    expanded = expandedLang,
                                     onDismissRequest = { expandedLang = false }) {
                                     availableLangs.keys.forEach { language ->
                                         DropdownMenuItem(
