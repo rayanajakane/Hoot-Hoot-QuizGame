@@ -37,6 +37,7 @@
                         color="primary"
                         (click)="isFriendsOnly = false; createMatch(matchContext.HostView)"
                         *ngIf="gameIsValid && !isRandomGame"
+                        [disabled]="buttonClicked"
                     >
                         {{ t('common.play') }}
                     </button>
@@ -45,6 +46,7 @@
                         color="primary"
                         (click)="isFriendsOnly = true; createMatch(matchContext.HostView)"
                         *ngIf="gameIsValid && !isRandomGame"
+                        [disabled]="buttonClicked"
                     >
                         Jouer avec des amis
                     </button>
