@@ -8,6 +8,24 @@
     text-align: center;
 }
 
+.nav {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: 1fr repeat(4, 0);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+}
+
+.page-title {
+    grid-area: 1 / 3 / 2 / 4;
+}
+
+.navigation-buttons {
+    grid-area: 1 / 5 / 2 / 6;
+    justify-self: right;
+    margin-right: 3.2rem;
+}
+
 .search-field {
     width: 100%;
     max-width: 500px;
