@@ -50,7 +50,7 @@ const routes: Routes = [
     { path: 'results', canActivate: [matchLoginGuard], component: ResultsPageComponent },
     { path: 'edit-profile', component: UserEditPageComponent, canActivate: [authenticationGuard] },
     { path: 'reset-password-email-sent', component: ForgotPasswordFeedbackPageComponent },
-    { path: 'friends-search', component: FriendsSearchComponent },
+    { path: 'friends-search', component: FriendsSearchComponent, canActivate: [authenticationGuard] },
 ];
 
 @NgModule({
