@@ -68,6 +68,7 @@ export class MatchGateway implements OnGatewayDisconnect {
             const friendshipErrors = await this.friendService.getFriendshipErrors(data.hostId, true);
             if (friendshipErrors) {
                 this.sendError(socket.id, friendshipErrors);
+                return;
             }
         }
 
