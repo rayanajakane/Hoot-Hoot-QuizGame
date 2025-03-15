@@ -48,7 +48,6 @@ export class PlayerRoomService {
             socket: playerSocket,
             state: PlayerState.default,
         };
-
         const matchRoom = this.matchRoomService.getRoom(matchRoomCode);
         matchRoom.players.push(newPlayer);
         matchRoom.activePlayers++;

@@ -106,8 +106,8 @@ export class MatchRoomService {
         // this.socketService.socket.removeListener(MatchEvents.Disconnect);
     }
 
-    createRoom(gameId: string, hostId: string, hostUsername: string, isClassicMode: boolean = true) {
-        this.socketService.send(MatchEvents.CreateRoom, { gameId, hostId, isClassicMode }, (res: { code: string }) => {
+    createRoom(gameId: string, hostId: string, hostUsername: string, isClassicMode: boolean = true, isFriendsOnly: boolean = false) {
+        this.socketService.send(MatchEvents.CreateRoom, { gameId, hostId, isClassicMode, isFriendsOnly }, (res: { code: string }) => {
             this.matchRoomCode = res.code;
             // TODO: Migrate the logic to server, use UserID instead (need to track Host User ID in match room)
             // this.username = HOST_USERNAME; // This could cause problem if there is a user called 'Organisateur'. It won't synergize with Transloco too.
@@ -138,12 +138,15 @@ export class MatchRoomService {
         const sentInfo: UserInfo = { roomCode, username, userId };
 
         this.socketService.send(MatchEvents.JoinRoom, sentInfo, (res: { code: string; userId: string; username: string }) => {
-            this.matchRoomCode = res.code;
-            this.username = res.username;
-            this.userId = res.userId;
-            this.router.navigateByUrl('/match-room');
+            if (res) {
+                this.matchRoomCode = res.code;
+                this.username = res.username;
+                this.userId = res.userId;
+                this.router.navigateByUrl('/match-room');
+
+                this.sendPlayersData(roomCode);
+            }
         });
-        this.sendPlayersData(roomCode);
     }
 
     sendPlayersData(roomCode: string) {
@@ -214,6 +217,7 @@ export class MatchRoomService {
     onFetchPlayersData() {
         this.socketService.on(MatchEvents.FetchPlayersData, (res: string) => {
             this.players = JSON.parse(res);
+            console.log('vvvvvvvvvvvvvvvvvv', res);
         });
     }
 

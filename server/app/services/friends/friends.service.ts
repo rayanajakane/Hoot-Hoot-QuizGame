@@ -1,3 +1,4 @@
+import { NO_FRIENDS, NOT_FRIENDS_WITH_HOST } from '@app/constants/match-login-errors';
 import { FriendsGateway } from '@app/gateways/friends/friends.gateway';
 import { FirebaseAuthService } from '@app/modules/firebase/firebase-auth/firebase-auth.service';
 import { FirebaseRepositoryService } from '@app/modules/firebase/firebase-repository/firebase-repository.service';
@@ -126,5 +127,22 @@ export class FriendsService {
         await this.database.ref(`users/${friendId}/friends/${userId}`).remove();
         const friendsInfo: FriendsInfo = { user: userId, friend: friendId };
         this.friendsGateway.broadcastEvent(FriendsEvents.FriendRemoved, friendsInfo);
+    }
+
+    async getFriendshipErrors(userId: string, isRoomCreation: boolean, friendId: string = ''): Promise<string> {
+        let errors = '';
+        const friendsList = await this.getFriendsList(userId);
+        const isFriend = friendsList.some((friend) => friend.id === friendId);
+
+        const errorConditions: Map<string, boolean> = new Map([
+            [NOT_FRIENDS_WITH_HOST, !isFriend && !isRoomCreation],
+            [NO_FRIENDS, friendsList.length === 0 && isRoomCreation],
+        ]);
+
+        errorConditions.forEach((hasError: boolean, message: string) => {
+            if (hasError) errors += message;
+        });
+
+        return errors;
     }
 }
