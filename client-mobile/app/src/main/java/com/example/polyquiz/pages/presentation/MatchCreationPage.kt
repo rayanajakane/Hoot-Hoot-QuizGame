@@ -1,4 +1,4 @@
-package com.example.polyquiz
+package com.example.polyquiz.pages.presentation
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -23,107 +23,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.polyquiz.SnackbarController
+import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
-import com.example.polyquiz.http.QuestionService
-import com.example.polyquiz.match.domain.Choice
-import com.example.polyquiz.match.domain.Question
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateToHome: () -> Unit, authViewModel: AuthViewModel) {
+fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateToHome: () -> Unit, authViewModel: AuthViewModel, navigateToWaitPage: () -> Unit) {
     val authState = authViewModel.authState.observeAsState()
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    fun updateQuestion() {
-        QuestionService.updateQuestion(
-            modifiedQuestion = Question(id="c7f6e692-d8f7-4c07-a45a-b33659e4ad68", type="QCM", text="noo mais est-ce que la vie???", points=80, choices= listOf(
-                Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification="", pictureUrl="", creatorName=""),
-            onSuccess = {
-                println("It worked")
-            },
-            onError = { errorMessage ->
-                println("Error: $errorMessage")
-            }
-        )
-    }
-
-    fun verifyQuestion() {
-        QuestionService.verifyQuestion(
-            question = Question(id="", type="QCM", text="noo mais est-ce que la vie?", points=80, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification="", pictureUrl="", creatorName=""),
-                onSuccess = { response ->
-                println("Response: $response")
-            },
-            onError = { errorMessage ->
-                println("Error: $errorMessage")
-            }
-        )
-    }
-
-    fun deleteQuestion() {
-        QuestionService.deleteQuestion(
-            questionId = "322c6c04-76fe-49b6-8fc3-171dc4e7fb5f",
-            onSuccess = {
-                println("It worked")
-            },
-            onError = { errorMessage ->
-                println("Error: $errorMessage")
-            }
-        )
-    }
-
-    fun addQuestion() {
-        val question = Question(id="", type="QCM", text="noo mais est-ce que la vie?", points=80, choices= listOf(Choice(text="yooo", isCorrect=true), Choice(text="ff", isCorrect=false), Choice(text="yosdfsoo", isCorrect=false), Choice(text="yoofsdfsdfo", isCorrect=false)), lastModification="", pictureUrl="", creatorName="")
-        QuestionService.createQuestion(question,
-            onSuccess = { response ->
-                println("Response: $response")
-            },
-            onError = { errorMessage ->
-                println("Error: $errorMessage")
-            }
-        )
-    }
-
-    fun fetchQuestion() {
-        QuestionService.getAllQuestions(
-            onSuccess = { questions ->
-                questions.forEach { question ->
-                    println("Question: ${question.text}")
-                }
-            },
-            onError = { errorMessage ->
-                println("Error: $errorMessage")
-            }
-        )
-        /*questionService.getQuestionById(
-            questionId = "15570586-86be-4a7d-9d92-d99b7b716760",
-            onSuccess = { question ->
-                println("Question: ${question.text}")
-            },
-            onError = { errorMessage ->
-                println("Error: $errorMessage")
-            }
-        )*/
-    }
 
     LaunchedEffect(authState.value) {
-        when(authState.value) {
-            is AuthState.Unauthenticated -> {
-                scope.launch {
-                    SnackbarController.sendEvent(
-                        event = SnackbarEvent(
-                            message = StringValue.StringResource(R.string.sign_out_feedback)
-                        )
-                    )
-                }
-                navigateToLogin()
-            }
+        when (authState.value) {
+
             is AuthState.Error -> {
                 scope.launch {
                     SnackbarController.sendEvent(
@@ -133,11 +52,11 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
                     )
                 }
             }
+
             else -> Unit
         }
     }
-
-    Row (
+    Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxSize()
@@ -147,91 +66,45 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
                     keyboardController?.hide()
                 })
             }
-    ){
-        ChatComponent(modifier = modifier, authViewModel = authViewModel)
-        Column (
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxHeight()
+    ) {
+        ChatComponent(modifier = modifier.weight(1f), authViewModel = authViewModel)
+
+        Column(
+           horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Bottom,
+            modifier = Modifier
+                .weight(1f)
+                .padding(bottom = 10.dp)
         ) {
-            Button(
-                onClick = {
-                    updateQuestion()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary)
-            ) {
-                Text(text = "Modifier une question")
-            }
-            Button(
-                onClick = {
-                    verifyQuestion()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary)
-            ) {
-                Text(text = "Vérifier une question")
-            }
-            Button(
-                onClick = {
-                    deleteQuestion()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary)
-            ) {
-                Text(text = "Supprimer une question")
-            }
-            Button(
-                onClick = {
-                    addQuestion()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary)
-            ) {
-                Text(text = "Ajouter une question")
-            }
-            Button(
-                onClick = {
-                    fetchQuestion()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary)
-            ) {
-                Text(text = "Obtenir une question")
-            }
+
             Surface(
                 shadowElevation = 10.dp,
                 tonalElevation = 10.dp,
                 color = MaterialTheme.colorScheme.surfaceColorAtElevation(10.dp),
                 modifier = Modifier.padding(10.dp)
-            ){
+            ) {
                 Button(
-                    onClick = {
-                        navigateToHome()
-                    },
+                    onClick = { navigateToHome() },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.surfaceBright,
-                        contentColor = MaterialTheme.colorScheme.onSurface),
+                        contentColor = MaterialTheme.colorScheme.onSurface
+                    ),
                 ) {
                     Text(text = "Retourner à la page d'accueil")
                 }
             }
-        }
-        ElevatedButton(
-            onClick = {
-                authViewModel.signOut()
-            },
-            modifier = Modifier.padding(20.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.surfaceBright,
-                contentColor = MaterialTheme.colorScheme.onSurface)
-        ) {
-            Text(text = stringResource(R.string.logout_action))
+
+
+            ElevatedButton(
+                onClick = { authViewModel.signOut() },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceBright,
+                    contentColor = MaterialTheme.colorScheme.onSurface
+                )
+            ) {
+                Text(text = "Se déconnecter")
+            }
+            GameList(modifier = modifier.weight(1f).fillMaxHeight(0.2f), navigateToWaitPage)
         }
     }
 }

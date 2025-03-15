@@ -1,4 +1,5 @@
 package com.example.polyquiz.match.domain
+import android.annotation.SuppressLint
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.constants.MatchEvents
 import com.example.polyquiz.constants.MatchStatus
@@ -12,8 +13,13 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.polyquiz.constants.Route
 
+@SuppressLint("StaticFieldLeak")
 object MatchRoomService {
+    var navController : NavController? = null
     var players by mutableStateOf<List<Player>>(emptyList())
     var messages by mutableStateOf<List<Message>>(emptyList())
     var isMatchStarted by mutableStateOf(false)
@@ -24,6 +30,7 @@ object MatchRoomService {
     var isPlaying by mutableStateOf(false)
     var isTimeToNavigate by mutableStateOf(false)
     var hasBeenKickedOut by mutableStateOf(false)
+    var isLocked by mutableStateOf(false)
     var gameTitle: String = ""
     var gameDuration: Int = 0
     var currentQuestion by mutableStateOf<Question?>(null)
@@ -36,6 +43,8 @@ object MatchRoomService {
     private var hasEnteredRoom = false
 
     private val socket = SocketHandler.getSocket()
+
+    val mSocket = SocketHandler.getSocket()
 
     val socketId: String
         get() = socket.id() ?: ""
@@ -56,6 +65,7 @@ object MatchRoomService {
             onHostQuit()
             onPlayerKick()
             handleError()
+//            onPlayerChatStateToggle()
             onRouteToResultsPage()
             timeToGoToWaitPage = true
         }
@@ -96,7 +106,6 @@ object MatchRoomService {
         players.find { it.username == username }
 
     fun joinRoom(roomCode: String, username: String) {
-
         val sentInfo = JSONObject().apply {
             put("roomCode", roomCode)
             put("username", username)
@@ -131,7 +140,6 @@ object MatchRoomService {
         socket.on(MatchEvents.ERROR.value) { args ->
             if (args.isNotEmpty()) {
                 val errorMessage = args[0] as? String ?: "Unknown error"
-//                notificationService.displayErrorMessage(errorMessage)
             }
         }
     }
@@ -246,6 +254,10 @@ object MatchRoomService {
         }
     }
 
+    private fun navigateToResultsPage() {
+        navController?.navigate(Route.ResultsPage)
+    }
+
     fun onPlayerKick() {
         socket.on(MatchEvents.KICK_PLAYER.value) { _ ->
             isBanned = true
@@ -254,8 +266,7 @@ object MatchRoomService {
     }
 
     fun toggleLock() {
-        if (username == HOST_USERNAME) {
-            socket.emit(MatchEvents.TOGGLE_LOCK.value, matchRoomCode)
-        }
+        socket.emit(MatchEvents.TOGGLE_LOCK.value, matchRoomCode)
+        isLocked = !isLocked
     }
 }

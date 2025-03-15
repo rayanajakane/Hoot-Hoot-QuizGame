@@ -11,16 +11,20 @@ import com.example.polyquiz.auth.presentation.LoginPage
 import com.example.polyquiz.auth.presentation.ForgotPasswordFeedbackPage
 import com.example.polyquiz.auth.presentation.SignupPage
 import com.example.polyquiz.auth.presentation.UserEditPage
-import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.Route
 import com.example.polyquiz.friends.domain.FriendsService
 import com.example.polyquiz.match.domain.AnswerService
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
+import com.example.polyquiz.match.domain.MatchRoomService.players
 import com.example.polyquiz.match.presentation.QuestionArea
+import com.example.polyquiz.match.presentation.ResultsPage
+import com.example.polyquiz.pages.presentation.MatchCreationPage
 import com.example.polyquiz.pages.presentation.WaitPage
 import com.example.polyquiz.friends.presentation.FriendsSearchScreen
+
+
 
 // References: https://youtu.be/AIC_OFQ1r3k  and  https://youtu.be/lv1raAvwcgI
 @Composable
@@ -70,12 +74,13 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
             )
         }
         composable<Route.MatchRoom> {
-            //val matchContextService = MatchContextService()
-            //matchContextService.setContext(MatchContext.PLAYERVIEW)
             QuestionArea(
                 modifier = modifier,
                 navigateToHome = {
                     navController.navigate(Route.Home)
+                },
+                navigateToResultsPage = {
+                    navController.navigate(Route.ResultsPage)
                 },
                 authViewModel = authViewModel,
                 matchContextService = MatchContextService,
@@ -117,7 +122,16 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                 navigateToHome = {
                     navController.navigate(Route.Home)
                 },
-                authViewModel = authViewModel
+                authViewModel = authViewModel,
+                navigateToWaitPage = {navController.navigate(Route.WaitPage)}
+            )
+        }
+        composable<Route.ResultsPage> {
+           ResultsPage(
+               matchRoomService = MatchRoomService,
+               players,
+               modifier,
+               extraContent ={}
             )
         }
 

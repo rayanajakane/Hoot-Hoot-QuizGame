@@ -31,6 +31,9 @@ object Route {
     object WaitPage
 
     @Serializable
+    object ResultsPage
+
+    @Serializable
     object UserEditPage
 
     @Serializable
