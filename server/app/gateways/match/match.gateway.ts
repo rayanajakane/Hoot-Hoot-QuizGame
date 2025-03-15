@@ -6,6 +6,7 @@ import { MatchRoom } from '@app/model/schema/match-room.schema';
 import { Player } from '@app/model/schema/player.schema';
 // import { HistogramService } from '@app/services/histogram/histogram.service';
 // import { HistoryService } from '@app/services/history/history.service';
+import { FriendsService } from '@app/services/friends/friends.service';
 import { MatchBackupService } from '@app/services/match-backup/match-backup.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { PlayerRoomService } from '@app/services/player-room/player-room.service';
@@ -29,19 +30,27 @@ export class MatchGateway implements OnGatewayDisconnect {
         private readonly matchRoomService: MatchRoomService,
         private readonly playerRoomService: PlayerRoomService,
         private readonly matchBackupService: MatchBackupService,
+        private readonly friendService: FriendsService,
         // private readonly histogramService: HistogramService,
         // private readonly historyService: HistoryService,
         private readonly eventEmitter: EventEmitter2,
     ) {}
 
     @SubscribeMessage(MatchEvents.JoinRoom)
-    joinRoom(@ConnectedSocket() socket: Socket, @MessageBody() data: UserInfo) {
+    async joinRoom(@ConnectedSocket() socket: Socket, @MessageBody() data: UserInfo) {
+        const matchRoom = this.matchRoomService.getRoom(data.roomCode);
         const codeErrors = this.matchRoomService.getRoomCodeErrors(data.roomCode);
         const usernameErrors = this.playerRoomService.getUsernameErrors(data.roomCode, data.userId);
-        const errorMessage = codeErrors + usernameErrors;
+        let errorMessage = codeErrors + usernameErrors;
+        if (matchRoom && matchRoom.isFriendsOnly) {
+            const friendshipErrors = await this.friendService.getFriendshipErrors(matchRoom.hostId, false, data.userId);
+            if (friendshipErrors) {
+                errorMessage += friendshipErrors;
+            }
+        }
+
         if (errorMessage) {
             this.sendError(socket.id, errorMessage);
-            // this.server.in(socket.id).disconnectSockets();
         } else {
             socket.join(data.roomCode);
             const newPlayer = this.playerRoomService.addPlayer(socket, data.roomCode, data.userId, data.username);
@@ -51,10 +60,26 @@ export class MatchGateway implements OnGatewayDisconnect {
     }
 
     @SubscribeMessage(MatchEvents.CreateRoom)
-    async createRoom(@ConnectedSocket() socket: Socket, @MessageBody() data: { gameId: string; hostId: string; isClassicMode: boolean }) {
+    async createRoom(
+        @ConnectedSocket() socket: Socket,
+        @MessageBody() data: { gameId: string; hostId: string; isClassicMode: boolean; isFriendsOnly: boolean },
+    ) {
+        if (data.isFriendsOnly) {
+            const friendshipErrors = await this.friendService.getFriendshipErrors(data.hostId, true);
+            if (friendshipErrors) {
+                this.sendError(socket.id, friendshipErrors);
+            }
+        }
+
         let selectedGame: Game = {} as Game;
         selectedGame = this.matchBackupService.getBackupGame(data.gameId);
-        const newMatchRoom: MatchRoom = await this.matchRoomService.addRoom(selectedGame, socket, data.hostId, data.isClassicMode);
+        const newMatchRoom: MatchRoom = await this.matchRoomService.addRoom(
+            selectedGame,
+            socket,
+            data.hostId,
+            data.isClassicMode,
+            data.isFriendsOnly,
+        );
 
         socket.join(newMatchRoom.code);
         this.returnAllMatches();

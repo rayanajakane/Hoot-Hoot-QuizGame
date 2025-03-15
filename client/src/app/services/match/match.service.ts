@@ -48,10 +48,10 @@ export class MatchService extends CommunicationService<Game> {
         return this.delete(`backups/${id}`);
     }
 
-    createMatch() {
-        const organizerId = this.authenticationService.userId;
-        const organizerUsername = this.authenticationService.userDisplayName;
+    createMatch(isFriendsOnly: boolean = false, isClassicMode: boolean = false) {
+        const hostId = this.authenticationService.userId;
+        const hostUsername = this.authenticationService.userDisplayName;
         this.matchRoomService.connect();
-        this.matchRoomService.createRoom(this.currentGame.id, organizerId, organizerUsername);
+        this.matchRoomService.createRoom(this.currentGame.id, hostId, hostUsername, isClassicMode, isFriendsOnly);
     }
 }

@@ -30,6 +30,8 @@ export class MatchCreationPageComponent implements OnInit {
     isLoadingSelectedGame: boolean;
     mostPopularGames: Game[] = [];
 
+    isFriendsOnly = false;
+
     // Services are required to decouple logic
     // eslint-disable-next-line max-params
     constructor(
@@ -133,7 +135,7 @@ export class MatchCreationPageComponent implements OnInit {
                 if (response.body) {
                     const backupGame = JSON.parse(response.body);
                     this.matchService.currentGame = backupGame;
-                    this.matchService.createMatch();
+                    this.matchService.createMatch(this.isFriendsOnly);
                 }
             });
         } else {
@@ -144,32 +146,7 @@ export class MatchCreationPageComponent implements OnInit {
 
     createMatch(context: MatchContext): void {
         this.matchContextService.setContext(context);
-        if (!this.isRandomGame) this.reloadSelectedGame();
-        else {
-            this.revalidateRandomGame();
-        }
-    }
-
-    handleRevalidateRandomGame(data: Question[]) {
-        const questionsCount = [...data].length;
-
-        const hasEnoughRandomQuestions = this.hasEnoughRandomQuestions(questionsCount);
-
-        if (hasEnoughRandomQuestions && this.isRandomGame && this.gameIsValid) {
-            this.matchService.currentGame = RANDOM_MODE_GAME;
-            this.matchService.createMatch();
-        } else {
-            this.notificationService.displayErrorMessage(RandomModeStatus.FAILURE);
-        }
-    }
-
-    revalidateRandomGame() {
-        this.questionService.getAllQuestions().subscribe({
-            next: (data: Question[]) => {
-                data = data.filter((question) => question.type === QuestionType.MultipleChoice);
-                this.handleRevalidateRandomGame(data);
-            },
-        });
+        this.reloadSelectedGame();
     }
 
     private sortMostPopularGames() {

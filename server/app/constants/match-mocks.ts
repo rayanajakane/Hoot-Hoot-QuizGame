@@ -44,6 +44,7 @@ const MOCK_MATCH_ROOM: MatchRoom = {
     startTime: new Date(),
     qrCodeUrl: '',
     hostId: '',
+    isFriendsOnly: false,
 };
 
 const MOCK_TEST_MATCH_ROOM: MatchRoom = {
@@ -68,6 +69,7 @@ const MOCK_TEST_MATCH_ROOM: MatchRoom = {
     startTime: new Date(),
     qrCodeUrl: '',
     hostId: '',
+    isFriendsOnly: false,
 };
 
 const MOCK_RANDOM_MATCH_ROOM: MatchRoom = {
@@ -92,6 +94,7 @@ const MOCK_RANDOM_MATCH_ROOM: MatchRoom = {
     startTime: new Date(),
     qrCodeUrl: '',
     hostId: '',
+    isFriendsOnly: false,
 };
 
 const MOCK_PLAYER_ROOM: MatchRoom = {
@@ -116,6 +119,7 @@ const MOCK_PLAYER_ROOM: MatchRoom = {
     startTime: new Date(),
     qrCodeUrl: '',
     hostId: '',
+    isFriendsOnly: false,
 };
 
 const MOCK_ROOM_CODE = 'mockCode';
