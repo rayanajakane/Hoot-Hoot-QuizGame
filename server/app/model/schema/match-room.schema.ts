@@ -28,4 +28,5 @@ export interface MatchRoom {
     isClassicMode: boolean;
     startTime: Date;
     qrCodeUrl: string;
+    isFriendsOnly: boolean;
 }

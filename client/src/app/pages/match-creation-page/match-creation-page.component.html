@@ -35,6 +35,14 @@
                     <button mat-raised-button color="primary" (click)="createMatch(matchContext.HostView)" *ngIf="gameIsValid && !isRandomGame">
                         {{ t('common.play') }}
                     </button>
+                    <button
+                        mat-raised-button
+                        color="primary"
+                        (click)="isFriendsOnly = true; createMatch(matchContext.HostView)"
+                        *ngIf="gameIsValid && !isRandomGame"
+                    >
+                        Jouer avec des amis
+                    </button>
                 </div>
             </div>
             <cdk-virtual-scroll-viewport class="virtual-scroll" itemSize="50">
