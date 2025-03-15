@@ -29,7 +29,7 @@ export class MatchCreationPageComponent implements OnInit {
     isLoadingGames: boolean;
     isLoadingSelectedGame: boolean;
     mostPopularGames: Game[] = [];
-
+    buttonClicked = false;
     isFriendsOnly = false;
 
     // Services are required to decouple logic
@@ -147,6 +147,7 @@ export class MatchCreationPageComponent implements OnInit {
     }
 
     createMatch(context: MatchContext): void {
+        this.buttonClicked = true;
         this.matchContextService.setContext(context);
         this.reloadSelectedGame();
     }
