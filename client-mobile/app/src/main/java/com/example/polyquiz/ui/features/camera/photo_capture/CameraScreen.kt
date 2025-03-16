@@ -13,18 +13,20 @@ import androidx.camera.core.ImageProxy
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +34,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -111,47 +115,72 @@ fun CameraContent(onPhotoCaptured: (Bitmap) -> Unit) {
 fun ImagePreview(capturedImage: Bitmap, onRetake: () -> Unit, onSave: (Bitmap) -> Unit) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        floatingActionButton = {
-            // TODO
-        }
     ) { paddingValues ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .padding(paddingValues)
         ) {
-            Image(
-                bitmap = capturedImage.asImageBitmap(),
-                contentDescription = "Captured Image",
-                modifier = Modifier.fillMaxSize().weight(1f)
+            CircularImagePreview(
+                capturedImage = capturedImage, modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(16.dp)
             )
 
-            ExtendedFloatingActionButton(
-                text = { Text(text = "Retake Photo") },
-                onClick = onRetake,
-                icon = {
-                    Icon(
-                        imageVector = Icons.Default.Camera,
-                        contentDescription = "Retake photo icon"
-                    )
-                }
-            )
+            Row(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(16.dp)
+            ) {
+                ExtendedFloatingActionButton(
+                    text = { Text(text = "Retake Photo") },
+                    onClick = onRetake,
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Camera,
+                            contentDescription = "Retake photo icon"
+                        )
+                    },
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            ExtendedFloatingActionButton(
-                text = { Text(text = "Save Photo") },
-                onClick = { onSave(capturedImage) },
-                icon = {
-                    Icon(
-                        imageVector = Icons.Default.Save,
-                        contentDescription = "Save photo icon"
-                    )
-                }
-            )
+                ExtendedFloatingActionButton(
+                    text = { Text(text = "Save Photo") },
+                    onClick = { onSave(capturedImage) },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Save,
+                            contentDescription = "Save photo icon"
+                        )
+                    }
+                )
+            }
         }
+    }
+}
+
+@Composable
+fun CircularImagePreview(
+    capturedImage: Bitmap,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .clip(CircleShape)
+            .size(500.dp)
+            .border(
+                width = 2.dp,
+                color = MaterialTheme.colorScheme.primary,
+                shape = CircleShape
+            )
+    ) {
+        Image(
+            bitmap = capturedImage.asImageBitmap(),
+            contentDescription = "Circular avatar",
+            modifier = Modifier.clip(CircleShape),
+            contentScale = ContentScale.Crop
+        )
     }
 }
 
