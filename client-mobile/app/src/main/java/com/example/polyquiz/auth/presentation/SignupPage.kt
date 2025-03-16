@@ -273,12 +273,10 @@ fun AvatarPlaceholder(avatarSize: Dp, imageUrl: String) {
                 shape = CircleShape
             )
     ) {
-        // TODO: Add image
         AsyncImage(
             model = imageUrl,
             contentScale = ContentScale.Crop,
-            // TODO : Add translation once merged
-            contentDescription = "placeholder avatar",
+            contentDescription = stringResource(R.string.preset_avatars),
             modifier = Modifier.clip(CircleShape)
         )
     }

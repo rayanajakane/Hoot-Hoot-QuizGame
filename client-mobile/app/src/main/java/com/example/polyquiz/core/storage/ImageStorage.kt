@@ -15,6 +15,15 @@ object ImageStorage {
         return storageRef.child("avatars/${uid}");
     }
 
+    fun deleteAvatar(uid: String) {
+        val avatarRef = getAvatarRef(uid)
+        avatarRef.delete().addOnSuccessListener {
+            Log.d("Avatar storage", "Deleted avatar")
+        }.addOnFailureListener {
+            Log.e("Avatar storage", "Error while deleting avatar. Avatar does not exist in storage.")
+        }
+    }
+
     // https://firebase.google.com/docs/storage/android/upload-files#upload_from_data_in_memory
     fun uploadAvatar(capturedImage: Bitmap, uid: String, callback: (String?) -> Unit) {
         // TODO : Put in constants

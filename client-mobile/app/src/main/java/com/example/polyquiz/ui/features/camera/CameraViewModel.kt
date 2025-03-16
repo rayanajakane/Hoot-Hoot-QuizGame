@@ -36,6 +36,12 @@ class CameraViewModel : ViewModel() {
         setTemporaryAvatar(updatedPhoto)
     }
 
+    fun setPresetAvatar(authViewModel: AuthViewModel, imageUrl: String) {
+        Log.d("CameraViewModel", "Set avatar to preset")
+        _isPresetAvatar.value = false
+        authViewModel.setAvatarUrl(imageUrl)
+    }
+
     private fun resetCapturedPhotoState() {
         _state.value = _state.value.copy(capturedImage = null)
         clearTemporaryAvatar()

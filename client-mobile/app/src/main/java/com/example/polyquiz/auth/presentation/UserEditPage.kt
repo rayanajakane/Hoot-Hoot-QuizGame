@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -58,10 +59,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.PresetAvatar
+import com.example.polyquiz.core.storage.ImageStorage
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
@@ -74,6 +77,7 @@ import java.util.Locale
 fun UserEditPage(
     modifier: Modifier,
     navigateToHome: () -> Unit,
+    navigateToCamera: () -> Unit,
     authViewModel: AuthViewModel,
     context: Context,
     navigateToCamera: () -> Unit,
@@ -112,6 +116,9 @@ fun UserEditPage(
     val temporaryAvatar by cameraViewModel.temporaryAvatar.collectAsState()
     val avatarToShow = temporaryAvatar ?: avatarURL
 
+    val onClickAvatar: (String) -> Unit = { url ->
+        cameraViewModel.setPresetAvatar(authViewModel, url)
+    }
 
     fun saveUserProfile() {
         // Save avatar image + url
@@ -123,7 +130,7 @@ fun UserEditPage(
                 authViewModel.getUserId(),
                 authViewModel
             ) { newAvatarUrl ->
-                if(newAvatarUrl != null) {
+                if (newAvatarUrl != null) {
                     authViewModel.updateUserProfile(newAvatarUrl)
                 } else {
                     Log.e("Save user profile", "Failed to save image. URL was null")
@@ -131,6 +138,12 @@ fun UserEditPage(
             }
 
 
+        } else {
+            Log.d("UserEditPage", "Setting preset avatar instead")
+            val newAvatarUrl = authViewModel.getAvatarURL()
+            authViewModel.updateUserProfile(newAvatarUrl)
+
+            ImageStorage.deleteAvatar(authViewModel.getUserId())
         }
 
         // TODO : Save username, theme, lang
@@ -197,7 +210,7 @@ fun UserEditPage(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            if(avatarToShow is Bitmap) {
+                            if (avatarToShow is Bitmap) {
                                 TemporaryAvatar(128.dp, avatarToShow)
                             } else {
                                 if (avatarURL != null) {
@@ -214,11 +227,11 @@ fun UserEditPage(
                             ) { Text(stringResource(R.string.upload_avatar)) }
                             Text(stringResource(R.string.preset_avatars))
                             Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                                AvatarPlaceholder(32.dp, PresetAvatar.A.value)
-                                AvatarPlaceholder(32.dp, PresetAvatar.B.value)
-                                AvatarPlaceholder(32.dp, PresetAvatar.C.value)
-                                AvatarPlaceholder(32.dp, PresetAvatar.D.value)
-                                AvatarPlaceholder(32.dp, PresetAvatar.DEFAULT.value)
+                                ClickableAvatarPlaceholder(32.dp, PresetAvatar.A.value, onClickAvatar)
+                                ClickableAvatarPlaceholder(32.dp, PresetAvatar.B.value, onClickAvatar)
+                                ClickableAvatarPlaceholder(32.dp, PresetAvatar.C.value, onClickAvatar)
+                                ClickableAvatarPlaceholder(32.dp, PresetAvatar.D.value, onClickAvatar)
+                                ClickableAvatarPlaceholder(32.dp, PresetAvatar.DEFAULT.value, onClickAvatar)
                             }
 
                         }
@@ -423,7 +436,9 @@ fun TemporaryAvatar(avatarSize: Dp, bitmap: Bitmap?) {
                 bitmap = bitmap.asImageBitmap(),
                 // TODO : Add translation once merged
                 contentDescription = "placeholder avatar",
-                modifier = Modifier.fillMaxSize().clip(CircleShape),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
         }
@@ -431,3 +446,27 @@ fun TemporaryAvatar(avatarSize: Dp, bitmap: Bitmap?) {
 }
 
 
+
+@Composable()
+fun ClickableAvatarPlaceholder(avatarSize: Dp, imageUrl: String, onClickAvatar: (String) -> Unit) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .size(avatarSize)
+            .border(
+                width = 2.dp,
+                color = MaterialTheme.colorScheme.primary,
+                shape = CircleShape
+            )
+            .clickable {
+                onClickAvatar(imageUrl)
+            }
+    ) {
+        AsyncImage(
+            model = imageUrl,
+            contentScale = ContentScale.Crop,
+            contentDescription = stringResource(R.string.preset_avatars),
+            modifier = Modifier.clip(CircleShape)
+        )
+    }
+}
