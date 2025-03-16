@@ -1,5 +1,6 @@
 package com.example.polyquiz.auth.presentation
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -24,6 +25,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -48,7 +51,7 @@ fun SignupPage(
     modifier: Modifier,
     navigateToChat: () -> Unit,
     navigateToLogin: () -> Unit,
-    authViewModel: AuthViewModel,
+    authViewModel: AuthViewModel
 ) {
     val context = LocalContext.current
     val email by authViewModel.email.collectAsState()
@@ -67,7 +70,7 @@ fun SignupPage(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(authState.value) {
-        when(authState.value) {
+        when (authState.value) {
             is AuthState.Authenticated -> {
                 scope.launch {
                     SnackbarController.sendEvent(
@@ -78,6 +81,7 @@ fun SignupPage(
                 }
                 navigateToChat()
             }
+
             is AuthState.Error -> {
                 scope.launch {
                     SnackbarController.sendEvent(
@@ -87,13 +91,16 @@ fun SignupPage(
                     )
                 }
             }
+
             else -> Unit
         }
     }
 
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier .fillMaxSize().imePadding()
+        modifier = Modifier
+            .fillMaxSize()
+            .imePadding()
 
     ) {
         ElevatedCard(
@@ -143,14 +150,19 @@ fun SignupPage(
                     Column() {
                         TextField(
                             value = email,
-                            onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.updateEmail(it, context) },
+                            onValueChange = {
+                                if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.updateEmail(
+                                    it,
+                                    context
+                                )
+                            },
                             isError = emailError.isNotEmpty(),
                             singleLine = true,
                             label = { Text(stringResource(R.string.email)) },
                             modifier = Modifier.fillMaxWidth()
                         )
 
-                        if(emailError.isNotEmpty()) {
+                        if (emailError.isNotEmpty()) {
                             Text(text = emailError, color = Color.Red)
                         }
 
@@ -159,13 +171,19 @@ fun SignupPage(
                         TextField(
                             value = username,
                             onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.setAndUpdateUsername(it, context) },
+                            onValueChange = {
+                                if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.updateUsername(
+                                    it,
+                                    context
+                                )
+                            },
                             isError = usernameError.isNotEmpty(),
                             singleLine = true,
                             label = { Text(stringResource(R.string.username)) },
                             modifier = Modifier.fillMaxWidth()
                         )
 
-                        if(usernameError.isNotEmpty()) {
+                        if (usernameError.isNotEmpty()) {
                             Text(text = usernameError, color = Color.Red)
                         }
 
@@ -173,7 +191,12 @@ fun SignupPage(
 
                         TextField(
                             value = password,
-                            onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.updatePassword(it, context)},
+                            onValueChange = {
+                                if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.updatePassword(
+                                    it,
+                                    context
+                                )
+                            },
                             singleLine = true,
                             keyboardActions = KeyboardActions(onDone = {
                                 authViewModel.signUp(email, username, password, context)
@@ -188,7 +211,8 @@ fun SignupPage(
                                     Icons.Filled.Visibility
                                 else Icons.Filled.VisibilityOff
 
-                                val description = if (passwordVisible) "Hide password" else "Show password"
+                                val description =
+                                    if (passwordVisible) "Hide password" else "Show password"
 
                                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                                     Icon(imageVector = image, description)
@@ -196,7 +220,7 @@ fun SignupPage(
                             },
                         )
 
-                        if(passwordError.isNotEmpty()) {
+                        if (passwordError.isNotEmpty()) {
                             Text(text = passwordError, color = Color.Red)
                         }
 
@@ -235,10 +259,12 @@ fun SignupPage(
     }
 }
 
+
+
 @Composable()
 fun AvatarPlaceholder(avatarSize: Dp, imageUrl: String) {
     Box(
-        contentAlignment= Alignment.Center,
+        contentAlignment = Alignment.Center,
         modifier = Modifier
             .size(avatarSize)
             .border(
@@ -246,10 +272,11 @@ fun AvatarPlaceholder(avatarSize: Dp, imageUrl: String) {
                 color = MaterialTheme.colorScheme.primary,
                 shape = CircleShape
             )
-    ){
+    ) {
         // TODO: Add image
         AsyncImage(
             model = imageUrl,
+            contentScale = ContentScale.Crop,
             // TODO : Add translation once merged
             contentDescription = "placeholder avatar",
             modifier = Modifier.clip(CircleShape)

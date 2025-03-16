@@ -1,5 +1,6 @@
 package com.example.polyquiz.ui.features.camera
 
+import android.graphics.Bitmap
 import androidx.compose.runtime.Composable
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.ui.features.camera.no_permission.NoPermissionScreen

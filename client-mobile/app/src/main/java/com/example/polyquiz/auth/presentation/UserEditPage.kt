@@ -1,5 +1,9 @@
 package com.example.polyquiz.auth.presentation
 
+import android.graphics.Bitmap
+import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -13,7 +17,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material.icons.Icons
@@ -41,17 +47,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.PresetAvatar
+import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.gms.auth.api.phone.SmsCodeAutofillClient.PermissionState
@@ -66,6 +77,7 @@ fun UserEditPage(
     authViewModel: AuthViewModel,
     context: Context,
     navigateToCamera: () -> Unit,
+    cameraViewModel: CameraViewModel
 ) {
 
     val focusManager = LocalFocusManager.current
@@ -95,11 +107,33 @@ fun UserEditPage(
         }
 
     var avatarURL by remember { mutableStateOf<String?>(null) }
+    val avatarURL by authViewModel.avatarURL.collectAsState()
+    val isPresetAvatar by cameraViewModel.isPresetAvatar.collectAsState()
+    val temporaryAvatar by cameraViewModel.temporaryAvatar.collectAsState()
+    val avatarToShow = temporaryAvatar ?: avatarURL
 
-    LaunchedEffect(Unit) {
-        authViewModel.getAvatarURL { url ->
-            avatarURL = url
+
+    fun saveUserProfile() {
+        // Save avatar image + url
+        val capturedImage = cameraViewModel.state.value.capturedImage
+        if (!isPresetAvatar && capturedImage != null) {
+            Log.d("UserEditPage", "Saving new stuff")
+            cameraViewModel.saveCapturedImage(
+                capturedImage,
+                authViewModel.getUserId(),
+                authViewModel
+            ) { newAvatarUrl ->
+                if(newAvatarUrl != null) {
+                    authViewModel.updateUserProfile(newAvatarUrl)
+                } else {
+                    Log.e("Save user profile", "Failed to save image. URL was null")
+                }
+            }
+
+
         }
+
+        // TODO : Save username, theme, lang
     }
 
     Button(
@@ -163,10 +197,14 @@ fun UserEditPage(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            if(avatarURL != null) {
-                                AvatarPlaceholder(128.dp, avatarURL!!)
+                            if(avatarToShow is Bitmap) {
+                                TemporaryAvatar(128.dp, avatarToShow)
                             } else {
-                                AvatarPlaceholder(128.dp, PresetAvatar.DEFAULT.value)
+                                if (avatarURL != null) {
+                                    AvatarPlaceholder(128.dp, avatarURL!!)
+                                } else {
+                                    AvatarPlaceholder(128.dp, PresetAvatar.DEFAULT.value)
+                                }
                             }
 
                             Button(
@@ -307,6 +345,10 @@ fun UserEditPage(
                             Spacer(modifier = Modifier.height(8.dp))
                             Button(
                                 onClick = {
+                                    // TODO
+                                    saveUserProfile()
+                                },
+                                colors = ButtonDefaults.buttonColors(
                                     // Change app language
                                     translationService.setLanguage(currentLang)
                                     translationService.saveLanguageToDB(
@@ -338,6 +380,8 @@ fun UserEditPage(
                 Text(
                     stringResource(R.string.danger_zone),
                     fontSize = 30.sp,
+                Text(
+                    stringResource(R.string.danger_zone), fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
@@ -360,3 +404,30 @@ fun UserEditPage(
 
     }
 }
+
+@Composable
+fun TemporaryAvatar(avatarSize: Dp, bitmap: Bitmap?) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .size(avatarSize)
+            .border(
+                width = 2.dp,
+                color = MaterialTheme.colorScheme.primary,
+                shape = CircleShape
+            )
+    ) {
+        // TODO: Add image
+        if (bitmap != null) {
+            Image(
+                bitmap = bitmap.asImageBitmap(),
+                // TODO : Add translation once merged
+                contentDescription = "placeholder avatar",
+                modifier = Modifier.fillMaxSize().clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
+        }
+    }
+}
+
+

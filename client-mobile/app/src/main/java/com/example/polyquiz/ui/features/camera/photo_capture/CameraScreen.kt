@@ -64,14 +64,7 @@ fun CameraScreen(
         ImagePreview(
             capturedImage = cameraState.capturedImage!!,
             onRetake = { cameraViewModel.updateCapturedPhotoState(null) },
-            onSave = { capturedImage ->
-                cameraViewModel.saveCapturedImage(
-                    capturedImage,
-                    authViewModel.getUserId(),
-                    authViewModel
-                )
-                navigateToUserEdit()
-            }
+            onSave = { navigateToUserEdit() }
         )
     }
 }

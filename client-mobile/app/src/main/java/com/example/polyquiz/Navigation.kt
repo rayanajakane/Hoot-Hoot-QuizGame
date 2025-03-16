@@ -24,7 +24,12 @@ import com.example.polyquiz.ui.features.camera.MainCameraScreen
 
 // References: https://youtu.be/AIC_OFQ1r3k  and  https://youtu.be/lv1raAvwcgI
 @Composable
-fun Navigation(modifier: Modifier, authViewModel: AuthViewModel, cameraViewModel: CameraViewModel, , context: Context) {
+fun Navigation(
+    modifier: Modifier,
+    authViewModel: AuthViewModel,
+    cameraViewModel: CameraViewModel, ,
+    context: Context
+) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
@@ -151,15 +156,16 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel, cameraViewModel
                 context = context,
                 navigateToCamera = {
                     navController.navigate(Route.MainCameraScreen)
-                }
-            )
+                }, cameraViewModel
         }
-
-        composable<Route.MainCameraScreen> {
-            MainCameraScreen(
-                authViewModel,
-                cameraViewModel,
-                navigateToUserEdit = { navController.navigate(Route.UserEditPage) })
-        }
+        )
     }
+
+    composable<Route.MainCameraScreen> {
+        MainCameraScreen(
+            authViewModel,
+            cameraViewModel,
+            navigateToUserEdit = { navController.navigate(Route.UserEditPage) })
+    }
+}
 }

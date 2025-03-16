@@ -2,16 +2,17 @@ package com.example.polyquiz.auth.domain
 
 import StringValue
 import android.content.Context
+import android.net.Uri
 import android.text.TextUtils
 import android.util.Log
 import android.util.Patterns
-import androidx.compose.ui.res.stringResource
-import androidx.core.content.ContextCompat.getString
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.polyquiz.R
+import com.example.polyquiz.SnackbarController
+import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.core.storage.ImageStorage
 import com.example.polyquiz.SnackbarController
@@ -26,6 +27,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.database
@@ -62,7 +64,7 @@ class AuthViewModel : ViewModel() {
     val passwordError: StateFlow<String> get() = _passwordError
 
     private val _avatarURL = MutableStateFlow(PresetAvatar.DEFAULT.value)
-    val avatarURL : StateFlow<String> get() = _avatarURL
+    val avatarURL: StateFlow<String> get() = _avatarURL
 
     init {
         checkAuthStatus()
@@ -75,6 +77,7 @@ class AuthViewModel : ViewModel() {
         return database.getReference("users/${uid}")
     }
 
+    fun getUsernameDatabaseRef(username: String): DatabaseReference {
     fun getUserConfigsDatabaseRef() : DatabaseReference {
         return database.getReference("users/${user?.uid}/configs")
     }
@@ -88,10 +91,11 @@ class AuthViewModel : ViewModel() {
         validateEmail(newEmail, context)
     }
 
-    fun setAndUpdateUsername(newUsername: String, context: Context) {
-        _username.value = newUsername
-        updateUsername(newUsername, context)
-    }
+    fun setAndUpdateUsername(newUsername: String, context: Context) {}
+//    fun updateUsername(newUsername: String, context: Context) {
+//        _username.value = newUsername
+//        updateUsername(newUsername, context)
+//    }
 
     fun updateUsername(newUsername: String, context: Context) {
         validateUsername(newUsername, context)
@@ -102,7 +106,11 @@ class AuthViewModel : ViewModel() {
         validatePassword(newPassword, context)
     }
 
-    fun updateAvatarUrl(url: String) {
+    fun getAvatarURL(): String {
+        return _avatarURL.value
+    }
+
+    fun setAvatarUrl(url: String) {
         _avatarURL.value = url
     }
 
@@ -113,6 +121,7 @@ class AuthViewModel : ViewModel() {
         _emailError.value = ""
         _usernameError.value = ""
         _passwordError.value = ""
+        _avatarURL.value = ""
     }
 
     fun resetUsername() {
@@ -127,7 +136,7 @@ class AuthViewModel : ViewModel() {
         return auth.currentUser?.uid ?: ""
     }
 
-    fun getAvatarURL(callback: (String?) -> Unit) {
+    fun getAvatarURLFromDB(callback: (String?) -> Unit) {
         val uid = auth.currentUser?.uid ?: return callback(null)
         val avatarRef = ImageStorage.getAvatarRef(uid)
 
@@ -214,6 +223,23 @@ class AuthViewModel : ViewModel() {
                             userRef.child("isOnline").setValue(true)
                             userRef.child("isOnline").onDisconnect().setValue(false)
                             user = task.result.user
+                            setAvatarUrl(user?.photoUrl.toString())
+                            _authState.value = AuthState.Authenticated
+                            SocketHandler.connect()
+                            Log.d(TAG, "signInWithEmail:success")
+                        }
+                    userRef?.child("isOnline")?.get()
+                        ?.addOnSuccessListener { dataSnapshot: DataSnapshot ->
+                            val isOnline: Boolean = dataSnapshot.value as Boolean
+                            if (isOnline) {
+                                auth.signOut()
+                                _authState.value =
+                                    AuthState.Error(StringValue.StringResource(R.string.already_online))
+                                return@addOnSuccessListener
+                            }
+                            userRef.child("isOnline").setValue(true)
+                            userRef.child("isOnline").onDisconnect().setValue(false)
+                            user = task.result.user
                             _username.value = user?.displayName ?: ""
                             _email.value = user?.email ?: ""
                             _authState.value = AuthState.Authenticated
@@ -237,6 +263,44 @@ class AuthViewModel : ViewModel() {
                 AuthState.Error(StringValue.StringResource(R.string.invalid_username_password))
             return
         }
+        // TODO: Replace spaces? (or simply forbid them?)
+        val usernameRef = getUsernameDatabaseRef(username.lowercase())
+        usernameRef.get().addOnSuccessListener { databaseSnapshot: DataSnapshot ->
+            if (databaseSnapshot.exists()) {
+                // TODO : Make new error text
+                _authState.value =
+                    AuthState.Error(StringValue.StringResource(R.string.username_already_exists))
+                Log.e(TAG, StringValue.StringResource(R.string.username_already_exists).toString())
+            } else {
+                _authState.value = AuthState.Loading
+                auth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            user = task.result.user
+                            val displayNameUpdate = UserProfileChangeRequest.Builder()
+                                .setDisplayName(username)
+                                .build()
+                            user?.updateProfile(displayNameUpdate)
+                                ?.addOnCompleteListener { updateTask ->
+                                    if (updateTask.isSuccessful) {
+                                        val userRef =
+                                            task.result.user?.let { this.getUserDatabaseRef(it.uid) }
+                                        userRef?.child("isOnline")?.setValue(true)
+                                        userRef?.child("isOnline")?.onDisconnect()?.setValue(false)
+                                        usernameRef.setValue(username.lowercase())
+                                        setAvatarUrl(user?.photoUrl.toString())
+                                        _authState.value = AuthState.Authenticated
+                                        SocketHandler.connect()
+                                    }
+                                    Log.d(TAG, "createUserWithEmail:success")
+                                }
+                        } else {
+                            handleAuthError(task, context)
+                        }
+                    }
+            }
+        }
+    }
         // TODO: Replace spaces? (or simply forbid them?)
         val usernameRef = getUsernameDatabaseRef(username.lowercase())
         usernameRef.get().addOnSuccessListener { databaseSnapshot: DataSnapshot ->
@@ -307,6 +371,34 @@ class AuthViewModel : ViewModel() {
     fun resetAuthState() {
         // This is to avoid the bug where an error state transfers from login to signup page.
         _authState.value = AuthState.Unauthenticated
+    }
+
+    fun updateUserProfile(url: String) {
+        Log.d("Profile Update", "Called update profile")
+        val profileUpdates = userProfileChangeRequest {
+            // MR31 : Update user display name
+            photoUri = Uri.parse(url)
+        }
+
+        user!!.updateProfile(profileUpdates).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                viewModelScope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.StringResource(
+                                R.string.edited_feedback
+                            )
+                        )
+                    )
+                }
+                Log.d(
+                    "Profile update",
+                    "Used ${avatarURL.value}"
+                )
+            } else {
+                Log.e("Profile update", "An error occured...")
+            }
+        }
     }
 
     private fun handleAuthError(task: Task<AuthResult>, context: Context) {
