@@ -1,5 +1,6 @@
 package com.example.polyquiz.match.presentation
 
+import MatchContextService
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -29,12 +30,13 @@ import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.constants.QuestionType
 import com.example.polyquiz.match.domain.AnswerService
-import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.MatchStatus
 import com.example.polyquiz.constants.UserInfo
 import androidx.compose.foundation.layout.*
+import com.example.polyquiz.chat.domain.ChatService
+import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AnswerCorrectness
 import com.example.polyquiz.constants.AnswerFeedback
 import com.example.polyquiz.constants.BonusFeedback
@@ -85,6 +87,7 @@ fun QuestionArea(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(24.dp))
+            ChatComponent(modifier, authViewModel)
 
             TimerComponent(
                 modifier = Modifier.fillMaxWidth(),

@@ -18,12 +18,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -43,8 +50,10 @@ import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.chat.domain.Message
+import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.constants.SIZE_CONSTANTS
+import com.example.polyquiz.match.domain.MatchRoomService
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -52,7 +61,11 @@ import java.util.Locale
 fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     val username by remember { mutableStateOf(authViewModel.getUsername() )}
     val userId by remember { mutableStateOf(authViewModel.getUserId() )}
-    val messages by ChatService.messages.observeAsState()
+    var selectedChat by remember { mutableStateOf("General") }
+    val messages = when (selectedChat) {
+        "Match" -> ChatService.matchRoomMessages.observeAsState().value
+        else -> ChatService.generalMessages.observeAsState().value
+    }
     var newMessageText by remember{ mutableStateOf("") }
 
     Card(
@@ -66,7 +79,7 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
             verticalArrangement = Arrangement.SpaceAround,
         ) {
             Text(text = username, fontSize = 30.sp, fontWeight = FontWeight(800), modifier = Modifier.padding(20.dp, 20.dp, 20.dp, 0.dp))
-
+            ChatSelectionMenu(selectedChat) { newChat -> selectedChat = newChat }
             // REFERENCE: https://youtu.be/P3xQdINdrWY
             // To handle the situation where there would be no message to display.
             messages?.let {
@@ -97,14 +110,24 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                 ),
                 keyboardActions = KeyboardActions(onDone = {
                     // TODO: Change to actual user avatar
-                    ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value)
+                    if (selectedChat == "General") {
+                        ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, null)
+                    }
+                    else {
+                        ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, MatchRoomService.getRoomCode())
+                    }
                     newMessageText = ""
                 }),
                 trailingIcon = {
                     val image = Icons.AutoMirrored.Filled.Send;
                     IconButton(onClick = {
                         // TODO: Change to actual user avatar
-                        ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value)
+                        if (selectedChat == "General") {
+                            ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, null)
+                        }
+                        else {
+                            ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, MatchRoomService.getRoomCode())
+                        }
                         newMessageText = ""
                     }) {
                         Icon(imageVector = image, "send")
@@ -155,3 +178,65 @@ fun MessageContainer(message: Message, currentUserId: String) {
         }
     }
 }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ChatSelectionMenu(selectedChat: String, onChatSelected: (String) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+//    var selectedOptionText by remember { mutableStateOf("General") }
+    val options = listOf("General", "Match")
+    var matchContext by remember { mutableStateOf(MatchContextService.getContext()) }
+
+    LaunchedEffect(Unit, MatchContextService.getContext()) {
+        matchContext = MatchContextService.getContext()
+    }
+
+    val isMatchDisabled by remember(matchContext) {
+        derivedStateOf { matchContext == MatchContext.PLAYERVIEW }
+    }
+
+    val isMatchNull by remember(matchContext) {
+        derivedStateOf { matchContext == MatchContext.Null }
+    }
+//    val isMatchDisabled = MatchContextService.getContext() == MatchContext.PLAYERVIEW
+//    val isMatchNull = MatchContextService.getContext() == MatchContext.Null
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+    ) {
+        TextField(
+            readOnly = true,
+            value = selectedChat,
+            onValueChange = { },
+            label = { Text("Option") },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            modifier = Modifier.menuAnchor()
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            options.forEach { selectionOption ->
+                val isOptionDisabled = (isMatchNull || selectedChat == "Match")//(isMatchDisabled && selectedChat == "Match") || (isMatchNull && selectedChat == "Match")
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = selectionOption,
+                            color = if (isOptionDisabled) Color.Gray else LocalContentColor.current
+                        )
+                    },
+                    onClick = {
+                        if (!isOptionDisabled) {
+                            onChatSelected(selectionOption)
+                            expanded = false
+                        }
+                    },
+                    enabled = !isOptionDisabled,
+                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                )
+            }
+        }
+    }
+}
+

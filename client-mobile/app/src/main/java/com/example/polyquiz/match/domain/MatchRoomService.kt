@@ -12,6 +12,8 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import com.example.polyquiz.chat.domain.ChatService
+import com.example.polyquiz.constants.ChatEvents
 
 object MatchRoomService {
     var players by mutableStateOf<List<Player>>(emptyList())
@@ -57,6 +59,7 @@ object MatchRoomService {
             onPlayerKick()
             handleError()
             onRouteToResultsPage()
+            ChatService.handleRoomMessage()
             timeToGoToWaitPage = true
         }
     }
@@ -72,7 +75,10 @@ object MatchRoomService {
         socket.off(MatchEvents.KICK_PLAYER.value)
         socket.off(MatchEvents.ERROR.value)
         socket.off(MatchEvents.ROUTE_TO_RESULTS_PAGE.value)
+        socket.off(ChatEvents.NEW_MESSAGE.value)
         socket.emit(MatchEvents.DISCONNECT.value)
+        println("we not supposed to be connected to the socket anymore")
+        ChatService.deleteRoomMessages()
         MatchContextService.resetContext()
         hasBeenKickedOut = true
     }

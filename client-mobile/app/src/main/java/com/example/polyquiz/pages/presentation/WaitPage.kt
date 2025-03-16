@@ -1,8 +1,7 @@
 package com.example.polyquiz.pages.presentation
 
+import MatchContextService
 import android.annotation.SuppressLint
-import android.service.autofill.FieldClassification.Match
-import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,19 +17,16 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.HOST_USERNAME
 import com.example.polyquiz.constants.MatchButtonActions
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.constants.StartMatchFeedback
-import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.MatchRoomService.gameTitle
 import com.example.polyquiz.match.domain.MatchRoomService.players
@@ -42,6 +38,21 @@ import com.example.polyquiz.match.presentation.TimerComponent
 fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: AuthViewModel, navigateToMatchRoom: () -> Unit) {
     var isLocked: Boolean = false
     var isHostPlaying: Boolean = false
+
+
+    fun toggleLock() {
+        MatchRoomService.toggleLock()
+    }
+    fun banPlayerUsername(username: String) {
+        if (username === HOST_USERNAME) {return}
+        MatchRoomService.banUsername(username)
+    }
+    fun startMatch() {
+        MatchRoomService.startMatch()
+    }
+    fun quitMatch() { //originellement quitGame sur le client lourd
+        MatchRoomService.disconnectFromRoom()
+    }
 
     fun resetWaitPage() {
         isLocked = false
@@ -85,19 +96,7 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
             else -> Unit
         }
     }
-    fun toggleLock() {
-        MatchRoomService.toggleLock()
-    }
-    fun banPlayerUsername(username: String) {
-        if (username === HOST_USERNAME) {return}
-        MatchRoomService.banUsername(username)
-    }
-    fun startMatch() {
-        MatchRoomService.startMatch()
-    }
-    fun quitMatch() { //originellement quitGame sur le client lourd
-        MatchRoomService.disconnectFromRoom()
-    }
+
 
 
     Column(
@@ -109,6 +108,7 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End
         ) {
+            ChatComponent(modifier = Modifier.fillMaxWidth(), authViewModel = authViewModel)
             Button(
                 onClick = { quitMatch(); navigateToHome() },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
