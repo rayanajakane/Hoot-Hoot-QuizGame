@@ -19,11 +19,12 @@ import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.presentation.QuestionArea
 import com.example.polyquiz.pages.presentation.WaitPage
+import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.ui.features.camera.MainCameraScreen
 
 // References: https://youtu.be/AIC_OFQ1r3k  and  https://youtu.be/lv1raAvwcgI
 @Composable
-fun Navigation(modifier: Modifier, authViewModel: AuthViewModel, context: Context) {
+fun Navigation(modifier: Modifier, authViewModel: AuthViewModel, cameraViewModel: CameraViewModel, , context: Context) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
@@ -155,7 +156,10 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel, context: Contex
         }
 
         composable<Route.MainCameraScreen> {
-            MainCameraScreen()
+            MainCameraScreen(
+                authViewModel,
+                cameraViewModel,
+                navigateToUserEdit = { navController.navigate(Route.UserEditPage) })
         }
     }
 }

@@ -1,9 +1,11 @@
 package com.example.polyquiz.core.storage
 
+import android.graphics.Bitmap
 import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.storage
+import java.io.ByteArrayOutputStream
 
 object ImageStorage {
     val storage = Firebase.storage
@@ -13,14 +15,35 @@ object ImageStorage {
         return storageRef.child("avatars/${uid}");
     }
 
-    fun uploadImage(image: ByteArray, uid: String) {
-        val avatarStorageRef = getAvatarRef(uid)
+    // https://firebase.google.com/docs/storage/android/upload-files#upload_from_data_in_memory
+    fun uploadAvatar(capturedImage: Bitmap, uid: String, callback: (String?) -> Unit) {
+        // TODO : Put in constants
+        val IMAGE_MAX_FILE_SIZE: Long = 1024 * 1024
 
-        val uploadTask = avatarStorageRef.putBytes(image);
+        val baos = ByteArrayOutputStream()
+        capturedImage.compress(Bitmap.CompressFormat.JPEG, 80, baos)
+        val byteArray = baos.toByteArray()
+
+        if (byteArray.size > IMAGE_MAX_FILE_SIZE) {
+            Log.e("Avatar storage", "File too large")
+            callback(null)
+            return
+        }
+
+        val imageRef = getAvatarRef(uid)
+
+        val uploadTask = imageRef.putBytes(byteArray)
+
         uploadTask.addOnSuccessListener {
-            Log.d("CACA", "Uploaded image")
-        }.addOnFailureListener {
-            Log.e("CACA", "CACA")
+            imageRef.downloadUrl.addOnSuccessListener { uri ->
+                val imageUrl = uri.toString()
+                callback(imageUrl)
+                Log.d("Avatar storage", "Image uploaded successfully! URL: $imageUrl")
+            }
+        }.addOnFailureListener { exception ->
+            callback(null)
+            // TODO : Handle failure
+            Log.e("Avatar storage", "Error uploading image: ${exception.message}")
         }
     }
 

@@ -102,6 +102,10 @@ class AuthViewModel : ViewModel() {
         validatePassword(newPassword, context)
     }
 
+    fun updateAvatarUrl(url: String) {
+        _avatarURL.value = url
+    }
+
     fun resetSignUpFields() {
         _email.value = ""
         _username.value = ""

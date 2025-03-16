@@ -43,23 +43,35 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.ui.features.camera.CameraState
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import java.util.concurrent.Executor
 
 @Composable
 fun CameraScreen(
-    cameraViewModel: CameraViewModel = CameraViewModel()
+    authViewModel: AuthViewModel,
+    cameraViewModel: CameraViewModel,
+    navigateToUserEdit: () -> Unit
 ) {
     val cameraState: CameraState by cameraViewModel.state.collectAsStateWithLifecycle()
+
+    Log.d("CameraScreen", "Current camera state: $cameraState")
 
     if (cameraState.capturedImage == null) {
         CameraContent(onPhotoCaptured = cameraViewModel::updateCapturedPhotoState)
     } else {
         ImagePreview(
-            cameraState.capturedImage!!,
+            capturedImage = cameraState.capturedImage!!,
             onRetake = { cameraViewModel.updateCapturedPhotoState(null) },
-            onSave = { cameraViewModel.doNothing() }
+            onSave = { capturedImage ->
+                cameraViewModel.saveCapturedImage(
+                    capturedImage,
+                    authViewModel.getUserId(),
+                    authViewModel
+                )
+                navigateToUserEdit()
+            }
         )
     }
 }
@@ -95,12 +107,11 @@ fun CameraContent(onPhotoCaptured: (Bitmap) -> Unit) {
                 .fillMaxSize()
                 .padding(paddingValues),
             factory = { context ->
-                // init preview
                 PreviewView(context).apply {
                     layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
 
-                    setBackgroundColor(Color.BLACK) // Only if camera not open yet + loading state
-                    scaleType = PreviewView.ScaleType.FILL_START // Avoid cropping issues
+                    setBackgroundColor(Color.BLACK)
+                    scaleType = PreviewView.ScaleType.FILL_START
 
                 }.also { previewView ->
                     previewView.controller = cameraController
