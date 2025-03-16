@@ -15,7 +15,7 @@ fun MainCameraScreen() {
 
     MainContent(
         hasPermission = cameraPermissionState.status.isGranted,
-        onRequestPermission = cameraPermissionState::launchPermissionRequest
+        onRequestPermission = cameraPermissionState::launchPermissionRequest,
     )
 }
 

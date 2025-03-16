@@ -1,40 +1,71 @@
 package com.example.polyquiz.ui.features.camera.photo_capture
 
-import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Matrix
+import android.util.Log
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
 import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Camera
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.polyquiz.ui.features.camera.CameraState
+import com.example.polyquiz.ui.features.camera.CameraViewModel
+import java.util.concurrent.Executor
 
 @Composable
-fun CameraScreen() {
-    CameraContent()
+fun CameraScreen(
+    cameraViewModel: CameraViewModel = CameraViewModel()
+) {
+    val cameraState: CameraState by cameraViewModel.state.collectAsStateWithLifecycle()
+
+    if (cameraState.capturedImage == null) {
+        CameraContent(onPhotoCaptured = cameraViewModel::updateCapturedPhotoState)
+    } else {
+        ImagePreview(
+            cameraState.capturedImage!!,
+            onRetake = { cameraViewModel.updateCapturedPhotoState(null) },
+            onSave = { cameraViewModel.doNothing() }
+        )
+    }
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+// TODO : Camera content for QR code only?
+
 @Composable
-fun CameraContent() {
+fun CameraContent(onPhotoCaptured: (Bitmap) -> Unit) {
     val context = LocalContext.current
-    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     val cameraController = remember { LifecycleCameraController(context) }
 
     Scaffold(
@@ -43,14 +74,7 @@ fun CameraContent() {
             ExtendedFloatingActionButton(
                 text = { Text(text = "Take photo") },
                 onClick = {
-                    val mainExecutor = ContextCompat.getMainExecutor(context)
-                    cameraController.takePicture(mainExecutor, object: ImageCapture.OnImageCapturedCallback() {
-                        override fun onCaptureSuccess(image: ImageProxy) {
-                            super.onCaptureSuccess(image)
-                            // TODO : Process image
-                            image.close()
-                        }
-                    })
+                    capturePhoto(context, cameraController, onPhotoCaptured)
                 },
                 icon = {
                     Icon(
@@ -61,6 +85,7 @@ fun CameraContent() {
             )
         }
     ) { paddingValues: PaddingValues ->
+
         AndroidView(
             modifier = Modifier
                 .fillMaxSize()
@@ -80,4 +105,86 @@ fun CameraContent() {
                 }
             })
     }
+}
+
+@Composable
+fun ImagePreview(capturedImage: Bitmap, onRetake: () -> Unit, onSave: (Bitmap) -> Unit) {
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        floatingActionButton = {
+            // TODO
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                bitmap = capturedImage.asImageBitmap(),
+                contentDescription = "Captured Image",
+                modifier = Modifier.fillMaxSize().weight(1f)
+            )
+
+            ExtendedFloatingActionButton(
+                text = { Text(text = "Retake Photo") },
+                onClick = onRetake,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Camera,
+                        contentDescription = "Retake photo icon"
+                    )
+                }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            ExtendedFloatingActionButton(
+                text = { Text(text = "Save Photo") },
+                onClick = { onSave(capturedImage) },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Save,
+                        contentDescription = "Save photo icon"
+                    )
+                }
+            )
+        }
+    }
+}
+
+
+private fun capturePhoto(
+    context: Context,
+    cameraController: LifecycleCameraController,
+    onPhotoCaptured: (Bitmap) -> Unit
+) {
+    val mainExecutor: Executor = ContextCompat.getMainExecutor(context)
+
+    cameraController.takePicture(mainExecutor, object : ImageCapture.OnImageCapturedCallback() {
+        override fun onCaptureSuccess(image: ImageProxy) {
+            val correctedBitmap: Bitmap = image
+                .toBitmap()
+                .rotateBitmap(image.imageInfo.rotationDegrees)
+
+            onPhotoCaptured(correctedBitmap)
+            image.close()
+        }
+
+        override fun onError(exception: ImageCaptureException) {
+            Log.e("CameraContent", "Error capturing image", exception)
+        }
+    })
+}
+
+// https://www.youtube.com/watch?v=LRWkQtxGe0E
+private fun Bitmap.rotateBitmap(rotationDegrees: Int): Bitmap {
+    val matrix = Matrix().apply {
+        postRotate(-rotationDegrees.toFloat())
+        postScale(-1f, -1f)
+    }
+
+    return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
 }

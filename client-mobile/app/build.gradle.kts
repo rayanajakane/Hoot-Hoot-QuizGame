@@ -91,4 +91,12 @@ dependencies {
     implementation("androidx.camera:camera-view:1.3.1")
     implementation("androidx.camera:camera-extensions:1.3.1")
     implementation("com.google.accompanist:accompanist-permissions:0.32.0")
+
+    // Image stuff
+    implementation(platform("androidx.compose:compose-bom:2025.02.00"))
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
+    // Cloud storage stuff
+    implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
+    implementation("com.google.firebase:firebase-storage")
 }

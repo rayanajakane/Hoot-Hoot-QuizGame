@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,6 +52,7 @@ import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.PresetAvatar
+import com.example.polyquiz.core.storage.ImageStorage
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.gms.auth.api.phone.SmsCodeAutofillClient.PermissionState
@@ -66,8 +68,6 @@ fun UserEditPage(
     context: Context,
     navigateToCamera: () -> Unit,
 ) {
-    // Camera stuff
-    val cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA)
 
     val focusManager = LocalFocusManager.current
     val translationService = TranslationService
@@ -94,6 +94,25 @@ fun UserEditPage(
         onDispose {
             authViewModel.resetUsername()
         }
+
+    var avatarURL by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(Unit) {
+        authViewModel.getAvatarURL { url ->
+            avatarURL = url
+        }
+    }
+
+    Button(
+        onClick = {
+            navigateToHome()
+        },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        )
+    ) {
+        Text(text = stringResource(R.string.home_page))
     }
 
     Row(
@@ -145,8 +164,12 @@ fun UserEditPage(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            // TODO : Avatar stuff
-                            AvatarPlaceholder(128.dp, PresetAvatar.DEFAULT.value)
+                            if(avatarURL != null) {
+                                AvatarPlaceholder(128.dp, avatarURL!!)
+                            } else {
+                                AvatarPlaceholder(128.dp, PresetAvatar.DEFAULT.value)
+                            }
+
                             Button(
                                 onClick = {
                                     navigateToCamera()

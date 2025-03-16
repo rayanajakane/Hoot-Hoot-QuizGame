@@ -12,6 +12,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.polyquiz.R
+import com.example.polyquiz.constants.PresetAvatar
+import com.example.polyquiz.core.storage.ImageStorage
 import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.vanillaprototype.socket.SocketHandler
@@ -58,6 +60,9 @@ class AuthViewModel : ViewModel() {
 
     private val _passwordError = MutableStateFlow("")
     val passwordError: StateFlow<String> get() = _passwordError
+
+    private val _avatarURL = MutableStateFlow(PresetAvatar.DEFAULT.value)
+    val avatarURL : StateFlow<String> get() = _avatarURL
 
     init {
         checkAuthStatus()
@@ -116,6 +121,15 @@ class AuthViewModel : ViewModel() {
 
     fun getUserId(): String {
         return auth.currentUser?.uid ?: ""
+    }
+
+    fun getAvatarURL(callback: (String?) -> Unit) {
+        val uid = auth.currentUser?.uid ?: return callback(null)
+        val avatarRef = ImageStorage.getAvatarRef(uid)
+
+        ImageStorage.getImageURL(avatarRef) { url ->
+            callback(url)
+        }
     }
 
     private fun checkAuthStatus() {

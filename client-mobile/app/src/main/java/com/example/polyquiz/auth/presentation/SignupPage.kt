@@ -1,5 +1,6 @@
 package com.example.polyquiz.auth.presentation
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -21,6 +22,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -31,6 +33,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.polyquiz.R
 import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
@@ -245,5 +248,11 @@ fun AvatarPlaceholder(avatarSize: Dp, imageUrl: String) {
             )
     ){
         // TODO: Add image
+        AsyncImage(
+            model = imageUrl,
+            // TODO : Add translation once merged
+            contentDescription = "placeholder avatar",
+            modifier = Modifier.clip(CircleShape)
+        )
     }
 }
