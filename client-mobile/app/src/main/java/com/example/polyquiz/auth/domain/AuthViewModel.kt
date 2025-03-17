@@ -127,6 +127,16 @@ class AuthViewModel : ViewModel() {
     }
 
     fun changeUsername(username: String, oldUsername: String) {
+        if(username.isEmpty() || usernameError.value.isNotEmpty()) {
+            viewModelScope.launch {
+                SnackbarController.sendEvent(
+                    event = SnackbarEvent(
+                        message = StringValue.StringResource(R.string.invalid_username)
+                    )
+                )
+            }
+            return
+        }
         val usernameRef = getUsernameDatabaseRef(username.lowercase())
         usernameRef.get().addOnSuccessListener { databaseSnapshot: DataSnapshot ->
             if (databaseSnapshot.exists()) {
