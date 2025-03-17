@@ -31,7 +31,6 @@ object MatchService {
         return gameService.getGames(onSuccess = {}, onError = {})
     }
 
-
     fun saveBackupGame(id: String){
             return backupService.add(
                 currentGame!!,
@@ -40,7 +39,6 @@ object MatchService {
                     val game = gson.fromJson(gson.toJson(response), Game::class.java)
                     currentGame = game
                     createMatch()
-                    backupService.getAll(onSuccess = { response -> println(response)}, onError = { error -> println(error)})
                 },
                 onError = { error -> println(error)
 
