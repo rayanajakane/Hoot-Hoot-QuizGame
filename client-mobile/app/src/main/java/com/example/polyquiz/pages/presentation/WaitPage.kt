@@ -66,7 +66,7 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
     }
 
     fun isHost(): Boolean {
-        return MatchRoomService.getUsername() === "Organisateur"
+        return MatchRoomService.getUsername() == "Organisateur"
     }
 
     fun getCurrentGame(): Game {
