@@ -9,7 +9,7 @@ data class MessageInfo(
 
 data class MessageEmojiInfo(
     val messageId: String,
-    val chatEmoji: ChatEmoji,
+    val chatEmoji: String,
     val userIdName: UserIdName,
     val roomCode: String?
 )
