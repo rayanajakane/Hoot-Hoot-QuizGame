@@ -44,7 +44,8 @@ fun HomePage(
     navigateToCreate: () -> Unit,
     navigateToUserEdit: () -> Unit,
     navigateToWaitPage: () -> Unit,
-    authViewModel: AuthViewModel
+    navigateToJoinRoom: () -> Unit,
+    authViewModel: AuthViewModel,
 ) {
     val authState = authViewModel.authState.observeAsState()
     val scope = rememberCoroutineScope()
@@ -114,7 +115,7 @@ fun HomePage(
 //            ) {
 //                Text(text = "Joindre une partie")
 //            }
-            Button(onClick = { showDialog = true }) {
+            Button(onClick = { navigateToJoinRoom() }) {
                 Text("Joindre une partie")
             }
 
@@ -131,7 +132,6 @@ fun HomePage(
             )
             Button(
                 onClick = {
-                    println("Create")
                     navigateToCreate()
                 },
                 colors = ButtonDefaults.buttonColors(
