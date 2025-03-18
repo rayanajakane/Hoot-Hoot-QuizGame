@@ -1,5 +1,6 @@
 package com.example.polyquiz.chat.presentation
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,12 +13,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -40,6 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -48,8 +53,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import coil.compose.rememberAsyncImagePainter
 import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.chat.domain.ChatEmoji
 import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.chat.domain.Message
 import com.example.polyquiz.constants.MatchContext
@@ -168,8 +175,14 @@ fun MessageContainer(message: Message, currentUserId: String) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.width(containerWidth)
             ) {
+                if(message.authorId != currentUserId) {
+                    AvatarImage(message.photoUrl)
+                }
                 Text(text = message.authorUsername, fontWeight = FontWeight(600))
                 Text(text = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(message.date).toString())
+                if(message.authorId == currentUserId) {
+                    AvatarImage(message.photoUrl)
+                }
             }
             Card(
                 colors = CardDefaults.cardColors(
@@ -179,6 +192,8 @@ fun MessageContainer(message: Message, currentUserId: String) {
                 modifier = Modifier.width(containerWidth)
             ) {
                 Text(text = message.text, modifier = Modifier.padding(10.dp))
+                ReactionsRow(message, message.authorId, message.authorUsername, MatchRoomService.getRoomCode())
+
             }
         }
     }
@@ -240,6 +255,7 @@ fun ChatSelectionMenu(selectedChat: String, onChatSelected: (String) -> Unit) {
                             onChatSelected(selectionOption)
                             expanded = false
                         }
+                        ChatService.channel = selectionOption
                     },
                     enabled = !isOptionDisabled,
                     contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
@@ -249,3 +265,30 @@ fun ChatSelectionMenu(selectedChat: String, onChatSelected: (String) -> Unit) {
     }
 }
 
+@Composable
+fun AvatarImage(photoUrl: String?) {
+    Image(
+        painter = rememberAsyncImagePainter(photoUrl ?: PresetAvatar.DEFAULT.value),
+        contentDescription = "User Avatar",
+        modifier = Modifier.size(40.dp).clip(CircleShape)
+    )
+}
+
+@Composable
+fun ReactionsRow(message: Message, userId: String, username: String, roomCode: String?) {
+    Row(
+        modifier = Modifier.padding(top = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        ReactionButton("👍", message.userLikes.size) { ChatService.reactToMessage(message.id, ChatEmoji.LIKE, userId, username, if(roomCode.isNullOrEmpty()) null else roomCode ) }
+        ReactionButton("❤️", message.userLoves.size) { ChatService.reactToMessage(message.id, ChatEmoji.LOVE, userId, username, if(roomCode.isNullOrEmpty()) null else roomCode ) }
+        ReactionButton("👎", message.userDislikes.size) { ChatService.reactToMessage(message.id, ChatEmoji.DISLIKE, userId, username, if(roomCode.isNullOrEmpty()) null else roomCode ) }
+    }
+}
+
+@Composable
+fun ReactionButton(emoji: String, count: Int, onClick: () -> Unit) {
+    Button(onClick = onClick, colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)) {
+        Text(text = "$emoji $count", fontSize = 14.sp)
+    }
+}

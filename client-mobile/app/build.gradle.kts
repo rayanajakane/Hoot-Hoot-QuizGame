@@ -49,6 +49,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.runtime.livedata)
+    implementation("io.coil-kt:coil-compose:2.3.0")
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)

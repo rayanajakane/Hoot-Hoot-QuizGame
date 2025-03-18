@@ -76,6 +76,7 @@ object MatchRoomService {
         socket.off(MatchEvents.ERROR.value)
         socket.off(MatchEvents.ROUTE_TO_RESULTS_PAGE.value)
         socket.off(ChatEvents.NEW_MESSAGE.value)
+        socket.off(ChatEvents.SENT_ROOM_EMOJI.value)
         socket.emit(MatchEvents.DISCONNECT.value)
         resetMatchValues()
         println("we not supposed to be connected to the socket anymore")

@@ -1,9 +1,11 @@
 package com.example.polyquiz.chat.domain
 
+import MatchContextService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.polyquiz.auth.domain.UserIdName
 import com.example.polyquiz.constants.ChatEvents
+import com.example.polyquiz.constants.MatchContext
 import com.example.vanillaprototype.socket.SocketHandler
 import com.google.gson.Gson
 import org.json.JSONObject
@@ -17,6 +19,7 @@ object ChatService {
     val generalMessages: LiveData<List<Message>> = _generalMessages
     private var _matchRoomMessages = MutableLiveData<List<Message>>()
     val matchRoomMessages: LiveData<List<Message>> = _matchRoomMessages
+    var channel = ChatChannel.GENERAL.value
 
     private val mSocket = SocketHandler.getSocket()
 
@@ -27,7 +30,6 @@ object ChatService {
                 return
             }
         }
-        println("adding message")
         val newMessages = (_generalMessages.value ?: emptyList()).plus(newMessage)
         // REFERENCE: //https://stackoverflow.com/questions/53304347/mutablelivedata-cannot-invoke-setvalue-on-a-background-thread-from-coroutine
         // Using postValue is asynchronous (unlike setValue)
@@ -41,7 +43,6 @@ object ChatService {
                 return
             }
         }
-        println("adding room message")
         val newMessages = (_matchRoomMessages.value ?: emptyList()).plus(newMessage)
         // REFERENCE: //https://stackoverflow.com/questions/53304347/mutablelivedata-cannot-invoke-setvalue-on-a-background-thread-from-coroutine
         // Using postValue is asynchronous (unlike setValue)
@@ -85,7 +86,7 @@ object ChatService {
     fun handleReceivedMessage() {
         mSocket.on(ChatEvents.SENT_GENERAL_MESSAGE.value) { args ->
             if (args[0] != null) {
-                println("connecting to room socket")
+                handleGeneralEmoji()
                 val newMessage = Gson().fromJson(args[0].toString(), Message::class.java) as Message
                 addMessage(newMessage)
             }
@@ -95,14 +96,61 @@ object ChatService {
     fun handleRoomMessage() {
         mSocket.on(ChatEvents.NEW_MESSAGE.value) { args ->
             if (args[0] != null) {
-                println("handling room message")
+                handleRoomEmoji()
                 val newMessage = Gson().fromJson(args[0].toString(), MessageInfo::class.java) as MessageInfo
                 addRoomMessage(newMessage.message)
             }
         }
     }
 
-//    fun disconnectFromRoom() {
-//        mSocket.off(ChatEvents.NEW_MESSAGE.value)
-//    }
+    fun reactToMessage(messageId: String, chatEmoji: ChatEmoji, userId: String, username: String, roomCode: String?) {
+        val userIdName = UserIdName(userId, username)
+        if (channel == ChatChannel.GENERAL.value) {
+            val messageEmojiInfo = MessageEmojiInfo(messageId, chatEmoji, userIdName, null)
+            val messageEmojiInfoStringified = Gson().toJson(messageEmojiInfo)
+            val messageEmojiInfoJsonObject = JSONObject(messageEmojiInfoStringified)
+            mSocket.emit(ChatEvents.GENERAL_EMOJI.value, messageEmojiInfoJsonObject)
+        } else if (channel == ChatChannel.ROOM.value && MatchContextService.context.value != MatchContext.Null) {
+            val messageEmojiInfo = MessageEmojiInfo(messageId, chatEmoji, userIdName, roomCode)
+            val messageEmojiInfoStringified = Gson().toJson(messageEmojiInfo)
+            val messageEmojiInfoJsonObject = JSONObject(messageEmojiInfoStringified)
+            mSocket.emit(ChatEvents.ROOM_EMOJI.value, messageEmojiInfoJsonObject)
+        }
+    }
+
+
+    fun handleGeneralEmoji() {
+        mSocket.on(ChatEvents.SENT_GENERAL_EMOJI.value) { args ->
+            if (args[0] != null) {
+                val updatedMessage =
+                    Gson().fromJson(args[0].toString(), Message::class.java) as Message
+                _generalMessages.value?.let { messages ->
+                    val messageIndex = messages.indexOfFirst { it.id == updatedMessage.id }
+                    if (messageIndex > -1) {
+                        val updatedMessages =
+                            messages.toMutableList().apply { this[messageIndex] = updatedMessage }
+                        _generalMessages.postValue(updatedMessages)
+                    }
+                }
+            }
+
+        }
+    }
+    fun handleRoomEmoji() {
+        mSocket.on(ChatEvents.SENT_ROOM_EMOJI.value) { args ->
+            if (args[0] != null) {
+                val updatedMessage =
+                    Gson().fromJson(args[0].toString(), Message::class.java) as Message
+                _matchRoomMessages.value?.let { messages ->
+                    val messageIndex = messages.indexOfFirst { it.id == updatedMessage.id }
+                    if (messageIndex > -1) {
+                        val updatedMessages =
+                            messages.toMutableList().apply { this[messageIndex] = updatedMessage }
+                        _matchRoomMessages.postValue(updatedMessages)
+                    }
+                }
+            }
+
+        }
+    }
 }
