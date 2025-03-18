@@ -35,4 +35,7 @@ object Route {
 
     @Serializable
     object UserEditPage
+
+    @Serializable
+    object JoinMatchPage
 }

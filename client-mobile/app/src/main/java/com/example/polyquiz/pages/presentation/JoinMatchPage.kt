@@ -1,0 +1,199 @@
+package com.example.polyquiz.pages.presentation
+
+import android.graphics.Paint.Join
+import android.graphics.drawable.Icon
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.People
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.motionEventSpy
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.constants.MatchPageInfo
+import com.example.polyquiz.match.domain.JoinMatchService
+import com.example.polyquiz.match.domain.JoinMatchService.matchInfos
+
+@Composable
+fun JoinMatchPage(modifier: Modifier, authViewModel: AuthViewModel,navigateToHome: () -> Unit,
+                  navigateToMatchPage: () -> Unit,
+                  navigateToWaitPage: () -> Unit,) {
+    var room by remember { mutableStateOf("") }
+    val username by remember { mutableStateOf(authViewModel.getUsername()) }
+
+    val joinMatchService = JoinMatchService
+
+    val unlockedMatches =
+        matchInfos.filter { !it.isLocked && !it.isPlaying }
+    val lockedMatches =
+        matchInfos.filter { it.isLocked && !it.isPlaying }
+    val playingMatches = matchInfos.filter { it.isPlaying }
+
+    LaunchedEffect(Unit) {
+        joinMatchService.getAllMatches()
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            joinMatchService.stopReturningAllMatches()
+        }
+    }
+
+    fun submitCode(matchRoomCode: String) {
+        JoinMatchService.matchRoomCode = "";
+        JoinMatchService.validateMatchRoomCode(
+            matchRoomCode,
+            onSuccess = {
+                JoinMatchService.matchRoomCode = matchRoomCode
+                JoinMatchService.validateUsername(
+                    username,
+                    navigateToHome,
+                    navigateToWaitPage,
+                    navigateToMatchPage
+                )
+            },
+            onError = { errorMessage ->
+                println("Error: $errorMessage")
+                JoinMatchService.matchRoomCode = ""
+            }
+        )
+    }
+
+    fun joinRoom(code: String){
+        submitCode(code)
+        navigateToWaitPage()
+    }
+
+    Column(modifier = modifier.padding(16.dp)) {
+        Text(text = "Joindre une partie",
+            style = TextStyle( fontSize = 30.sp,
+                fontWeight = FontWeight.Bold )
+        )
+
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+            Button(onClick = { navigateToHome() }) {
+                Text(text = "Page d'accueil")
+            }
+        }
+    }
+
+    Spacer(modifier = Modifier.height(20.dp))
+
+    Column (modifier = Modifier.padding(26.dp, 90.dp)){
+        TextField(
+            value = room,
+            onValueChange = { room = it },
+            label = { Text("Code") },
+
+            maxLines = 1,
+            keyboardActions = KeyboardActions(onDone = {
+                submitCode(room)
+            })
+        )
+        Button( modifier= Modifier.width(120.dp),
+            onClick = { submitCode(room) },
+        ) {
+            Text(text = "Joindre")
+        }
+    }
+
+Column (modifier = Modifier.padding(26.dp, 200.dp)) {
+    Text(text = "Parties en attente", style = TextStyle(fontSize = 30.sp,
+        fontWeight = FontWeight.Bold))
+    if(matchInfos.isEmpty()){
+    Text(text = "Aucune partie à afficher")
+    }
+    if (unlockedMatches.isEmpty()) {
+        Text(text = "Parties Verrouillées")
+    } else {
+        Text(text = "Parties deverrouillées")
+        Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
+            unlockedMatches.forEach { match ->
+                MatchCard(match = match, onClick = { joinRoom(match.code) })
+            }
+        }
+    }
+    Spacer(modifier =Modifier.padding(5.dp))
+    Text(text = "Parties Verrouillées" ,style = TextStyle(
+        fontWeight = FontWeight.Bold))
+    if (lockedMatches.isNotEmpty()) {
+        Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
+            lockedMatches.forEach { match ->
+                MatchCard(match = match, onClick = { submitCode(match.code) })
+            }
+        }
+    } else {
+        Text(text = "Aucune partie à afficher")
+    }
+    Column(modifier = Modifier.padding(26.dp, 10.dp)) {
+        Text(text = "Parties en cours", fontSize = 30.sp,
+            fontWeight = FontWeight.Bold)
+        if(matchInfos.isEmpty()){
+            Text(text = "Aucune partie à afficher")
+        }
+        else {
+            Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
+                playingMatches.forEach { match ->
+                    MatchCard(match = match, onClick = { submitCode(match.code) })
+                }
+            }
+        }
+    }
+}
+}
+
+@Composable
+fun MatchCard(match: MatchPageInfo, onClick: () -> Unit = {}) {
+    Spacer(modifier = Modifier.padding(5.dp))
+    Card(modifier = Modifier.padding(), onClick = onClick) {
+            Column(modifier = Modifier.padding(15.dp)) {
+                Text(text = match.gameTitle)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        Icons.Rounded.People,
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(text = match.nPlayers.toString())
+                }
+                if (onClick != {}) {
+                    Button(onClick = onClick, modifier = Modifier.padding(top = 10.dp)) {
+                        Text(text = "Joindre")
+                    }
+                }
+        }
+    }
+}
+
+
