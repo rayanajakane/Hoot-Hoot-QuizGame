@@ -81,6 +81,7 @@ fun HomePage(
         }
         when (shouldNavigate.value) {
             true -> {
+                println("we are navigating again")
                 MatchRoomService.timeToGoToWaitPage = false
                 navigateToWaitPage()
             }

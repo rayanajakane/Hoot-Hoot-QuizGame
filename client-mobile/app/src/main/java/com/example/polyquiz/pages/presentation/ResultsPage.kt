@@ -21,7 +21,7 @@ fun ResultsPage(
     modifier: Modifier = Modifier,
     extraContent: @Composable () -> Unit = {}
 ) {
-    val username = matchRoomService.getUsername()
+    val username = matchRoomService.retrieveUsername()
 
     var sortBy by remember { mutableStateOf("score") }
     var sortOrder by remember { mutableStateOf("descending") }
