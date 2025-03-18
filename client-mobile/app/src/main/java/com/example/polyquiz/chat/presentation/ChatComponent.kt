@@ -3,6 +3,7 @@ package com.example.polyquiz.chat.presentation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
@@ -16,6 +17,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -61,7 +63,10 @@ import java.util.Locale
 fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     val username by remember { mutableStateOf(authViewModel.getUsername() )}
     val userId by remember { mutableStateOf(authViewModel.getUserId() )}
-    var selectedChat by remember { mutableStateOf("General") }
+//    var selectedChat by remember { mutableStateOf("General") }
+    var selectedChat by remember {
+        mutableStateOf(if (MatchRoomService.getRoomCode().isNotEmpty()) "Match" else "General")
+    }
     val messages = when (selectedChat) {
         "Match" -> ChatService.matchRoomMessages.observeAsState().value
         else -> ChatService.generalMessages.observeAsState().value
@@ -182,23 +187,12 @@ fun MessageContainer(message: Message, currentUserId: String) {
 @Composable
 fun ChatSelectionMenu(selectedChat: String, onChatSelected: (String) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
-//    var selectedOptionText by remember { mutableStateOf("General") }
     val options = listOf("General", "Match")
-    var matchContext by remember { mutableStateOf(MatchContextService.getContext()) }
+    var matchContext by remember { mutableStateOf(MatchContextService.context) }
 
-    LaunchedEffect(Unit, MatchContextService.getContext()) {
-        matchContext = MatchContextService.getContext()
+    LaunchedEffect(Unit, MatchContextService.context) {
+        matchContext = MatchContextService.context
     }
-
-    val isMatchDisabled by remember(matchContext) {
-        derivedStateOf { matchContext == MatchContext.PLAYERVIEW }
-    }
-
-    val isMatchNull by remember(matchContext) {
-        derivedStateOf { matchContext == MatchContext.Null }
-    }
-//    val isMatchDisabled = MatchContextService.getContext() == MatchContext.PLAYERVIEW
-//    val isMatchNull = MatchContextService.getContext() == MatchContext.Null
 
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -218,13 +212,28 @@ fun ChatSelectionMenu(selectedChat: String, onChatSelected: (String) -> Unit) {
             onDismissRequest = { expanded = false }
         ) {
             options.forEach { selectionOption ->
-                val isOptionDisabled = (isMatchNull || selectedChat == "Match")//(isMatchDisabled && selectedChat == "Match") || (isMatchNull && selectedChat == "Match")
+                val isSelected = selectedChat == selectionOption
+                val isMatchRoomAvailable = MatchRoomService.getRoomCode().isNotEmpty()
+
+                // Enable Match only if the room is available, but still show it if selected
+                val isOptionDisabled = selectionOption == "Match" && !isMatchRoomAvailable && !isSelected
+
                 DropdownMenuItem(
                     text = {
-                        Text(
-                            text = selectionOption,
-                            color = if (isOptionDisabled) Color.Gray else LocalContentColor.current
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = selectionOption,
+                                color = if (isOptionDisabled) Color.Gray else LocalContentColor.current
+                            )
+                            if (isSelected) {
+                                Spacer(Modifier.width(8.dp))
+                                Icon(
+                                    imageVector = Icons.Default.Check,
+                                    contentDescription = "Selected",
+                                    tint = LocalContentColor.current
+                                )
+                            }
+                        }
                     },
                     onClick = {
                         if (!isOptionDisabled) {

@@ -77,10 +77,12 @@ object MatchRoomService {
         socket.off(MatchEvents.ROUTE_TO_RESULTS_PAGE.value)
         socket.off(ChatEvents.NEW_MESSAGE.value)
         socket.emit(MatchEvents.DISCONNECT.value)
+        resetMatchValues()
         println("we not supposed to be connected to the socket anymore")
         ChatService.deleteRoomMessages()
         MatchContextService.resetContext()
         hasBeenKickedOut = true
+        matchRoomCode = ""
     }
 
     fun createRoom(gameId: String, isClassicMode: Boolean = true) {
@@ -232,6 +234,7 @@ object MatchRoomService {
     }
 
     fun resetMatchValues() {
+        println("resetting match values")
         matchRoomCode = ""
         username = ""
         players = emptyList()
