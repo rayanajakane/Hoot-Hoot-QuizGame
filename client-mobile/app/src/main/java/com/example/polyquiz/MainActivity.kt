@@ -1,11 +1,11 @@
 package com.example.polyquiz
 
-import StringValue
+
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -17,22 +17,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+
 import androidx.compose.ui.tooling.preview.Preview
+
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.ui.theme.PolyQuizTheme
+
 import com.example.vanillaprototype.socket.SocketHandler
+
 import kotlinx.coroutines.launch
 
-class MainActivity : ComponentActivity() {
+
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         SocketHandler.setSocket()
-        val authViewModel : AuthViewModel by viewModels()
+        val authViewModel: AuthViewModel by viewModels()
         setContent {
             PolyQuizTheme {
-                // Reference (Snackbar): https://youtu.be/KFazs62lIkE
                 val snackbarHostState = remember {
                     SnackbarHostState()
                 }
@@ -61,7 +64,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize()
                 )
                 { innerPadding ->
-                    Navigation(modifier = Modifier.padding(innerPadding), authViewModel = authViewModel)
+                    Navigation(
+                        modifier = Modifier.padding(innerPadding),
+                        authViewModel = authViewModel,
+                        context = applicationContext,
+                    )
                 }
             }
         }

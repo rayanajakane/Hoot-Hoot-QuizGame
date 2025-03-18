@@ -45,7 +45,7 @@ fun SignupPage(
     modifier: Modifier,
     navigateToChat: () -> Unit,
     navigateToLogin: () -> Unit,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
 ) {
     val context = LocalContext.current
     val email by authViewModel.email.collectAsState()
@@ -155,7 +155,7 @@ fun SignupPage(
 
                         TextField(
                             value = username,
-                            onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.updateUsername(it, context) },
+                            onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.setAndUpdateUsername(it, context) },
                             isError = usernameError.isNotEmpty(),
                             singleLine = true,
                             label = { Text(stringResource(R.string.username)) },
