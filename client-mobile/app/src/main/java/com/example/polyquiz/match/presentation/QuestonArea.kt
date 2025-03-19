@@ -49,8 +49,7 @@ fun QuestionArea(
 ) {
 
     var room by remember { mutableStateOf(matchRoomService.getRoomCode()) }
-    val username by remember { mutableStateOf(authViewModel.getUsername()) }
-    var context = MatchContext.PLAYERVIEW
+    var context by remember { mutableStateOf(matchContextService.getContext()) }
     val question by matchRoomService::currentQuestion
     val score by answerService::playerScore
 
@@ -74,37 +73,9 @@ fun QuestionArea(
 
     fun routeToResultsPage(){
         matchRoomService.routeToResultsPage()
-        navigateToResultsPage()
     }
 
     Row(modifier = Modifier.fillMaxSize()) {
-        if ( question == null){
-            TextField(
-                value = room,
-                onValueChange = { room = it },
-                label = { Text("Room ID") },
-                modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .padding(8.dp)
-            )
-            Button(
-                onClick = { navigateToHome() },
-                modifier = Modifier.fillMaxWidth(0.5f),
-                shape = RoundedCornerShape(8.dp)
-            )
-            {
-                Text("Page d'accueil")
-            }
-
-            Button(
-                onClick = { matchRoomService.connect();matchRoomService.joinRoom(room, username); timeService.handleTimer() },
-                modifier = Modifier.fillMaxWidth(0.5f),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Text("Joindre")
-            }
-        }
-
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -220,6 +191,15 @@ fun QuestionArea(
                             modifier = Modifier.fillMaxWidth(0.8f)
                         )
                     }
+                    QuestionType.ESTIMATED_ANSWER.value -> {
+                        EstimatedAnswerArea(
+                            answerService,
+                            matchRoomService,
+                            context,
+                            modifier = Modifier.fillMaxWidth(0.8f)
+                        )
+
+                    }
                 }
             }
 
@@ -243,52 +223,55 @@ fun QuestionArea(
                     }
                 }
             }
+
+            }
         }
 
         if(MatchRoomService.isMatchStarted)
         {
             PlayersListComponent(
                 matchRoomService = matchRoomService,
-                matchContextService = matchContextService,
+                context = matchContextService,
                 players = matchRoomService.players,
-                modifier = Modifier.width(250.dp).fillMaxHeight(),
+                modifier = Modifier
+                    .width(250.dp)
+                    .fillMaxHeight(),
                 extraContent = {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    if (context == MatchContext.HOSTVIEW &&
-                        question?.type != null &&
-                        (
-                            (!answerService.isSelectionEnabled && question?.type == QuestionType.MULTIPLE_CHOICE.value) ||
-                                (answerService.isGradingComplete && question?.type == QuestionType.LONG_ANSWER.value)
-                            )
-                    ) {
+                    Column {
                         Spacer(modifier = Modifier.height(16.dp))
-                        Button(onClick = { matchRoomService.goToNextQuestion() }) {
-                            Text("QUESTION SUIVANTE")
+                        println(context)
+                        if (context == MatchContext.HOSTVIEW && !matchRoomService.isCooldown  ) {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            if(!answerService.isEndGame) {
+                                Button(onClick = { matchRoomService.goToNextQuestion() }) {
+                                    Text("QUESTION SUIVANTE")
+                                }
+                            }
+                            else{
+                                Button(
+                                    onClick = {
+                                        routeToResultsPage();
+                                        navigateToResultsPage()},
+                                    modifier = Modifier.fillMaxWidth(0.8f),
+                                    shape = RoundedCornerShape(8.dp)
+                                ) {
+                                    Text("Présenter les résultats finaux")
+                                }
+                            }
                         }
-                    }
-                    if (context == MatchContext.HOSTVIEW && answerService.isEndGame) {
-                        Spacer(modifier = Modifier.height(16.dp))
+
                         Button(
                             onClick = {
-                                routeToResultsPage() },
-                            modifier = Modifier.fillMaxWidth(0.8f),
-                            shape = RoundedCornerShape(8.dp)
+                                matchRoomService.isQuitting = true
+                                matchRoomService.disconnectFromRoom()
+                                navigateToHome()
+                            }
                         ) {
-                            Text("Présenter les résultats finaux")
+                            Text("Quitter")
                         }
-                    }
-
-                    Button(
-                        onClick = {
-                            matchRoomService.isQuitting = true
-                            matchRoomService.disconnectFromRoom()
-                            navigateToHome()
-                        }
-                    ) {
-                        Text("Quitter")
                     }
                 }
             )
         }
     }
-}
+

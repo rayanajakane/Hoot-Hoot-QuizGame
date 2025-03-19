@@ -34,6 +34,7 @@ fun LongAnswerArea(
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
+        println("gardes${answerService.gradeAnswers}")
         if (matchContext != MatchContext.HOSTVIEW) {
                 if (!answerService.isSelectionEnabled && !answerService.showFeedback) {
                     Text(
@@ -68,7 +69,7 @@ fun LongAnswerArea(
                         .align(Alignment.End)
                         .padding(top = 4.dp)
                 )
-        } else if (answerService.gradeAnswers) {
+        } else {
             Text(
                 text = GradingFeedback.GRADE_PLAYERS.value,
                 fontSize = 18.sp,

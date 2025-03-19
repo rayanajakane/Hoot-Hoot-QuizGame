@@ -23,13 +23,12 @@ import com.example.polyquiz.ui.theme.GoldenYellow
 @Composable
 fun PlayersListComponent(
     matchRoomService: MatchRoomService,
-    matchContextService: MatchContextService,
+    context: MatchContextService,
     players: List<Player>,
     modifier: Modifier = Modifier,
-    extraContent: @Composable () -> Unit = {},
+    extraContent: @Composable () -> Unit = {}
 ) {
     val username = matchRoomService.retrieveUsername()
-    val context = matchContextService.getContext()
     var sortBy by remember { mutableStateOf("score") }
     var sortOrder by remember { mutableStateOf("descending") }
 
@@ -37,7 +36,7 @@ fun PlayersListComponent(
 //        players.sortedWith(
 //            when (sortBy) {
 //                "name" -> compareBy { it.username }
-//                "score" -> compareBy {it.score.toInt() }
+//                "score" -> compareBy { it.score as Comparable<*> }
 //                "state" -> compareBy { it.state }
 //                else -> compareBy<Player> { it.score as Comparable<*> }
 //            }.let { comparator ->
@@ -105,7 +104,7 @@ fun SortOptions(
 }
 
 @Composable
-fun PlayerCard(player: Player, context: MatchContext) {
+fun PlayerCard(player: Player, context: MatchContextService) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -116,7 +115,7 @@ fun PlayerCard(player: Player, context: MatchContext) {
         Text(
             text = player.username,
             fontSize = 16.sp,
-            color = if (context == MatchContext.HOSTVIEW) {
+            color = if (context.getContext() == MatchContext.HOSTVIEW) {
                 when {
                     !player.isPlaying -> Color.Gray
                     player.state == "no-interaction" -> AndroidGreen
