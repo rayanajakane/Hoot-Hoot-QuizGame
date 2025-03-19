@@ -1,5 +1,9 @@
 package com.example.polyquiz.match.domain
 
+import android.annotation.SuppressLint
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.example.polyquiz.Game
 import com.example.polyquiz.constants.MatchEvents
 import com.example.polyquiz.constants.MatchPageInfo
@@ -11,42 +15,41 @@ import com.google.gson.reflect.TypeToken
 import org.json.JSONArray
 import org.json.JSONObject
 
+@SuppressLint("MutableCollectionMutableState")
 object JoinMatchService : CommunicationService("match") {
     data class UserData(val matchRoomCode: String, val username: String)
     data class MatchRoomData(val matchRoomCode: String)
 
     var matchRoomCode: String = ""
-    var matchInfos: MutableList<MatchPageInfo> = mutableListOf()
+    var matchesInfos: MutableList<MatchPageInfo> = mutableListOf()
+    var matchInfos by mutableStateOf(
+        matchesInfos
+    )
 
-//    var matchInfos: MatchPageInfo = MatchPageInfo(
-//        code = "",
-//        isLocked = false,
-//        isPlaying = false,
-//        gameTitle = "",
-//        nPlayers = 0
-//    )
+    val mSocket = SocketHandler.getSocket()
 
-    private val mSocket = SocketHandler.getSocket()
     val matchRoomService = MatchRoomService
 
     override val apiService: ApiService = retrofit.create(JoinMatchApiService::class.java)
 
-    fun getAllMatches(){
+    fun getAllMatches() {
         onReturnAllMatches()
-        matchRoomService.mSocket.send(MatchEvents.GET_ALL_MATCHES.value)
+        mSocket.emit(MatchEvents.GET_ALL_MATCHES.value)
+        println(matchInfos)
     }
 
     fun stopReturningAllMatches(){
-        matchRoomService.mSocket.off(MatchEvents.RETURN_ALL_MATCHES.value)
+       MatchRoomService.socket.off(MatchEvents.RETURN_ALL_MATCHES.value)
     }
 
     fun onReturnAllMatches() {
-        matchRoomService.mSocket.on(MatchEvents.RETURN_ALL_MATCHES.value) { data ->
+        mSocket.on(MatchEvents.RETURN_ALL_MATCHES.value) { data ->
             if (data != null) {
                 val matchesArray = data[0] as JSONArray
                 val gson = Gson()
                 val matchListType = object : TypeToken<MutableList<MatchPageInfo>>() {}.type
                 matchInfos = gson.fromJson(matchesArray.toString(), matchListType)
+                println(matchInfos)
             }
         }
     }
