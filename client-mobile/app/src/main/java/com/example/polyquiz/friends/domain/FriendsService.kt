@@ -29,12 +29,13 @@ class FriendsService {
     private var userId: String = ""
 
     fun initialize(userId: String) {
+        println("Initializing FriendsService with userId: $userId")
         this.userId = userId
     }
 
     fun returnAllData() {
         onReturnUsers();
-        mSocket.send(FriendsEvents.RETURN_ALL_DATA.value, userId);
+        mSocket.emit(FriendsEvents.RETURN_ALL_DATA.value, userId);
     }
 
     fun onReturnUsers() {
@@ -81,7 +82,7 @@ class FriendsService {
             "user" to userId,
             "friend" to toUserId
         )
-        mSocket.send(FriendsEvents.REQUEST_SENT.value, payload)
+        mSocket.emit(FriendsEvents.REQUEST_SENT.value, payload)
     }
 
     fun acceptFriendRequest(friendId: String) {
@@ -89,7 +90,7 @@ class FriendsService {
             "user" to userId,
             "friend" to friendId
         )
-        mSocket.send(FriendsEvents.REQUEST_ACCEPTED.value, payload)
+        mSocket.emit(FriendsEvents.REQUEST_ACCEPTED.value, payload)
     }
 
     fun rejectFriendRequest(friendId: String) {
@@ -97,7 +98,7 @@ class FriendsService {
             "user" to userId,
             "friend" to friendId
         )
-        mSocket.send(FriendsEvents.REQUEST_REJECTED.value, payload)
+        mSocket.emit(FriendsEvents.REQUEST_REJECTED.value, payload)
     }
 
     fun cancelRequest(friendId: String) {
@@ -105,7 +106,7 @@ class FriendsService {
             "user" to userId,
             "friend" to friendId
         )
-        mSocket.send(FriendsEvents.REQUEST_CANCELED.value, payload)
+        mSocket.emit(FriendsEvents.REQUEST_CANCELED.value, payload)
     }
 
     fun removeFriend(friendId: String) {
@@ -113,7 +114,7 @@ class FriendsService {
             "user" to userId,
             "friend" to friendId
         )
-        mSocket.send(FriendsEvents.FRIEND_REMOVED.value, payload)
+        mSocket.emit(FriendsEvents.FRIEND_REMOVED.value, payload)
     }
 
 }
