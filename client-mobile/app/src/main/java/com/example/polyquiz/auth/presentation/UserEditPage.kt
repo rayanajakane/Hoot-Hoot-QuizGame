@@ -74,6 +74,7 @@ fun UserEditPage(
     modifier: Modifier,
     navigateToHome: () -> Unit,
     navigateToCamera: () -> Unit,
+    navigateToLogin: () -> Unit,
     authViewModel: AuthViewModel,
     context: Context,
     cameraViewModel: CameraViewModel
@@ -113,6 +114,11 @@ fun UserEditPage(
 
     val onClickAvatar: (String) -> Unit = { url ->
         cameraViewModel.setPresetAvatar(authViewModel, url)
+    }
+
+    fun deleteUser() {
+        authViewModel.deleteUser()
+        navigateToLogin()
     }
 
     fun saveUserProfile() {
@@ -411,9 +417,11 @@ fun UserEditPage(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
+
+                // Delete user button
                 Button(
                     onClick = {
-                        // TODO
+                        deleteUser()
                     },
                     // TODO : Change color
                     colors = ButtonDefaults.buttonColors(
