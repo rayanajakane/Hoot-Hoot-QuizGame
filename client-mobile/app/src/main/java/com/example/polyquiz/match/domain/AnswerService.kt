@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
+import com.example.polyquiz.auth.domain.AuthViewModel
 import org.json.JSONObject
 
 object AnswerService {
@@ -150,7 +151,7 @@ object AnswerService {
 
     fun updateLongAnswer() {
         if (!isSelectionEnabled) return
-        val userInfo = UserInfo(username = MatchRoomService.retrieveUsername(), roomCode = MatchRoomService.getRoomCode())
+        val userInfo = UserInfo(userId = MatchRoomService.userId, roomCode = MatchRoomService.getRoomCode())
         val choiceInfo = ChoiceInfo(currentLongAnswer, userInfo)
         val choiceInfoStringified = Gson().toJson(choiceInfo)
         val choiceInfoJsonObject = JSONObject(choiceInfoStringified)

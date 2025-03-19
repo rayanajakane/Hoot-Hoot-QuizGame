@@ -70,34 +70,36 @@ fun LongAnswerArea(
                         .padding(top = 4.dp)
                 )
         } else {
-            Text(
-                text = GradingFeedback.GRADE_PLAYERS.value,
-                fontSize = 18.sp,
-                modifier = Modifier.padding(8.dp)
-            )
-
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp)
-                    .background(Color.White)
-                    .padding(8.dp)
-            ) {
-                items(answerService.playersAnswers) { playerAnswer ->
-                    AnswerCard(playerAnswer)
-                }
-            }
-
-
-            Button(
-                onClick = { answerService.sendGrades() },
-                enabled = answerService.isGradingComplete,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
+            if (answerService.gradeAnswers) {
                 Text(
-                    text = if (answerService.isGradingComplete) MatchButtonActions.SUBMIT_GRADING.value
-                    else GradingFeedback.PLAYERS_TO_GRADE.value
+                    text = GradingFeedback.GRADE_PLAYERS.value,
+                    fontSize = 18.sp,
+                    modifier = Modifier.padding(8.dp)
                 )
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        .background(Color.White)
+                        .padding(8.dp)
+                ) {
+                    items(answerService.playersAnswers) { playerAnswer ->
+                        AnswerCard(playerAnswer)
+                    }
+                }
+
+
+                Button(
+                    onClick = { answerService.sendGrades() },
+                    enabled = answerService.isGradingComplete,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Text(
+                        text = if (answerService.isGradingComplete) MatchButtonActions.SUBMIT_GRADING.value
+                        else GradingFeedback.PLAYERS_TO_GRADE.value
+                    )
+                }
             }
         }
     }
