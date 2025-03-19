@@ -44,7 +44,7 @@ object MatchRoomService {
     private var matchRoomCode: String = ""
     private var hasEnteredRoom = false
 
-    private val socket = SocketHandler.getSocket()
+     val socket = SocketHandler.getSocket()
 
     val mSocket = SocketHandler.getSocket()
 
