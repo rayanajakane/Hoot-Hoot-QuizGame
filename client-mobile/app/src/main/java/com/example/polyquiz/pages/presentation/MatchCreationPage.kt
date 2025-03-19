@@ -1,5 +1,6 @@
 package com.example.polyquiz.pages.presentation
 
+import android.util.Log
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -104,7 +105,8 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
             ) {
                 Text(text = "Se déconnecter")
             }
-            GameList(modifier = modifier.weight(1f).fillMaxHeight(0.2f), navigateToWaitPage)
+            Log.d("NADA MatchCreationPage", "authState.value: ${authViewModel.getUsername()} ${authViewModel.getUserId()}")
+            GameList(modifier = modifier.weight(1f).fillMaxHeight(0.2f), navigateToWaitPage, authViewModel)
         }
     }
 }
