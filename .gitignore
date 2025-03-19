@@ -15,3 +15,5 @@ build/
 /node_modules
 client-mobile/.idea/inspectionProfiles/Project_Default.xml
 client-mobile/.idea/deploymentTargetSelector.xml
+client-mobile/.idea
+/client-mobile/app/.idea
