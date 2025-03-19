@@ -1,5 +1,7 @@
 package com.example.polyquiz.auth.presentation
+
 import StringValue
+import android.util.Log
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
@@ -38,6 +40,7 @@ import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.SIZE_CONSTANTS
+import com.example.polyquiz.core.TranslationService
 import kotlinx.coroutines.launch
 
 @Composable
@@ -59,8 +62,11 @@ fun LoginPage(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(authState.value) {
-        when(authState.value) {
+        when (authState.value) {
             is AuthState.Authenticated -> {
+                TranslationService.getLanguageFromDB(authViewModel.getUserConfigsDatabaseRef()) { lang ->
+                    TranslationService.setLanguage(lang)
+                }
                 scope.launch {
                     SnackbarController.sendEvent(
                         event = SnackbarEvent(
@@ -70,6 +76,7 @@ fun LoginPage(
                 }
                 navigateToHome()
             }
+
             is AuthState.Error -> {
                 scope.launch {
                     SnackbarController.sendEvent(
@@ -79,6 +86,7 @@ fun LoginPage(
                     )
                 }
             }
+
             else -> Unit
         }
     }
@@ -121,7 +129,9 @@ fun LoginPage(
 
                 TextField(
                     value = email,
-                    onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) email = it },
+                    onValueChange = {
+                        if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) email = it
+                    },
                     singleLine = true,
                     label = { Text(stringResource(R.string.email)) },
                     modifier = Modifier.fillMaxWidth()
@@ -131,9 +141,11 @@ fun LoginPage(
 
                 TextField(
                     value = password,
-                    onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) password = it },
+                    onValueChange = {
+                        if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) password = it
+                    },
                     singleLine = true,
-                    label = { Text(stringResource(R.string.password),) },
+                    label = { Text(stringResource(R.string.password)) },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardActions = KeyboardActions(onDone = {
                         authViewModel.signIn(email, password, context)
@@ -158,8 +170,10 @@ fun LoginPage(
                     },
                     modifier = Modifier.align(Alignment.End)
                 ) {
-                    Text(text = stringResource(R.string.forgot_password),
-                        fontStyle = FontStyle.Italic)
+                    Text(
+                        text = stringResource(R.string.forgot_password),
+                        fontStyle = FontStyle.Italic
+                    )
                 }
 
                 Button(

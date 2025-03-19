@@ -1,5 +1,6 @@
 package com.example.polyquiz
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -27,7 +28,7 @@ import com.example.polyquiz.pages.presentation.WaitPage
 
 // References: https://youtu.be/AIC_OFQ1r3k  and  https://youtu.be/lv1raAvwcgI
 @Composable
-fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
+fun Navigation(modifier: Modifier, authViewModel: AuthViewModel, context : Context) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
@@ -171,7 +172,8 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                 navigateToHome = {
                     navController.navigate(Route.Home)
                 },
-                authViewModel = authViewModel
+                authViewModel = authViewModel,
+                context = context,
             )
         }
     }
