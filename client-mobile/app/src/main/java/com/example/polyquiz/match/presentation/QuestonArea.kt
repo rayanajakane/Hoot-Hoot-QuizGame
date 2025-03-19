@@ -220,6 +220,13 @@ fun QuestionArea(
                             modifier = Modifier.fillMaxWidth(0.8f)
                         )
                     }
+                    QuestionType.ESTIMATED_ANSWER.value -> {
+                        EstimatedAnswerArea(
+                            answerService = answerService,
+                            matchRoomService = matchRoomService,
+                            matchContext = context,
+                            modifier = Modifier.fillMaxWidth(0.8f)
+                        )}
                 }
             }
 
