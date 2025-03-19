@@ -35,6 +35,7 @@ import com.example.polyquiz.constants.StartMatchFeedback
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.MatchRoomService.gameTitle
+import com.example.polyquiz.match.domain.MatchRoomService.isLocked
 import com.example.polyquiz.match.domain.MatchRoomService.players
 import com.example.polyquiz.match.domain.MatchService
 import com.example.polyquiz.match.domain.MatchService.matchRoomService
@@ -53,7 +54,7 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
 
 
     fun resetWaitPage() {
-       // isLocked = false
+        isLocked = false
         MatchRoomService.isHostPlaying = true
         MatchRoomService.isBanned = false
         MatchRoomService.isQuitting = false
@@ -80,22 +81,18 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
         }
         if (isHost()) {
             gameTitle = getCurrentGame().title
-            println(gameTitle)
             MatchContextService.setContext(MatchContext.HOSTVIEW)
         } else {
             MatchContextService.setContext(MatchContext.PLAYERVIEW)
         }
     }
 
-
     LaunchedEffect(MatchRoomService.hasBeenKickedOut) {
         if (MatchRoomService.hasBeenKickedOut) {
             MatchRoomService.hasBeenKickedOut = false
-
             navigateToHome()
         }
     }
-
 
     LaunchedEffect(Unit) {
         resetWaitPage()
