@@ -172,7 +172,7 @@ fun QuestionArea(
 
             }
 
-            if (!matchRoomService.isCooldown && context === MatchContext.PLAYERVIEW) {
+            if (!matchRoomService.isCooldown) {
                 when (question?.type) {
                     QuestionType.MULTIPLE_CHOICE.value -> {
                         MultipleChoiceArea(
