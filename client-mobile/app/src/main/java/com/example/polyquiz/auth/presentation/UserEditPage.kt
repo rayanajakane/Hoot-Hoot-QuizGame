@@ -6,7 +6,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,7 +38,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -67,8 +65,6 @@ import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.core.storage.ImageStorage
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.android.gms.auth.api.phone.SmsCodeAutofillClient.PermissionState
 import com.example.polyquiz.core.TranslationService
 import java.util.Locale
 
@@ -80,7 +76,6 @@ fun UserEditPage(
     navigateToCamera: () -> Unit,
     authViewModel: AuthViewModel,
     context: Context,
-    navigateToCamera: () -> Unit,
     cameraViewModel: CameraViewModel
 ) {
 
@@ -90,7 +85,7 @@ fun UserEditPage(
     var currentLang by remember { mutableStateOf(Locale.getDefault().language) }
 
     val email by authViewModel.email.collectAsState()
-    val username by authViewModel.username.collectAsState()
+    var username by remember { mutableStateOf(authViewModel.getUsername()) }
     val usernameError by authViewModel.usernameError.collectAsState()
 
     var expandedTheme by remember { mutableStateOf(false) }
@@ -108,9 +103,9 @@ fun UserEditPage(
     DisposableEffect(Unit) {
         onDispose {
             authViewModel.resetUsername()
+            cameraViewModel.resetCapturedPhotoState()
         }
-
-    var avatarURL by remember { mutableStateOf<String?>(null) }
+    }
     val avatarURL by authViewModel.avatarURL.collectAsState()
     val isPresetAvatar by cameraViewModel.isPresetAvatar.collectAsState()
     val temporaryAvatar by cameraViewModel.temporaryAvatar.collectAsState()
@@ -121,6 +116,24 @@ fun UserEditPage(
     }
 
     fun saveUserProfile() {
+        // TODO : save themes
+
+        // To hide the keyboard in case it's open
+        keyboardController?.hide()
+
+        // Change app language
+        translationService.setLanguage(currentLang)
+        translationService.saveLanguageToDB(currentLang, authViewModel.getUserConfigsDatabaseRef())
+
+        // Change username
+        if (authViewModel.getUsername() != username) {
+            authViewModel.changeUsername(
+                username, authViewModel.getUsername()
+            )
+        } else {
+            Log.e("caca", "CACA")
+        }
+
         // Save avatar image + url
         val capturedImage = cameraViewModel.state.value.capturedImage
         if (!isPresetAvatar && capturedImage != null) {
@@ -145,8 +158,6 @@ fun UserEditPage(
 
             ImageStorage.deleteAvatar(authViewModel.getUserId())
         }
-
-        // TODO : Save username, theme, lang
     }
 
     Button(
@@ -210,6 +221,7 @@ fun UserEditPage(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
+                            // TODO : Fix clickable avatar
                             if (avatarToShow is Bitmap) {
                                 TemporaryAvatar(128.dp, avatarToShow)
                             } else {
@@ -227,11 +239,31 @@ fun UserEditPage(
                             ) { Text(stringResource(R.string.upload_avatar)) }
                             Text(stringResource(R.string.preset_avatars))
                             Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                                ClickableAvatarPlaceholder(32.dp, PresetAvatar.A.value, onClickAvatar)
-                                ClickableAvatarPlaceholder(32.dp, PresetAvatar.B.value, onClickAvatar)
-                                ClickableAvatarPlaceholder(32.dp, PresetAvatar.C.value, onClickAvatar)
-                                ClickableAvatarPlaceholder(32.dp, PresetAvatar.D.value, onClickAvatar)
-                                ClickableAvatarPlaceholder(32.dp, PresetAvatar.DEFAULT.value, onClickAvatar)
+                                ClickableAvatarPlaceholder(
+                                    32.dp,
+                                    PresetAvatar.A.value,
+                                    onClickAvatar
+                                )
+                                ClickableAvatarPlaceholder(
+                                    32.dp,
+                                    PresetAvatar.B.value,
+                                    onClickAvatar
+                                )
+                                ClickableAvatarPlaceholder(
+                                    32.dp,
+                                    PresetAvatar.C.value,
+                                    onClickAvatar
+                                )
+                                ClickableAvatarPlaceholder(
+                                    32.dp,
+                                    PresetAvatar.D.value,
+                                    onClickAvatar
+                                )
+                                ClickableAvatarPlaceholder(
+                                    32.dp,
+                                    PresetAvatar.DEFAULT.value,
+                                    onClickAvatar
+                                )
                             }
 
                         }
@@ -358,41 +390,22 @@ fun UserEditPage(
                             Spacer(modifier = Modifier.height(8.dp))
                             Button(
                                 onClick = {
-                                    // TODO
                                     saveUserProfile()
                                 },
                                 colors = ButtonDefaults.buttonColors(
-                                    // Change app language
-                                    translationService.setLanguage(currentLang)
-                                    translationService.saveLanguageToDB(
-                                        currentLang, authViewModel.getUserConfigsDatabaseRef()
-                                    )
-
-                                    // Change username
-                                    if (authViewModel.getUsername() != username) {
-                                        authViewModel.changeUsername(
-                                            username, authViewModel.getUsername()
-                                        )
-                                    } else {
-                                        Log.e("caca", "CACA")
-                                    }
-
-                                    // To hide the keyboard in case it's open
-                                    keyboardController?.hide()
-                                }, colors = ButtonDefaults.buttonColors(
                                     containerColor = MaterialTheme.colorScheme.primary,
                                     contentColor = MaterialTheme.colorScheme.onPrimary
-                                ), modifier = Modifier.width(200.dp)
+                                ),
+                                modifier = Modifier.width(200.dp)
                             ) {
                                 Text(text = stringResource(R.string.save))
                             }
+
                         }
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    stringResource(R.string.danger_zone),
-                    fontSize = 30.sp,
+
                 Text(
                     stringResource(R.string.danger_zone), fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
@@ -444,7 +457,6 @@ fun TemporaryAvatar(avatarSize: Dp, bitmap: Bitmap?) {
         }
     }
 }
-
 
 
 @Composable()

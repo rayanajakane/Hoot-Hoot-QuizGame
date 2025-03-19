@@ -167,12 +167,10 @@ fun SignupPage(
                         }
 
                         Spacer(modifier = Modifier.height(8.dp))
-
                         TextField(
                             value = username,
-                            onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.setAndUpdateUsername(it, context) },
                             onValueChange = {
-                                if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.updateUsername(
+                                if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.setAndUpdateUsername(
                                     it,
                                     context
                                 )

@@ -15,8 +15,6 @@ import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.core.storage.ImageStorage
-import com.example.polyquiz.SnackbarController
-import com.example.polyquiz.SnackbarEvent
 import com.example.vanillaprototype.socket.SocketHandler
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
@@ -73,12 +71,19 @@ class AuthViewModel : ViewModel() {
         }
     }
 
+    private fun checkAuthStatus() {
+        if (auth.currentUser == null) {
+            _authState.value = AuthState.Unauthenticated
+        } else {
+            _authState.value = AuthState.Authenticated
+        }
+    }
+
     fun getUserDatabaseRef(uid: String): DatabaseReference {
         return database.getReference("users/${uid}")
     }
 
-    fun getUsernameDatabaseRef(username: String): DatabaseReference {
-    fun getUserConfigsDatabaseRef() : DatabaseReference {
+    fun getUserConfigsDatabaseRef(): DatabaseReference {
         return database.getReference("users/${user?.uid}/configs")
     }
 
@@ -128,10 +133,6 @@ class AuthViewModel : ViewModel() {
         _username.value = user?.displayName ?: ""
     }
 
-    fun getUsername(): String {
-        return auth.currentUser?.displayName ?: ""
-    }
-
     fun getUserId(): String {
         return auth.currentUser?.uid ?: ""
     }
@@ -145,16 +146,9 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    private fun checkAuthStatus() {
-        if (auth.currentUser == null) {
-            _authState.value = AuthState.Unauthenticated
-        } else {
-            _authState.value = AuthState.Authenticated
-        }
-    }
 
     fun changeUsername(username: String, oldUsername: String) {
-        if(username.isEmpty() || usernameError.value.isNotEmpty()) {
+        if (username.isEmpty() || usernameError.value.isNotEmpty()) {
             viewModelScope.launch {
                 SnackbarController.sendEvent(
                     event = SnackbarEvent(
@@ -288,6 +282,9 @@ class AuthViewModel : ViewModel() {
                                         userRef?.child("isOnline")?.setValue(true)
                                         userRef?.child("isOnline")?.onDisconnect()?.setValue(false)
                                         usernameRef.setValue(username.lowercase())
+                                        _username.value = user?.displayName ?: ""
+                                        _email.value = user?.email ?: ""
+                                        _authState.value = AuthState.Authenticated
                                         setAvatarUrl(user?.photoUrl.toString())
                                         _authState.value = AuthState.Authenticated
                                         SocketHandler.connect()
@@ -301,50 +298,6 @@ class AuthViewModel : ViewModel() {
             }
         }
     }
-        // TODO: Replace spaces? (or simply forbid them?)
-        val usernameRef = getUsernameDatabaseRef(username.lowercase())
-        usernameRef.get().addOnSuccessListener { databaseSnapshot: DataSnapshot ->
-            if (databaseSnapshot.exists()) {
-                _authState.value =
-                    AuthState.Error(StringValue.StringResource(R.string.username_already_exists))
-                Log.e(
-                    TAG,
-                    StringValue.StringResource(R.string.username_already_exists).toString()
-                )
-            } else {
-                _authState.value = AuthState.Loading
-                auth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            user = task.result.user
-                            val displayNameUpdate = UserProfileChangeRequest.Builder()
-                                .setDisplayName(username)
-                                .build()
-                            _username.value = user?.displayName ?: ""
-                            user?.updateProfile(displayNameUpdate)
-                                ?.addOnCompleteListener { updateTask ->
-                                    if (updateTask.isSuccessful) {
-                                        val userRef =
-                                            task.result.user?.let { this.getUserDatabaseRef(it.uid) }
-                                        userRef?.child("isOnline")?.setValue(true)
-                                        userRef?.child("isOnline")?.onDisconnect()
-                                            ?.setValue(false)
-                                        usernameRef.setValue(username.lowercase())
-                                        _username.value = user?.displayName ?: ""
-                                        _email.value = user?.email ?: ""
-                                        _authState.value = AuthState.Authenticated
-                                        SocketHandler.connect()
-                                    }
-                                    Log.d(TAG, "createUserWithEmail:success")
-                                }
-                        } else {
-                            handleAuthError(task, context)
-                        }
-                    }
-            }
-        }
-    }
-
 
     fun signOut() {
         if (user != null) {
@@ -489,6 +442,10 @@ class AuthViewModel : ViewModel() {
         } else {
             Patterns.EMAIL_ADDRESS.matcher(target).matches()
         }
+    }
+
+    fun getUsername(): String {
+        return auth.currentUser?.displayName ?: ""
     }
 
 }

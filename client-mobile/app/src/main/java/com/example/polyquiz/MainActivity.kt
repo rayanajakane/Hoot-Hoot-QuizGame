@@ -69,9 +69,8 @@ class MainActivity : AppCompatActivity() {
                     Navigation(
                         modifier = Modifier.padding(innerPadding),
                         authViewModel = authViewModel,
-                        context = applicationContext,
-                        cameraViewModel = cameraViewModel)
-
+                        cameraViewModel = cameraViewModel,
+                        context = applicationContext
                     )
                 }
             }
