@@ -27,7 +27,7 @@ fun FriendsSearchScreen(
 
     LaunchedEffect(currentUserID) {
         friendsService.initialize(currentUserID)
-//        friendsService.onReturnUsers()
+        friendsService.onReturnUsers()
         friendsService.returnAllData()
     }
 
@@ -68,9 +68,9 @@ fun FriendsSearchScreen(
 
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(friendsService) {
-        friendsService.onReturnUsers()
-    }
+//    LaunchedEffect(friendsService) {
+//        friendsService.onReturnUsers()
+//    }
 
     DisposableEffect(friendsService) {
         onDispose {
