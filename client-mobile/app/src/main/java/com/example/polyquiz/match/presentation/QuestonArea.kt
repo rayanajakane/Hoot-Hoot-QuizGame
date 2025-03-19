@@ -213,7 +213,7 @@ fun QuestionArea(
                         onClick = {
                             answerService.submitAnswer(
                                 UserInfo(
-                                    username = matchRoomService.retrieveUsername(),
+                                    username = matchRoomService.userId,
                                     roomCode = matchRoomService.getRoomCode()
                                 )
                             )
