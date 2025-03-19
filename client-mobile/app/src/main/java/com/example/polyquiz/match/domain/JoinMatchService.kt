@@ -39,7 +39,7 @@ object JoinMatchService : CommunicationService("match") {
     }
 
     fun stopReturningAllMatches(){
-       MatchRoomService.socket.off(MatchEvents.RETURN_ALL_MATCHES.value)
+       mSocket.off(MatchEvents.RETURN_ALL_MATCHES.value)
     }
 
     fun onReturnAllMatches() {
