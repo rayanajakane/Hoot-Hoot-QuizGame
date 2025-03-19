@@ -127,6 +127,7 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel, context : Conte
         composable<Route.ResultsPage> {
            ResultsPage(
                matchRoomService = MatchRoomService,
+               navigateToHome = {navController.navigate(Route.Home)},
                players,
                modifier,
                extraContent ={}

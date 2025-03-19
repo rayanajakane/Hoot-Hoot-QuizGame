@@ -17,10 +17,15 @@ import com.example.polyquiz.match.domain.Player
 @Composable
 fun ResultsPage(
     matchRoomService: MatchRoomService,
+    navigateToHome: () -> Unit,
     players: List<Player>,
     modifier: Modifier = Modifier,
     extraContent: @Composable () -> Unit = {}
 ) {
+    LaunchedEffect(MatchRoomService.isTimeToNavigateToResults) {
+        MatchRoomService.isResults = false
+    }
+
     val username = matchRoomService.retrieveUsername()
 
     var sortBy by remember { mutableStateOf("score") }
@@ -52,6 +57,15 @@ fun ResultsPage(
         ) {
             extraContent()
         }
+    }
+    Button(
+        onClick = {
+            matchRoomService.isQuitting = true
+            matchRoomService.disconnectFromRoom()
+            navigateToHome()
+        }
+    ) {
+        Text("Quitter")
     }
 }
 

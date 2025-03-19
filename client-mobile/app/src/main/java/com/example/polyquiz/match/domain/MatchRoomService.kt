@@ -29,6 +29,7 @@ object MatchRoomService {
     var timeToGoToWaitPage by mutableStateOf(false)
     var isPlaying by mutableStateOf(false)
     var isTimeToNavigate by mutableStateOf(false)
+    var isTimeToNavigateToResults by mutableStateOf(false)
     var hasBeenKickedOut by mutableStateOf(false)
     var isLocked by mutableStateOf(false)
     var gameTitle: String = ""
@@ -38,6 +39,9 @@ object MatchRoomService {
     var isCooldown by mutableStateOf(false)
     var isQuitting by mutableStateOf(false)
     var username by mutableStateOf("")
+    var userId by mutableStateOf("")
+    var hostId by mutableStateOf("")
+
 
     private var matchRoomCode: String = ""
     private var hasEnteredRoom = false
@@ -248,16 +252,18 @@ object MatchRoomService {
     fun routeToResultsPage() {
         socket.emit(MatchEvents.ROUTE_TO_RESULTS_PAGE.value, matchRoomCode)
     }
+//    private fun navigateToResultsPage() {
+//        navController?.navigate(Route.ResultsPage)
+//    }
 
     fun onRouteToResultsPage() {
         socket.on(MatchEvents.ROUTE_TO_RESULTS_PAGE.value) { _ ->
             isResults = true
+            isTimeToNavigateToResults = true
+            //navigateToResultsPage()
         }
     }
 
-    private fun navigateToResultsPage() {
-        navController?.navigate(Route.ResultsPage)
-    }
 
     fun onPlayerKick() {
         socket.on(MatchEvents.KICK_PLAYER.value) { _ ->
