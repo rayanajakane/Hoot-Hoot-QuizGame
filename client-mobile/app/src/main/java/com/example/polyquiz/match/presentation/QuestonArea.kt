@@ -74,6 +74,7 @@ fun QuestionArea(
 
     fun routeToResultsPage(){
         matchRoomService.routeToResultsPage()
+        navigateToResultsPage()
     }
 
     Row(modifier = Modifier.fillMaxSize()) {
