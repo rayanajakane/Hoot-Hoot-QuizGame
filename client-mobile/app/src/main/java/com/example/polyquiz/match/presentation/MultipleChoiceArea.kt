@@ -83,7 +83,7 @@ fun ChoiceButton(
                 if (answerService.isSelectionEnabled) {
                     selectedStates[index] = !selectedStates[index]
                     val userInfo = UserInfo(
-                        username = matchRoomService.retrieveUsername(),
+                        userId = matchRoomService.userId,
                         roomCode = matchRoomService.getRoomCode()
                     )
                     if (selectedStates[index]) {

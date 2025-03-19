@@ -1,5 +1,6 @@
 package com.example.polyquiz.pages.presentation
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,6 +17,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import androidx.compose.ui.text.font.FontWeight
 import com.example.polyquiz.Game
+import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.http.GameService
 import com.example.polyquiz.match.domain.MatchContextService
@@ -24,7 +26,7 @@ import com.example.polyquiz.match.domain.MatchService
 
 
 @Composable
-fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit) {
+fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: AuthViewModel) {
 
     val gameService = GameService()
     val matchService = MatchService
@@ -32,6 +34,8 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit) {
     var selectedGame by remember { mutableStateOf<Game?>(null) }
     var gamesIsValid by remember { mutableStateOf(false) }
     var isLoadingSelectedGame by remember { mutableStateOf(false) }
+    val username by remember { mutableStateOf(authViewModel.getUsername() )}
+    val userId by remember { mutableStateOf(authViewModel.getUserId()) }
 
     val contextService = MatchContextService
 
@@ -56,7 +60,8 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit) {
         if(selectedGame?.isVisible!!){
             gamesIsValid = true
             matchService.currentGame = selectedGame
-            matchService.saveBackupGame(selectedGame!!.id!!)
+//            Log.d("NADA GAMESLIST", "${hostId} et ${hostUsername}")
+            matchService.saveBackupGame(selectedGame!!.id!!, userId, username)
         }
     }
 

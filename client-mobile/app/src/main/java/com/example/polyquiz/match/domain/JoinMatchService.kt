@@ -69,12 +69,12 @@ object JoinMatchService : CommunicationService("match") {
         )
     }
 
-    fun validateUsername(username: String, navigateToWaitPage: () -> Unit, navigateToHome: () -> Unit, navigateToMatchPage: () -> Unit) {
+    fun validateUsername(username: String, userId: String, navigateToWaitPage: () -> Unit, navigateToHome: () -> Unit, navigateToMatchPage: () -> Unit) {
         postUsername(username,
             onSuccess = {
                 val code = matchRoomCode
                 matchRoomCode = ""
-                addPlayerToMatchRoom(code, username,navigateToHome, navigateToWaitPage, navigateToMatchPage)
+                addPlayerToMatchRoom(code, username,userId, navigateToHome, navigateToWaitPage, navigateToMatchPage)
             },
             onError = { errorMessage ->
                 println("Error: $errorMessage")
@@ -82,9 +82,9 @@ object JoinMatchService : CommunicationService("match") {
         )
     }
 
-    fun addPlayerToMatchRoom(matchRoomCode: String, username: String, navigateToHome: () -> Unit, navigateToWaitPage: () -> Unit, navigateToMatchPage: () -> Unit) {
+    fun addPlayerToMatchRoom(matchRoomCode: String, username: String, userId:String, navigateToHome: () -> Unit, navigateToWaitPage: () -> Unit, navigateToMatchPage: () -> Unit) {
         MatchRoomService.connect()
-        MatchRoomService.joinRoom(matchRoomCode, username)
+        MatchRoomService.joinRoom(matchRoomCode, username, userId)
     }
 
     interface JoinMatchApiService : ApiService {}
