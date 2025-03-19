@@ -106,15 +106,11 @@ object ChatService {
     fun reactToMessage(messageId: String, chatEmoji: ChatEmoji, userId: String, username: String, roomCode: String?) {
         val userIdName = UserIdName(userId, username)
         if (channel == ChatChannel.GENERAL.value) {
-            println("reactToMessage general: $messageId, $chatEmoji, $userIdName, $roomCode")
             val messageEmojiInfo = MessageEmojiInfo(messageId, chatEmoji.value, userIdName, null)
             val messageEmojiInfoStringified = Gson().toJson(messageEmojiInfo)
             val messageEmojiInfoJsonObject = JSONObject(messageEmojiInfoStringified)
-            println("reactToMessage general 2: $messageEmojiInfoJsonObject")
             mSocket.emit(ChatEvents.GENERAL_EMOJI.value, messageEmojiInfoJsonObject)
         } else if (channel == ChatChannel.ROOM.value && MatchContextService.context.value != MatchContext.Null) {
-            println("reactToMessage match: $messageId, $chatEmoji, $userIdName, $roomCode")
-
             val messageEmojiInfo = MessageEmojiInfo(messageId, chatEmoji.value, userIdName, roomCode)
             val messageEmojiInfoStringified = Gson().toJson(messageEmojiInfo)
             val messageEmojiInfoJsonObject = JSONObject(messageEmojiInfoStringified)
@@ -126,7 +122,6 @@ object ChatService {
     fun handleGeneralEmoji() {
         mSocket.on(ChatEvents.SENT_GENERAL_EMOJI.value) { args ->
             if (args[0] != null) {
-                println("Received emoji: ${args[0]}")
                 val updatedMessage =
                     Gson().fromJson(args[0].toString(), Message::class.java) as Message
                 _generalMessages.value?.let { messages ->

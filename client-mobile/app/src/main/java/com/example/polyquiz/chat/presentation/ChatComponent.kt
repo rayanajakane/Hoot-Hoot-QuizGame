@@ -2,12 +2,15 @@ package com.example.polyquiz.chat.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -42,6 +45,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -100,7 +104,7 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                     modifier = Modifier.weight(1f).padding(20.dp, 20.dp, 20.dp, 0.dp),
                 ) {
                     itemsIndexed(it) { _: Int, message: Message ->
-                        MessageContainer(message, userId)
+                        MessageContainer(message, userId, username)
                     }
                 }
             } ?: LazyColumn(
@@ -151,7 +155,7 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
 }
 
 @Composable
-fun MessageContainer(message: Message, currentUserId: String) {
+fun MessageContainer(message: Message, currentUserId: String, username: String) {
     val containerWidth = 225.dp
     val containerAlignment: Alignment.Horizontal
     val containerCorner: RoundedCornerShape
@@ -184,16 +188,15 @@ fun MessageContainer(message: Message, currentUserId: String) {
                     AvatarImage(message.photoUrl)
                 }
             }
-            Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = containerColor
-                ),
-                shape = containerCorner,
-                modifier = Modifier.width(containerWidth)
-            ) {
-                Text(text = message.text, modifier = Modifier.padding(10.dp))
-                ReactionsRow(message, message.authorId, message.authorUsername, MatchRoomService.getRoomCode())
-
+            Column(modifier = Modifier.padding(top = 10.dp).align(alignment = AbsoluteAlignment.Left)) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = containerColor),
+                    shape = containerCorner,
+                    modifier = Modifier.width(containerWidth)
+                ) {
+                    Text(text = message.text, modifier = Modifier.padding(10.dp))
+                }
+                ReactionsRow(message, currentUserId, username, MatchRoomService.getRoomCode(), modifier = Modifier.align(alignment = AbsoluteAlignment.Left))
             }
         }
     }
@@ -275,20 +278,44 @@ fun AvatarImage(photoUrl: String?) {
 }
 
 @Composable
-fun ReactionsRow(message: Message, userId: String, username: String, roomCode: String?) {
+fun ReactionsRow(message: Message, userId: String, username: String, roomCode: String?, modifier: Modifier) {
     Row(
-        modifier = Modifier.padding(top = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        modifier = Modifier.padding(top = 1.dp),
+        horizontalArrangement = Arrangement.Absolute.Left,
     ) {
-        ReactionButton("👍", message.userLikes.size) { ChatService.reactToMessage(message.id, ChatEmoji.LIKE, userId, username, if(roomCode.isNullOrEmpty()) null else roomCode ) }
-        ReactionButton("❤️", message.userLoves.size) { ChatService.reactToMessage(message.id, ChatEmoji.LOVE, userId, username, if(roomCode.isNullOrEmpty()) null else roomCode ) }
-        ReactionButton("👎", message.userDislikes.size) { ChatService.reactToMessage(message.id, ChatEmoji.DISLIKE, userId, username, if(roomCode.isNullOrEmpty()) null else roomCode ) }
+        ReactionButton("👍", message.userLikes.size) {
+            ChatService.reactToMessage(message.id, ChatEmoji.LIKE, userId, username, if(roomCode.isNullOrEmpty()) null else roomCode)
+        }
+        ReactionButton("❤️", message.userLoves.size) {
+            ChatService.reactToMessage(message.id, ChatEmoji.LOVE, userId, username, if(roomCode.isNullOrEmpty()) null else roomCode)
+        }
+        ReactionButton("👎", message.userDislikes.size) {
+            ChatService.reactToMessage(message.id, ChatEmoji.DISLIKE, userId, username, if(roomCode.isNullOrEmpty()) null else roomCode)
+        }
     }
 }
 
 @Composable
 fun ReactionButton(emoji: String, count: Int, onClick: () -> Unit) {
-    Button(onClick = onClick, colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)) {
-        Text(text = "$emoji $count", fontSize = 14.sp)
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+        modifier = Modifier
+            .heightIn(min = 32.dp)
+//            .padding(4.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = emoji,
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.Black,
+                modifier = Modifier.offset(y = (-4).dp)
+            )
+            Text(
+                text = "$count",
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.Black
+            )
+        }
     }
 }
