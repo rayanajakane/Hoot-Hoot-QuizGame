@@ -113,7 +113,7 @@ fun AnswerCard(playerAnswer: LongAnswerInfo) {
             .fillMaxWidth()
             .padding(vertical = 8.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Row(modifier = Modifier.padding(16.dp)) {
             Text(text = playerAnswer.username, fontSize = 16.sp, fontWeight = FontWeight.Bold)
             Text(text = playerAnswer.answer, fontSize = 14.sp, modifier = Modifier.padding(top = 8.dp))
 
@@ -122,9 +122,9 @@ fun AnswerCard(playerAnswer: LongAnswerInfo) {
                     Button(
                         onClick = { playerAnswer.score = option.value.toString()
                                 answerService.handleGrading()},
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = getGradeColor(option)
-                        )
+//                        colors = ButtonDefaults.buttonColors(
+//                            containerColor = getGradeColor(option)
+//                        )
                     ) {
                         Text("${option.value}%")
                     }
