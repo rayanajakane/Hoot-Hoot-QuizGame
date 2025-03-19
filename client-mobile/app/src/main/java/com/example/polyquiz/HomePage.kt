@@ -53,6 +53,7 @@ fun HomePage(
     val keyboardController = LocalSoftwareKeyboardController.current
     var showDialog by remember { mutableStateOf(false) }
     val shouldNavigate = rememberUpdatedState(MatchRoomService.timeToGoToWaitPage)
+    val shouldNavigateToResults = rememberUpdatedState(MatchRoomService.isTimeToNavigateToResults)
 
     LaunchedEffect(authState.value, MatchRoomService.timeToGoToWaitPage) {
         when (authState.value) {

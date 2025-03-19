@@ -23,12 +23,19 @@ import com.example.polyquiz.match.presentation.ResultsPage
 import com.example.polyquiz.pages.presentation.JoinMatchPage
 import com.example.polyquiz.pages.presentation.MatchCreationPage
 import com.example.polyquiz.pages.presentation.WaitPage
+import com.example.polyquiz.ui.features.camera.CameraViewModel
+import com.example.polyquiz.ui.features.camera.MainCameraScreen
 
 
 
 // References: https://youtu.be/AIC_OFQ1r3k  and  https://youtu.be/lv1raAvwcgI
 @Composable
-fun Navigation(modifier: Modifier, authViewModel: AuthViewModel, context : Context) {
+fun Navigation(
+    modifier: Modifier,
+    authViewModel: AuthViewModel,
+    cameraViewModel: CameraViewModel,
+    context: Context
+) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
@@ -169,13 +176,27 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel, context : Conte
 
         composable<Route.UserEditPage> {
             UserEditPage(
-                modifier,
+                modifier = modifier,
                 navigateToHome = {
                     navController.navigate(Route.Home)
                 },
+                navigateToCamera = {
+                    navController.navigate(Route.MainCameraScreen)
+                },
                 authViewModel = authViewModel,
                 context = context,
+                cameraViewModel = cameraViewModel
             )
         }
+
+        composable<Route.MainCameraScreen> {
+            MainCameraScreen(
+                authViewModel,
+                cameraViewModel,
+                navigateToUserEdit = { navController.navigate(Route.UserEditPage) })
+        }
+
     }
+
+
 }
