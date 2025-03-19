@@ -31,7 +31,6 @@ class FriendsService {
     private var userId: String = ""
 
     fun initialize(userId: String) {
-        println("Initializing FriendsService with userId: $userId")
         this.userId = userId
     }
 
