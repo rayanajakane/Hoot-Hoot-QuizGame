@@ -18,8 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.match.domain.JoinMatchService
-import com.example.polyquiz.match.domain.MatchRoomService
-import com.example.polyquiz.match.domain.TimeService
 
 @Composable
 fun JoinGameDialog(
@@ -31,7 +29,7 @@ fun JoinGameDialog(
     navigateToMatchPage: () -> Unit,
     navigateToWaitPage: () -> Unit,
 
-) {
+    ) {
     var room by remember { mutableStateOf("") }
     val username by remember { mutableStateOf(authViewModel.getUsername() )}
     val userId by remember { mutableStateOf(authViewModel.getUserId()) }

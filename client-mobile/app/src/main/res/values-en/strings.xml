@@ -45,4 +45,10 @@
     <string name="save">Save</string>
     <string name="danger_zone">Danger zone</string>
     <string name="delete_user">Delete profile</string>
+    <string name="edited_feedback">Saved changes successfully!</string>
+    <string name="english">English</string>
+    <string name="french">French</string>
+    <string name="invalid_username">❌ Username is invalid</string>
+    <string name="error_delete_user">❌ Error when deleting account</string>
+    <string name="delete_feedback">✅  Deleted profile sucessfully!</string>
 </resources>

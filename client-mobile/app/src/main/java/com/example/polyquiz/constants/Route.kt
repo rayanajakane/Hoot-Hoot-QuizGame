@@ -41,4 +41,5 @@ object Route {
 
     @Serializable
     object FriendsSearchScreen
+    object MainCameraScreen
 }

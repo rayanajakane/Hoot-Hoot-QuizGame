@@ -2,7 +2,7 @@ tasks.register<Wrapper>("wrapper") {
     gradleVersion = "5.6.4"
 }
 
-tasks.register("prepareKotlinBuildScriptModel"){}
+tasks.register("prepareKotlinBuildScriptModel") {}
 
 plugins {
     alias(libs.plugins.android.application)
@@ -54,9 +54,11 @@ dependencies {
     implementation(libs.firebase.database)
     implementation("com.google.firebase:firebase-crashlytics-buildtools:3.0.3")
     implementation(libs.androidx.storage)
+    implementation(libs.androidx.appcompat)
     val coreVersion = "1.13.1"
     val navVersion = "2.8.4"
     implementation("androidx.core:core-ktx:$coreVersion")
+    implementation("androidx.appcompat:appcompat:1.6.1")
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -67,7 +69,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
     implementation("androidx.navigation:navigation-compose:$navVersion")
     implementation("androidx.compose.material:material-icons-extended-android:1.7.5")
-    implementation (libs.socket.io.client)
+    implementation(libs.socket.io.client)
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
     testImplementation(libs.junit)
@@ -84,4 +86,19 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
     implementation("io.coil-kt:coil-compose:2.2.2")
 // For logging network requests (optional but recommended)
+
+    // Camera stuff
+    implementation("androidx.camera:camera-camera2:1.3.1")
+    implementation("androidx.camera:camera-lifecycle:1.3.1")
+    implementation("androidx.camera:camera-view:1.3.1")
+    implementation("androidx.camera:camera-extensions:1.3.1")
+    implementation("com.google.accompanist:accompanist-permissions:0.32.0")
+
+    // Image stuff
+    implementation(platform("androidx.compose:compose-bom:2025.02.00"))
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
+    // Cloud storage stuff
+    implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
+    implementation("com.google.firebase:firebase-storage")
 }
