@@ -159,7 +159,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         // return this.modificationState !== ManagementState.GameModify && this.modificationState !== ManagementState.BankModify;
     }
 
-    public toggleBank() {
+    toggleBank() {
         this.bankService.addToBank = this.bankService.addToBank ? false : true;
     }
 
@@ -356,7 +356,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         }
     }
 
-    public setPicture(event: Event) {
+    setPicture(event: Event) {
         const eventTarget: HTMLInputElement | null = event.target as HTMLInputElement | null;
         if (eventTarget?.files?.[0]) {
             const file: File = eventTarget.files[0];
@@ -375,7 +375,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         }
     }
 
-    public removePicture() {
+    removePicture() {
         this.questionForm.get('pictureUrl')?.setValue('');
         this.questionForm.get('pictureFile')?.setValue(null);
         this.loadedImageFile = null;

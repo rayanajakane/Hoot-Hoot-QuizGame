@@ -117,5 +117,13 @@
         "apply-changes": "Apply changes",
         "add-question": "Add new question",
         "notice": "The game must contain at least 1 question. Click on \"Add new question\" or import a question from the bank."
+    },
+    "question-creation-form": {
+        "question": "Question",
+        "question-text": "Question text",
+        "question-type": "Question Type",
+        "upload-image": "Upload an image",
+        "remove-image": "Remove an image",
+        "add-bank": "Add to bank"
     }
 }
