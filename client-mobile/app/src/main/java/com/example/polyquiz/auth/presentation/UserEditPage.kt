@@ -1,5 +1,7 @@
 package com.example.polyquiz.auth.presentation
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
@@ -22,10 +26,12 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +39,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -44,39 +51,45 @@ import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.PresetAvatar
+import com.example.polyquiz.core.TranslationService
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserEditPage(
     modifier: Modifier,
     navigateToHome: () -> Unit,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    context: Context,
 ) {
     val focusManager = LocalFocusManager.current
+    val translationService = TranslationService
+
+    var currentLang by remember { mutableStateOf(Locale.getDefault().language) }
+
     val email by authViewModel.email.collectAsState()
-    val username by authViewModel.username.collectAsState()
+    var username by remember { mutableStateOf(authViewModel.getUsername()) }
+    val usernameError by authViewModel.usernameError.collectAsState()
+
     var expandedTheme by remember { mutableStateOf(false) }
     var expandedLang by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    // TODO : Find way to get instead of hardcode
-    val languages = listOf("en", "fr")
+    val availableLangs =
+        mapOf("en" to stringResource(R.string.english), "fr" to stringResource(R.string.french))
+
     val themes = listOf("light theme", "dark theme")
-    val textFieldStateLang = rememberTextFieldState(languages[1])
+    val textFieldStateLang = rememberTextFieldState(currentLang)
     val textFieldStateTheme = rememberTextFieldState(themes[0])
-    Button(
-        onClick = {
-            navigateToHome()
-        },
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary
-        )
-    ) {
-        Text(text = stringResource(R.string.home_page))
+
+    // TODO : Cleanup function
+    DisposableEffect(Unit) {
+        onDispose {
+            authViewModel.resetUsername()
+        }
     }
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
+
+    Row(horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxSize()
             .pointerInput(Unit) {
@@ -84,8 +97,7 @@ fun UserEditPage(
                     focusManager.clearFocus()
                     keyboardController?.hide()
                 })
-            }
-    ) {
+            }) {
         ChatComponent(modifier = modifier, authViewModel = authViewModel)
         Box(
             contentAlignment = Alignment.Center, modifier = Modifier
@@ -93,20 +105,30 @@ fun UserEditPage(
                 .imePadding()
         ) {
             Column() {
+                Button(
+                    onClick = {
+                        navigateToHome()
+                    }, colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    )
+                ) {
+                    Icon(imageVector = Icons.Default.Home, contentDescription = "Home")
+                    Text(text = stringResource(R.string.home_page))
+                }
                 Text(
-                    stringResource(R.string.edit_profile), fontSize = 35.sp,
+                    stringResource(R.string.edit_profile),
+                    fontSize = 35.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 ElevatedCard(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest)) {
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(32.dp), modifier = Modifier
+                        horizontalArrangement = Arrangement.spacedBy(32.dp),
+                        modifier = Modifier
                             .fillMaxWidth(0.8f)
                             .padding(
-                                start = 40.dp,
-                                top = 24.dp,
-                                end = 40.dp,
-                                bottom = 16.dp
+                                start = 40.dp, top = 24.dp, end = 40.dp, bottom = 16.dp
                             )
                     ) {
                         // Avatar stuff column
@@ -138,7 +160,6 @@ fun UserEditPage(
                                 onValueChange = {
                                     //TODO
                                 },
-//                            isError = emailError.isNotEmpty(),
                                 singleLine = true,
                                 enabled = false,
                                 label = { Text(stringResource(R.string.email)) },
@@ -148,13 +169,17 @@ fun UserEditPage(
                             TextField(
                                 value = username,
                                 onValueChange = {
-                                    // TODO
+                                    username = it
+                                    authViewModel.updateUsername(it, context)
                                 },
-//                            isError = usernameError.isNotEmpty(),
+                                isError = usernameError.isNotEmpty(),
                                 singleLine = true,
                                 label = { Text(stringResource(R.string.username)) },
                                 modifier = Modifier.fillMaxWidth()
                             )
+                            if (usernameError.isNotEmpty()) {
+                                Text(text = usernameError, color = Color.Red)
+                            }
                             Spacer(modifier = Modifier.height(8.dp))
                             // REF : https://composables.com/material3/exposeddropdownmenubox
                             // Visual themes menu
@@ -180,8 +205,7 @@ fun UserEditPage(
                                     colors = ExposedDropdownMenuDefaults.textFieldColors(),
 
                                     )
-                                ExposedDropdownMenu(
-                                    expanded = expandedTheme,
+                                ExposedDropdownMenu(expanded = expandedTheme,
                                     onDismissRequest = { expandedTheme = false }) {
                                     themes.forEach { theme ->
                                         DropdownMenuItem(
@@ -201,12 +225,14 @@ fun UserEditPage(
                                 }
                             }
                             Spacer(modifier = Modifier.height(8.dp))
+                            // Languages
+                            // REF : https://github.com/android/user-interface-samples/blob/main/PerAppLanguages/compose_app/app/src/main/java/com/example/perapplanguages/MainActivity.kt
                             ExposedDropdownMenuBox(
                                 expanded = expandedLang,
                                 onExpandedChange = { expandedLang = it },
                             ) {
                                 TextField(
-                                    value = "",
+                                    value = availableLangs[currentLang].toString(),
                                     modifier = Modifier
                                         .menuAnchor()
                                         .fillMaxWidth(),
@@ -222,22 +248,23 @@ fun UserEditPage(
                                     },
                                     colors = ExposedDropdownMenuDefaults.textFieldColors(),
                                 )
-                                ExposedDropdownMenu(
-                                    expanded = expandedLang,
+                                ExposedDropdownMenu(expanded = expandedLang,
                                     onDismissRequest = { expandedLang = false }) {
-                                    languages.forEach { language ->
+                                    availableLangs.keys.forEach { language ->
                                         DropdownMenuItem(
                                             text = {
                                                 Text(
-                                                    language,
+                                                    availableLangs[language].toString(),
                                                     style = MaterialTheme.typography.bodyLarge
                                                 )
                                             },
                                             onClick = {
+                                                expandedLang = false
                                                 textFieldStateLang.setTextAndPlaceCursorAtEnd(
                                                     language
                                                 )
-                                                expandedLang = false
+                                                currentLang = language
+
                                             },
                                             contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
                                         )
@@ -247,13 +274,27 @@ fun UserEditPage(
                             Spacer(modifier = Modifier.height(8.dp))
                             Button(
                                 onClick = {
-                                    // TODO
-                                },
-                                colors = ButtonDefaults.buttonColors(
+                                    // Change app language
+                                    translationService.setLanguage(currentLang)
+                                    translationService.saveLanguageToDB(
+                                        currentLang, authViewModel.getUserConfigsDatabaseRef()
+                                    )
+
+                                    // Change username
+                                    if (authViewModel.getUsername() != username) {
+                                        authViewModel.changeUsername(
+                                            username, authViewModel.getUsername()
+                                        )
+                                    } else {
+                                        Log.e("caca", "CACA")
+                                    }
+
+                                    // To hide the keyboard in case it's open
+                                    keyboardController?.hide()
+                                }, colors = ButtonDefaults.buttonColors(
                                     containerColor = MaterialTheme.colorScheme.primary,
                                     contentColor = MaterialTheme.colorScheme.onPrimary
-                                ),
-                                modifier = Modifier.width(200.dp)
+                                ), modifier = Modifier.width(200.dp)
                             ) {
                                 Text(text = stringResource(R.string.save))
                             }
@@ -261,9 +302,12 @@ fun UserEditPage(
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                Text(stringResource(R.string.danger_zone), fontSize = 30.sp,
+                Text(
+                    stringResource(R.string.danger_zone),
+                    fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 8.dp))
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
                 Button(
                     onClick = {
                         // TODO
@@ -282,6 +326,4 @@ fun UserEditPage(
         }
 
     }
-
 }
-
