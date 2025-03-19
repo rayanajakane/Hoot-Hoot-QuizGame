@@ -155,6 +155,9 @@ fun Navigation(
                 navigateToCamera = {
                     navController.navigate(Route.MainCameraScreen)
                 },
+                navigateToLogin = {
+                    navController.navigate(Route.Login)
+                },
                 authViewModel = authViewModel,
                 context = context,
                 cameraViewModel = cameraViewModel

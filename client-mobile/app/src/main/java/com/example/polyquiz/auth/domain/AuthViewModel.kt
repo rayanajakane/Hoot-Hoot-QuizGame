@@ -145,6 +145,78 @@ class AuthViewModel : ViewModel() {
         }
     }
 
+    fun deleteUser() {
+        val user = auth.currentUser
+        if(user == null) {
+            viewModelScope.launch {
+                SnackbarController.sendEvent(
+                    event = SnackbarEvent(
+                        message = StringValue.StringResource(R.string.error_delete_user)
+                    )
+                )
+            }
+
+            Log.e("Delete user", "User is null. Could not delete user")
+            return
+        }
+
+        // Delete user from DB
+        val userRef = getUserDatabaseRef(user.uid)
+        userRef.removeValue().addOnCompleteListener { task ->
+            if(task.isSuccessful) {
+                Log.d("Delete user", "Deleted user from DB")
+            } else {
+                Log.e("Delete user", "Could not delete user from DB")
+            }
+        }
+
+        // Delete username from DB
+        if(user.displayName?.isNotEmpty()!!) {
+            val username = getUsername()
+            val usernameRef = getUsernameDatabaseRef(getUsername().lowercase())
+            usernameRef.removeValue().addOnCompleteListener { task ->
+                if(task.isSuccessful) {
+                    Log.d("Delete user", "Deleted username from DB $username")
+                } else {
+                    Log.e("Delete user", "Could not delete username from DB")
+                }
+            }
+        }
+
+        // Delete avatar from storage
+        ImageStorage.deleteAvatar(user.uid)
+
+        // Disconnect socket
+        SocketHandler.disconnect()
+
+        // Delete user from auth
+        user.delete().addOnCompleteListener { task ->
+            if(task.isSuccessful) {
+                viewModelScope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.StringResource(R.string.delete_feedback)
+                        )
+                    )
+                }
+                Log.d("Delete user", "Deleted user successfully")
+            } else {
+                viewModelScope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.StringResource(R.string.error_delete_user)
+                        )
+                    )
+                }
+                Log.e("Delete user", "Could not delete user from Auth")
+            }
+        }
+
+        // Disconnect user from app
+        auth.signOut()
+        resetAuthState()
+    }
+
 
     fun changeUsername(username: String, oldUsername: String) {
         if (username.isEmpty() || usernameError.value.isNotEmpty()) {
