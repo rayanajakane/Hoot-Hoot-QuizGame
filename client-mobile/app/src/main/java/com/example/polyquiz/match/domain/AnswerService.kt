@@ -150,8 +150,10 @@ object AnswerService {
     }
 
     fun updateLongAnswer() {
+        println("updating long answer")
         if (!isSelectionEnabled) return
         val userInfo = UserInfo(userId = MatchRoomService.userId, roomCode = MatchRoomService.getRoomCode())
+        println(userInfo)
         val choiceInfo = ChoiceInfo(currentLongAnswer, userInfo)
         val choiceInfoStringified = Gson().toJson(choiceInfo)
         val choiceInfoJsonObject = JSONObject(choiceInfoStringified)

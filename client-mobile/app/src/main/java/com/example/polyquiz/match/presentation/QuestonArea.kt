@@ -191,6 +191,15 @@ fun QuestionArea(
                             modifier = Modifier.fillMaxWidth(0.8f)
                         )
                     }
+                    QuestionType.ESTIMATED_ANSWER.value -> {
+                        EstimatedAnswerArea(
+                            answerService,
+                            matchRoomService,
+                            context,
+                            modifier = Modifier.fillMaxWidth(0.8f)
+                        )
+
+                    }
                 }
             }
 
@@ -204,7 +213,7 @@ fun QuestionArea(
                         onClick = {
                             answerService.submitAnswer(
                                 UserInfo(
-                                    username = matchRoomService.retrieveUsername(),
+                                    username = matchRoomService.userId,
                                     roomCode = matchRoomService.getRoomCode()
                                 )
                             )
