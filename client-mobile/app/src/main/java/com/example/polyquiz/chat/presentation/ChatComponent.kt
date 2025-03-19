@@ -78,11 +78,18 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     var selectedChat by remember {
         mutableStateOf(if (MatchRoomService.getRoomCode().isNotEmpty()) "Match" else "General")
     }
+    val listState = rememberLazyListState()
     val messages = when (selectedChat) {
         "Match" -> ChatService.matchRoomMessages.observeAsState().value
         else -> ChatService.generalMessages.observeAsState().value
     }
     var newMessageText by remember{ mutableStateOf("") }
+
+    LaunchedEffect(messages?.size) {
+        if (messages!!.isNotEmpty()) {
+            listState.scrollToItem(messages!!.size - 1)
+        }
+    }
 
     Card(
         colors = CardDefaults.cardColors(
