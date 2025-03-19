@@ -55,7 +55,8 @@
         "sent-email-extra-info": "If you already have an account, you will receive an email to reset your password."
     },
     "nav": {
-        "main-page": "Main page"
+        "home-page": "Home page",
+        "leave": "Exit"
     },
     "main-page": {
         "join-match": "Join a match",
@@ -71,7 +72,8 @@
         "select-game": "Select a game from the games list",
         "time-per-QCM": "Time per QCM:",
         "popular-games": "Popular Games",
-        "n-matches-played": "Played Matches:"
+        "n-matches-played": "Played Matches:",
+        "all-games": "All Games"
     },
     "admin-main-page": {
         "admin-games": "Manage games",
@@ -83,7 +85,10 @@
     },
     "common": {
         "cancel": "Cancel",
-        "play": "Play"
+        "play": "Play",
+        "title": "Title",
+        "desc": "Description",
+        "secs": "seconds"
     },
     "join": {
         "room-code": "Room Code",
@@ -93,5 +98,24 @@
         "playing-matches": "Playing Matches",
         "no-match": "No Match to Display",
         "join-action": "Join"
+    },
+    "wait-page": {
+        "start-soon": "The match will start soon...",
+        "locked-match": "Match unlocked",
+        "unlocked-match": "Match locked",
+        "start-match": "Start Match",
+        "creation": "creation",
+        "modification": "modification"
+    },
+    "admin-edit-page": {
+        "cancel": "Cancel game {{state}}",
+        "creation": "creation",
+        "modification": "modification",
+        "creation-title": "Game creation",
+        "modification-title": "Game modification",
+        "create-game": "Create game",
+        "apply-changes": "Apply changes",
+        "add-question": "Add new question",
+        "notice": "The game must contain at least 1 question. Click on \"Add new question\" or import a question from the bank."
     }
 }

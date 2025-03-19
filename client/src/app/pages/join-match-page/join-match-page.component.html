@@ -3,7 +3,7 @@
         <div class="nav">
             <h1>{{ t('main-page.join-match') }}</h1>
             <div class="navigation-buttons">
-                <button mat-raised-button routerLink="/home"><mat-icon>home</mat-icon>{{ t('nav.main-page') }}</button>
+                <button mat-raised-button routerLink="/home"><mat-icon>home</mat-icon>{{ t('nav.home-page') }}</button>
             </div>
         </div>
 
@@ -20,7 +20,7 @@
                 />
             </mat-form-field>
             <button mat-raised-button (click)="submitCode(inputCode.value)" color="primary" id="join-button">
-                <p>Joindre</p>
+                <p>{{ t('join.join-action') }}</p>
             </button>
         </div>
         <h2>{{ t('join.waiting-matches') }}</h2>

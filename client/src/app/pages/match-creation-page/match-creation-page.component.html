@@ -2,13 +2,13 @@
     ><div class="nav">
         <h1 class="page-title">{{ t('main-page.host-match') }}</h1>
         <div class="navigation-buttons">
-            <button mat-raised-button routerLink="/home"><mat-icon>home</mat-icon>{{ t('nav.main-page') }}</button>
+            <button mat-raised-button routerLink="/home"><mat-icon>home</mat-icon>{{ t('nav.home-page') }}</button>
         </div>
     </div>
     <div id="match-creation-page">
         <div id="popular-game-list-container"></div>
         <div id="game-list-container">
-            <h2>{{ t('match-creation-page.games-list-label') }}</h2>
+            <h2>{{ t('match-creation-page.games-list') }}</h2>
             <app-pulse-loader *ngIf="isLoadingGames"></app-pulse-loader>
             <h3>{{ t('match-creation-page.popular-games') }}</h3>
             <div class="popular-games-container">
@@ -18,7 +18,7 @@
                 </mat-card>
             </div>
             <cdk-virtual-scroll-viewport class="virtual-scroll" itemSize="50">
-                <h3>Tous les jeux</h3>
+                <h3>{{ t('match-creation-page.all-games') }}</h3>
                 <app-game-list-item
                     *cdkVirtualFor="let game of games"
                     [game]="game"
@@ -30,7 +30,7 @@
 
         <div id="game-details-container">
             <div id="game-details-header">
-                <h2>{{ t('match-creation-page.game-details-label') }}{{ selectedGame ? '"' + selectedGame.title + '"' : '' }}</h2>
+                <h2>{{ t('match-creation-page.game-details') }}{{ selectedGame ? '"' + selectedGame.title + '"' : '' }}</h2>
                 <div id="buttons-container">
                     <button mat-raised-button color="primary" (click)="createMatch(matchContext.HostView)" *ngIf="gameIsValid && !isRandomGame">
                         {{ t('common.play') }}
@@ -56,7 +56,7 @@
                 </div>
 
                 <ng-template #elseBlock>
-                    <span *ngIf="!isLoadingSelectedGame">{{ t('match-creation-page.select-game-label') }}</span>
+                    <span *ngIf="!isLoadingSelectedGame">{{ t('match-creation-page.select-game') }}</span>
                 </ng-template>
 
                 <app-pulse-loader *ngIf="isLoadingSelectedGame"></app-pulse-loader>

@@ -55,7 +55,7 @@
         "sent-email-extra-info": "Si vous avez déjà un compte, vous recevrez un courriel pour réinitialiser votre mot de passe."
     },
     "nav": {
-        "main-page": "Page principale"
+        "home-page": "Page principale"
     },
     "main-page": {
         "join-match": "Joindre une partie",
@@ -66,12 +66,13 @@
         "access-code": "Code d'accès"
     },
     "match-creation-page": {
-        "games-list-label": "Liste des jeux",
-        "game-details-label": "Détails du jeu ",
-        "select-game-label": "Sélectionner un jeu dans la liste des jeux",
+        "games-list": "Liste des jeux",
+        "game-details": "Détails du jeu ",
+        "select-game": "Sélectionner un jeu dans la liste des jeux",
         "time-per-QCM": "Temps par QCM:",
         "popular-games": "Jeux populaires",
-        "n-matches-played": "Parties jouées:"
+        "n-matches-played": "Parties jouées:",
+        "all-games": "Tous les jeux"
     },
     "admin-main-page": {
         "admin-games": "Administration des jeux",
@@ -83,7 +84,10 @@
     },
     "common": {
         "cancel": "Annuler",
-        "play": "Jouer"
+        "play": "Jouer",
+        "title": "Titre",
+        "desc": "Description",
+        "secs": "secondes"
     },
     "join": {
         "room-code": "Code de la partie",
@@ -93,5 +97,22 @@
         "playing-matches": "Parties en cours",
         "no-match": "Aucune partie à afficher",
         "join-action": "Joindre"
+    },
+    "wait-page": {
+        "start-soon": "La partie va bientôt commencer...",
+        "locked-match": "Partie déverrouillée",
+        "unlocked-match": "Partie verrouillée",
+        "start-match": "Commencer la partie"
+    },
+    "admin-edit-page": {
+        "cancel": "Annuler la {{state}} du jeu",
+        "creation": "création",
+        "modification": "modification",
+        "creation-title": "Création du jeu",
+        "modification-title": "Modification du jeu",
+        "create-game": "Créer le jeu",
+        "apply-changes": "Appliquer les modifications",
+        "add-question": "Ajouter une nouvelle question",
+        "notice": "Le jeu doit contenir au moins 1 question. Cliquez sur \"Ajouter une nouvelle question\" ou importez une question de la banque."
     }
 }
