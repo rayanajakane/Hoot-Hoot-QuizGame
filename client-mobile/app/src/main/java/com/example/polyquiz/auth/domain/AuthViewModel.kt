@@ -96,11 +96,10 @@ class AuthViewModel : ViewModel() {
         validateEmail(newEmail, context)
     }
 
-    fun setAndUpdateUsername(newUsername: String, context: Context) {}
-//    fun updateUsername(newUsername: String, context: Context) {
-//        _username.value = newUsername
-//        updateUsername(newUsername, context)
-//    }
+    fun setAndUpdateUsername(newUsername: String, context: Context) {
+        _username.value = newUsername
+        updateUsername(newUsername, context)
+    }
 
     fun updateUsername(newUsername: String, context: Context) {
         validateUsername(newUsername, context)
