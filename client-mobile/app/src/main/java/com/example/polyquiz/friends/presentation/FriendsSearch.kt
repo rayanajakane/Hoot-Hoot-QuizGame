@@ -21,7 +21,6 @@ import kotlinx.coroutines.launch
 fun FriendsSearchScreen(
     currentUserID: String
 ) {
-//    val friendsService = FriendsService()
     val friendsService = remember { FriendsService() }
     var searchQuery by remember { mutableStateOf("") }
 
@@ -31,10 +30,6 @@ fun FriendsSearchScreen(
         friendsService.returnAllData()
     }
 
-//    var allUsers by remember { mutableStateOf(listOf<UserIdName>()) }
-//    var friends by remember { mutableStateOf(listOf<UserIdName>()) }
-//    var pendingRequests by remember { mutableStateOf(listOf<UserIdName>()) }
-//    var sentRequests by remember { mutableStateOf(listOf<UserIdName>()) }
     val allUsers by friendsService.allUsers.collectAsState()
     val friends by friendsService.friends.collectAsState()
     val pendingRequests by friendsService.pendingRequests.collectAsState()
@@ -53,42 +48,13 @@ fun FriendsSearchScreen(
         }
     }
 
-//    val scope = rememberCoroutineScope()
-//
-//
-//
-//    fun reloadData() {
-//        loadData(friendsService, currentUserID) { all, fr, pend, sent ->
-//            allUsers = all
-//            friends = fr
-//            pendingRequests = pend
-//            sentRequests = sent
-//        }
-//    }
-
     val scope = rememberCoroutineScope()
-
-//    LaunchedEffect(friendsService) {
-//        friendsService.onReturnUsers()
-//    }
 
     DisposableEffect(friendsService) {
         onDispose {
             friendsService.stopReturningUsers() // Stop listening to socket events
         }
     }
-
-//    LaunchedEffect(Unit) {
-//        reloadData()
-//    }
-//
-//    LaunchedEffect(Unit) {
-//        friendsService.listenToAllFriendEvents { update, event ->
-//            scope.launch {
-//                reloadData()
-//            }
-//        }
-//    }
 
     Column(
         modifier = Modifier
@@ -148,19 +114,3 @@ fun FriendsSearchScreen(
         }
     }
 }
-
-//fun loadData(
-//    friendsService: FriendsService,
-//    currentUserID: String,
-//    onDataLoaded: (allUsers: List<UserIdName>, friends: List<UserIdName>, pending: List<UserIdName>, sent: List<UserIdName>) -> Unit
-//) {
-//    friendsService.getAllUsers(currentUserID, { allUsers ->
-//        friendsService.getFriendsList(currentUserID, { friends ->
-//            friendsService.getPendingRequests(currentUserID, { pending ->
-//                friendsService.getSentRequests(currentUserID, { sent ->
-//                    onDataLoaded(allUsers, friends, pending, sent)
-//                }, { error -> println("Error loading sent: $error") })
-//            }, { error -> println("Error loading pending: $error") })
-//        }, { error -> println("Error loading friends: $error") })
-//    }, { error -> println("Error loading all users: $error") })
-//}
