@@ -225,53 +225,54 @@ fun QuestionArea(
             }
 
             }
-        }
-
         if(MatchRoomService.isMatchStarted)
-        {
-            PlayersListComponent(
-                matchRoomService = matchRoomService,
-                context = matchContextService,
-                players = matchRoomService.players,
-                modifier = Modifier
-                    .width(250.dp)
-                    .fillMaxHeight(),
-                extraContent = {
-                    Column {
+    {
+        PlayersListComponent(
+            matchRoomService = matchRoomService,
+            context = matchContextService,
+            players = matchRoomService.players,
+            modifier = Modifier
+                .width(250.dp)
+                .fillMaxHeight(),
+            extraContent = {
+                Column {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    println(context)
+                    if (context == MatchContext.HOSTVIEW && !matchRoomService.isCooldown  ) {
                         Spacer(modifier = Modifier.height(16.dp))
-                        println(context)
-                        if (context == MatchContext.HOSTVIEW && !matchRoomService.isCooldown  ) {
-                            Spacer(modifier = Modifier.height(16.dp))
-                            if(!answerService.isEndGame) {
-                                Button(onClick = { matchRoomService.goToNextQuestion() }) {
-                                    Text("QUESTION SUIVANTE")
-                                }
-                            }
-                            else{
-                                Button(
-                                    onClick = {
-                                        routeToResultsPage();
-                                        navigateToResultsPage()},
-                                    modifier = Modifier.fillMaxWidth(0.8f),
-                                    shape = RoundedCornerShape(8.dp)
-                                ) {
-                                    Text("Présenter les résultats finaux")
-                                }
+                        if(!answerService.isEndGame) {
+                            Button(onClick = { matchRoomService.goToNextQuestion() }) {
+                                Text("QUESTION SUIVANTE")
                             }
                         }
-
-                        Button(
-                            onClick = {
-                                matchRoomService.isQuitting = true
-                                matchRoomService.disconnectFromRoom()
-                                navigateToHome()
+                        else{
+                            Button(
+                                onClick = {
+                                    routeToResultsPage();
+                                    navigateToResultsPage()},
+                                modifier = Modifier.fillMaxWidth(0.8f),
+                                shape = RoundedCornerShape(8.dp)
+                            ) {
+                                Text("Présenter les résultats finaux")
                             }
-                        ) {
-                            Text("Quitter")
                         }
                     }
+
+                    Button(
+                        onClick = {
+                            matchRoomService.isQuitting = true
+                            matchRoomService.disconnectFromRoom()
+                            navigateToHome()
+                        }
+                    ) {
+                        Text("Quitter")
+                    }
                 }
-            )
+            }
+        )
+    }
         }
+
+
     }
 
