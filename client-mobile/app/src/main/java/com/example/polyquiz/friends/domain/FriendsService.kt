@@ -1,140 +1,119 @@
 package com.example.polyquiz.friends.domain
 
-import android.hardware.usb.UsbEndpoint
-import com.example.polyquiz.http.CommunicationService
 import com.example.polyquiz.auth.domain.UserIdName
 import com.example.vanillaprototype.socket.SocketHandler
 import com.example.polyquiz.constants.FriendsEvents
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import android.util.Log
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
-val BASE_URL = "friends"
-class FriendsService : CommunicationService(BASE_URL) {
-    override val apiService: ApiService = retrofit.create(FriendsApiService::class.java)
+class FriendsService {
 
+    private val _allUsers = MutableStateFlow(listOf<UserIdName>())
+    val allUsers: StateFlow<List<UserIdName>> get() = _allUsers
 
-    fun getAllUsers(
-        currentUserId: String,
-        onSuccess: (List<UserIdName>) -> Unit,
-        onError: (String) -> Unit,
-        endpoint: String = "all/$currentUserId"
-    ) {
-        getAll(
-            { response ->val userList: List<UserIdName> = convertJsonResponseToType(response,object : TypeToken<List<UserIdName>>() {}.type)
-                onSuccess(userList)
-            },
-            { error ->
-                onError(error)
-            },
-            endpoint
+    private val _friends = MutableStateFlow(listOf<UserIdName>())
+    val friends: StateFlow<List<UserIdName>> get() = _friends
+
+    private val _pendingRequests = MutableStateFlow(listOf<UserIdName>())
+    val pendingRequests: StateFlow<List<UserIdName>> get() = _pendingRequests
+
+    private val _sentRequests = MutableStateFlow(listOf<UserIdName>())
+    val sentRequests: StateFlow<List<UserIdName>> get() = _sentRequests
+
+    private val _searchResults = MutableStateFlow<List<UserIdName>>(emptyList())
+    val searchResults: StateFlow<List<UserIdName>> get() = _searchResults
+
+    private val mSocket = SocketHandler.getSocket()
+    private var userId: String = ""
+
+    fun initialize(userId: String) {
+        this.userId = userId
+    }
+
+    fun returnAllData() {
+        onReturnUsers();
+        mSocket.send(FriendsEvents.RETURN_ALL_DATA.value, userId);
+    }
+
+    fun onReturnUsers() {
+        mSocket.on(FriendsEvents.RETURN_ALL_USERS.value) { args: Array<Any> ->
+            if (args.isNotEmpty()) {
+                val type = object : TypeToken<List<UserIdName>>() {}.type
+                val data: List<UserIdName> = Gson().fromJson(args[0].toString(), type)
+                _allUsers.value = data
+                _searchResults.value = _allUsers.value
+            }
+        }
+        mSocket.on(FriendsEvents.RETURN_ALL_FRIENDS.value) { args: Array<Any> ->
+            if (args.isNotEmpty()) {
+                val type = object : TypeToken<List<UserIdName>>() {}.type
+                val data: List<UserIdName> = Gson().fromJson(args[0].toString(), type)
+                _friends.value = data
+            }
+        }
+        mSocket.on(FriendsEvents.RETURN_ALL_PENDING_REQUESTS.value) { args: Array<Any> ->
+            if (args.isNotEmpty()) {
+                val type = object : TypeToken<List<UserIdName>>() {}.type
+                val data: List<UserIdName> = Gson().fromJson(args[0].toString(), type)
+                _pendingRequests.value = data
+            }
+        }
+        mSocket.on(FriendsEvents.RETURN_ALL_SENT_REQUESTS.value) { args: Array<Any> ->
+            if (args.isNotEmpty()) {
+                val type = object : TypeToken<List<UserIdName>>() {}.type
+                val data: List<UserIdName> = Gson().fromJson(args[0].toString(), type)
+                _sentRequests.value = data
+            }
+        }
+    }
+
+    fun stopReturningUsers() {
+        mSocket.off(FriendsEvents.RETURN_ALL_USERS.value)
+        mSocket.off(FriendsEvents.RETURN_ALL_FRIENDS.value)
+        mSocket.off(FriendsEvents.RETURN_ALL_PENDING_REQUESTS.value)
+        mSocket.off(FriendsEvents.RETURN_ALL_SENT_REQUESTS.value)
+    }
+
+    fun sendFriendRequest(toUserId: String) {
+        val payload = mapOf(
+            "user" to userId,
+            "friend" to toUserId
         )
+        mSocket.send(FriendsEvents.REQUEST_SENT.value, payload)
     }
 
-
-    fun getFriendsList(currentUserId: String, onSuccess: (List<UserIdName>) -> Unit, onError: (String) -> Unit) {
-        getAll(
-            {response -> onSuccess(convertJsonResponseToType(response, object : TypeToken<List<UserIdName>>() {}.type))},
-            onError, "list/$currentUserId")
-
-    }
-
-    fun getPendingRequests(currentUserId: String, onSuccess: (List<UserIdName>) -> Unit, onError: (String) -> Unit) {
-        getAll(
-            {response -> onSuccess(convertJsonResponseToType(response, object : TypeToken<List<UserIdName>>() {}.type))},
-            onError, "requests/pending/$currentUserId")
-    }
-
-    fun getSentRequests(currentUserId: String, onSuccess: (List<UserIdName>) -> Unit, onError: (String) -> Unit) {
-        getAll(
-            {response -> onSuccess(convertJsonResponseToType(response, object : TypeToken<List<UserIdName>>() {}.type))},
-            onError, "requests/sent/$currentUserId")
-    }
-
-    fun sendFriendRequest(fromUserId: String, toUserId: String, onResult: (Boolean, String?) -> Unit) {
-        add(
-            {},
-            { _ -> onResult(true, null) },
-            onError = { err ->
-                if (err?.contains("EOFException") == true) {
-                    onResult(true, null)
-                } else {
-                    onResult(false, err)
-                }
-            },
-            endpoint = "send/$fromUserId/$toUserId"
+    fun acceptFriendRequest(friendId: String) {
+        val payload = mapOf(
+            "user" to userId,
+            "friend" to friendId
         )
+        mSocket.send(FriendsEvents.REQUEST_ACCEPTED.value, payload)
     }
 
-    fun acceptFriendRequest(userId: String, friendId: String, onResult: (Boolean, String?) -> Unit) {
-        add({}, { _ -> onResult(true, null) }, onError = { err -> onResult(false, err) }, endpoint = "accept/$userId/$friendId")
+    fun rejectFriendRequest(friendId: String) {
+        val payload = mapOf(
+            "user" to userId,
+            "friend" to friendId
+        )
+        mSocket.send(FriendsEvents.REQUEST_REJECTED.value, payload)
     }
 
-    fun rejectFriendRequest(userId: String, friendId: String, onResult: (Boolean, String?) -> Unit) {
-        add({}, { _ -> onResult(true, null) }, onError = { err -> onResult(false, err) }, endpoint = "reject/$userId/$friendId")
+    fun cancelRequest(friendId: String) {
+        val payload = mapOf(
+            "user" to userId,
+            "friend" to friendId
+        )
+        mSocket.send(FriendsEvents.REQUEST_CANCELED.value, payload)
     }
 
-    fun cancelRequest(userId: String, friendId: String, onResult: (Boolean, String?) -> Unit) {
-        delete("$userId/$friendId", onSuccess = { onResult(true, null) }, onError = { err -> onResult(false, err) }, endpoint = "cancel")
+    fun removeFriend(friendId: String) {
+        val payload = mapOf(
+            "user" to userId,
+            "friend" to friendId
+        )
+        mSocket.send(FriendsEvents.FRIEND_REMOVED.value, payload)
     }
 
-    fun removeFriend(userId: String, friendId: String, onResult: (Boolean, String?) -> Unit) {
-        delete("$userId/$friendId", onSuccess = { onResult(true, null) }, onError = { err -> onResult(false, err) }, endpoint = "remove")
-    }
-
-    fun onRequestSent(callback: (FriendsInfo) -> Unit) {
-        SocketHandler.getSocket().on(FriendsEvents.REQUEST_SENT.value) { args ->
-            if (args.isNotEmpty()) {
-                val update = Gson().fromJson(args[0].toString(), FriendsInfo::class.java)
-                callback(update)
-            }
-        }
-    }
-
-    fun onRequestAccepted(callback: (FriendsInfo) -> Unit) {
-        SocketHandler.getSocket().on(FriendsEvents.REQUEST_ACCEPTED.value) { args ->
-            if (args.isNotEmpty()) {
-                val update = Gson().fromJson(args[0].toString(), FriendsInfo::class.java)
-                callback(update)
-            }
-        }
-    }
-
-    fun onRequestRejected(callback: (FriendsInfo) -> Unit) {
-        SocketHandler.getSocket().on(FriendsEvents.REQUEST_REJECTED.value) { args ->
-            if (args.isNotEmpty()) {
-                val update = Gson().fromJson(args[0].toString(), FriendsInfo::class.java)
-                callback(update)
-            }
-        }
-    }
-
-    fun onRequestCanceled(callback: (FriendsInfo) -> Unit) {
-        SocketHandler.getSocket().on(FriendsEvents.REQUEST_CANCELLED.value) { args ->
-            if (args.isNotEmpty()) {
-                val update = Gson().fromJson(args[0].toString(), FriendsInfo::class.java)
-                callback(update)
-            }
-        }
-    }
-
-    fun onFriendRemoved(callback: (FriendsInfo) -> Unit) {
-        SocketHandler.getSocket().on(FriendsEvents.FRIEND_REMOVED.value) { args ->
-            if (args.isNotEmpty()) {
-                val update = Gson().fromJson(args[0].toString(), FriendsInfo::class.java)
-                callback(update)
-            }
-        }
-    }
-
-    fun listenToAllFriendEvents(callback: (FriendsInfo, String) -> Unit) {
-        onRequestSent { callback(it, FriendsEvents.REQUEST_SENT.value) }
-        onRequestAccepted { callback(it, FriendsEvents.REQUEST_ACCEPTED.value) }
-        onRequestRejected { callback(it, FriendsEvents.REQUEST_CANCELLED.value) }
-        onRequestCanceled { callback(it, FriendsEvents.REQUEST_CANCELLED.value) }
-        onFriendRemoved { callback(it, FriendsEvents.FRIEND_REMOVED.value) }
-    }
-
-    interface FriendsApiService : ApiService {
-    }
 }
