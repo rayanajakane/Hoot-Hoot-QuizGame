@@ -172,7 +172,7 @@ fun QuestionArea(
 
             }
 
-            if (!matchRoomService.isCooldown && context === MatchContext.PLAYERVIEW) {
+            if (!matchRoomService.isCooldown ) {
                 when (question?.type) {
                     QuestionType.MULTIPLE_CHOICE.value -> {
                         MultipleChoiceArea(
@@ -213,7 +213,7 @@ fun QuestionArea(
                         onClick = {
                             answerService.submitAnswer(
                                 UserInfo(
-                                    username = matchRoomService.userId,
+                                    userId = matchRoomService.userId,
                                     roomCode = matchRoomService.getRoomCode()
                                 )
                             )
