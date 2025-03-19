@@ -1,12 +1,14 @@
 package com.example.polyquiz.friends.domain
 
 import com.example.polyquiz.auth.domain.UserIdName
+import com.example.polyquiz.constants.ChoiceInfo
 import com.example.vanillaprototype.socket.SocketHandler
 import com.example.polyquiz.constants.FriendsEvents
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.json.JSONObject
 
 class FriendsService {
 
@@ -78,43 +80,28 @@ class FriendsService {
     }
 
     fun sendFriendRequest(toUserId: String) {
-        val payload = mapOf(
-            "user" to userId,
-            "friend" to toUserId
-        )
-        mSocket.emit(FriendsEvents.REQUEST_SENT.value, payload)
+        val friendInfos = JSONObject(Gson().toJson(FriendsInfo(userId, toUserId)))
+        mSocket.emit(FriendsEvents.REQUEST_SENT.value, friendInfos)
     }
 
     fun acceptFriendRequest(friendId: String) {
-        val payload = mapOf(
-            "user" to userId,
-            "friend" to friendId
-        )
-        mSocket.emit(FriendsEvents.REQUEST_ACCEPTED.value, payload)
+        val friendInfos = JSONObject(Gson().toJson(FriendsInfo(userId, friendId)))
+        mSocket.emit(FriendsEvents.REQUEST_ACCEPTED.value, friendInfos)
     }
 
     fun rejectFriendRequest(friendId: String) {
-        val payload = mapOf(
-            "user" to userId,
-            "friend" to friendId
-        )
-        mSocket.emit(FriendsEvents.REQUEST_REJECTED.value, payload)
+        val friendInfos = JSONObject(Gson().toJson(FriendsInfo(userId, friendId)))
+        mSocket.emit(FriendsEvents.REQUEST_REJECTED.value, friendInfos)
     }
 
     fun cancelRequest(friendId: String) {
-        val payload = mapOf(
-            "user" to userId,
-            "friend" to friendId
-        )
-        mSocket.emit(FriendsEvents.REQUEST_CANCELED.value, payload)
+        val friendInfos = JSONObject(Gson().toJson(FriendsInfo(userId, friendId)))
+        mSocket.emit(FriendsEvents.REQUEST_CANCELED.value, friendInfos)
     }
 
     fun removeFriend(friendId: String) {
-        val payload = mapOf(
-            "user" to userId,
-            "friend" to friendId
-        )
-        mSocket.emit(FriendsEvents.FRIEND_REMOVED.value, payload)
+        val friendInfos = JSONObject(Gson().toJson(FriendsInfo(userId, friendId)))
+        mSocket.emit(FriendsEvents.FRIEND_REMOVED.value, friendInfos)
     }
 
 }
