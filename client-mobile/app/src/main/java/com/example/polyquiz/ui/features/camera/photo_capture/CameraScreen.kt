@@ -200,7 +200,7 @@ private fun capturePhoto(
         override fun onCaptureSuccess(image: ImageProxy) {
             val correctedBitmap: Bitmap = image
                 .toBitmap()
-                .rotateBitmap(image.imageInfo.rotationDegrees)
+//                .rotateBitmap(image.imageInfo.rotationDegrees)
 
             onPhotoCaptured(correctedBitmap)
             image.close()

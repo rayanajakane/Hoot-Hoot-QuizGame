@@ -22,7 +22,7 @@ abstract class CommunicationService(
 
     protected val retrofit: Retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl(Environment.SERVER_LOCAL_ADDRESS.value + "/api/")
+            .baseUrl(Environment.SERVER_ADDRESS_WITHOUT_API.value + "/api/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
