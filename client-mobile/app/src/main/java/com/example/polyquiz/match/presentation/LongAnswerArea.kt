@@ -34,6 +34,7 @@ fun LongAnswerArea(
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
+        println("gardes${answerService.gradeAnswers}")
         if (matchContext != MatchContext.HOSTVIEW) {
                 if (!answerService.isSelectionEnabled && !answerService.showFeedback) {
                     Text(
@@ -68,7 +69,7 @@ fun LongAnswerArea(
                         .align(Alignment.End)
                         .padding(top = 4.dp)
                 )
-        } else if (answerService.gradeAnswers) {
+        } else {
             Text(
                 text = GradingFeedback.GRADE_PLAYERS.value,
                 fontSize = 18.sp,
@@ -104,6 +105,7 @@ fun LongAnswerArea(
 
 @Composable
 fun AnswerCard(playerAnswer: LongAnswerInfo) {
+    val answerService = AnswerService
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -116,7 +118,8 @@ fun AnswerCard(playerAnswer: LongAnswerInfo) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 AnswerCorrectness.entries.forEach { option ->
                     Button(
-                        onClick = { playerAnswer.score = option.value.toString() },
+                        onClick = { playerAnswer.score = option.value.toString()
+                                answerService.handleGrading()},
                         colors = ButtonDefaults.buttonColors(
                             containerColor = getGradeColor(option)
                         )

@@ -31,8 +31,14 @@ object Route {
     object WaitPage
 
     @Serializable
+    object ResultsPage
+
+    @Serializable
     object UserEditPage
 
     @Serializable
     object MainCameraScreen
+
+    @Serializable
+    object JoinMatchPage
 }
