@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.polyquiz.constants.MatchContext
+import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.Player
 import com.example.polyquiz.ui.theme.AndroidGreen
@@ -22,27 +23,28 @@ import com.example.polyquiz.ui.theme.GoldenYellow
 @Composable
 fun PlayersListComponent(
     matchRoomService: MatchRoomService,
-    context: MatchContext,
+    matchContextService: MatchContextService,
     players: List<Player>,
     modifier: Modifier = Modifier,
-    extraContent: @Composable () -> Unit = {}
+    extraContent: @Composable () -> Unit = {},
 ) {
-    val username = matchRoomService.getUsername()
+    val username = matchRoomService.retrieveUsername()
+    val context = matchContextService.getContext()
     var sortBy by remember { mutableStateOf("score") }
     var sortOrder by remember { mutableStateOf("descending") }
 
-    val sortedPlayers = remember(players, sortBy, sortOrder) {
-        players.sortedWith(
-            when (sortBy) {
-                "name" -> compareBy { it.username }
-                "score" -> compareBy { it.score as Comparable<*> }
-                "state" -> compareBy { it.state }
-                else -> compareBy<Player> { it.score as Comparable<*> }
-            }.let { comparator ->
-                if (sortOrder == "descending") comparator.reversed() else comparator
-            }
-        )
-    }
+//    val sortedPlayers = remember(players, sortBy, sortOrder) {
+//        players.sortedWith(
+//            when (sortBy) {
+//                "name" -> compareBy { it.username }
+//                "score" -> compareBy {it.score.toInt() }
+//                "state" -> compareBy { it.state }
+//                else -> compareBy<Player> { it.score as Comparable<*> }
+//            }.let { comparator ->
+//                if (sortOrder == "descending") comparator.reversed() else comparator
+//            }
+//        )
+//    }
 
     Column(
         modifier = modifier
@@ -58,7 +60,7 @@ fun PlayersListComponent(
         }
 
         LazyColumn(modifier = Modifier.weight(1f)) {
-            items(sortedPlayers) { player ->
+            items(players) { player ->
                 PlayerCard(player, context)
             }
         }
