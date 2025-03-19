@@ -19,5 +19,7 @@ enum class MatchEvents(val value: String) {
     ROUTE_TO_RESULTS_PAGE("routeToResultsPage"),
     HOST_QUIT_MATCH("hostQuitMatch"),
     DISCONNECT("disconnectFromRoom"),
-    ERROR("error")
+    ERROR("error"),
+    GET_ALL_MATCHES("getAllMatches"),
+    RETURN_ALL_MATCHES ("returnAllMatches")
 }

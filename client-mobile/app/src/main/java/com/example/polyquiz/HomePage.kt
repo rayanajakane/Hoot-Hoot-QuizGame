@@ -44,7 +44,8 @@ fun HomePage(
     navigateToCreate: () -> Unit,
     navigateToUserEdit: () -> Unit,
     navigateToWaitPage: () -> Unit,
-    authViewModel: AuthViewModel
+    navigateToJoinRoom: () -> Unit,
+    authViewModel: AuthViewModel,
 ) {
     val authState = authViewModel.authState.observeAsState()
     val scope = rememberCoroutineScope()
@@ -52,6 +53,7 @@ fun HomePage(
     val keyboardController = LocalSoftwareKeyboardController.current
     var showDialog by remember { mutableStateOf(false) }
     val shouldNavigate = rememberUpdatedState(MatchRoomService.timeToGoToWaitPage)
+    val shouldNavigateToResults = rememberUpdatedState(MatchRoomService.isTimeToNavigateToResults)
 
     LaunchedEffect(authState.value, MatchRoomService.timeToGoToWaitPage) {
         when (authState.value) {
@@ -80,6 +82,7 @@ fun HomePage(
         }
         when (shouldNavigate.value) {
             true -> {
+                println("we are navigating again")
                 MatchRoomService.timeToGoToWaitPage = false
                 navigateToWaitPage()
             }
@@ -114,7 +117,7 @@ fun HomePage(
 //            ) {
 //                Text(text = "Joindre une partie")
 //            }
-            Button(onClick = { showDialog = true }) {
+            Button(onClick = { navigateToJoinRoom() }) {
                 Text("Joindre une partie")
             }
 
@@ -131,7 +134,6 @@ fun HomePage(
             )
             Button(
                 onClick = {
-                    println("Create")
                     navigateToCreate()
                 },
                 colors = ButtonDefaults.buttonColors(

@@ -118,11 +118,14 @@ object AnswerService {
     fun sendGrades() {
         gradeAnswers = false
         val gradesInfo = GradesInfo(matchRoomCode = MatchRoomService.getRoomCode(), grades = playersAnswers)
-        mSocket.emit(AnswerEvents.GRADES.value, Gson().toJson(playersAnswers))
+        val gradesInfoStringified = Gson().toJson(gradesInfo)
+        val gradesInfoJsonObject = JSONObject(gradesInfoStringified)
+        mSocket.emit(AnswerEvents.GRADES.value, gradesInfoJsonObject)
     }
 
     fun handleGrading() {
         isGradingComplete = playersAnswers.all { it.score != null }
+       // println("isGradingComplete$isGradingComplete")
     }
     fun selectChoice(choice: String, userInfo: UserInfo) {
         val choiceInfo = ChoiceInfo(choice, userInfo)
@@ -147,7 +150,7 @@ object AnswerService {
 
     fun updateLongAnswer() {
         if (!isSelectionEnabled) return
-        val userInfo = UserInfo(username = MatchRoomService.getUsername(), roomCode = MatchRoomService.getRoomCode())
+        val userInfo = UserInfo(username = MatchRoomService.retrieveUsername(), roomCode = MatchRoomService.getRoomCode())
         val choiceInfo = ChoiceInfo(currentLongAnswer, userInfo)
         val choiceInfoStringified = Gson().toJson(choiceInfo)
         val choiceInfoJsonObject = JSONObject(choiceInfoStringified)

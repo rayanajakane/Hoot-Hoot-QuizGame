@@ -1,6 +1,5 @@
 package com.example.polyquiz.match.presentation
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,12 +35,6 @@ import com.example.polyquiz.constants.MatchStatus
 import com.example.polyquiz.constants.UserInfo
 import androidx.compose.foundation.layout.*
 import com.example.polyquiz.constants.AnswerCorrectness
-import com.example.polyquiz.constants.AnswerFeedback
-import com.example.polyquiz.constants.BonusFeedback
-import com.example.polyquiz.constants.MatchButtonActions
-import com.example.polyquiz.ui.theme.AndroidGreen
-import com.example.polyquiz.ui.theme.BrightRed
-import com.example.polyquiz.ui.theme.GoldenYellow
 
 @Composable
 fun QuestionArea(
@@ -51,11 +44,12 @@ fun QuestionArea(
     answerService: AnswerService,
     authViewModel: AuthViewModel,
     navigateToHome: () -> Unit,
+    navigateToResultsPage: () -> Unit,
     modifier: Modifier
 ) {
 
-    val username by remember { mutableStateOf(authViewModel.getUsername()) }
-    var context = MatchContext.PLAYERVIEW
+    var room by remember { mutableStateOf(matchRoomService.getRoomCode()) }
+    var context by remember { mutableStateOf(matchContextService.getContext()) }
     val question by matchRoomService::currentQuestion
     val score by answerService::playerScore
 
@@ -65,7 +59,7 @@ fun QuestionArea(
         answerService.listenToAnswerEvents()
         matchRoomService.isQuitting = false
         answerService.playerScore = 0
-//        context = matchContextService.getContext()
+        context = matchContextService.getContext()
 
         when (MatchRoomService.hasBeenKickedOut) {
             true -> {
@@ -75,7 +69,11 @@ fun QuestionArea(
             else -> Unit
         }
     }
+    context = matchContextService.getContext()
 
+    fun routeToResultsPage(){
+        matchRoomService.routeToResultsPage()
+    }
 
     Row(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -103,7 +101,8 @@ fun QuestionArea(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     val questionText =
-                        if (matchRoomService.isCooldown) MatchStatus.PREPARE.value else question?.text ?: ""
+                        if (matchRoomService.isCooldown) MatchStatus.PREPARE.value else question?.text
+                            ?: ""
 
                     Text(
                         text = questionText,
@@ -123,7 +122,7 @@ fun QuestionArea(
             }
 
             Spacer(modifier = Modifier.height(12.dp))
-            if (context != MatchContext.HOSTVIEW){
+            if (context != MatchContext.HOSTVIEW) {
                 Text(
                     text = "SCORE : $score",
                     style = MaterialTheme.typography.titleMedium
@@ -131,9 +130,22 @@ fun QuestionArea(
 
                 if (answerService.showFeedback && context === MatchContext.PLAYERVIEW && !matchRoomService.isCooldown) {
                     val (feedbackText, feedbackColor) = when (answerService.answerCorrectness) {
-                        AnswerCorrectness.WRONG -> AnswerFeedback.WRONG.value to BrightRed
-                        AnswerCorrectness.OK -> AnswerFeedback.OK.withPoints((question?.points ?: 0) / 2) to GoldenYellow
-                        AnswerCorrectness.GOOD -> AnswerFeedback.GOOD.withPoints(question?.points ?: 0) to AndroidGreen
+                        AnswerCorrectness.WRONG -> "\uD83D\uDE14 Mauvaise Réponse \uD83D\uDE14" to Color(
+                            0xFFe91b0c
+                        )
+
+                        AnswerCorrectness.OK -> {
+                            "\uD83C\uDD97 Réponse partielle! Vous avez obtenu ${(question?.points ?: 0) / 2} points \uD83C\uDD97" to Color(
+                                0xFFf6c811
+                            )
+                        }
+
+                        AnswerCorrectness.GOOD -> {
+                            "\uD83C\uDD97 Réponse correcte! Vous avez obtenu ${question?.points} points \uD83C\uDD97" to Color(
+                                0xFF4caf50
+                            )
+                        }
+
                         else -> null to null
                     }
 
@@ -146,12 +158,12 @@ fun QuestionArea(
                     }
 
 
-                    if (answerService.bonusPoints > 0){
+                    if (answerService.bonusPoints > 0) {
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = BonusFeedback.BONUS.value,
+                            text = "✨ Vous avez obtenu un bonus de ${answerService.bonusPoints} points!✨",
                             style = MaterialTheme.typography.titleMedium,
-                            color = AndroidGreen
+                            color = Color.Green
                         )
                     }
                 }
@@ -173,16 +185,23 @@ fun QuestionArea(
                     }
 
                     QuestionType.LONG_ANSWER.value -> {
-                        LongAnswerArea(answerService, context, modifier = Modifier.fillMaxWidth(0.8f))
+                        LongAnswerArea(
+                            answerService,
+                            context,
+                            modifier = Modifier.fillMaxWidth(0.8f)
+                        )
                     }
+                    QuestionType.ESTIMATED_ANSWER.value -> {
+                        EstimatedAnswerArea(
+                            answerService,
+                            matchRoomService,
+                            context,
+                            modifier = Modifier.fillMaxWidth(0.8f)
+                        )
 
-                    QuestionType.ESTIMATED_ANSWER.value ->{
-                        EstimatedAnswerArea(answerService, matchRoomService, context, modifier = Modifier.fillMaxWidth(0.8f))
                     }
                 }
             }
-
-
 
             Box(
                 modifier = Modifier
@@ -194,51 +213,65 @@ fun QuestionArea(
                         onClick = {
                             answerService.submitAnswer(
                                 UserInfo(
-                                    username = matchRoomService.getUsername(),
+                                    username = matchRoomService.retrieveUsername(),
                                     roomCode = matchRoomService.getRoomCode()
                                 )
                             )
                         }
                     ) {
-                        Text(MatchButtonActions.SUBMIT_ANSWER.value)
+                        Text("Soumettre")
                     }
                 }
             }
 
+            }
         }
+
+        if(MatchRoomService.isMatchStarted)
+        {
             PlayersListComponent(
                 matchRoomService = matchRoomService,
-                context = context,
+                context = matchContextService,
                 players = matchRoomService.players,
-                modifier = Modifier.width(250.dp).fillMaxHeight(),
+                modifier = Modifier
+                    .width(250.dp)
+                    .fillMaxHeight(),
                 extraContent = {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    if (context == MatchContext.HOSTVIEW &&
-                        question?.type != null &&
-                        (
-                            (!answerService.isSelectionEnabled && question?.type == QuestionType.MULTIPLE_CHOICE.value) ||
-                                (answerService.isGradingComplete && question?.type == QuestionType.LONG_ANSWER.value)
-                            )
-                    ) {
+                    Column {
                         Spacer(modifier = Modifier.height(16.dp))
-                        Button(onClick = { matchRoomService.goToNextQuestion() }) {
-                            Text(MatchButtonActions.NEXT_QUESTION.value)
+                        println(context)
+                        if (context == MatchContext.HOSTVIEW && !matchRoomService.isCooldown  ) {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            if(!answerService.isEndGame) {
+                                Button(onClick = { matchRoomService.goToNextQuestion() }) {
+                                    Text("QUESTION SUIVANTE")
+                                }
+                            }
+                            else{
+                                Button(
+                                    onClick = {
+                                        routeToResultsPage();
+                                        navigateToResultsPage()},
+                                    modifier = Modifier.fillMaxWidth(0.8f),
+                                    shape = RoundedCornerShape(8.dp)
+                                ) {
+                                    Text("Présenter les résultats finaux")
+                                }
+                            }
                         }
-                    }
 
-                    Button(
-                        onClick = {
-                            matchRoomService.isQuitting = true
-                            matchRoomService.disconnectFromRoom()
-                            navigateToHome()
+                        Button(
+                            onClick = {
+                                matchRoomService.isQuitting = true
+                                matchRoomService.disconnectFromRoom()
+                                navigateToHome()
+                            }
+                        ) {
+                            Text("Quitter")
                         }
-                    ) {
-                        Text(MatchButtonActions.LEAVE_MATCH.value)
                     }
                 }
             )
         }
-
-
     }
 
