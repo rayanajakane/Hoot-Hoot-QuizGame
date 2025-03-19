@@ -20,6 +20,7 @@ import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.MatchRoomService.players
 import com.example.polyquiz.match.presentation.QuestionArea
 import com.example.polyquiz.match.presentation.ResultsPage
+import com.example.polyquiz.pages.presentation.JoinMatchPage
 import com.example.polyquiz.pages.presentation.MatchCreationPage
 import com.example.polyquiz.pages.presentation.WaitPage
 import com.example.polyquiz.friends.presentation.FriendsSearchScreen
@@ -98,6 +99,7 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                 navigateToCreate = {
                     navController.navigate(Route.MatchCreation)
                 },
+                navigateToJoinRoom = {navController.navigate(Route.JoinMatchPage)},
                 authViewModel = authViewModel,
                 navigateToHome = {
                     navController.navigate(Route.Home)
@@ -132,6 +134,16 @@ fun Navigation(modifier: Modifier, authViewModel: AuthViewModel) {
                players,
                modifier,
                extraContent ={}
+            )
+        }
+
+        composable<Route.JoinMatchPage> {
+            JoinMatchPage(
+                modifier,
+                authViewModel,
+                navigateToHome = {navController.navigate(Route.Home)},
+                navigateToMatchPage = {navController.navigate(Route.MatchRoom)},
+                navigateToWaitPage = {navController.navigate(Route.WaitPage)}
             )
         }
 

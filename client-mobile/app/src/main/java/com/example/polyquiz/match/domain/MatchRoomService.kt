@@ -37,9 +37,9 @@ object MatchRoomService {
     var isHostPlaying by mutableStateOf(true)
     var isCooldown by mutableStateOf(false)
     var isQuitting by mutableStateOf(false)
+    var username by mutableStateOf("")
 
     private var matchRoomCode: String = ""
-    private var username: String = ""
     private var hasEnteredRoom = false
 
     private val socket = SocketHandler.getSocket()
@@ -50,7 +50,7 @@ object MatchRoomService {
         get() = socket.id() ?: ""
 
     fun getRoomCode(): String = matchRoomCode
-    fun getUsername(): String = username
+    fun retrieveUsername(): String = username
 
     fun connect() {
         if (!hasEnteredRoom) {
@@ -84,6 +84,7 @@ object MatchRoomService {
         socket.off(MatchEvents.ROUTE_TO_RESULTS_PAGE.value)
         socket.emit(MatchEvents.DISCONNECT.value)
         MatchContextService.resetContext()
+        timeToGoToWaitPage = false
         hasBeenKickedOut = true
     }
 

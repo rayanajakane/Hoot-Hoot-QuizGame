@@ -44,8 +44,9 @@ fun HomePage(
     navigateToCreate: () -> Unit,
     navigateToUserEdit: () -> Unit,
     navigateToWaitPage: () -> Unit,
+    navigateToJoinRoom: () -> Unit,
     navigateToFriendsPage : () -> Unit,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
 ) {
     val authState = authViewModel.authState.observeAsState()
     val scope = rememberCoroutineScope()
@@ -81,6 +82,7 @@ fun HomePage(
         }
         when (shouldNavigate.value) {
             true -> {
+                println("we are navigating again")
                 MatchRoomService.timeToGoToWaitPage = false
                 navigateToWaitPage()
             }
@@ -115,7 +117,7 @@ fun HomePage(
 //            ) {
 //                Text(text = "Joindre une partie")
 //            }
-            Button(onClick = { showDialog = true }) {
+            Button(onClick = { navigateToJoinRoom() }) {
                 Text("Joindre une partie")
             }
 
@@ -132,7 +134,6 @@ fun HomePage(
             )
             Button(
                 onClick = {
-                    println("Create")
                     navigateToCreate()
                 },
                 colors = ButtonDefaults.buttonColors(

@@ -66,14 +66,14 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
     }
 
     fun isHost(): Boolean {
-        return MatchRoomService.getUsername() === "Organisateur"
+        return MatchRoomService.retrieveUsername() == "Organisateur"
     }
 
     fun getCurrentGame(): Game {
         return matchService.currentGame!!;
     }
 
-    LaunchedEffect(MatchRoomService.isTimeToNavigate) {
+    LaunchedEffect(MatchRoomService.isTimeToNavigate, MatchRoomService.username) {
         if (MatchRoomService.isTimeToNavigate) {
             MatchRoomService.isTimeToNavigate = false
             navigateToMatchRoom()
@@ -91,6 +91,7 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
     LaunchedEffect(MatchRoomService.hasBeenKickedOut) {
         if (MatchRoomService.hasBeenKickedOut) {
             MatchRoomService.hasBeenKickedOut = false
+
             navigateToHome()
         }
     }

@@ -37,5 +37,8 @@ object Route {
     object UserEditPage
 
     @Serializable
+    object JoinMatchPage
+
+    @Serializable
     object FriendsSearchScreen
 }

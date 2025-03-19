@@ -28,7 +28,7 @@ fun PlayersListComponent(
     modifier: Modifier = Modifier,
     extraContent: @Composable () -> Unit = {},
 ) {
-    val username = matchRoomService.getUsername()
+    val username = matchRoomService.retrieveUsername()
     val context = matchContextService.getContext()
     var sortBy by remember { mutableStateOf("score") }
     var sortOrder by remember { mutableStateOf("descending") }
