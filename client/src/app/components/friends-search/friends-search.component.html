@@ -1,82 +1,84 @@
-<div class="nav">
-    <h1 class="page-title">Amis</h1>
-    <div class="navigation-buttons">
-        <button mat-raised-button routerLink="/home"><mat-icon>home</mat-icon>Page principale</button>
+<div *transloco="let t; read: 'friends-search'">
+    <div class="nav">
+        <h1 class="page-title">{{ 'main-page.friends' | transloco }}</h1>
+        <div class="navigation-buttons">
+            <button mat-raised-button routerLink="/home"><mat-icon>home</mat-icon>{{ 'nav.main-page' | transloco }}</button>
+        </div>
     </div>
-</div>
-<div class="friends-search-container">
-    <h2>🔍 Rechercher des amis</h2>
+    <div class="friends-search-container">
+        <h2>🔍 {{ t('search-friend') }}</h2>
 
-    <mat-form-field appearance="outline" class="search-field">
-        <mat-label>Recherche</mat-label>
-        <input matInput [formControl]="searchControl" placeholder="Nom d'utilisateur" />
-    </mat-form-field>
+        <mat-form-field appearance="outline" class="search-field">
+            <mat-label>{{ t('search-input') }}</mat-label>
+            <input matInput [formControl]="searchControl" [placeholder]="t('search-input-placeholder')" />
+        </mat-form-field>
 
-    <div class="friends-section" *ngIf="friendsService.pendingRequests && friendsService.pendingRequests.length > 0">
-        <h3>Demandes d'amis reçues</h3>
-        <ul>
-            <app-friends-list-item
-                *ngFor="let user of friendsService.pendingRequests"
-                [user]="user"
-                [isFriend]="false"
-                [isRequestPending]="true"
-                [isRequestSent]="false"
-                [isEligible]="false"
-                (acceptRequest)="friendsService.acceptFriendRequest($event)"
-                (rejectRequest)="friendsService.rejectFriendRequest($event)"
-            ></app-friends-list-item>
-        </ul>
-    </div>
+        <div class="friends-section" *ngIf="friendsService.pendingRequests && friendsService.pendingRequests.length > 0">
+            <h3>{{ t('friend-requests-received') }}</h3>
+            <ul>
+                <app-friends-list-item
+                    *ngFor="let user of friendsService.pendingRequests"
+                    [user]="user"
+                    [isFriend]="false"
+                    [isRequestPending]="true"
+                    [isRequestSent]="false"
+                    [isEligible]="false"
+                    (acceptRequest)="friendsService.acceptFriendRequest($event)"
+                    (rejectRequest)="friendsService.rejectFriendRequest($event)"
+                ></app-friends-list-item>
+            </ul>
+        </div>
 
-    <div class="friends-section" *ngIf="friendsService.sentRequests && friendsService.sentRequests.length > 0">
-        <h3>Demandes d'amis envoyées</h3>
-        <ul>
-            <app-friends-list-item
-                *ngFor="let user of friendsService.sentRequests"
-                [user]="user"
-                [isFriend]="false"
-                [isRequestPending]="false"
-                [isRequestSent]="true"
-                [isEligible]="false"
-                (cancelRequest)="friendsService.cancelRequest($event)"
-            ></app-friends-list-item>
-        </ul>
-    </div>
+        <div class="friends-section" *ngIf="friendsService.sentRequests && friendsService.sentRequests.length > 0">
+            <h3>{{ t('friend-requests-sent') }}</h3>
+            <ul>
+                <app-friends-list-item
+                    *ngFor="let user of friendsService.sentRequests"
+                    [user]="user"
+                    [isFriend]="false"
+                    [isRequestPending]="false"
+                    [isRequestSent]="true"
+                    [isEligible]="false"
+                    (cancelRequest)="friendsService.cancelRequest($event)"
+                ></app-friends-list-item>
+            </ul>
+        </div>
 
-    <div class="friends-section" *ngIf="friendsService.friends && friendsService.friends.length > 0">
-        <h3>Mes Amis</h3>
-        <ul>
-            <app-friends-list-item
-                *ngFor="let user of friendsService.friends"
-                [user]="user"
-                [isFriend]="true"
-                [isRequestPending]="false"
-                [isRequestSent]="false"
-                [isEligible]="false"
-                (removeFriend)="friendsService.removeFriend($event)"
-            ></app-friends-list-item>
-        </ul>
-    </div>
+        <div class="friends-section" *ngIf="friendsService.friends && friendsService.friends.length > 0">
+            <h3>{{ t('friends-list') }}</h3>
+            <ul>
+                <app-friends-list-item
+                    *ngFor="let user of friendsService.friends"
+                    [user]="user"
+                    [isFriend]="true"
+                    [isRequestPending]="false"
+                    [isRequestSent]="false"
+                    [isEligible]="false"
+                    (removeFriend)="friendsService.removeFriend($event)"
+                ></app-friends-list-item>
+            </ul>
+        </div>
 
-    <div class="friends-section" *ngIf="friendsService.searchResults && friendsService.searchResults.length > 0">
-        <h3>Utilisateurs trouvés</h3>
-        <ul>
-            <app-friends-list-item
-                *ngFor="let user of friendsService.searchResults"
-                [user]="user"
-                [isFriend]="friendsService.isFriend(user)"
-                [isRequestPending]="friendsService.isRequestPending(user)"
-                [isRequestSent]="friendsService.isRequestSent(user)"
-                [isEligible]="friendsService.isEligible(user)"
-                (sendRequest)="friendsService.sendFriendRequest($event)"
-                (cancelRequest)="friendsService.cancelRequest($event)"
-                (acceptRequest)="friendsService.acceptFriendRequest($event)"
-                (rejectRequest)="friendsService.rejectFriendRequest($event)"
-                (removeFriend)="friendsService.removeFriend($event)"
-            ></app-friends-list-item>
-        </ul>
-    </div>
-    <div class="friends-section" *ngIf="friendsService.searchResults && friendsService.searchResults.length === 0">
-        <h3>Aucun joueur trouvé avec '{{ searchControl.value }}'</h3>
+        <div class="friends-section" *ngIf="friendsService.searchResults && friendsService.searchResults.length > 0">
+            <h3>{{ t('search-results') }}</h3>
+            <ul>
+                <app-friends-list-item
+                    *ngFor="let user of friendsService.searchResults"
+                    [user]="user"
+                    [isFriend]="friendsService.isFriend(user)"
+                    [isRequestPending]="friendsService.isRequestPending(user)"
+                    [isRequestSent]="friendsService.isRequestSent(user)"
+                    [isEligible]="friendsService.isEligible(user)"
+                    (sendRequest)="friendsService.sendFriendRequest($event)"
+                    (cancelRequest)="friendsService.cancelRequest($event)"
+                    (acceptRequest)="friendsService.acceptFriendRequest($event)"
+                    (rejectRequest)="friendsService.rejectFriendRequest($event)"
+                    (removeFriend)="friendsService.removeFriend($event)"
+                ></app-friends-list-item>
+            </ul>
+        </div>
+        <div class="friends-section" *ngIf="friendsService.searchResults && friendsService.searchResults.length === 0">
+            <h3>{{ t('search-no-result') }} '{{ searchControl.value }}'</h3>
+        </div>
     </div>
 </div>

@@ -63,7 +63,8 @@
         "admin-game": "Administrer les jeux",
         "edit-profile": "Modifier le profil",
         "team-name": "Équipe 201",
-        "access-code": "Code d'accès"
+        "access-code": "Code d'accès",
+        "friends": "Amis"
     },
     "match-creation-page": {
         "games-list-label": "Liste des jeux",
@@ -93,5 +94,21 @@
         "playing-matches": "Parties en cours",
         "no-match": "Aucune partie à afficher",
         "join-action": "Joindre"
+    },
+    "friends-search": {
+        "search-friend": "Rechercher un ami",
+        "search-input": "Rechercher",
+        "search-input-placeholder": "Nom d'utilisateur",
+        "friend-requests-received": "Demandes d'amis reçues",
+        "friend-requests-sent": "Demandes d'amis envoyées",
+        "friends-list": "Mes amis",
+        "search-results": "Résultats de la recherche",
+        "search-no-result": "Aucun résultat trouvé avec",
+        "no-friend": "Aucun ami à afficher",
+        "send-request": "Envoyer une demande",
+        "accept-request": "Accepter",
+        "decline-request": "Refuser",
+        "add-friend": "Ajouter un ami",
+        "remove-friend": "Retirer l'ami"
     }
 }
