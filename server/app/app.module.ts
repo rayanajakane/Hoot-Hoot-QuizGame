@@ -29,6 +29,8 @@ import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MongooseModule } from '@nestjs/mongoose';
+import { QuestionsGeneratorController } from './controllers/questions-generator/questions-generator.controller';
+import { QuestionsGeneratorService } from './services/questions-generator/questions-generator.service';
 
 @Module({
     imports: [
@@ -45,7 +47,7 @@ import { MongooseModule } from '@nestjs/mongoose';
         EventEmitterModule.forRoot(),
         FirebaseModule,
     ],
-    controllers: [GameController, QuestionController, MatchController, BackupController],
+    controllers: [GameController, QuestionController, MatchController, BackupController, QuestionsGeneratorController],
     providers: [
         Logger,
         ChatService,
@@ -68,6 +70,7 @@ import { MongooseModule } from '@nestjs/mongoose';
         EstimatedAnswerStrategy,
         QuestionPicturesDeletionService,
         QrCodeService,
+        QuestionsGeneratorService,
     ],
 })
 export class AppModule {}
