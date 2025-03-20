@@ -12,25 +12,6 @@
         <input matInput [formControl]="searchControl" placeholder="Nom d'utilisateur" />
     </mat-form-field>
 
-    <div class="friends-section" *ngIf="friendsService.searchResults && friendsService.searchResults.length > 0">
-        <h3>Utilisateurs trouvés</h3>
-        <ul>
-            <app-friends-list-item
-                *ngFor="let user of friendsService.searchResults"
-                [user]="user"
-                [isFriend]="friendsService.isFriend(user)"
-                [isRequestPending]="friendsService.isRequestPending(user)"
-                [isRequestSent]="friendsService.isRequestSent(user)"
-                [isEligible]="friendsService.isEligible(user)"
-                (sendRequest)="friendsService.sendFriendRequest($event)"
-                (cancelRequest)="friendsService.cancelRequest($event)"
-                (acceptRequest)="friendsService.acceptFriendRequest($event)"
-                (rejectRequest)="friendsService.rejectFriendRequest($event)"
-                (removeFriend)="friendsService.removeFriend($event)"
-            ></app-friends-list-item>
-        </ul>
-    </div>
-
     <div class="friends-section" *ngIf="friendsService.pendingRequests && friendsService.pendingRequests.length > 0">
         <h3>Demandes d'amis reçues</h3>
         <ul>
@@ -75,5 +56,27 @@
                 (removeFriend)="friendsService.removeFriend($event)"
             ></app-friends-list-item>
         </ul>
+    </div>
+
+    <div class="friends-section" *ngIf="friendsService.searchResults && friendsService.searchResults.length > 0">
+        <h3>Utilisateurs trouvés</h3>
+        <ul>
+            <app-friends-list-item
+                *ngFor="let user of friendsService.searchResults"
+                [user]="user"
+                [isFriend]="friendsService.isFriend(user)"
+                [isRequestPending]="friendsService.isRequestPending(user)"
+                [isRequestSent]="friendsService.isRequestSent(user)"
+                [isEligible]="friendsService.isEligible(user)"
+                (sendRequest)="friendsService.sendFriendRequest($event)"
+                (cancelRequest)="friendsService.cancelRequest($event)"
+                (acceptRequest)="friendsService.acceptFriendRequest($event)"
+                (rejectRequest)="friendsService.rejectFriendRequest($event)"
+                (removeFriend)="friendsService.removeFriend($event)"
+            ></app-friends-list-item>
+        </ul>
+    </div>
+    <div class="friends-section" *ngIf="friendsService.searchResults && friendsService.searchResults.length === 0">
+        <h3>Aucun joueur trouvé avec '{{ searchControl.value }}'</h3>
     </div>
 </div>
