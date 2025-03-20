@@ -40,7 +40,6 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-
     LaunchedEffect(authState.value) {
         when (authState.value) {
 
@@ -105,7 +104,6 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
             ) {
                 Text(text = "Se déconnecter")
             }
-            Log.d("NADA MatchCreationPage", "authState.value: ${authViewModel.getUsername()} ${authViewModel.getUserId()}")
             GameList(modifier = modifier.weight(1f).fillMaxHeight(0.2f), navigateToWaitPage, authViewModel)
         }
     }

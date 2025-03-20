@@ -18,12 +18,9 @@ object MatchService {
         override val apiService: ApiService = retrofit.create(ApiService::class.java)
     }
 
-    fun createMatch(hostId: String, hostUsername: String){
+    fun createMatch(hostId: String, hostUsername: String, isFriendsOnly: Boolean = false, isClassicMode : Boolean = false){
         matchRoomService.connect()
-        Log.d("NADA create match", "${hostId} et ${hostUsername}")
-        Log.d("NADA", hostId)
-
-        matchRoomService.createRoom(currentGame!!.id!!, hostId, hostUsername)
+        matchRoomService.createRoom(currentGame!!.id!!, hostId, hostUsername, isClassicMode, isFriendsOnly)
     }
 
     fun getBackupGame(id:String){
@@ -34,15 +31,14 @@ object MatchService {
         return gameService.getGames(onSuccess = {}, onError = {})
     }
 
-    fun saveBackupGame(id: String, hostId: String, hostUsername: String){
+    fun saveBackupGame(id: String, hostId: String, hostUsername: String, isFriendsOnly: Boolean= false){
             return backupService.add(
                 currentGame!!,
                 onSuccess = { response ->
                     val gson = Gson()
                     val game = gson.fromJson(gson.toJson(response), Game::class.java)
                     currentGame = game
-                    Log.d("NADA MATCHSERVICE SAVEBACKUP", "${hostId} et ${hostUsername}")
-                    createMatch(hostId, hostUsername)
+                    createMatch(hostId, hostUsername, isFriendsOnly )
                 },
                 onError = { error -> println(error)
 
