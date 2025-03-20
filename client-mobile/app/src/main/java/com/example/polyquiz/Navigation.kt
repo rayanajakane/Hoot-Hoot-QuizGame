@@ -196,7 +196,8 @@ fun Navigation(
         }
         composable<Route.FriendsSearchScreen> {
             FriendsSearchScreen(
-                currentUserID = authViewModel.getUserId()
+                currentUserID = authViewModel.getUserId(),
+                navigateToHome = { navController.navigate(Route.Home) }
             )
         }
         composable<Route.MainCameraScreen> {
