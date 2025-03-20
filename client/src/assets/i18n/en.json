@@ -104,11 +104,12 @@
         "friends-list": "My Friends",
         "search-results": "Search Results",
         "search-no-result": "No result found with",
-        "no-friend": "No friend to display",
-        "send-request": "Send Request",
+        "is-friend": "✅ Friend",
+        "remove-friend": "Remove Friend",
         "accept-request": "Accept",
         "decline-request": "Decline",
-        "add-friend": "Add Friend",
-        "remove-friend": "Remove Friend"
+        "request-sent": "⏳ Request Sent",
+        "cancel-request": "Cancel",
+        "add-friend": "Add Friend"
     }
 }

@@ -104,11 +104,12 @@
         "friends-list": "Mes amis",
         "search-results": "Résultats de la recherche",
         "search-no-result": "Aucun résultat trouvé avec",
-        "no-friend": "Aucun ami à afficher",
-        "send-request": "Envoyer une demande",
+        "is-friend": "✅ Amis",
+        "remove-friend": "Retirer l'ami",
         "accept-request": "Accepter",
         "decline-request": "Refuser",
-        "add-friend": "Ajouter un ami",
-        "remove-friend": "Retirer l'ami"
+        "request-sent": "⏳ Demande envoyée",
+        "cancel-request": "Annuler",
+        "add-friend": "Ajouter un ami"
     }
 }
