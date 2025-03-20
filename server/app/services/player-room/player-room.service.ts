@@ -1,4 +1,4 @@
-import { BANNED_USERNAME } from '@app/constants/match-login-errors';
+import { BANNED_PLAYER } from '@app/constants/match-login-errors';
 import { MultipleChoiceAnswer } from '@app/model/answer-types/multiple-choice-answer/multiple-choice-answer';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
 import { Player } from '@app/model/schema/player.schema';
@@ -136,13 +136,7 @@ export class PlayerRoomService {
 
     getUsernameErrors(matchRoomCode: string, userId: string): string {
         let errors = '';
-        // const usernameToValidate = username.trim().toUpperCase();
-        const errorConditions: Map<string, boolean> = new Map([
-            // [EMPTY_USERNAME, !usernameToValidate],
-            // [HOST_CONFLICT, usernameToValidate === HOST_USERNAME],
-            [BANNED_USERNAME, this.isBannedPlayer(matchRoomCode, userId)],
-            // [USED_USERNAME, !!this.getPlayerByUsername(matchRoomCode, usernameToValidate)],
-        ]);
+        const errorConditions: Map<string, boolean> = new Map([[BANNED_PLAYER, this.isBannedPlayer(matchRoomCode, userId)]]);
         errorConditions.forEach((hasError: boolean, message: string) => {
             if (hasError) errors += message;
         });

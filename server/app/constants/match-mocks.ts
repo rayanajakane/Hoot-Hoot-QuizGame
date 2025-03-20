@@ -8,7 +8,7 @@ import { MOCK_MESSAGE } from './chat-mocks';
 import { getMockGame } from './game-mocks';
 import { getMockQuestion } from './question-mocks';
 
-const MOCK_USER_INFO = { roomCode: '', username: '' };
+const MOCK_USER_INFO = { roomCode: '', username: '', userId: '' };
 const MOCK_MESSAGE_INFO = { roomCode: '', message: MOCK_MESSAGE };
 const MOCK_PLAYER: Player = {
     username: '',
@@ -124,6 +124,7 @@ const MOCK_PLAYER_ROOM: MatchRoom = {
 
 const MOCK_ROOM_CODE = 'mockCode';
 const MOCK_USERNAME = 'mockUsername';
+const MOCK_USERID = 'mockUserId';
 
 export {
     MOCK_MATCH_ROOM,
@@ -135,5 +136,6 @@ export {
     MOCK_ROOM_CODE,
     MOCK_TEST_MATCH_ROOM,
     MOCK_USER_INFO,
+    MOCK_USERID,
     MOCK_USERNAME,
 };
