@@ -10,6 +10,6 @@ data class Game(
     val questions: List<Question>? = null,
     val lastModification: String?,
     val isVisible: Boolean?,
-    val nMatchesPlayed: Number,
+    var nMatchesPlayed: Number,
     val duration: Number,
 )
