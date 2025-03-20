@@ -14,7 +14,6 @@ import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { MatchService } from '@app/services/match/match.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { TimeService } from '@app/services/time/time.service';
-import { HOST_USERNAME } from '@common/constants/match-constants';
 import SpyObj = jasmine.SpyObj;
 
 @Component({
@@ -39,7 +38,8 @@ describe('WaitPageComponent', () => {
         authenticationServiceSpy = jasmine.createSpyObj('AuthenticationService', ['getImageDownloadUrl']);
         matchRoomSpy = jasmine.createSpyObj('MatchRoomService', [
             'getUsername',
-            'banUsername',
+            'getHostId',
+            'banUser',
             'toggleLock',
             'connect',
             'startMatch',
@@ -114,13 +114,13 @@ describe('WaitPageComponent', () => {
     });
 
     it('banUsername() should call banUsername of matchRoomService', () => {
-        component.banPlayerUsername('test');
-        expect(matchRoomSpy.banUsername).toHaveBeenCalledWith('test');
+        component.banPlayerId('test');
+        expect(matchRoomSpy.banUser).toHaveBeenCalledWith('test');
     });
 
     it('banUsername() should not call banUsername if user is the host', () => {
-        component.banPlayerUsername(HOST_USERNAME);
-        expect(matchRoomSpy.banUsername).not.toHaveBeenCalled();
+        component.banPlayerId(matchRoomSpy.getHostId());
+        expect(matchRoomSpy.banUser).not.toHaveBeenCalled();
     });
 
     it('startMatch() should call startMatch from matchRoomService', () => {

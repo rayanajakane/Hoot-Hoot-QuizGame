@@ -58,7 +58,7 @@ export class MatchRoomService {
 
     // allow more parameters to make method more reusable
     // eslint-disable-next-line max-params
-    async addRoom(selectedGame: Game, socket: Socket, isClassicMode: boolean = true): Promise<MatchRoom> {
+    async addRoom(selectedGame: Game, socket: Socket, hostId: string, isClassicMode: boolean = true, isFriendsOnly = false): Promise<MatchRoom> {
         const isLocked = false;
         const isPlaying = false;
 
@@ -78,7 +78,7 @@ export class MatchRoomService {
             currentQuestionAnswer: [],
             choiceTracker: new ChoiceTracker(),
             matchHistograms: [],
-            bannedUsernames: [],
+            bannedIds: [],
             players: [],
             activePlayers: 0,
             submittedPlayers: 0,
@@ -86,6 +86,8 @@ export class MatchRoomService {
             isClassicMode,
             startTime: new Date(),
             qrCodeUrl,
+            hostId,
+            isFriendsOnly,
         };
         this.matchRooms.push(newRoom);
         this.setQuestionStrategy(newRoom);

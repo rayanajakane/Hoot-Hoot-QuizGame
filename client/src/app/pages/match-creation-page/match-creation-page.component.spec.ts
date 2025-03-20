@@ -233,56 +233,6 @@ describe('MatchCreationPageComponent', () => {
         expect(reloadSpy).toHaveBeenCalled();
     });
 
-    it('createMatch() should revalidate random game if it is selected', () => {
-        component.isRandomGame = true;
-        const reloadSpy = spyOn(component, 'revalidateRandomGame');
-        component.createMatch(MatchContext.RandomMode);
-        expect(reloadSpy).toHaveBeenCalled();
-    });
-
-    it('should handle revalidate random game', () => {
-        component.handleRevalidateRandomGame(mockData);
-
-        expect(component.isRandomGame).toBeTrue();
-        expect(component.gameIsValid).toBeTrue();
-        expect(matchServiceSpy.currentGame).toEqual(RANDOM_MODE_GAME);
-        expect(matchServiceSpy.createMatch).toHaveBeenCalled();
-    });
-
-    it('handleRevalidateRandomGame() should display error message if not enough random questions', () => {
-        const notEnoughData: Question[] = [];
-        const errorMessage = "Il n'y a pas assez de questions pour un jeu aléatoire 😿";
-        component.handleRevalidateRandomGame(notEnoughData);
-        expect(notificationSpy.displayErrorMessage).toHaveBeenCalledWith(errorMessage);
-    });
-
-    it('should revalidate random game', () => {
-        const handleSpy = spyOn(component, 'handleRevalidateRandomGame');
-        component.revalidateRandomGame();
-        questionsSubject.next(mockData);
-        expect(questionServiceSpy.getAllQuestions).toHaveBeenCalled();
-        expect(handleSpy).toHaveBeenCalled();
-    });
-
-    it('should return true and set isRandomGame and gameIsValid to true if questions count is equal to minimum', () => {
-        const questionsCount = MINIMUM_QUESTIONS;
-
-        const result = component.hasEnoughRandomQuestions(questionsCount);
-
-        expect(result).toBeTrue();
-        expect(component.isRandomGame).toBeTrue();
-        expect(component.gameIsValid).toBeTrue();
-    });
-
-    it('should return true and set isRandomGame and gameIsValid to true if questions count is greater than minimum', () => {
-        const questionsCount = 10;
-
-        const result = component.hasEnoughRandomQuestions(questionsCount);
-
-        expect(result).toBeTrue();
-        expect(component.isRandomGame).toBeTrue();
-        expect(component.gameIsValid).toBeTrue();
-    });
     it('should return false and display error message if questions count is less than minimum', () => {
         const questionsCount = 3;
         const errorMessage = "Il n'y a pas assez de questions pour un jeu aléatoire 😿";

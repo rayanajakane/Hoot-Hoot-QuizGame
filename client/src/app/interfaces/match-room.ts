@@ -7,7 +7,7 @@ export interface MatchRoom {
     isLocked: boolean;
     isPlaying: boolean;
     game: Game;
-    bannedUsernames: string[];
+    bannedIds string[];
     players: Player[];
     messages: Message[];
 }

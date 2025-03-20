@@ -35,27 +35,30 @@ fun MultipleChoiceArea(
     matchContext: MatchContext,
     modifier: Modifier = Modifier
 ) {
-    val selectedStates = remember { mutableStateListOf<Boolean>().apply { addAll(List(choices.size) { false }) } }
-    val rows = (choices.size + 1) / 2
+    if (matchContext == MatchContext.PLAYERVIEW) {
+        val selectedStates = remember { mutableStateListOf<Boolean>().apply { addAll(List(choices.size) { false }) } }
+        val rows = (choices.size + 1) / 2
 
-    Column(modifier = modifier) {
-        for (rowIndex in 0 until rows) {
-            val firstIndex = rowIndex * 2
+        Column(modifier = modifier) {
+            for (rowIndex in 0 until rows) {
+                val firstIndex = rowIndex * 2
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                ChoiceButton(firstIndex, choices, selectedStates, answerService, matchRoomService, Modifier.weight(1f))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    ChoiceButton(firstIndex, choices, selectedStates, answerService, matchRoomService, Modifier.weight(1f))
 
-                if (firstIndex + 1 < choices.size) {
-                    ChoiceButton(firstIndex + 1, choices, selectedStates, answerService, matchRoomService, Modifier.weight(1f))
-                } else {
-                    Spacer(modifier = Modifier.weight(1f))
+                    if (firstIndex + 1 < choices.size) {
+                        ChoiceButton(firstIndex + 1, choices, selectedStates, answerService, matchRoomService, Modifier.weight(1f))
+                    } else {
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
                 }
             }
         }
     }
+
 }
 
 @Composable
@@ -83,7 +86,7 @@ fun ChoiceButton(
                 if (answerService.isSelectionEnabled) {
                     selectedStates[index] = !selectedStates[index]
                     val userInfo = UserInfo(
-                        username = matchRoomService.retrieveUsername(),
+                        userId = matchRoomService.userId,
                         roomCode = matchRoomService.getRoomCode()
                     )
                     if (selectedStates[index]) {

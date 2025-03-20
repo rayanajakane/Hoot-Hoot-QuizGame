@@ -18,6 +18,7 @@ import { LongAnswerInfo } from '@common/interfaces/long-answer-info';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { SinonStubbedInstance, createStubInstance } from 'sinon';
+
 import { QrCodeService } from '../qr-code/qr-code.service';
 import { AnswerService } from './answer.service';
 
@@ -86,6 +87,7 @@ describe('AnswerService', () => {
         selectedChoices1.set('choice1', true);
         selectedChoices1.set('choice2', false);
         player1.username = 'player1';
+        player1.id = 'p1';
         player1.answer = { selectedChoices: selectedChoices1, isSubmitted: true, timestamp: randomDate } as MultipleChoiceAnswer;
         player1.answer.updateChoice = updateChoiceMock;
         player1.socket = mockPlayer1Socket;
@@ -97,6 +99,7 @@ describe('AnswerService', () => {
         selectedChoices2.set('choice1', false);
         selectedChoices2.set('choice2', true);
         player2.username = 'player2';
+        player2.id = 'p2';
         player2.answer = { selectedChoices: selectedChoices2, isSubmitted: false } as MultipleChoiceAnswer;
         player2.answer.updateChoice = updateChoiceMock;
         player2.socket = mockPlayer2Socket;
@@ -159,20 +162,20 @@ describe('AnswerService', () => {
 
     it('updateChoice() should delegate choice tally according to selection', () => {
         player2.answer.isSubmitted = false;
-        jest.spyOn<any, any>(playerService, 'getPlayerByUsername').mockReturnValue(player2);
+        jest.spyOn<any, any>(playerService, 'getPlayerById').mockReturnValue(player2);
 
-        service.updateChoice('choice1', true, 'player2', MOCK_ROOM_CODE);
+        service.updateChoice('choice1', true, 'p2', MOCK_ROOM_CODE);
         expect(player2.answer.updateChoice).toHaveBeenCalledWith('choice1', true);
 
-        service.updateChoice('choice1', false, 'player2', MOCK_ROOM_CODE);
+        service.updateChoice('choice1', false, 'p2', MOCK_ROOM_CODE);
         expect(player2.answer.updateChoice).toHaveBeenCalledWith('choice1', false);
     });
 
     it('updateChoice() should not count selection if answer was already submitted', () => {
         player1.answer.isSubmitted = true;
-        jest.spyOn<any, any>(playerService, 'getPlayerByUsername').mockReturnValue(player1);
+        jest.spyOn<any, any>(playerService, 'getPlayerById').mockReturnValue(player1);
 
-        service.updateChoice('choice1', true, 'player1', MOCK_ROOM_CODE);
+        service.updateChoice('choice1', true, 'p1', MOCK_ROOM_CODE);
 
         expect(player1.answer.updateChoice).not.toHaveBeenCalled();
     });
@@ -186,10 +189,10 @@ describe('AnswerService', () => {
 
     it('submitAnswers() should set isSubmitted to true and call handleFinalAnswerSubmitted function', () => {
         const finalHandlerSpy = jest.spyOn<any, any>(service, 'handleFinalAnswerSubmitted').mockReturnThis();
-        jest.spyOn<any, any>(playerService, 'getPlayerByUsername').mockReturnValue(player2);
+        jest.spyOn<any, any>(playerService, 'getPlayerById').mockReturnValue(player2);
         expect(matchRoom.players[1].answer.isSubmitted).toBe(false);
 
-        service.submitAnswer('player2', MOCK_ROOM_CODE);
+        service.submitAnswer('p2', MOCK_ROOM_CODE);
         expect(matchRoom.players[1].answer.isSubmitted).toBe(true);
 
         expect(finalHandlerSpy).toHaveBeenCalledWith(matchRoom);
@@ -198,8 +201,8 @@ describe('AnswerService', () => {
     it('submitAnswers() should increment submitted players value', () => {
         jest.spyOn<any, any>(service, 'handleFinalAnswerSubmitted').mockReturnThis();
         matchRoom.submittedPlayers = 0;
-        jest.spyOn<any, any>(playerService, 'getPlayerByUsername').mockReturnValue(player2);
-        service.submitAnswer('player2', MOCK_ROOM_CODE);
+        jest.spyOn<any, any>(playerService, 'getPlayerById').mockReturnValue(player2);
+        service.submitAnswer('p2', MOCK_ROOM_CODE);
         expect(matchRoom.submittedPlayers).toEqual(1);
     });
 

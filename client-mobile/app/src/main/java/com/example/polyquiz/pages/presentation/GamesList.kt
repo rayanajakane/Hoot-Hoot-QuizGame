@@ -1,5 +1,6 @@
 package com.example.polyquiz.pages.presentation
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,6 +17,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import androidx.compose.ui.text.font.FontWeight
 import com.example.polyquiz.Game
+import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.http.GameService
 import com.example.polyquiz.match.domain.MatchContextService
@@ -24,7 +26,7 @@ import com.example.polyquiz.match.domain.MatchService
 
 
 @Composable
-fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit) {
+fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: AuthViewModel) {
 
     val gameService = GameService()
     val matchService = MatchService
@@ -32,6 +34,9 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit) {
     var selectedGame by remember { mutableStateOf<Game?>(null) }
     var gamesIsValid by remember { mutableStateOf(false) }
     var isLoadingSelectedGame by remember { mutableStateOf(false) }
+    val username by remember { mutableStateOf(authViewModel.getUsername() )}
+    val userId by remember { mutableStateOf(authViewModel.getUserId()) }
+    val isFriendsOnly by remember { mutableStateOf(false) }
 
     val contextService = MatchContextService
 
@@ -52,11 +57,11 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit) {
         }
     }
 
-    fun revalidateGame(){
+    fun revalidateGame(isFriendsOnly:Boolean = false){
         if(selectedGame?.isVisible!!){
             gamesIsValid = true
             matchService.currentGame = selectedGame
-            matchService.saveBackupGame(selectedGame!!.id!!)
+            matchService.saveBackupGame(selectedGame!!.id!!, userId, username, isFriendsOnly)
         }
     }
 
@@ -71,20 +76,20 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit) {
         }, onError = {})
     }
 
-    fun reloadSelectedGame(){
+    fun reloadSelectedGame(isFriendsOnly: Boolean = false){
         gameService.getGameById(selectedGame?.id!!, onSuccess = {
             response ->
             val gson = Gson()
             val game = gson.fromJson(gson.toJson(response), Game::class.java)
             selectedGame = game
-            revalidateGame()
+            revalidateGame(isFriendsOnly)
         }, onError = {})
 
     }
 
-    fun createMatch(context: MatchContext){
+    fun createMatch(context: MatchContext, isFriendsOnly: Boolean = false){
         contextService.setContext(context)
-        reloadSelectedGame()
+        reloadSelectedGame(isFriendsOnly)
     }
 
     Row(
@@ -153,20 +158,37 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit) {
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
-
-                Button(
-                    onClick = {
-                        createMatch(MatchContext.HOSTVIEW)
-                        navigateToWaitPage()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
-                    ),
-                    modifier = Modifier
-                        .padding(16.dp)
-                ) {
+                Row {
+                    Button(
+                        onClick = {
+                            createMatch(MatchContext.HOSTVIEW)
+                            navigateToWaitPage()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        ),
+                        modifier = Modifier
+                            .padding(16.dp)
+                    ) {
                         Text(text = "Jouer")
+
+                    }
+                    Button(
+                        onClick = {
+                            createMatch(MatchContext.HOSTVIEW, true)
+                            navigateToWaitPage()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        ),
+                        modifier = Modifier
+                            .padding(16.dp)
+                    ) {
+                        Text(text = "Jouer avec amis")
+
+                    }
 
                 }
 

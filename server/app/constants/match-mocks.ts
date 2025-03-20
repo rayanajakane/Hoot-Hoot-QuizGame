@@ -8,10 +8,11 @@ import { MOCK_MESSAGE } from './chat-mocks';
 import { getMockGame } from './game-mocks';
 import { getMockQuestion } from './question-mocks';
 
-const MOCK_USER_INFO = { roomCode: '', username: '' };
+const MOCK_USER_INFO = { roomCode: '', username: '', userId: '' };
 const MOCK_MESSAGE_INFO = { roomCode: '', message: MOCK_MESSAGE };
 const MOCK_PLAYER: Player = {
     username: '',
+    id: '',
     answer: new MultipleChoiceAnswer(),
     score: 0,
     answerCorrectness: AnswerCorrectness.WRONG,
@@ -33,7 +34,7 @@ const MOCK_MATCH_ROOM: MatchRoom = {
     currentQuestionAnswer: [],
     choiceTracker: new ChoiceTracker(),
     matchHistograms: [],
-    bannedUsernames: [],
+    bannedIds: [],
     players: [],
     activePlayers: 0,
     submittedPlayers: 0,
@@ -42,6 +43,8 @@ const MOCK_MATCH_ROOM: MatchRoom = {
     isClassicMode: true,
     startTime: new Date(),
     qrCodeUrl: '',
+    hostId: '',
+    isFriendsOnly: false,
 };
 
 const MOCK_TEST_MATCH_ROOM: MatchRoom = {
@@ -56,7 +59,7 @@ const MOCK_TEST_MATCH_ROOM: MatchRoom = {
     currentQuestionAnswer: [],
     choiceTracker: new ChoiceTracker(),
     matchHistograms: [],
-    bannedUsernames: [],
+    bannedIds: [],
     players: [],
     activePlayers: 0,
     submittedPlayers: 0,
@@ -65,6 +68,8 @@ const MOCK_TEST_MATCH_ROOM: MatchRoom = {
     isClassicMode: true,
     startTime: new Date(),
     qrCodeUrl: '',
+    hostId: '',
+    isFriendsOnly: false,
 };
 
 const MOCK_RANDOM_MATCH_ROOM: MatchRoom = {
@@ -79,7 +84,7 @@ const MOCK_RANDOM_MATCH_ROOM: MatchRoom = {
     currentQuestionAnswer: [],
     choiceTracker: new ChoiceTracker(),
     matchHistograms: [],
-    bannedUsernames: [],
+    bannedIds: [],
     players: [],
     activePlayers: 0,
     submittedPlayers: 0,
@@ -88,6 +93,8 @@ const MOCK_RANDOM_MATCH_ROOM: MatchRoom = {
     isClassicMode: true,
     startTime: new Date(),
     qrCodeUrl: '',
+    hostId: '',
+    isFriendsOnly: false,
 };
 
 const MOCK_PLAYER_ROOM: MatchRoom = {
@@ -102,7 +109,7 @@ const MOCK_PLAYER_ROOM: MatchRoom = {
     currentQuestionAnswer: [],
     choiceTracker: new ChoiceTracker(),
     matchHistograms: [],
-    bannedUsernames: [],
+    bannedIds: [],
     players: [MOCK_PLAYER],
     activePlayers: 1,
     submittedPlayers: 0,
@@ -111,10 +118,13 @@ const MOCK_PLAYER_ROOM: MatchRoom = {
     isClassicMode: true,
     startTime: new Date(),
     qrCodeUrl: '',
+    hostId: '',
+    isFriendsOnly: false,
 };
 
 const MOCK_ROOM_CODE = 'mockCode';
 const MOCK_USERNAME = 'mockUsername';
+const MOCK_USERID = 'mockUserId';
 
 export {
     MOCK_MATCH_ROOM,
@@ -126,5 +136,6 @@ export {
     MOCK_ROOM_CODE,
     MOCK_TEST_MATCH_ROOM,
     MOCK_USER_INFO,
+    MOCK_USERID,
     MOCK_USERNAME,
 };

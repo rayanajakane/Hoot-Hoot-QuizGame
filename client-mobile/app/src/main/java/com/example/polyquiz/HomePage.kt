@@ -44,6 +44,7 @@ fun HomePage(
     navigateToCreate: () -> Unit,
     navigateToUserEdit: () -> Unit,
     navigateToWaitPage: () -> Unit,
+    navigateToFriendsPage : () -> Unit,
     navigateToJoinRoom: () -> Unit,
     authViewModel: AuthViewModel,
 ) {
@@ -153,6 +154,18 @@ fun HomePage(
                 )
             ) {
                 Text(text = stringResource(R.string.edit_profile))
+            }
+
+            Button(
+                onClick = {
+                    navigateToFriendsPage()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            ) {
+                Text(text = "FRIENDS")
             }
         }
         ElevatedButton(
