@@ -79,6 +79,7 @@ import { MoneyService } from './services/money/money.service';
         QuestionsGeneratorService,
         MoneyService,
         MoneyGateway,
+        QuestionsGeneratorService,
     ],
 })
 export class AppModule {}
