@@ -35,8 +35,6 @@ export class AnswerGateway {
 
     @SubscribeMessage(AnswerEvents.Grades)
     calculateScore(@ConnectedSocket() socket: Socket, @MessageBody() gradesInfo: GradesInfo) {
-        console.log('GRADING COMPLETE LOLOL');
-        console.log(gradesInfo);
         this.answerService.calculateScore(gradesInfo.matchRoomCode, gradesInfo.grades);
     }
 

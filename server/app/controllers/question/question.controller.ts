@@ -71,7 +71,6 @@ export class QuestionController {
             await this.questionPicturesDeletionService.deleteQuestionNonUsedPicture(question.pictureUrl);
             response.status(HttpStatus.NO_CONTENT).send();
         } catch (error) {
-            console.log(error);
             response.status(HttpStatus.NOT_FOUND).send({ message: error });
         }
     }

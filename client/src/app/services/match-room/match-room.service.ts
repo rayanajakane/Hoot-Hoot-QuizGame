@@ -109,8 +109,6 @@ export class MatchRoomService {
     createRoom(gameId: string, hostId: string, hostUsername: string, isClassicMode: boolean = true, isFriendsOnly: boolean = false) {
         this.socketService.send(MatchEvents.CreateRoom, { gameId, hostId, isClassicMode, isFriendsOnly }, (res: { code: string }) => {
             this.matchRoomCode = res.code;
-            // TODO: Migrate the logic to server, use UserID instead (need to track Host User ID in match room)
-            // this.username = HOST_USERNAME; // This could cause problem if there is a user called 'Organisateur'. It won't synergize with Transloco too.
             this.username = hostUsername;
             this.hostId = hostId;
             this.userId = hostId;

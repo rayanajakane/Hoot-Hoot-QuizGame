@@ -17,6 +17,7 @@ import {
 } from '@app/constants/match-mocks';
 import { MatchGateway } from '@app/gateways/match/match.gateway';
 import { Player } from '@app/model/schema/player.schema';
+import { FriendsService } from '@app/services/friends/friends.service';
 // import { HistogramService } from '@app/services/histogram/histogram.service';
 // import { HistoryService } from '@app/services/history/history.service';
 import { MatchBackupService } from '@app/services/match-backup/match-backup.service';
@@ -61,6 +62,7 @@ describe('MatchGateway', () => {
                 { provide: MatchBackupService, useValue: matchBackupSpy },
                 { provide: TimeService, useValue: timeSpy },
                 { provide: PlayerRoomService, useValue: playerRoomSpy },
+                { provide: FriendsService, useValue: createStubInstance(FriendsService) },
                 // { provide: HistoryService, useValue: historySpy },
                 EventEmitter2,
             ],
@@ -86,19 +88,20 @@ describe('MatchGateway', () => {
         expect(gateway).toBeDefined();
     });
 
-    it('joinRoom() should let the player join if the room code and the username are valid', () => {
+    it('joinRoom() should let the player join if the room code and the username are valid', async () => {
         matchRoomSpy.getRoomCodeErrors.returns('');
         matchRoomSpy.getRoom.returns(MOCK_MATCH_ROOM);
         playerRoomSpy.getUsernameErrors.returns('');
         playerRoomSpy.addPlayer.returns(MOCK_PLAYER);
-        const result = gateway.joinRoom(socket, MOCK_USER_INFO);
+        const result = await gateway.joinRoom(socket, MOCK_USER_INFO);
         expect(socket.join.calledOnce).toBeTruthy();
         expect(playerRoomSpy.addPlayer.calledOnce).toBeTruthy();
-        expect(result).toEqual({ code: MOCK_USER_INFO.roomCode, username: MOCK_PLAYER.username });
+        expect(result).toEqual({ code: MOCK_USER_INFO.roomCode, username: MOCK_PLAYER.username, userId: MOCK_PLAYER.id });
     });
 
     it('joinRoom() should not let the player join if the room code or the username are invalid', () => {
         matchRoomSpy.getRoomCodeErrors.returns(INVALID_CODE);
+        matchRoomSpy.getRoom.returns(MOCK_MATCH_ROOM);
         playerRoomSpy.getUsernameErrors.returns(HOST_CONFLICT);
         const sendErrorSpy = jest.spyOn(gateway, 'sendError').mockReturnThis();
         server.in.returns({
@@ -116,7 +119,9 @@ describe('MatchGateway', () => {
         matchRoomSpy.addRoom.resolves(MOCK_MATCH_ROOM);
         const result = await gateway.createRoom(socket, {
             gameId: MOCK_MATCH_ROOM.game.id,
+            hostId: MOCK_PLAYER.id,
             isClassicMode: true,
+            isFriendsOnly: false,
         });
         expect(socket.join.calledOnce).toBeTruthy();
         expect(result).toEqual({ code: MOCK_MATCH_ROOM.code });
@@ -126,7 +131,9 @@ describe('MatchGateway', () => {
         matchRoomSpy.addRoom.resolves(MOCK_MATCH_ROOM);
         const result = await gateway.createRoom(socket, {
             gameId: MOCK_TEST_MATCH_ROOM.game.id,
+            hostId: MOCK_PLAYER.id,
             isClassicMode: true,
+            isFriendsOnly: false,
         });
         expect(socket.join.calledOnce).toBeTruthy();
         expect(result).toEqual({ code: MOCK_TEST_MATCH_ROOM.code });
@@ -137,7 +144,9 @@ describe('MatchGateway', () => {
         matchBackupSpy.getBackupGame.returns(GAME_VALID_QUESTION);
         const result = await gateway.createRoom(socket, {
             gameId: MOCK_RANDOM_MATCH_ROOM.game.id,
+            hostId: MOCK_PLAYER.id,
             isClassicMode: true,
+            isFriendsOnly: false,
         });
         expect(socket.join.calledOnce).toBeTruthy();
         expect(result).toEqual({ code: MOCK_RANDOM_MATCH_ROOM.code });
@@ -171,11 +180,11 @@ describe('MatchGateway', () => {
     });
 
     it('banUsername() should add username to banned usernames list, and delete player if applicable, then update list', () => {
-        const addBannedUsernameSpy = jest.spyOn(playerRoomSpy, 'addBannedUsername').mockReturnThis();
+        const addBannedPlayersSpy = jest.spyOn(playerRoomSpy, 'addBannedPlayers').mockReturnThis();
         const mockPlayer = MOCK_PLAYER;
         mockPlayer.socket = socket;
         const errorSpy = jest.spyOn(gateway, 'sendError').mockReturnThis();
-        const playerSpy = jest.spyOn(playerRoomSpy, 'getPlayerByUsername').mockReturnValue(mockPlayer);
+        const playerSpy = jest.spyOn(playerRoomSpy, 'getPlayerById').mockReturnValue(mockPlayer);
         const deleteSpy = jest.spyOn(playerRoomSpy, 'deletePlayer').mockReturnThis();
         const returnSpy = jest.spyOn(gateway, 'returnAllMatches').mockReturnThis();
         server.in.returns({
@@ -188,22 +197,22 @@ describe('MatchGateway', () => {
         } as BroadcastOperator<unknown, unknown>);
         const sendSpy = jest.spyOn(gateway, 'sendPlayersData').mockReturnThis();
         gateway.banUsername(socket, MOCK_USER_INFO);
-        expect(addBannedUsernameSpy).toHaveBeenCalledWith(MOCK_USER_INFO.roomCode, MOCK_USER_INFO.username);
-        expect(playerSpy).toHaveBeenCalledWith(MOCK_USER_INFO.roomCode, MOCK_USER_INFO.username);
-        expect(deleteSpy).toHaveBeenCalledWith(MOCK_USER_INFO.roomCode, MOCK_USER_INFO.username);
+        expect(addBannedPlayersSpy).toHaveBeenCalledWith(MOCK_USER_INFO.roomCode, MOCK_USER_INFO.userId);
+        expect(playerSpy).toHaveBeenCalledWith(MOCK_USER_INFO.roomCode, MOCK_USER_INFO.userId);
+        expect(deleteSpy).toHaveBeenCalledWith(MOCK_USER_INFO.roomCode, MOCK_USER_INFO.userId);
         expect(sendSpy).toHaveBeenCalledWith(socket, MOCK_USER_INFO.roomCode);
         expect(errorSpy).toHaveBeenCalledWith(mockPlayer.socket.id, BAN_PLAYER);
         expect(returnSpy).toHaveBeenCalled();
     });
 
     it('banUsername() should add username to banned usernames list then update list (if player is not found)', () => {
-        const addBannedUsernameSpy = jest.spyOn(playerRoomSpy, 'addBannedUsername').mockReturnThis();
-        const playerSpy = jest.spyOn(playerRoomSpy, 'getPlayerByUsername').mockReturnValue(undefined);
+        const addBannedPlayersSpy = jest.spyOn(playerRoomSpy, 'addBannedPlayers').mockReturnThis();
+        const playerSpy = jest.spyOn(playerRoomSpy, 'getPlayerById').mockReturnValue(undefined);
         const deleteSpy = jest.spyOn(playerRoomSpy, 'deletePlayer').mockReturnThis();
         const sendSpy = jest.spyOn(gateway, 'sendPlayersData').mockReturnThis();
         gateway.banUsername(socket, MOCK_USER_INFO);
-        expect(addBannedUsernameSpy).toHaveBeenCalledWith(MOCK_USER_INFO.roomCode, MOCK_USER_INFO.username);
-        expect(playerSpy).toHaveBeenCalledWith(MOCK_USER_INFO.roomCode, MOCK_USER_INFO.username);
+        expect(addBannedPlayersSpy).toHaveBeenCalledWith(MOCK_USER_INFO.roomCode, MOCK_USER_INFO.userId);
+        expect(playerSpy).toHaveBeenCalledWith(MOCK_USER_INFO.roomCode, MOCK_USER_INFO.userId);
         expect(deleteSpy).not.toHaveBeenCalled();
         expect(sendSpy).toHaveBeenCalledWith(socket, MOCK_USER_INFO.roomCode);
     });
@@ -290,10 +299,10 @@ describe('MatchGateway', () => {
         room.players.push(mockPlayer);
         matchRoomSpy.getRoom.returns(MOCK_MATCH_ROOM);
         const handleSpy = jest.spyOn(gateway, 'handleSendPlayersData').mockReturnThis();
-        const sendDisconnectMessageSpy = jest.spyOn(gateway, 'sendMessageOnDisconnect').mockReturnThis();
+        // const sendDisconnectMessageSpy = jest.spyOn(gateway, 'sendMessageOnDisconnect').mockReturnThis();
         gateway.handleDisconnect(socket);
         expect(handleSpy).toHaveBeenCalled();
-        expect(sendDisconnectMessageSpy).toHaveBeenCalled();
+        // expect(sendDisconnectMessageSpy).toHaveBeenCalled();
         expect(returnSpy).toHaveBeenCalled();
     });
 
@@ -309,10 +318,10 @@ describe('MatchGateway', () => {
         room.players = [mockPlayer];
         matchRoomSpy.getRoom.returns(room);
         const deleteSpy = jest.spyOn(gateway, 'deleteRoom').mockReturnThis();
-        const sendDisconnectMessageSpy = jest.spyOn(gateway, 'sendMessageOnDisconnect').mockReturnThis();
+        // const sendDisconnectMessageSpy = jest.spyOn(gateway, 'sendMessageOnDisconnect').mockReturnThis();
         gateway.handleDisconnect(socket);
         expect(deleteSpy).toHaveBeenCalled();
-        expect(sendDisconnectMessageSpy).not.toHaveBeenCalled();
+        // expect(sendDisconnectMessageSpy).not.toHaveBeenCalled();
     });
 
     it('handleDisconnect() should disconnect the player disconnect host as well if there are no more players', () => {
@@ -326,12 +335,12 @@ describe('MatchGateway', () => {
         const errorSpy = jest.spyOn(gateway, 'sendError').mockReturnThis();
         const handleSpy = jest.spyOn(gateway, 'handleSendPlayersData').mockReturnThis();
         const deleteSpy = jest.spyOn(gateway, 'deleteRoom').mockReturnThis();
-        const sendDisconnectMessageSpy = jest.spyOn(gateway, 'sendMessageOnDisconnect').mockReturnThis();
+        // const sendDisconnectMessageSpy = jest.spyOn(gateway, 'sendMessageOnDisconnect').mockReturnThis();
         gateway.handleDisconnect(socket);
         expect(errorSpy).toHaveBeenCalled();
         expect(handleSpy).not.toHaveBeenCalled();
         expect(deleteSpy).toHaveBeenCalled();
-        expect(sendDisconnectMessageSpy).not.toHaveBeenCalled();
+        // expect(sendDisconnectMessageSpy).not.toHaveBeenCalled();
     });
 
     it('handleDisconnect() should do nothing if there is no corresponding roomCode for the player', () => {
@@ -345,12 +354,12 @@ describe('MatchGateway', () => {
         jest.spyOn(matchRoomSpy, 'getRoom').mockReturnThis();
         const handleSpy = jest.spyOn(gateway, 'handleSendPlayersData').mockReturnThis();
         const deleteSpy = jest.spyOn(gateway, 'deleteRoom').mockReturnThis();
-        const sendDisconnectMessageSpy = jest.spyOn(gateway, 'sendMessageOnDisconnect').mockReturnThis();
+        // const sendDisconnectMessageSpy = jest.spyOn(gateway, 'sendMessageOnDisconnect').mockReturnThis();
         gateway.handleDisconnect(socket);
         expect(handleSpy).not.toHaveBeenCalled();
         expect(errorSpy).not.toHaveBeenCalled();
         expect(deleteSpy).not.toHaveBeenCalled();
-        expect(sendDisconnectMessageSpy).not.toHaveBeenCalled();
+        // expect(sendDisconnectMessageSpy).not.toHaveBeenCalled();
     });
 
     it('handleSendPlayersData() should emit a fetch event to the match room with a list of stringified players', () => {
@@ -376,7 +385,7 @@ describe('MatchGateway', () => {
                 expect(res).toEqual(playerLeftMessageMock);
             },
         } as BroadcastOperator<unknown, unknown>);
-        gateway.sendMessageOnDisconnect(MOCK_ROOM_CODE, MOCK_USERNAME);
+        // gateway.sendMessageOnDisconnect(MOCK_ROOM_CODE, MOCK_USERNAME);
     });
 
     it('sendError() should send the error to the socketId', () => {

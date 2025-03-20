@@ -49,8 +49,6 @@ export class AnswerService {
     // eslint-disable-next-line max-params
     updateChoice(choice: string, selection: boolean, userId: string, roomCode: string) {
         const player: Player = this.playerService.getPlayerById(roomCode, userId);
-        console.log(player.id);
-        console.log(choice);
         if (!player.answer.isSubmitted) {
             player.answer.updateChoice(choice, selection);
             player.answer.timestamp = Date.now();
@@ -66,8 +64,6 @@ export class AnswerService {
     submitAnswer(userId: string, roomCode: string) {
         const player: Player = this.playerService.getPlayerById(roomCode, userId);
         const matchRoom = this.getRoom(roomCode);
-        console.log('SUBMITIING');
-        console.log(player);
         player.answer.timestamp = Date.now();
         player.answer.isSubmitted = true;
         matchRoom.submittedPlayers++;
