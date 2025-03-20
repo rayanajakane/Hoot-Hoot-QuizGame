@@ -90,14 +90,13 @@ object MatchRoomService {
         hasBeenKickedOut = true
     }
 
-    fun createRoom(gameId: String, hostId: String, hostUsername: String, isClassicMode: Boolean = true) {
+    fun createRoom(gameId: String, hostId: String, hostUsername: String, isClassicMode: Boolean = true, isFriendsOnly: Boolean = false) {
         val data = JSONObject().apply {
             put("gameId", gameId)
             put("hostId", hostId)
-//            put("hostUsername", hostUsername)
+            put("isFriendsOnly", isFriendsOnly)
             put("isClassicMode", isClassicMode)
         }
-        Log.d("NADA CREATE ROOM", "${hostId} et ${hostUsername}")
 
         socket.emit(MatchEvents.CREATE_ROOM.value, data, Ack { args ->
             if (args.isNotEmpty()) {

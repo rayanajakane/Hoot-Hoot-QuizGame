@@ -23,13 +23,10 @@ import androidx.compose.ui.unit.dp
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import androidx.compose.ui.text.font.FontWeight
-<<<<<<< HEAD
 import com.example.polyquiz.R
 import com.example.polyquiz.match.domain.Game
-=======
 import com.example.polyquiz.Game
 import com.example.polyquiz.auth.domain.AuthViewModel
->>>>>>> 4a3105bc (functional migration from username to userid)
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.http.GameService
 import com.example.polyquiz.match.domain.MatchContextService
@@ -49,6 +46,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
     var isLoadingSelectedGame by remember { mutableStateOf(false) }
     val username by remember { mutableStateOf(authViewModel.getUsername() )}
     val userId by remember { mutableStateOf(authViewModel.getUserId()) }
+    val isFriendsOnly by remember { mutableStateOf(false) }
 
     var N_POPULAR_GAMES = 3
 
@@ -89,12 +87,11 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
         }
     }
 
-    fun revalidateGame(){
+    fun revalidateGame(isFriendsOnly:Boolean = false){
         if(selectedGame?.isVisible!!){
             gamesIsValid = true
             matchService.currentGame = selectedGame
-//            Log.d("NADA GAMESLIST", "${hostId} et ${hostUsername}")
-            matchService.saveBackupGame(selectedGame!!.id!!, userId, username)
+            matchService.saveBackupGame(selectedGame!!.id!!, userId, username, isFriendsOnly)
         }
     }
 
@@ -109,20 +106,20 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
         }, onError = {})
     }
 
-    fun reloadSelectedGame(){
+    fun reloadSelectedGame(isFriendsOnly: Boolean = false){
         gameService.getGameById(selectedGame?.id!!, onSuccess = {
             response ->
             val gson = Gson()
             val game = gson.fromJson(gson.toJson(response), Game::class.java)
             selectedGame = game
-            revalidateGame()
+            revalidateGame(isFriendsOnly)
         }, onError = {})
 
     }
 
-    fun createMatch(context: MatchContext){
+    fun createMatch(context: MatchContext, isFriendsOnly: Boolean = false){
         contextService.setContext(context)
-        reloadSelectedGame()
+        reloadSelectedGame(isFriendsOnly)
     }
 
     Row(
@@ -231,6 +228,23 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                         .padding(16.dp)
                 ) {
                         Text(text = stringResource(R.string.play))
+
+                    }
+                    Button(
+                        onClick = {
+                            createMatch(MatchContext.HOSTVIEW, true)
+                            navigateToWaitPage()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        ),
+                        modifier = Modifier
+                            .padding(16.dp)
+                    ) {
+                        Text(text = "Jouer avec amis")
+
+                    }
 
                 }
 
