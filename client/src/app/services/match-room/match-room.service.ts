@@ -217,7 +217,6 @@ export class MatchRoomService {
     onFetchPlayersData() {
         this.socketService.on(MatchEvents.FetchPlayersData, (res: string) => {
             this.players = JSON.parse(res);
-            console.log('vvvvvvvvvvvvvvvvvv', res);
         });
     }
 

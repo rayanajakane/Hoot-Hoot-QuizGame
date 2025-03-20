@@ -4,10 +4,12 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { getMockGame } from '@app/constants/game-mocks';
 import { Game } from '@app/interfaces/game';
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { ChoiceValidationService } from '@app/services/choice-validation/choice-validation.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { MatchService } from '@app/services/match/match.service';
 import { NotificationService } from '@app/services/notification/notification.service';
+import { TranslocoService } from '@jsverse/transloco';
 import { Observable, of } from 'rxjs';
 
 describe('MatchService', () => {
@@ -49,6 +51,9 @@ describe('MatchService', () => {
                 { provide: ChoiceValidationService, useValue: choiceValidationSpy },
                 { provide: NotificationService, useValue: notificationSpy },
                 { provide: MatchRoomService, useValue: matchRoomSpy },
+                { provide: TranslocoService, useValue: jasmine.createSpyObj('TranslocoService', ['translate']) },
+                { provide: 'TRANSLOCO_TRANSPILER', useValue: {} },
+                { provide: AuthenticationService, useValue: {} },
             ],
         }).compileComponents();
         service = TestBed.inject(MatchService);
