@@ -135,8 +135,6 @@ export class MatchCreationPageComponent implements OnInit {
                 if (response.body) {
                     const backupGame = JSON.parse(response.body);
                     this.matchService.currentGame = backupGame;
-                    console.log('Backup game loaded');
-                    console.log(this.isFriendsOnly);
                     this.matchService.createMatch(this.isFriendsOnly);
                 }
             });
