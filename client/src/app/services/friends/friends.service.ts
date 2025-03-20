@@ -16,7 +16,7 @@ export class FriendsService {
 
     constructor(
         private readonly authService: AuthenticationService,
-        private readonly socketHandler: SocketHandlerService, // private readonly notificationService: NotificationService,
+        private readonly socketHandler: SocketHandlerService,
     ) {}
 
     returnAllData() {
