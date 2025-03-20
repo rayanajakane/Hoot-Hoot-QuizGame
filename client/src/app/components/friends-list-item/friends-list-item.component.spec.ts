@@ -1,23 +1,36 @@
+// cSpell:ignore Transloco jsverse TRANSLOCO TRANSPILER
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
+import { TranslocoService } from '@jsverse/transloco';
 import { FriendsListItemComponent } from './friends-list-item.component';
 
 describe('FriendsListItemComponent', () => {
-  let component: FriendsListItemComponent;
-  let fixture: ComponentFixture<FriendsListItemComponent>;
+    let component: FriendsListItemComponent;
+    let fixture: ComponentFixture<FriendsListItemComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [FriendsListItemComponent]
-    })
-    .compileComponents();
-    
-    fixture = TestBed.createComponent(FriendsListItemComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [FriendsListItemComponent],
+            providers: [
+                { provide: TranslocoService, useValue: jasmine.createSpyObj('TranslocoService', ['translate']) },
+                { provide: 'TRANSLOCO_TRANSPILER', useValue: {} },
+                { provide: AuthenticationService, useValue: {} },
+            ],
+        }).compileComponents();
+        fixture = TestBed.createComponent(FriendsListItemComponent);
+        component = fixture.componentInstance;
+        component.user = {
+            id: '1',
+            photoUrl: 'https://example.com/avatar.png',
+            name: 'Test User',
+            isOnline: true,
+        };
+        fixture.detectChanges();
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });
