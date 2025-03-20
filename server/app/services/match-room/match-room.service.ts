@@ -86,8 +86,8 @@ export class MatchRoomService {
             isClassicMode,
             startTime: new Date(),
             qrCodeUrl,
-            hostId: hostId,
-            isFriendsOnly: isFriendsOnly,
+            hostId,
+            isFriendsOnly,
         };
         this.matchRooms.push(newRoom);
         this.setQuestionStrategy(newRoom);

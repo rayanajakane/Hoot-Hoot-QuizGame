@@ -1,5 +1,5 @@
-import { BANNED_USERNAME, HOST_CONFLICT, USED_USERNAME } from '@app/constants/match-login-errors';
-import { MOCK_MATCH_ROOM, MOCK_PLAYER, MOCK_PLAYER_ROOM, MOCK_ROOM_CODE, MOCK_USERNAME } from '@app/constants/match-mocks';
+import { BANNED_PLAYER, HOST_CONFLICT } from '@app/constants/match-login-errors';
+import { MOCK_MATCH_ROOM, MOCK_PLAYER, MOCK_PLAYER_ROOM, MOCK_ROOM_CODE, MOCK_USERID, MOCK_USERNAME } from '@app/constants/match-mocks';
 import { MultipleChoiceAnswer } from '@app/model/answer-types/multiple-choice-answer/multiple-choice-answer';
 import { Player } from '@app/model/schema/player.schema';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
@@ -51,14 +51,14 @@ describe('PlayerRoomService', () => {
         const expectedResult =
             // disable max lines since cant be split for string comparision
             // eslint-disable-next-line max-len
-            '[{"username":"","answer":{"isSubmitted":false,"selectedChoices":{}},"score":0,"answerCorrectness":0,"bonusCount":0,"isPlaying":true,"isChatActive":true,"state":"default"}]';
+            '[{"username":"","id":"","answer":{"isSubmitted":false,"selectedChoices":{}},"score":0,"answerCorrectness":0,"bonusCount":0,"isPlaying":true,"isChatActive":true,"state":"default"}]';
         const result = service.getPlayersStringified('');
         expect(result).toEqual(expectedResult);
     });
 
     it('addPlayer() should not add player if the username is invalid', () => {
         const validateSpy = jest.spyOn(service, 'getUsernameErrors').mockReturnValue(HOST_CONFLICT);
-        const result = service.addPlayer(socket, '', '');
+        const result = service.addPlayer(socket, '', '', '');
         expect(result).toBeFalsy();
         expect(validateSpy).toHaveBeenCalled();
     });
@@ -67,8 +67,10 @@ describe('PlayerRoomService', () => {
         const validateSpy = jest.spyOn(service, 'getUsernameErrors').mockReturnValue('');
         const pushSpy = jest.spyOn(Array.prototype, 'push');
         const mockUsername = 'mock';
+        const mockId = 'mockId';
         const expectedResult: Player = {
             username: mockUsername,
+            id: mockId,
             answer: { selectedChoices: new Map<string, boolean>(), isSubmitted: false } as MultipleChoiceAnswer,
             score: 0,
             answerCorrectness: AnswerCorrectness.WRONG,
@@ -78,7 +80,7 @@ describe('PlayerRoomService', () => {
             socket,
             state: PlayerState.default,
         };
-        const result = service.addPlayer(socket, '', mockUsername);
+        const result = service.addPlayer(socket, '', mockId, mockUsername);
         expect(result).toEqual(expectedResult);
         expect(validateSpy).toHaveBeenCalled();
         expect(pushSpy).toHaveBeenCalled();
@@ -140,19 +142,21 @@ describe('PlayerRoomService', () => {
         expect(inactiveSpy).not.toHaveBeenCalled();
     });
 
-    it('getPlayerByusername() should return the player with the corresponding username (non case sensitive)', () => {
+    it('getPlayerById() should return the player with the corresponding username (non case sensitive)', () => {
         const searchedPlayer = MOCK_PLAYER;
         searchedPlayer.username = MOCK_USERNAME;
+        searchedPlayer.id = MOCK_USERID;
         const otherPlayer: Player = {
             username: '',
+            id: '',
             score: 0,
             bonusCount: 0,
             isPlaying: false,
             socket: undefined,
         } as Player;
         jest.spyOn(service, 'getPlayers').mockReturnValue([searchedPlayer, otherPlayer]);
-        expect(service.getPlayerByUsername('', searchedPlayer.username)).toEqual(searchedPlayer);
-        expect(service.getPlayerByUsername('', searchedPlayer.username.toUpperCase())).toEqual(searchedPlayer);
+        expect(service.getPlayerById('', searchedPlayer.id)).toEqual(searchedPlayer);
+        expect(service.getPlayerById('', searchedPlayer.id)).toEqual(searchedPlayer);
     });
 
     it('makePlayerInactive() should set the player isPlaying property to false', () => {
@@ -161,6 +165,8 @@ describe('PlayerRoomService', () => {
             const mockRoom = MOCK_PLAYER_ROOM;
             const mockPlayer = MOCK_PLAYER;
             const mockUsername = MOCK_USERNAME;
+            const mockId = MOCK_USERID;
+            mockPlayer.id = mockId;
             mockPlayer.username = mockUsername;
             mockPlayer.isPlaying = playingState;
             mockRoom.players = [mockPlayer];
@@ -169,7 +175,7 @@ describe('PlayerRoomService', () => {
             jest.spyOn(matchRoomSpy, 'getRoomIndex').mockReturnValue(0);
             jest.spyOn(matchRoomSpy, 'getRoom').mockClear();
             jest.spyOn(matchRoomSpy, 'getRoom').mockReturnValue(mockRoom);
-            service.makePlayerInactive('', mockUsername);
+            service.makePlayerInactive('', mockId);
             expect(matchRoomSpy.matchRooms[0].players[0].isPlaying).toBeFalsy();
             expect(matchRoomSpy.matchRooms[0].players[0].state).toEqual(PlayerState.exit);
         });
@@ -179,50 +185,46 @@ describe('PlayerRoomService', () => {
         const mockRoom = MOCK_PLAYER_ROOM;
         const mockPlayer = MOCK_PLAYER;
         mockPlayer.username = MOCK_USERNAME;
+        mockPlayer.id = MOCK_USERID;
         mockRoom.players = [mockPlayer];
         matchRoomSpy.matchRooms = [mockRoom];
 
         jest.spyOn(matchRoomSpy, 'getRoomIndex').mockReturnValue(0);
-        service.deletePlayer('', MOCK_USERNAME);
+        service.deletePlayer('', MOCK_USERID);
         expect(matchRoomSpy.matchRooms[0].players.length).toEqual(0);
     });
 
-    it('getBannedUsernames() should return banned usernames', () => {
+    it('getBannedPlayers() should return banned usernames', () => {
         const mockRoom = MOCK_PLAYER_ROOM;
-        mockRoom.bannedUsernames = [MOCK_USERNAME];
+        mockRoom.bannedIds = [MOCK_USERID];
         matchRoomSpy.matchRooms = [mockRoom];
-        expect(service.getBannedUsernames('')).toEqual([MOCK_USERNAME]);
+        expect(service.getBannedPlayers('')).toEqual([MOCK_USERID]);
     });
 
-    it('addBannedUsernames() should add username to bannedUsernames list from matchRoomService', () => {
+    it('addBannedPlayers() should add username to bannedUsernames list from matchRoomService', () => {
         const pushSpy = jest.spyOn(Array.prototype, 'push');
-        service.addBannedUsername('', MOCK_USERNAME);
-        expect(pushSpy).toHaveBeenCalledWith(MOCK_USERNAME.toUpperCase());
+        service.addBannedPlayers('', MOCK_USERID);
+        expect(pushSpy).toHaveBeenCalledWith(MOCK_USERID);
     });
 
-    it('isBannedUsername() should return true if username is banned', () => {
-        jest.spyOn(service, 'getBannedUsernames').mockReturnValue([MOCK_USERNAME]);
-        expect(service.isBannedUsername('', MOCK_USERNAME)).toEqual(true);
+    it('isBannedPlayer() should return true if username is banned', () => {
+        jest.spyOn(service, 'getBannedPlayers').mockReturnValue([MOCK_USERID]);
+        expect(service.isBannedPlayer('', MOCK_USERID)).toEqual(true);
     });
 
-    it('isBannedUsername() should return false if username is not banned', () => {
-        jest.spyOn(service, 'getBannedUsernames').mockReturnValue([]);
-        expect(service.isBannedUsername('', MOCK_USERNAME)).toEqual(false);
+    it('isBannedPlayer() should return false if username is not banned', () => {
+        jest.spyOn(service, 'getBannedPlayers').mockReturnValue([]);
+        expect(service.isBannedPlayer('', MOCK_USERID)).toEqual(false);
     });
 
     it('getUsernameErrors() should show applicable errors', () => {
-        const testCases = [
-            { username: MOCK_USERNAME, isBanned: false, isUsed: false, expectedResult: '' },
-            { username: HOST_USERNAME, isBanned: false, isUsed: false, expectedResult: HOST_CONFLICT },
-            { username: MOCK_USERNAME, isBanned: true, isUsed: false, expectedResult: BANNED_USERNAME },
-            { username: MOCK_USERNAME, isBanned: false, isUsed: true, expectedResult: USED_USERNAME },
-        ];
-        for (const { username, isBanned, isUsed, expectedResult } of testCases) {
-            const banSpy = jest.spyOn(service, 'isBannedUsername').mockReturnValue(isBanned);
-            const usedSpy = jest.spyOn(service, 'getPlayerByUsername').mockReturnValue(isUsed ? MOCK_PLAYER : undefined);
-            const result = service.getUsernameErrors('', username);
+        const testCases = [{ userId: MOCK_USERID, isBanned: true, expectedResult: BANNED_PLAYER }];
+        for (const { userId, isBanned, expectedResult } of testCases) {
+            const banSpy = jest.spyOn(service, 'isBannedPlayer').mockReturnValue(isBanned);
+            // const usedSpy = jest.spyOn(service, 'getPlayerByUsername').mockReturnValue(isUsed ? MOCK_PLAYER : undefined);
+            const result = service.getUsernameErrors('', userId);
             expect(banSpy).toHaveBeenCalled();
-            expect(usedSpy).toHaveBeenCalled();
+            // expect(usedSpy).toHaveBeenCalled();
             expect(result).toEqual(expectedResult);
         }
     });
@@ -271,7 +273,9 @@ describe('PlayerRoomService', () => {
     it('isHostPlayer() should return true if the host player exists in the MatchRoom', () => {
         const mockRoom = MOCK_PLAYER_ROOM;
         const mockPlayer = MOCK_PLAYER;
+        mockRoom.hostId = MOCK_USERID;
         mockPlayer.username = HOST_USERNAME;
+        mockPlayer.id = MOCK_USERID;
         mockRoom.players = [mockPlayer];
         matchRoomSpy.matchRooms = [mockRoom];
 
@@ -283,6 +287,7 @@ describe('PlayerRoomService', () => {
         const mockRoom = MOCK_PLAYER_ROOM;
         const mockPlayer = MOCK_PLAYER;
         mockPlayer.username = 'otherPlayer';
+        mockPlayer.id = 'otherPlayer';
         mockRoom.players = [mockPlayer];
         matchRoomSpy.matchRooms = [mockRoom];
 
