@@ -14,6 +14,7 @@ import { LongAnswerStrategy } from '@app/question-strategies/long-answer-strateg
 import { MultipleChoiceStrategy } from '@app/question-strategies/multiple-choice-strategy/multiple-choice-strategy';
 import { AnswerService } from '@app/services/answer/answer.service';
 import { ChatService } from '@app/services/chat/chat.service';
+import { FriendsService } from '@app/services/friends/friends.service';
 import { GameCreationService } from '@app/services/game-creation/game-creation.service';
 import { GameValidationService } from '@app/services/game-validation/game-validation.service';
 import { GameService } from '@app/services/game/game.service';
@@ -29,6 +30,7 @@ import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MongooseModule } from '@nestjs/mongoose';
+import { FriendsGateway } from './gateways/friends/friends.gateway';
 
 @Module({
     imports: [
@@ -67,6 +69,8 @@ import { MongooseModule } from '@nestjs/mongoose';
         LongAnswerStrategy,
         EstimatedAnswerStrategy,
         QuestionPicturesDeletionService,
+        FriendsService,
+        FriendsGateway,
         QrCodeService,
     ],
 })

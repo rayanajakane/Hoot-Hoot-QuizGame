@@ -138,7 +138,7 @@ describe('MatchRoomService', () => {
             isLocked: false,
             isPlaying: false,
             game: getMockGame(),
-            bannedUsernames: [],
+            bannedIds: [],
             players: [],
             messages: [],
             hostSocket: undefined,
@@ -157,6 +157,7 @@ describe('MatchRoomService', () => {
         const expectedResult: MatchRoom = {
             code: MOCK_ROOM_CODE,
             hostSocket: socket,
+            hostId: '',
             isLocked: false,
             isPlaying: false,
             game: mockGame,
@@ -167,7 +168,7 @@ describe('MatchRoomService', () => {
             currentQuestionAnswer: [],
             choiceTracker: new ChoiceTracker(),
             matchHistograms: [],
-            bannedUsernames: [],
+            bannedIds: [],
             players: [],
             activePlayers: 0,
             submittedPlayers: 0,
@@ -175,9 +176,10 @@ describe('MatchRoomService', () => {
             isClassicMode: true,
             startTime: new Date(),
             qrCodeUrl: '',
+            isFriendsOnly: false,
         };
 
-        const result = await service.addRoom(mockGame, socket);
+        const result = await service.addRoom(mockGame, socket, '');
         expect(generateSpy).toHaveBeenCalled();
         expect(result).toEqual(expectedResult);
         expect(service.matchRooms.length).toEqual(1);
@@ -218,7 +220,7 @@ describe('MatchRoomService', () => {
             isLocked: false,
             isPlaying: false,
             game: getMockGame(),
-            bannedUsernames: [],
+            bannedIds: [],
             players: [],
             messages: [],
             hostSocket: undefined,
@@ -330,7 +332,6 @@ describe('MatchRoomService', () => {
             gameDuration: matchRoom.game.duration,
             isClassicMode: true,
         });
-        console.log('currrrrr', currentAnswers);
         expect(mockHostSocket.send).toHaveBeenCalledWith('currentAnswers', currentAnswers);
         expect(startTimerMock).toHaveBeenCalledWith(mockServer, MOCK_ROOM_CODE, matchRoom.game.duration, ExpiredTimerEvents.QuestionTimerExpired);
     });

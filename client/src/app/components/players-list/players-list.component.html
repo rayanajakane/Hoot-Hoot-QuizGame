@@ -1,6 +1,6 @@
 <div id="players-main-container">
     <h2>Joueurs</h2>
-    <div *ngIf="this.matchRoomService.getUsername() === 'Organisateur' && this.matchContextService.getContext() !== context.RandomMode">
+    <div *ngIf="this.matchContextService.getContext() === context.HostView && this.matchContextService.getContext() !== context.RandomMode">
         <div id="sort-options">
             <div>
                 <p>Trier par:</p>
@@ -27,7 +27,7 @@
             <!-- <mat-slide-toggle [(ngModel)]="player.isChatActive" (click)="toggleChat(player)"></mat-slide-toggle>-->
         </div>
     </div>
-    <div *ngIf="this.matchRoomService.getUsername() !== 'Organisateur' || this.matchContextService.getContext() === context.RandomMode">
+    <div *ngIf="this.matchContextService.getContext() !== context.HostView || this.matchContextService.getContext() === context.RandomMode">
         <div *ngFor="let player of this.players | sortByScore" class="player-card">
             <p [ngClass]="player.isPlaying ? '' : 'inactive-player'">{{ player.username }}</p>
             <div class="player-performance">

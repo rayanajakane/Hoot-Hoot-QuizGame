@@ -32,8 +32,23 @@
             <div id="game-details-header">
                 <h2>{{ t('match-creation-page.game-details-label') }}{{ selectedGame ? '"' + selectedGame.title + '"' : '' }}</h2>
                 <div id="buttons-container">
-                    <button mat-raised-button color="primary" (click)="createMatch(matchContext.HostView)" *ngIf="gameIsValid && !isRandomGame">
+                    <button
+                        mat-raised-button
+                        color="primary"
+                        (click)="isFriendsOnly = false; createMatch(matchContext.HostView)"
+                        *ngIf="gameIsValid && !isRandomGame"
+                        [disabled]="buttonClicked"
+                    >
                         {{ t('common.play') }}
+                    </button>
+                    <button
+                        mat-raised-button
+                        color="primary"
+                        (click)="isFriendsOnly = true; createMatch(matchContext.HostView)"
+                        *ngIf="gameIsValid && !isRandomGame"
+                        [disabled]="buttonClicked"
+                    >
+                        Jouer avec des amis
                     </button>
                 </div>
             </div>

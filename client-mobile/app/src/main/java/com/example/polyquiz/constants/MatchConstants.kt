@@ -7,7 +7,6 @@ const val COOLDOWN_TIME = 3
 const val BONUS_FACTOR = 0.2
 const val MULTIPLICATION_FACTOR = 100
 const val MINIMUM_QUESTIONS = 5
-const val HOST_USERNAME = "Organisateur"
 const val FREE_ANSWER_MAX_LENGTH = 200
 const val LONG_ANSWER_TIME = 60
 const val HISTOGRAM_UPDATE_TIME_SECONDS = 5

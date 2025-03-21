@@ -58,6 +58,7 @@ fun JoinMatchPage(modifier: Modifier, authViewModel: AuthViewModel,navigateToHom
                   navigateToWaitPage: () -> Unit) {
     var room by remember { mutableStateOf("") }
     val username by remember { mutableStateOf(authViewModel.getUsername()) }
+    val userId by remember { mutableStateOf(authViewModel.getUserId()) }
 
     val joinMatchService = JoinMatchService
 
@@ -91,6 +92,7 @@ fun JoinMatchPage(modifier: Modifier, authViewModel: AuthViewModel,navigateToHom
                 JoinMatchService.matchRoomCode = matchRoomCode
                 JoinMatchService.validateUsername(
                     username,
+                    userId,
                     navigateToHome,
                     navigateToWaitPage,
                     navigateToMatchPage

@@ -49,7 +49,7 @@ describe('JoinMatchService', () => {
     it('postUsername() should validate the username using HTTP POST', () => {
         const mockResponse = 'mockResponse';
         const MOCK_URL = `${SERVER_URL}/match/validate-code`;
-        service.validateUsername('');
+        service.validateUsername('', '');
         service.validateMatchRoomCode('').subscribe((data) => {
             expect(data.body).toEqual(mockResponse);
         });
@@ -62,7 +62,7 @@ describe('JoinMatchService', () => {
         const mockHttpResponse: HttpResponse<string> = new HttpResponse({ status: 200, statusText: 'OK', body: JSON.stringify(true) });
         const postSpy = spyOn(service, 'postUsername').and.returnValue(of(mockHttpResponse));
         const addSpy = spyOn(service, 'addPlayerToMatchRoom').and.returnValue();
-        service.validateUsername('');
+        service.validateUsername('', '');
         expect(postSpy).toHaveBeenCalled();
         expect(addSpy).toHaveBeenCalled();
         expect(service.matchRoomCode).toEqual('');
@@ -76,14 +76,14 @@ describe('JoinMatchService', () => {
         spyOn(JSON, 'parse').and.returnValue(httpError.error);
         const postSpy = spyOn(service, 'postUsername').and.returnValue(throwError(() => httpError));
         const addSpy = spyOn(service, 'addPlayerToMatchRoom').and.returnValue();
-        service.validateUsername('');
+        service.validateUsername('', '');
         expect(postSpy).toHaveBeenCalled();
         expect(addSpy).not.toHaveBeenCalled();
         expect(notificationSpy.displayErrorMessage).toHaveBeenCalled();
     });
 
     it('addPlayerToMatchRoom() should let the player connect and join the room', () => {
-        service.addPlayerToMatchRoom('', '');
+        service.addPlayerToMatchRoom('', '', '');
         expect(matchRoomSpy.connect).toHaveBeenCalled();
         expect(matchRoomSpy.joinRoom).toHaveBeenCalled();
     });

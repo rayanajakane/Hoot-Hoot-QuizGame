@@ -1,4 +1,5 @@
 export interface UserInfo {
     roomCode: string;
-    username: string;
+    username?: string;
+    userId?: string;
 }
