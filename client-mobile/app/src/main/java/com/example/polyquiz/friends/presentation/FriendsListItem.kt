@@ -60,13 +60,6 @@ fun FriendsListItem(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(text = user.name, style = MaterialTheme.typography.displaySmall)
-            Spacer(modifier = Modifier.width(8.dp))
-            Box(
-                modifier = Modifier
-                    .size(10.dp)
-                    .clip(CircleShape)
-                    .background(if (user.isOnline == true) AndroidGreen else LightGray)
-            )
         }
         when {
             isFriend -> {
