@@ -13,6 +13,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.polyquiz.R
 import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
+import com.example.polyquiz.constants.FriendsEvents
 import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.core.storage.ImageStorage
 import com.example.vanillaprototype.socket.SocketHandler
@@ -186,9 +187,6 @@ class AuthViewModel : ViewModel() {
         // Delete avatar from storage
         ImageStorage.deleteAvatar(user.uid)
 
-        // Disconnect socket
-        SocketHandler.disconnect()
-
         // Delete user from auth
         user.delete().addOnCompleteListener { task ->
             if(task.isSuccessful) {
@@ -199,6 +197,11 @@ class AuthViewModel : ViewModel() {
                         )
                     )
                 }
+                SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
+                
+                // Disconnect socket
+                SocketHandler.disconnect()
+
                 Log.d("Delete user", "Deleted user successfully")
             } else {
                 viewModelScope.launch {
@@ -359,6 +362,7 @@ class AuthViewModel : ViewModel() {
                                         setAvatarUrl(user?.photoUrl.toString())
                                         _authState.value = AuthState.Authenticated
                                         SocketHandler.connect()
+                                        SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
                                     }
                                     Log.d(TAG, "createUserWithEmail:success")
                                 }
@@ -415,6 +419,7 @@ class AuthViewModel : ViewModel() {
                         )
                     )
                 }
+                SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
                 Log.d(
                     "Profile update",
                     "Used ${avatarURL.value}"

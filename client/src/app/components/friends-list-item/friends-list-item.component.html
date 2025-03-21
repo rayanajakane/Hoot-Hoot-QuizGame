@@ -2,7 +2,6 @@
     <div class="user-info">
         <img class="avatar" [src]="user.photoUrl ? user.photoUrl : defaultAvatar" alt="Avatar" />
         <span class="username">{{ user.name }}</span>
-        <span class="status-indicator" [ngClass]="{ online: user.isOnline, offline: !user.isOnline }"></span>
     </div>
     <ng-container [ngSwitch]="true">
         <!-- <button *ngSwitchCase="isFriend" mat-raised-button color="basic" disabled>✅ Amis</button> -->

@@ -10,6 +10,21 @@ export class FriendsGateway implements OnGatewayDisconnect {
     private userSockets: Map<string, string> = new Map(); // userId -> socketId
     constructor(private friendsService: FriendsService) {}
 
+    @SubscribeMessage(FriendsEvents.UpdateData)
+    async updateData(client: Socket) {
+        const allUsers = await this.friendsService.getAllUsers('');
+        allUsers.forEach(async (user) => {
+            this.server.to(this.userSockets.get(user.id)).emit(FriendsEvents.ReturnAllUsers, await this.friendsService.getAllUsers(user.id));
+            this.server.to(this.userSockets.get(user.id)).emit(FriendsEvents.ReturnAllFriends, await this.friendsService.getFriendsList(user.id));
+            this.server
+                .to(this.userSockets.get(user.id))
+                .emit(FriendsEvents.ReturnAllPendingRequests, await this.friendsService.getPendingRequests(user.id));
+            this.server
+                .to(this.userSockets.get(user.id))
+                .emit(FriendsEvents.ReturnAllSentRequests, await this.friendsService.getSentRequests(user.id));
+        });
+    }
+
     @SubscribeMessage(FriendsEvents.ReturnAllData)
     async returnAllData(client: Socket, userId: string) {
         this.userSockets.set(userId, client.id);
