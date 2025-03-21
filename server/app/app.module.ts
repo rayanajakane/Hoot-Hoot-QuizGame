@@ -31,6 +31,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FriendsGateway } from './gateways/friends/friends.gateway';
+import { MoneyService } from './services/money/money.service';
 
 @Module({
     imports: [
@@ -72,6 +73,7 @@ import { FriendsGateway } from './gateways/friends/friends.gateway';
         FriendsService,
         FriendsGateway,
         QrCodeService,
+        MoneyService,
     ],
 })
 export class AppModule {}
