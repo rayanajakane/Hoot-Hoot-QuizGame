@@ -24,6 +24,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import androidx.compose.ui.text.font.FontWeight
 import com.example.polyquiz.R
+import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.match.domain.Game
 import com.example.polyquiz.Game
 import com.example.polyquiz.auth.domain.AuthViewModel
@@ -215,19 +216,37 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                 Spacer(modifier = Modifier.height(16.dp))
 
 
-                Button(
-                    onClick = {
-                        createMatch(MatchContext.HOSTVIEW)
-                        navigateToWaitPage()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
-                    ),
-                    modifier = Modifier
-                        .padding(16.dp)
-                ) {
-                        Text(text = stringResource(R.string.play))
+                Row {
+                    Button(
+                        onClick = {
+                            createMatch(MatchContext.HOSTVIEW)
+                            navigateToWaitPage()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        ),
+                        modifier = Modifier
+                            .padding(16.dp)
+                    ) {
+                        Text(text = "Jouer")
+
+                    }
+                    Button(
+                        onClick = {
+                            createMatch(MatchContext.HOSTVIEW, true)
+                            navigateToWaitPage()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        ),
+                        modifier = Modifier
+                            .padding(16.dp)
+                    ) {
+                        Text(text = "Jouer avec amis")
+
+                    }
 
                     }
                     Button(
@@ -247,6 +266,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                     }
 
                 }
+
 
             } else {
                 Text(text = stringResource(R.string.select_game), modifier = Modifier.padding(8.dp))
