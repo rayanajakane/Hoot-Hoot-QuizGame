@@ -1,9 +1,9 @@
 package com.example.polyquiz.match.domain
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.example.polyquiz.Game
 import com.example.polyquiz.http.GameService
 import com.example.polyquiz.http.CommunicationService
 import com.google.gson.Gson
@@ -17,10 +17,9 @@ object MatchService {
         override val apiService: ApiService = retrofit.create(ApiService::class.java)
     }
 
-    fun createMatch(){
+    fun createMatch(hostId: String, hostUsername: String, isFriendsOnly: Boolean = false, isClassicMode : Boolean = false){
         matchRoomService.connect()
-        println(currentGame?.id)
-        matchRoomService.createRoom(currentGame!!.id!!)
+        matchRoomService.createRoom(currentGame!!.id!!, hostId, hostUsername, isClassicMode, isFriendsOnly)
     }
 
     fun getBackupGame(id:String){
@@ -31,14 +30,14 @@ object MatchService {
         return gameService.getGames(onSuccess = {}, onError = {})
     }
 
-    fun saveBackupGame(id: String){
+    fun saveBackupGame(id: String, hostId: String = "", hostUsername: String ="", isFriendsOnly: Boolean= false){
             return backupService.add(
                 currentGame!!,
                 onSuccess = { response ->
                     val gson = Gson()
                     val game = gson.fromJson(gson.toJson(response), Game::class.java)
                     currentGame = game
-                    createMatch()
+                    createMatch(hostId, hostUsername, isFriendsOnly )
                 },
                 onError = { error -> println(error)
 

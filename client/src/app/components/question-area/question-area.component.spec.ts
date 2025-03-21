@@ -97,12 +97,14 @@ describe('QuestionAreaComponent', () => {
             'goToNextQuestion',
             'getUsername',
             'getRoomCode',
+            'getUserId',
             'disconnectFromRoom',
             'sendPlayersData',
             'onRouteToResultsPage',
             'routeToResultsPage',
             'onGameOver',
         ]);
+        matchRoomSpy.getUserId.and.returnValue('testUser');
 
         timerSpy = jasmine.createSpyObj('TimeService', [
             'startTimer',

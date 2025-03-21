@@ -34,14 +34,14 @@ fun JoinGameDialog(
 ) {
     var room by remember { mutableStateOf("") }
     val username by remember { mutableStateOf(authViewModel.getUsername() )}
-
+    val userId by remember { mutableStateOf(authViewModel.getUserId()) }
     fun submitCode(matchRoomCode: String) {
         JoinMatchService.matchRoomCode = "";
         JoinMatchService.validateMatchRoomCode(
             matchRoomCode,
             onSuccess = {
                 JoinMatchService.matchRoomCode = matchRoomCode
-                JoinMatchService.validateUsername(username, navigateToHome, navigateToWaitPage, navigateToMatchPage)
+                JoinMatchService.validateUsername(username, userId, navigateToHome, navigateToWaitPage, navigateToMatchPage)
             },
             onError = { errorMessage ->
                 println("Error: $errorMessage")

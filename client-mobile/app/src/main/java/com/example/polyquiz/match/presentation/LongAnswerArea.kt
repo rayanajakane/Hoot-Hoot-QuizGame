@@ -70,34 +70,36 @@ fun LongAnswerArea(
                         .padding(top = 4.dp)
                 )
         } else {
-            Text(
-                text = GradingFeedback.GRADE_PLAYERS.value,
-                fontSize = 18.sp,
-                modifier = Modifier.padding(8.dp)
-            )
-
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp)
-                    .background(Color.White)
-                    .padding(8.dp)
-            ) {
-                items(answerService.playersAnswers) { playerAnswer ->
-                    AnswerCard(playerAnswer)
-                }
-            }
-
-
-            Button(
-                onClick = { answerService.sendGrades() },
-                enabled = answerService.isGradingComplete,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
+            if (answerService.gradeAnswers) {
                 Text(
-                    text = if (answerService.isGradingComplete) MatchButtonActions.SUBMIT_GRADING.value
-                    else GradingFeedback.PLAYERS_TO_GRADE.value
+                    text = GradingFeedback.GRADE_PLAYERS.value,
+                    fontSize = 18.sp,
+                    modifier = Modifier.padding(8.dp)
                 )
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        .background(Color.White)
+                        .padding(8.dp)
+                ) {
+                    items(answerService.playersAnswers) { playerAnswer ->
+                        AnswerCard(playerAnswer)
+                    }
+                }
+
+
+                Button(
+                    onClick = { answerService.sendGrades() },
+                    enabled = answerService.isGradingComplete,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Text(
+                        text = if (answerService.isGradingComplete) MatchButtonActions.SUBMIT_GRADING.value
+                        else GradingFeedback.PLAYERS_TO_GRADE.value
+                    )
+                }
             }
         }
     }
@@ -111,7 +113,7 @@ fun AnswerCard(playerAnswer: LongAnswerInfo) {
             .fillMaxWidth()
             .padding(vertical = 8.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Row(modifier = Modifier.padding(16.dp)) {
             Text(text = playerAnswer.username, fontSize = 16.sp, fontWeight = FontWeight.Bold)
             Text(text = playerAnswer.answer, fontSize = 14.sp, modifier = Modifier.padding(top = 8.dp))
 
@@ -120,9 +122,9 @@ fun AnswerCard(playerAnswer: LongAnswerInfo) {
                     Button(
                         onClick = { playerAnswer.score = option.value.toString()
                                 answerService.handleGrading()},
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = getGradeColor(option)
-                        )
+//                        colors = ButtonDefaults.buttonColors(
+//                            containerColor = getGradeColor(option)
+//                        )
                     ) {
                         Text("${option.value}%")
                     }

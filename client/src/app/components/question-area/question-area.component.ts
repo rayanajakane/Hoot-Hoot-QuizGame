@@ -74,7 +74,7 @@ export class QuestionAreaComponent implements OnInit {
     }
 
     submitAnswers(): void {
-        this.answerService.submitAnswer({ username: this.matchRoomService.getUsername(), roomCode: this.matchRoomService.getRoomCode() });
+        this.answerService.submitAnswer({ userId: this.matchRoomService.getUserId(), roomCode: this.matchRoomService.getRoomCode() });
     }
 
     goToNextQuestion() {

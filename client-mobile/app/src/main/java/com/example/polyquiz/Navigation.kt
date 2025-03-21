@@ -14,6 +14,7 @@ import com.example.polyquiz.auth.presentation.SignupPage
 import com.example.polyquiz.auth.presentation.UserEditPage
 import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.Route
+import com.example.polyquiz.friends.domain.FriendsService
 import com.example.polyquiz.match.domain.AnswerService
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
@@ -23,10 +24,9 @@ import com.example.polyquiz.match.presentation.ResultsPage
 import com.example.polyquiz.pages.presentation.JoinMatchPage
 import com.example.polyquiz.pages.presentation.MatchCreationPage
 import com.example.polyquiz.pages.presentation.WaitPage
+import com.example.polyquiz.friends.presentation.FriendsSearchScreen
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.ui.features.camera.MainCameraScreen
-
-
 
 // References: https://youtu.be/AIC_OFQ1r3k  and  https://youtu.be/lv1raAvwcgI
 @Composable
@@ -115,6 +115,9 @@ fun Navigation(
                 },
                 navigateToWaitPage = {
                     navController.navigate(Route.WaitPage)
+                },
+                navigateToFriendsPage = {
+                    navController.navigate(Route.FriendsSearchScreen)
                 }
             )
         }
@@ -191,14 +194,18 @@ fun Navigation(
                 cameraViewModel = cameraViewModel
             )
         }
-
+        composable<Route.FriendsSearchScreen> {
+            FriendsSearchScreen(
+                currentUserID = authViewModel.getUserId(),
+                navigateToHome = { navController.navigate(Route.Home) }
+            )
+        }
         composable<Route.MainCameraScreen> {
             MainCameraScreen(
                 authViewModel,
                 cameraViewModel,
                 navigateToUserEdit = { navController.navigate(Route.UserEditPage) })
         }
-
     }
 
 

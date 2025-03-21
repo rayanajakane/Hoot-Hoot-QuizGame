@@ -46,26 +46,29 @@ describe('LongAnswerStrategy', () => {
 
         const player1 = { ...MOCK_PLAYER };
         player1.username = 'player1';
+        player1.id = 'p1';
         player1.answer = { answer: 'answer1', isSubmitted: true, timestamp: currentTime - 1000 } as LongAnswer;
         player1.socket = mockPlayerSocket;
         matchRoom.players[0] = player1;
 
         const player2 = { ...MOCK_PLAYER };
         player2.username = 'player2';
+        player2.id = 'p2';
         player2.answer = { answer: 'answer2', isSubmitted: false, timestamp: currentTime - 2000 } as LongAnswer;
         player2.socket = mockPlayerSocket;
         matchRoom.players[1] = player2;
 
         const player3 = { ...MOCK_PLAYER };
         player3.username = 'player3';
+        player3.id = 'p3';
         player3.answer = { answer: 'answer3', isSubmitted: false, timestamp: currentTime - 9000 } as LongAnswer;
         player3.socket = mockPlayerSocket;
         matchRoom.players[2] = player3;
 
         grades = [
-            { username: player1.username, answer: player1.answer.answer, score: '0' },
-            { username: player2.username, answer: player2.answer.answer, score: '50' },
-            { username: player3.username, answer: player3.answer.answer, score: '100' },
+            { userId: 'p1', username: player1.username, answer: player1.answer.answer, score: '0' },
+            { userId: 'p2', username: player2.username, answer: player2.answer.answer, score: '50' },
+            { userId: 'p3', username: player3.username, answer: player3.answer.answer, score: '100' },
         ];
 
         gradeTracker = new GradeTracker(matchRoom.currentQuestion.text, strategy['getPossibleGrades']());

@@ -49,13 +49,13 @@ export class MultipleChoiceAreaComponent implements OnInit {
             if (!this.selectedAnswers.includes(choice)) {
                 this.selectedAnswers.push(choice);
                 this.answerService.selectChoice(choice.text, {
-                    username: this.matchRoomService.getUsername(),
+                    userId: this.matchRoomService.getUserId(),
                     roomCode: this.matchRoomService.getRoomCode(),
                 });
             } else {
                 this.selectedAnswers = this.selectedAnswers.filter((answer) => answer !== choice);
                 this.answerService.deselectChoice(choice.text, {
-                    username: this.matchRoomService.getUsername(),
+                    userId: this.matchRoomService.getUserId(),
                     roomCode: this.matchRoomService.getRoomCode(),
                 });
             }

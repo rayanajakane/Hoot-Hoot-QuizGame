@@ -26,12 +26,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.polyquiz.Game
 import com.example.polyquiz.auth.domain.AuthViewModel
-import com.example.polyquiz.constants.HOST_USERNAME
 import com.example.polyquiz.constants.MatchButtonActions
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.constants.StartMatchFeedback
+import com.example.polyquiz.match.domain.Game
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.MatchRoomService.gameTitle
@@ -67,7 +66,9 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
     }
 
     fun isHost(): Boolean {
-        return MatchRoomService.retrieveUsername() == "Organisateur"
+        println(MatchRoomService.hostId)
+        println( MatchRoomService.hostId == authViewModel.getUserId())
+        return MatchRoomService.hostId == authViewModel.getUserId()
     }
 
     fun getCurrentGame(): Game {
@@ -103,11 +104,12 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
         MatchRoomService.toggleLock()
     }
 
-    fun banPlayerUsername(username: String) {
-        if (username === HOST_USERNAME) {
+    fun banPlayerUsername(userId: String) {
+        if (userId === matchRoomService.hostId) {
             return
         }
-        MatchRoomService.banUsername(username)
+        println(userId)
+        MatchRoomService.banUsername(userId)
     }
 
     fun startMatch() {
@@ -184,8 +186,8 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(player.username)
-                            if (isHost() && player.username != HOST_USERNAME) {
-                                Button(onClick = { banPlayerUsername(player.username) }) {
+                            if (isHost() && player.id != matchRoomService.hostId) {
+                                Button(onClick = { banPlayerUsername(player.id) }) {
                                     Text(MatchButtonActions.BAN_PLAYER.value)
                                 }
                             }

@@ -65,8 +65,8 @@ describe('AnswerService', () => {
         service = TestBed.inject(AnswerService);
 
         answers = [
-            { username: 'player1', answer: 'answer1', score: '0' },
-            { username: 'player2', answer: 'answer2', score: '0' },
+            { userId: '321', username: 'player1', answer: 'answer1', score: '0' },
+            { userId: '213', username: 'player2', answer: 'answer2', score: '0' },
         ];
     });
 
@@ -113,7 +113,7 @@ describe('AnswerService', () => {
 
         // Any is required to simulate Function type in tests
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const feedbackSpy = spyOn(socketSpy, 'on').and.callFake((event: string, cb: (param: any) => any) => {
+        const feedbackSpy = spyOn(socketSpy, 'on').and.callFake((_event: string, cb: (param: any) => any) => {
             cb(feedback);
         });
 
@@ -150,7 +150,7 @@ describe('AnswerService', () => {
 
         // Any is required to simulate Function type in tests
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const bonusPointsSpy = spyOn(socketSpy, 'on').and.callFake((event: string, cb: (param: any) => any) => {
+        const bonusPointsSpy = spyOn(socketSpy, 'on').and.callFake((_event: string, cb: (param: any) => any) => {
             cb(bonusPoints);
         });
 
@@ -163,7 +163,7 @@ describe('AnswerService', () => {
     it('should receive gameOver event', () => {
         // Any is required to simulate Function type in tests
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const gameOverSpy = spyOn(socketSpy, 'on').and.callFake((event: string, cb: (param: any) => void) => {
+        const gameOverSpy = spyOn(socketSpy, 'on').and.callFake((_event: string, cb: (param: any) => void) => {
             cb('');
         });
         service.onEndGame();
@@ -201,6 +201,8 @@ describe('AnswerService', () => {
     });
 
     it('updateLongAnswer() should send correct long answer information to server if selection is enabled', () => {
+        matchRoomSpy.getUserId = jasmine.createSpy('getUserId').and.returnValue('mockUserId');
+
         const sendSpy = spyOn(service.socketService, 'send').and.returnValue();
         service.isSelectionEnabled = true;
         service.currentLongAnswer = 'current answer';
@@ -208,8 +210,8 @@ describe('AnswerService', () => {
         expect(sendSpy).toHaveBeenCalledWith(AnswerEvents.UpdateLongAnswer, {
             choice: 'current answer',
             userInfo: {
-                username: 'mockUsername',
                 roomCode: 'mockRoomCode',
+                userId: 'mockUserId',
             },
         });
 
@@ -225,7 +227,7 @@ describe('AnswerService', () => {
 
         // Any is required to simulate Function type in tests
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const gradeSpy = spyOn(socketSpy, 'on').and.callFake((event: string, cb: (param: any) => any) => {
+        const gradeSpy = spyOn(socketSpy, 'on').and.callFake((_event: string, cb: (param: any) => any) => {
             cb(answers);
         });
 
@@ -241,7 +243,7 @@ describe('AnswerService', () => {
         const resetSpy = spyOn(service, 'resetStateForNewQuestion').and.returnValue();
         // Any is required to simulate Function type in tests
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const nextQuestionSpy = spyOn(socketSpy, 'on').and.callFake((event: string, cb: (param: any) => any) => {
+        const nextQuestionSpy = spyOn(socketSpy, 'on').and.callFake((_event: string, cb: (param: any) => any) => {
             cb('');
         });
 
@@ -257,7 +259,7 @@ describe('AnswerService', () => {
         service.isSelectionEnabled = true;
         // Any is required to simulate Function type in tests
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const timesUpSpy = spyOn(socketSpy, 'on').and.callFake((event: string, cb: (param: any) => any) => {
+        const timesUpSpy = spyOn(socketSpy, 'on').and.callFake((_event: string, cb: (param: any) => any) => {
             cb('');
         });
 
