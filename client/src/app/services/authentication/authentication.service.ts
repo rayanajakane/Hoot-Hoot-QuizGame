@@ -295,11 +295,13 @@ export class AuthenticationService {
             remove(usernameRef);
         }
         this.deleteUserAvatar(user.uid);
-        this.disconnectSocket();
-        user.delete();
-        this.setUser(null);
-        this.router.navigateByUrl('/login');
-        this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.delete'));
+        user.delete().then(() => {
+            this.socketHandler.send(FriendsEvents.UpdateData);
+            this.setUser(null);
+            this.disconnectSocket();
+            this.router.navigateByUrl('/login');
+            this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.delete'));
+        });
     }
 
     sendResetPasswordEmail(email: string) {
