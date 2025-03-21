@@ -104,7 +104,7 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
             ) {
                 Text(text = "Se déconnecter")
             }
-            GameList(modifier = modifier.weight(1f).fillMaxHeight(0.2f), navigateToWaitPage)
+            GameList(modifier = modifier.weight(1f).fillMaxHeight(0.2f), navigateToWaitPage, authViewModel)
         }
     }
 }

@@ -30,7 +30,7 @@ object MatchService {
         return gameService.getGames(onSuccess = {}, onError = {})
     }
 
-    fun saveBackupGame(id: String, hostId: String = "", hostUsername: String ="", isFriendsOnly: Boolean= false){
+    fun saveBackupGame(id: String, hostId: String , hostUsername: String, isFriendsOnly: Boolean= false){
             return backupService.add(
                 currentGame!!,
                 onSuccess = { response ->
