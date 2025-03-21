@@ -10,6 +10,7 @@ import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { ChatEvents } from '@common/events/chat.events';
+import { FriendsEvents } from '@common/events/friends.events';
 import { TranslocoService } from '@jsverse/transloco';
 import { browserSessionPersistence, sendPasswordResetEmail, setPersistence, User, UserCredential } from 'firebase/auth';
 import { Database, DataSnapshot, get, getDatabase, onDisconnect, ref, remove, set, update } from 'firebase/database';
@@ -133,6 +134,7 @@ export class AuthenticationService {
             set(usernameRef, username.toLowerCase());
 
             this.connectToSocket();
+            this.socketHandler.send(FriendsEvents.UpdateData);
             this.setUser(userCredential.user);
             this.router.navigateByUrl('/home');
             this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-up'));
@@ -146,16 +148,17 @@ export class AuthenticationService {
             isValidUsername = await this.editUsername(username);
         }
         if (!isValidAvatarUrl) {
-            isValidAvatarUrl = this.editAvatarUrl(avatarUrl);
+            isValidAvatarUrl = await this.editAvatarUrl(avatarUrl);
         }
         if (isValidUsername && isValidAvatarUrl) {
+            this.socketHandler.send(FriendsEvents.UpdateData);
             this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.edited'));
         }
     }
 
-    editAvatarUrl(avatarUrl: string) {
+    async editAvatarUrl(avatarUrl: string) {
         if (!this.currentUser) return false;
-        updateProfile(this.currentUser, { photoURL: avatarUrl })
+        await updateProfile(this.currentUser, { photoURL: avatarUrl })
             .then(() => {
                 return true;
             })
