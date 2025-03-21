@@ -125,6 +125,7 @@ export class AuthenticationService {
 
             set(userRef, {
                 isOnline: true,
+                balance: 1000,
             });
             onDisconnect(userRef).update({
                 isOnline: false,
