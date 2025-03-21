@@ -1,21 +1,15 @@
 package com.example.polyquiz.pages.presentation
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.People
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,13 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import androidx.compose.ui.text.font.FontWeight
-import com.example.polyquiz.Game
+import com.example.polyquiz.R
+import com.example.polyquiz.match.domain.Game
 import com.example.polyquiz.constants.MatchContext
-import com.example.polyquiz.constants.MatchPageInfo
 import com.example.polyquiz.http.GameService
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchService
@@ -134,22 +129,21 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit) {
                 .verticalScroll(rememberScrollState()),
         ) {
             Text(
-                "Liste des jeux",
+                text = stringResource(R.string.games_list),
                 modifier = Modifier.padding(8.dp),
                 fontWeight = FontWeight.Bold
             )
             Column {
                 Text(
-                    "Jeux populaires",
+                    stringResource(R.string.popular_games),
                     modifier = Modifier.padding(8.dp),
                     fontWeight = FontWeight.Bold
                 )
                 Row {
                     sortMostPopularGames()
-
                     if (popularGames.isEmpty()) {
                         Text(
-                            "Aucun jeu disponible",
+                            stringResource(R.string.no_games_available),
                             modifier = Modifier.padding(8.dp),
                             fontWeight = FontWeight.Bold
                         )
@@ -160,9 +154,9 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit) {
                     }
                 }
             }
-            Text("Tous les jeux", modifier = Modifier.padding(8.dp), fontWeight = FontWeight.Bold)
+            Text(text = stringResource(R.string.all_games), modifier = Modifier.padding(8.dp), fontWeight = FontWeight.Bold)
             if (games.isEmpty()) {
-                Text("Aucun jeu disponible", modifier = Modifier.padding(8.dp), fontWeight = FontWeight.Bold)
+                Text(text = stringResource(R.string.no_games_available), modifier = Modifier.padding(8.dp), fontWeight = FontWeight.Bold)
             } else {
                 games.forEach { game ->
                     ElevatedButton(
@@ -186,10 +180,10 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit) {
             if (selectedGame != null) {
                 loadSelectedGame(selectedGame!!)
                 matchService.currentGame = selectedGame
-                Text("Détails du jeu:  ${selectedGame!!.title}", modifier = Modifier.padding(8.dp), fontWeight = FontWeight.Bold)
+                Text(text = stringResource(R.string.game_title) + selectedGame!!.title, modifier = Modifier.padding(8.dp), fontWeight = FontWeight.Bold)
                 Row(modifier = Modifier.padding(8.dp)) {
                     Text(
-                        text = "Description: ",
+                        text = stringResource(R.string.games_description),
                         fontWeight = FontWeight.Bold
                     )
                     Text(
@@ -199,7 +193,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit) {
 
                 Row(modifier = Modifier.padding(8.dp)) {
                     Text(
-                        text = "Durée: ",
+                        text = stringResource(R.string.games_time),
                         fontWeight = FontWeight.Bold
                     )
                     Text(
@@ -208,7 +202,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit) {
                     )
                 }
 
-                Text("Questions :", modifier = Modifier.padding(8.dp), fontWeight = FontWeight.Bold)
+                Text(text = stringResource(R.string.questions), modifier = Modifier.padding(8.dp), fontWeight = FontWeight.Bold)
                 selectedGame!!.questions?.forEachIndexed { index, question ->
                     Text("${index + 1}. ${question.text}", modifier = Modifier.padding(8.dp))
                 }
@@ -227,12 +221,12 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit) {
                     modifier = Modifier
                         .padding(16.dp)
                 ) {
-                        Text(text = "Jouer")
+                        Text(text = stringResource(R.string.play))
 
                 }
 
             } else {
-                Text("Sélectionner un jeu dans la liste des jeux", modifier = Modifier.padding(8.dp))
+                Text(text = stringResource(R.string.select_game), modifier = Modifier.padding(8.dp))
             }
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -258,7 +252,7 @@ fun GameCard(game: Game, onClick: () -> Unit = {}) {
         Column(modifier = Modifier.padding(5.dp)) {
             Text(text = game.title, fontWeight = FontWeight.Bold)
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "Parties Jouées: ${game.nMatchesPlayed.toInt()}")
+                Text(text = stringResource(R.string.matches_played) + game.nMatchesPlayed.toInt())
             }
         }
     }
