@@ -51,4 +51,16 @@
     <string name="invalid_username">❌ Username is invalid</string>
     <string name="error_delete_user">❌ Error when deleting account</string>
     <string name="delete_feedback">✅  Deleted profile sucessfully!</string>
+    <string name="popular_games">Popular Games</string>
+    <string name="games_list">Games List</string>
+    <string name="no_games_available">There are no games available </string>
+    <string name="games_details">Game Details</string>
+    <string name="games_description">"Description "</string>
+    <string name="games_time">"Time "</string>
+    <string name="questions">Questions</string>
+    <string name="game_title">"Title:  "</string>
+    <string name="select_game">"Select a Game in the List of Games"</string>
+    <string name="play">Play</string>
+    <string name="matches_played">"Matches Played: "</string>
+    <string name="all_games">"All Games"</string>
 </resources>
