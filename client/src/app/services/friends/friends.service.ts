@@ -13,6 +13,7 @@ export class FriendsService {
     pendingRequests: UserIdName[] = [];
     sentRequests: UserIdName[] = [];
     searchResults: UserIdName[] = [];
+    currentQuery: string = '';
 
     constructor(
         private readonly authService: AuthenticationService,
@@ -28,7 +29,7 @@ export class FriendsService {
         this.socketHandler.on(FriendsEvents.ReturnAllUsers, (data: UserIdName[]) => {
             this.allUsers = data;
             // this.searchResults = this.allUsers.filter((user) => !this.isFriend(user));
-            this.searchResults = this.allUsers;
+            this.searchUsers(this.currentQuery);
         });
         this.socketHandler.on(FriendsEvents.ReturnAllFriends, (data: UserIdName[]) => {
             this.friends = data;
@@ -69,6 +70,7 @@ export class FriendsService {
     }
 
     searchUsers(query: string) {
+        this.currentQuery = query;
         if (!query.trim()) {
             this.searchResults = this.allUsers.filter((user) => !this.isFriend(user));
         } else {
