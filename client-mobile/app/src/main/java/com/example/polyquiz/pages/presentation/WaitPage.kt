@@ -17,10 +17,15 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.polyquiz.Game
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.HOST_USERNAME
@@ -29,7 +34,10 @@ import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.constants.StartMatchFeedback
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.MatchRoomService.gameTitle
+import com.example.polyquiz.match.domain.MatchRoomService.isLocked
 import com.example.polyquiz.match.domain.MatchRoomService.players
+import com.example.polyquiz.match.domain.MatchService
+import com.example.polyquiz.match.domain.MatchService.matchRoomService
 import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.match.presentation.TimerComponent
 
@@ -56,46 +64,52 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
 
     fun resetWaitPage() {
         isLocked = false
-        MatchRoomService.isMatchStarted = false
-        //MatchRoomService.isHostPlaying = true
+        MatchRoomService.isHostPlaying = true
         MatchRoomService.isBanned = false
         MatchRoomService.isQuitting = false
+        MatchRoomService.isMatchStarted = false
+
     }
     fun getTime(): Int {
-        return TimeService.time
+        return timeService.time
     }
-    fun isHost() : Boolean {
-        return MatchRoomService.getUsername() === "Organisateur"
+
+    fun isHost(): Boolean {
+        return MatchRoomService.hostId === authViewModel.getUserId()
     }
 //    fun getCurrentGame(): Game {
 //        return MatchService.currentGame()
 //    }
 
-    LaunchedEffect(Unit, MatchRoomService.isTimeToNavigate, MatchRoomService.hasBeenKickedOut) {
-        resetWaitPage()
-        TimeService.handleTimer() //pour l'organisateur, il faudrait un listenToTimerEvents()
+    fun getCurrentGame(): Game {
+        return matchService.currentGame!!;
+    }
 
-        if (isHost()) {
-            MatchRoomService.gameTitle =
-                "CECI EST HARDCODÉ, À IMPLÉMENTER: MATCH SERVICE "
-        } else {
-                MatchContextService.setContext(MatchContext.PLAYERVIEW)
-            }
-        when (MatchRoomService.isTimeToNavigate) {
-            true -> {
-                MatchRoomService.isTimeToNavigate = false
-                navigateToMatchRoom()
-            }
-            else -> Unit
+    LaunchedEffect(MatchRoomService.isTimeToNavigate, MatchRoomService.username) {
+        if (MatchRoomService.isTimeToNavigate) {
+            MatchRoomService.isTimeToNavigate = false
+            navigateToMatchRoom()
         }
-        when (MatchRoomService.hasBeenKickedOut) {
-            true -> {
-                MatchRoomService.hasBeenKickedOut = false
-                navigateToHome()
-            }
-            else -> Unit
+        if (isHost()) {
+            gameTitle = getCurrentGame().title
+            MatchContextService.setContext(MatchContext.HOSTVIEW)
+        } else {
+            MatchContextService.setContext(MatchContext.PLAYERVIEW)
         }
     }
+
+    LaunchedEffect(MatchRoomService.hasBeenKickedOut) {
+        if (MatchRoomService.hasBeenKickedOut) {
+            MatchRoomService.hasBeenKickedOut = false
+            navigateToHome()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        resetWaitPage()
+        timeService.listenToTimerEvents()
+    }
+
 
 
 
@@ -146,11 +160,13 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(StartMatchFeedback.LOCK_MATCH.value)
                             Spacer(modifier = Modifier.width(8.dp))
-                            Switch(checked = isLocked, onCheckedChange = { toggleLock() })
+                             Switch(checked = MatchRoomService.isLocked, onCheckedChange = { toggleLock() })
                         }
                         Button(
-                            onClick = { startMatch() },
-                            enabled = isLocked && players.isNotEmpty()
+                            onClick = { startMatch()
+                                },
+                            enabled = MatchRoomService.isLocked && players.isNotEmpty()
+
                         ) {
                             Text(MatchButtonActions.START_MATCH.value)
                         }
@@ -162,8 +178,8 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(player.username)
-                            if (isHost() && player.username != HOST_USERNAME) {
-                                Button(onClick = { banPlayerUsername(player.username) }) {
+                            if (isHost() && player.id != matchRoomService.hostId) {
+                                Button(onClick = { banPlayerUsername(player.id) }) {
                                     Text(MatchButtonActions.BAN_PLAYER.value)
                                 }
                             }

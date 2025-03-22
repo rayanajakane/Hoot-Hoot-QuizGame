@@ -49,6 +49,8 @@ import { SortHistoryPipe } from '@app/pipes/sort-history.pipe';
 import { SortPlayersPipe } from '@app/pipes/sort-players.pipe';
 import { TranslocoRootModule } from '@app/transloco-root.module';
 import { FIREBASE_CONFIG } from 'src/environments/firebase-config';
+import { FriendsListItemComponent } from './components/friends-list-item/friends-list-item.component';
+import { FriendsSearchComponent } from './components/friends-search/friends-search.component';
 import { JoinMatchPageComponent } from './pages/join-match-page/join-match-page.component';
 /**
  * Main module that is used in main.ts.
@@ -97,6 +99,8 @@ import { JoinMatchPageComponent } from './pages/join-match-page/join-match-page.
         SortPlayersPipe,
         EstimatedAnswerAreaComponent,
         JoinMatchPageComponent,
+        FriendsSearchComponent,
+        FriendsListItemComponent,
     ],
     imports: [
         AppMaterialModule,

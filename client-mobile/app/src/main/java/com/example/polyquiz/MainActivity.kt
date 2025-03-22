@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
 import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.ui.theme.PolyQuizTheme
 
 import com.example.vanillaprototype.socket.SocketHandler
@@ -33,7 +34,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         SocketHandler.setSocket()
-        val authViewModel: AuthViewModel by viewModels()
+        val authViewModel : AuthViewModel by viewModels()
+        val cameraViewModel: CameraViewModel by viewModels()
         setContent {
             PolyQuizTheme {
                 val snackbarHostState = remember {
@@ -67,7 +69,8 @@ class MainActivity : AppCompatActivity() {
                     Navigation(
                         modifier = Modifier.padding(innerPadding),
                         authViewModel = authViewModel,
-                        context = applicationContext,
+                        cameraViewModel = cameraViewModel,
+                        context = applicationContext
                     )
                 }
             }

@@ -38,12 +38,6 @@ import androidx.compose.foundation.layout.*
 import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AnswerCorrectness
-import com.example.polyquiz.constants.AnswerFeedback
-import com.example.polyquiz.constants.BonusFeedback
-import com.example.polyquiz.constants.MatchButtonActions
-import com.example.polyquiz.ui.theme.AndroidGreen
-import com.example.polyquiz.ui.theme.BrightRed
-import com.example.polyquiz.ui.theme.GoldenYellow
 
 @Composable
 fun QuestionArea(
@@ -56,8 +50,8 @@ fun QuestionArea(
     modifier: Modifier
 ) {
 
-    val username by remember { mutableStateOf(authViewModel.getUsername()) }
-    var context = MatchContext.PLAYERVIEW
+    var room by remember { mutableStateOf(matchRoomService.getRoomCode()) }
+    var context by remember { mutableStateOf(matchContextService.getContext()) }
     val question by matchRoomService::currentQuestion
     val score by answerService::playerScore
 
@@ -67,7 +61,7 @@ fun QuestionArea(
         answerService.listenToAnswerEvents()
         matchRoomService.isQuitting = false
         answerService.playerScore = 0
-//        context = matchContextService.getContext()
+        context = matchContextService.getContext()
 
         when (MatchRoomService.hasBeenKickedOut) {
             true -> {
@@ -77,7 +71,11 @@ fun QuestionArea(
             else -> Unit
         }
     }
+    context = matchContextService.getContext()
 
+    fun routeToResultsPage(){
+        matchRoomService.routeToResultsPage()
+    }
 
     Row(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -87,7 +85,6 @@ fun QuestionArea(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(24.dp))
-            ChatComponent(modifier, authViewModel)
 
             TimerComponent(
                 modifier = Modifier.fillMaxWidth(),
@@ -106,7 +103,8 @@ fun QuestionArea(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     val questionText =
-                        if (matchRoomService.isCooldown) MatchStatus.PREPARE.value else question?.text ?: ""
+                        if (matchRoomService.isCooldown) MatchStatus.PREPARE.value else question?.text
+                            ?: ""
 
                     Text(
                         text = questionText,
@@ -126,7 +124,7 @@ fun QuestionArea(
             }
 
             Spacer(modifier = Modifier.height(12.dp))
-            if (context != MatchContext.HOSTVIEW){
+            if (context != MatchContext.HOSTVIEW) {
                 Text(
                     text = "SCORE : $score",
                     style = MaterialTheme.typography.titleMedium
@@ -134,9 +132,22 @@ fun QuestionArea(
 
                 if (answerService.showFeedback && context === MatchContext.PLAYERVIEW && !matchRoomService.isCooldown) {
                     val (feedbackText, feedbackColor) = when (answerService.answerCorrectness) {
-                        AnswerCorrectness.WRONG -> AnswerFeedback.WRONG.value to BrightRed
-                        AnswerCorrectness.OK -> AnswerFeedback.OK.withPoints((question?.points ?: 0) / 2) to GoldenYellow
-                        AnswerCorrectness.GOOD -> AnswerFeedback.GOOD.withPoints(question?.points ?: 0) to AndroidGreen
+                        AnswerCorrectness.WRONG -> "\uD83D\uDE14 Mauvaise Réponse \uD83D\uDE14" to Color(
+                            0xFFe91b0c
+                        )
+
+                        AnswerCorrectness.OK -> {
+                            "\uD83C\uDD97 Réponse partielle! Vous avez obtenu ${(question?.points ?: 0) / 2} points \uD83C\uDD97" to Color(
+                                0xFFf6c811
+                            )
+                        }
+
+                        AnswerCorrectness.GOOD -> {
+                            "\uD83C\uDD97 Réponse correcte! Vous avez obtenu ${question?.points} points \uD83C\uDD97" to Color(
+                                0xFF4caf50
+                            )
+                        }
+
                         else -> null to null
                     }
 
@@ -149,12 +160,12 @@ fun QuestionArea(
                     }
 
 
-                    if (answerService.bonusPoints > 0){
+                    if (answerService.bonusPoints > 0) {
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = BonusFeedback.BONUS.value,
+                            text = "✨ Vous avez obtenu un bonus de ${answerService.bonusPoints} points!✨",
                             style = MaterialTheme.typography.titleMedium,
-                            color = AndroidGreen
+                            color = Color.Green
                         )
                     }
                 }
@@ -176,11 +187,20 @@ fun QuestionArea(
                     }
 
                     QuestionType.LONG_ANSWER.value -> {
-                        LongAnswerArea(answerService, context, modifier = Modifier.fillMaxWidth(0.8f))
+                        LongAnswerArea(
+                            answerService,
+                            context,
+                            modifier = Modifier.fillMaxWidth(0.8f)
+                        )
                     }
+                    QuestionType.ESTIMATED_ANSWER.value -> {
+                        EstimatedAnswerArea(
+                            answerService,
+                            matchRoomService,
+                            context,
+                            modifier = Modifier.fillMaxWidth(0.8f)
+                        )
 
-                    QuestionType.ESTIMATED_ANSWER.value ->{
-                        EstimatedAnswerArea(answerService, matchRoomService, context, modifier = Modifier.fillMaxWidth(0.8f))
                     }
                 }
             }
@@ -197,35 +217,48 @@ fun QuestionArea(
                         onClick = {
                             answerService.submitAnswer(
                                 UserInfo(
-                                    username = matchRoomService.getUsername(),
+                                    userId = matchRoomService.userId,
                                     roomCode = matchRoomService.getRoomCode()
                                 )
                             )
                         }
                     ) {
-                        Text(MatchButtonActions.SUBMIT_ANSWER.value)
+                        Text("Soumettre")
                     }
                 }
             }
 
-        }
-            PlayersListComponent(
-                matchRoomService = matchRoomService,
-                context = context,
-                players = matchRoomService.players,
-                modifier = Modifier.width(250.dp).fillMaxHeight(),
-                extraContent = {
+            }
+        if(MatchRoomService.isMatchStarted)
+    {
+        PlayersListComponent(
+            matchRoomService = matchRoomService,
+            context = matchContextService,
+            players = matchRoomService.players,
+            modifier = Modifier
+                .width(250.dp)
+                .fillMaxHeight(),
+            extraContent = {
+                Column {
                     Spacer(modifier = Modifier.height(16.dp))
-                    if (context == MatchContext.HOSTVIEW &&
-                        question?.type != null &&
-                        (
-                            (!answerService.isSelectionEnabled && question?.type == QuestionType.MULTIPLE_CHOICE.value) ||
-                                (answerService.isGradingComplete && question?.type == QuestionType.LONG_ANSWER.value)
-                            )
-                    ) {
+                    println(context)
+                    if (context == MatchContext.HOSTVIEW && !matchRoomService.isCooldown  ) {
                         Spacer(modifier = Modifier.height(16.dp))
-                        Button(onClick = { matchRoomService.goToNextQuestion() }) {
-                            Text(MatchButtonActions.NEXT_QUESTION.value)
+                        if(!answerService.isEndGame) {
+                            Button(onClick = { matchRoomService.goToNextQuestion() }) {
+                                Text("QUESTION SUIVANTE")
+                            }
+                        }
+                        else{
+                            Button(
+                                onClick = {
+                                    routeToResultsPage();
+                                    navigateToResultsPage()},
+                                modifier = Modifier.fillMaxWidth(0.8f),
+                                shape = RoundedCornerShape(8.dp)
+                            ) {
+                                Text("Présenter les résultats finaux")
+                            }
                         }
                     }
 
@@ -236,10 +269,12 @@ fun QuestionArea(
                             navigateToHome()
                         }
                     ) {
-                        Text(MatchButtonActions.LEAVE_MATCH.value)
+                        Text("Quitter")
                     }
                 }
-            )
+            }
+        )
+    }
         }
 
 

@@ -2,11 +2,10 @@ package com.example.polyquiz.auth.domain
 
 import StringValue
 import android.content.Context
+import android.net.Uri
 import android.text.TextUtils
 import android.util.Log
 import android.util.Patterns
-import androidx.compose.ui.res.stringResource
-import androidx.core.content.ContextCompat.getString
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,6 +13,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.polyquiz.R
 import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
+import com.example.polyquiz.constants.FriendsEvents
+import com.example.polyquiz.constants.PresetAvatar
+import com.example.polyquiz.core.storage.ImageStorage
 import com.example.vanillaprototype.socket.SocketHandler
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
@@ -24,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.database
@@ -59,6 +62,9 @@ class AuthViewModel : ViewModel() {
     private val _passwordError = MutableStateFlow("")
     val passwordError: StateFlow<String> get() = _passwordError
 
+    private val _avatarURL = MutableStateFlow(PresetAvatar.DEFAULT.value)
+    val avatarURL: StateFlow<String> get() = _avatarURL
+
     init {
         checkAuthStatus()
         if (authState.value == AuthState.Authenticated) {
@@ -66,11 +72,19 @@ class AuthViewModel : ViewModel() {
         }
     }
 
+    private fun checkAuthStatus() {
+        if (auth.currentUser == null) {
+            _authState.value = AuthState.Unauthenticated
+        } else {
+            _authState.value = AuthState.Authenticated
+        }
+    }
+
     fun getUserDatabaseRef(uid: String): DatabaseReference {
         return database.getReference("users/${uid}")
     }
 
-    fun getUserConfigsDatabaseRef() : DatabaseReference {
+    fun getUserConfigsDatabaseRef(): DatabaseReference {
         return database.getReference("users/${user?.uid}/configs")
     }
 
@@ -97,6 +111,14 @@ class AuthViewModel : ViewModel() {
         validatePassword(newPassword, context)
     }
 
+    fun getAvatarURL(): String {
+        return _avatarURL.value
+    }
+
+    fun setAvatarUrl(url: String) {
+        _avatarURL.value = url
+    }
+
     fun resetSignUpFields() {
         _email.value = ""
         _username.value = ""
@@ -104,30 +126,103 @@ class AuthViewModel : ViewModel() {
         _emailError.value = ""
         _usernameError.value = ""
         _passwordError.value = ""
+        _avatarURL.value = ""
     }
 
     fun resetUsername() {
         _username.value = user?.displayName ?: ""
     }
 
-    fun getUsername(): String {
-        return auth.currentUser?.displayName ?: ""
-    }
-
     fun getUserId(): String {
         return auth.currentUser?.uid ?: ""
     }
 
-    private fun checkAuthStatus() {
-        if (auth.currentUser == null) {
-            _authState.value = AuthState.Unauthenticated
-        } else {
-            _authState.value = AuthState.Authenticated
+    fun getAvatarURLFromDB(callback: (String?) -> Unit) {
+        val uid = auth.currentUser?.uid ?: return callback(null)
+        val avatarRef = ImageStorage.getAvatarRef(uid)
+
+        ImageStorage.getImageURL(avatarRef) { url ->
+            callback(url)
         }
     }
 
+    fun deleteUser() {
+        val user = auth.currentUser
+        if(user == null) {
+            viewModelScope.launch {
+                SnackbarController.sendEvent(
+                    event = SnackbarEvent(
+                        message = StringValue.StringResource(R.string.error_delete_user)
+                    )
+                )
+            }
+
+            Log.e("Delete user", "User is null. Could not delete user")
+            return
+        }
+
+        // Delete user from DB
+        val userRef = getUserDatabaseRef(user.uid)
+        userRef.removeValue().addOnCompleteListener { task ->
+            if(task.isSuccessful) {
+                Log.d("Delete user", "Deleted user from DB")
+            } else {
+                Log.e("Delete user", "Could not delete user from DB")
+            }
+        }
+
+        // Delete username from DB
+        if(user.displayName?.isNotEmpty()!!) {
+            val username = getUsername()
+            val usernameRef = getUsernameDatabaseRef(getUsername().lowercase())
+            usernameRef.removeValue().addOnCompleteListener { task ->
+                if(task.isSuccessful) {
+                    Log.d("Delete user", "Deleted username from DB $username")
+                } else {
+                    Log.e("Delete user", "Could not delete username from DB")
+                }
+            }
+        }
+
+        // Delete avatar from storage
+        ImageStorage.deleteAvatar(user.uid)
+
+        // Delete user from auth
+        user.delete().addOnCompleteListener { task ->
+            if(task.isSuccessful) {
+                viewModelScope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.StringResource(R.string.delete_feedback)
+                        )
+                    )
+                }
+                SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
+                
+                // Disconnect socket
+                SocketHandler.disconnect()
+
+                Log.d("Delete user", "Deleted user successfully")
+            } else {
+                viewModelScope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.StringResource(R.string.error_delete_user)
+                        )
+                    )
+                }
+                Log.e("Delete user", "Could not delete user from Auth")
+            }
+        }
+
+        // Disconnect user from app
+        auth.signOut()
+        resetAuthState()
+    }
+
+
     fun changeUsername(username: String, oldUsername: String) {
-        if(username.isEmpty() || usernameError.value.isNotEmpty()) {
+        if (username.isEmpty() || usernameError.value.isNotEmpty()) {
             viewModelScope.launch {
                 SnackbarController.sendEvent(
                     event = SnackbarEvent(
@@ -196,6 +291,23 @@ class AuthViewModel : ViewModel() {
                             userRef.child("isOnline").setValue(true)
                             userRef.child("isOnline").onDisconnect().setValue(false)
                             user = task.result.user
+                            setAvatarUrl(user?.photoUrl.toString())
+                            _authState.value = AuthState.Authenticated
+                            SocketHandler.connect()
+                            Log.d(TAG, "signInWithEmail:success")
+                        }
+                    userRef?.child("isOnline")?.get()
+                        ?.addOnSuccessListener { dataSnapshot: DataSnapshot ->
+                            val isOnline: Boolean = dataSnapshot.value as Boolean
+                            if (isOnline) {
+                                auth.signOut()
+                                _authState.value =
+                                    AuthState.Error(StringValue.StringResource(R.string.already_online))
+                                return@addOnSuccessListener
+                            }
+                            userRef.child("isOnline").setValue(true)
+                            userRef.child("isOnline").onDisconnect().setValue(false)
+                            user = task.result.user
                             _username.value = user?.displayName ?: ""
                             _email.value = user?.email ?: ""
                             _authState.value = AuthState.Authenticated
@@ -223,12 +335,10 @@ class AuthViewModel : ViewModel() {
         val usernameRef = getUsernameDatabaseRef(username.lowercase())
         usernameRef.get().addOnSuccessListener { databaseSnapshot: DataSnapshot ->
             if (databaseSnapshot.exists()) {
+                // TODO : Make new error text
                 _authState.value =
                     AuthState.Error(StringValue.StringResource(R.string.username_already_exists))
-                Log.e(
-                    TAG,
-                    StringValue.StringResource(R.string.username_already_exists).toString()
-                )
+                Log.e(TAG, StringValue.StringResource(R.string.username_already_exists).toString())
             } else {
                 _authState.value = AuthState.Loading
                 auth.createUserWithEmailAndPassword(email, password)
@@ -238,20 +348,21 @@ class AuthViewModel : ViewModel() {
                             val displayNameUpdate = UserProfileChangeRequest.Builder()
                                 .setDisplayName(username)
                                 .build()
-                            _username.value = user?.displayName ?: ""
                             user?.updateProfile(displayNameUpdate)
                                 ?.addOnCompleteListener { updateTask ->
                                     if (updateTask.isSuccessful) {
                                         val userRef =
                                             task.result.user?.let { this.getUserDatabaseRef(it.uid) }
                                         userRef?.child("isOnline")?.setValue(true)
-                                        userRef?.child("isOnline")?.onDisconnect()
-                                            ?.setValue(false)
+                                        userRef?.child("isOnline")?.onDisconnect()?.setValue(false)
                                         usernameRef.setValue(username.lowercase())
                                         _username.value = user?.displayName ?: ""
                                         _email.value = user?.email ?: ""
                                         _authState.value = AuthState.Authenticated
+                                        setAvatarUrl(user?.photoUrl.toString())
+                                        _authState.value = AuthState.Authenticated
                                         SocketHandler.connect()
+                                        SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
                                     }
                                     Log.d(TAG, "createUserWithEmail:success")
                                 }
@@ -262,7 +373,6 @@ class AuthViewModel : ViewModel() {
             }
         }
     }
-
 
     fun signOut() {
         if (user != null) {
@@ -289,6 +399,35 @@ class AuthViewModel : ViewModel() {
     fun resetAuthState() {
         // This is to avoid the bug where an error state transfers from login to signup page.
         _authState.value = AuthState.Unauthenticated
+    }
+
+    fun updateUserProfile(url: String) {
+        Log.d("Profile Update", "Called update profile")
+        val profileUpdates = userProfileChangeRequest {
+            // MR31 : Update user display name
+            photoUri = Uri.parse(url)
+        }
+
+        user!!.updateProfile(profileUpdates).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                viewModelScope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.StringResource(
+                                R.string.edited_feedback
+                            )
+                        )
+                    )
+                }
+                SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
+                Log.d(
+                    "Profile update",
+                    "Used ${avatarURL.value}"
+                )
+            } else {
+                Log.e("Profile update", "An error occured...")
+            }
+        }
     }
 
     private fun handleAuthError(task: Task<AuthResult>, context: Context) {
@@ -379,6 +518,10 @@ class AuthViewModel : ViewModel() {
         } else {
             Patterns.EMAIL_ADDRESS.matcher(target).matches()
         }
+    }
+
+    fun getUsername(): String {
+        return auth.currentUser?.displayName ?: ""
     }
 
 }

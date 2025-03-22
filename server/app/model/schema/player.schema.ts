@@ -6,6 +6,7 @@ import { Socket } from 'socket.io';
 
 export interface Player {
     username: string;
+    id: string;
     answer: MultipleChoiceAnswer | LongAnswer | EstimatedAnswer;
     score: number;
     answerCorrectness: AnswerCorrectness;

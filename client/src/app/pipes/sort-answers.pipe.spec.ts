@@ -14,9 +14,9 @@ describe('SortAnswersPipe', () => {
 
     it('should sort answers by username', () => {
         const input: LongAnswerInfo[] = [
-            { username: 'alice', answer: 'Answer 1', score: '0' },
-            { username: 'charlie', answer: 'Answer 3', score: '0' },
-            { username: 'bob', answer: 'Answer 2', score: '0' },
+            { userId: '123', username: 'alice', answer: 'Answer 1', score: '0' },
+            { userId: '231', username: 'charlie', answer: 'Answer 3', score: '0' },
+            { userId: '321', username: 'bob', answer: 'Answer 2', score: '0' },
         ];
 
         const sorted = pipe.transform(input);
@@ -29,9 +29,9 @@ describe('SortAnswersPipe', () => {
 
     it('should not be case sensitive', () => {
         const input: LongAnswerInfo[] = [
-            { username: 'AlIcE1', answer: 'Answer 1', score: '0' },
-            { username: 'charlie', answer: 'Answer 3', score: '0' },
-            { username: 'BOB', answer: 'Answer 2', score: '0' },
+            { userId: '123', username: 'AlIcE1', answer: 'Answer 1', score: '0' },
+            { userId: '231', username: 'charlie', answer: 'Answer 3', score: '0' },
+            { userId: '321', username: 'BOB', answer: 'Answer 2', score: '0' },
         ];
 
         const sorted = pipe.transform(input);

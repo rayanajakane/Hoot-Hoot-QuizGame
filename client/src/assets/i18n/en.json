@@ -63,7 +63,8 @@
         "admin-game": "Manage games",
         "edit-profile": "Edit profile",
         "team-name": "Team 201",
-        "access-code": "Access code"
+        "access-code": "Access code",
+        "friends": "Friends"
     },
     "match-creation-page": {
         "games-list": "Games list",
@@ -93,5 +94,22 @@
         "playing-matches": "Playing Matches",
         "no-match": "No Match to Display",
         "join-action": "Join"
+    },
+    "friends-search": {
+        "search-friend": "Search Friend",
+        "search-input": "Search",
+        "search-input-placeholder": "Username",
+        "friend-requests-received": "Friend Requests received",
+        "friend-requests-sent": "Friend Requests sent",
+        "friends-list": "My Friends",
+        "search-results": "Search Results",
+        "search-no-result": "No result found with",
+        "is-friend": "✅ Friend",
+        "remove-friend": "Remove Friend",
+        "accept-request": "Accept",
+        "decline-request": "Decline",
+        "request-sent": "⏳ Request Sent",
+        "cancel-request": "Cancel",
+        "add-friend": "Add Friend"
     }
 }

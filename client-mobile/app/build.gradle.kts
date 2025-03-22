@@ -2,7 +2,7 @@ tasks.register<Wrapper>("wrapper") {
     gradleVersion = "5.6.4"
 }
 
-tasks.register("prepareKotlinBuildScriptModel"){}
+tasks.register("prepareKotlinBuildScriptModel") {}
 
 plugins {
     alias(libs.plugins.android.application)
@@ -70,7 +70,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
     implementation("androidx.navigation:navigation-compose:$navVersion")
     implementation("androidx.compose.material:material-icons-extended-android:1.7.5")
-    implementation (libs.socket.io.client)
+    implementation(libs.socket.io.client)
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
     testImplementation(libs.junit)
@@ -85,4 +85,19 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0") // Gson Converter (for JSON serialization/deserialization)
     implementation("com.squareup.okhttp3:okhttp:4.11.0")  // OkHttp (Retrofit's underlying networking library)
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0") // For logging network requests (optional but recommended)
+
+    // Camera stuff
+    implementation("androidx.camera:camera-camera2:1.3.1")
+    implementation("androidx.camera:camera-lifecycle:1.3.1")
+    implementation("androidx.camera:camera-view:1.3.1")
+    implementation("androidx.camera:camera-extensions:1.3.1")
+    implementation("com.google.accompanist:accompanist-permissions:0.32.0")
+
+    // Image stuff
+    implementation(platform("androidx.compose:compose-bom:2025.02.00"))
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
+    // Cloud storage stuff
+    implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
+    implementation("com.google.firebase:firebase-storage")
 }

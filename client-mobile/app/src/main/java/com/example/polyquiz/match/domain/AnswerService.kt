@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
+import com.example.polyquiz.auth.domain.AuthViewModel
 import org.json.JSONObject
 
 object AnswerService {
@@ -118,11 +119,15 @@ object AnswerService {
     fun sendGrades() {
         gradeAnswers = false
         val gradesInfo = GradesInfo(matchRoomCode = MatchRoomService.getRoomCode(), grades = playersAnswers)
-        mSocket.emit(AnswerEvents.GRADES.value, Gson().toJson(playersAnswers))
+        println(gradesInfo)
+        val gradesInfoStringified = Gson().toJson(gradesInfo)
+        val gradesInfoJsonObject = JSONObject(gradesInfoStringified)
+        mSocket.emit(AnswerEvents.GRADES.value, gradesInfoJsonObject)
     }
 
     fun handleGrading() {
         isGradingComplete = playersAnswers.all { it.score != null }
+       // println("isGradingComplete$isGradingComplete")
     }
     fun selectChoice(choice: String, userInfo: UserInfo) {
         val choiceInfo = ChoiceInfo(choice, userInfo)
@@ -146,8 +151,10 @@ object AnswerService {
     }
 
     fun updateLongAnswer() {
+        println("updating long answer")
         if (!isSelectionEnabled) return
-        val userInfo = UserInfo(username = MatchRoomService.getUsername(), roomCode = MatchRoomService.getRoomCode())
+        val userInfo = UserInfo(userId = MatchRoomService.userId, roomCode = MatchRoomService.getRoomCode())
+        println(userInfo)
         val choiceInfo = ChoiceInfo(currentLongAnswer, userInfo)
         val choiceInfoStringified = Gson().toJson(choiceInfo)
         val choiceInfoJsonObject = JSONObject(choiceInfoStringified)

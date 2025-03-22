@@ -1,7 +1,7 @@
 package com.example.polyquiz.match.domain
+import android.annotation.SuppressLint
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.constants.MatchEvents
-import com.example.polyquiz.constants.MatchStatus
 import com.example.polyquiz.constants.HOST_USERNAME
 import com.example.polyquiz.chat.domain.Message
 import com.example.vanillaprototype.socket.SocketHandler
@@ -12,10 +12,15 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.polyquiz.constants.Route
 import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.constants.ChatEvents
 
+@SuppressLint("StaticFieldLeak")
 object MatchRoomService {
+    var navController : NavController? = null
     var players by mutableStateOf<List<Player>>(emptyList())
     var messages by mutableStateOf<List<Message>>(emptyList())
     var isMatchStarted by mutableStateOf(false)
@@ -25,25 +30,31 @@ object MatchRoomService {
     var timeToGoToWaitPage by mutableStateOf(false)
     var isPlaying by mutableStateOf(false)
     var isTimeToNavigate by mutableStateOf(false)
+    var isTimeToNavigateToResults by mutableStateOf(false)
     var hasBeenKickedOut by mutableStateOf(false)
+    var isLocked by mutableStateOf(false)
     var gameTitle: String = ""
     var gameDuration: Int = 0
     var currentQuestion by mutableStateOf<Question?>(null)
     var isHostPlaying by mutableStateOf(true)
     var isCooldown by mutableStateOf(false)
     var isQuitting by mutableStateOf(false)
+    var username by mutableStateOf("")
+    var userId by mutableStateOf("")
+    var hostId by mutableStateOf("")
 
     private var matchRoomCode: String = ""
-    private var username: String = ""
     private var hasEnteredRoom = false
 
-    private val socket = SocketHandler.getSocket()
+     val socket = SocketHandler.getSocket()
+
+    val mSocket = SocketHandler.getSocket()
 
     val socketId: String
         get() = socket.id() ?: ""
 
     fun getRoomCode(): String = matchRoomCode
-    fun getUsername(): String = username
+    fun retrieveUsername(): String = username
 
     fun connect() {
         if (!hasEnteredRoom) {
@@ -59,7 +70,6 @@ object MatchRoomService {
             onPlayerKick()
             handleError()
             onRouteToResultsPage()
-            ChatService.handleRoomMessage()
             timeToGoToWaitPage = true
         }
     }
@@ -83,19 +93,23 @@ object MatchRoomService {
         ChatService.deleteRoomMessages()
         MatchContextService.resetContext()
         hasBeenKickedOut = true
-        matchRoomCode = ""
     }
 
-    fun createRoom(gameId: String, isClassicMode: Boolean = true) {
+    fun createRoom(gameId: String, hostId: String, hostUsername: String, isClassicMode: Boolean = true, isFriendsOnly: Boolean = false) {
         val data = JSONObject().apply {
             put("gameId", gameId)
+            put("hostId", hostId)
+            put("isFriendsOnly", isFriendsOnly)
             put("isClassicMode", isClassicMode)
         }
+
         socket.emit(MatchEvents.CREATE_ROOM.value, data, Ack { args ->
             if (args.isNotEmpty()) {
                 val response = args[0] as JSONObject
                 matchRoomCode = response.getString("code")
-                username = HOST_USERNAME
+                username = hostUsername
+                userId = hostId
+                this.hostId = hostId
                 sendPlayersData(matchRoomCode)
             }
         })
@@ -104,11 +118,11 @@ object MatchRoomService {
     fun getPlayerByUsername(username: String): Player? =
         players.find { it.username == username }
 
-    fun joinRoom(roomCode: String, username: String) {
-
+    fun joinRoom(roomCode: String, username: String, userId:String) {
         val sentInfo = JSONObject().apply {
             put("roomCode", roomCode)
             put("username", username)
+            put("userId", userId)
         }
 
         socket.emit(MatchEvents.JOIN_ROOM.value, sentInfo, Ack { args ->
@@ -116,9 +130,10 @@ object MatchRoomService {
                 val response = args[0] as JSONObject
                 matchRoomCode = response.getString("code")
                 this.username = response.getString("username")
+                this.userId = response.getString("userId")
+                sendPlayersData(roomCode)
             }
         })
-        sendPlayersData(roomCode)
     }
 
 
@@ -126,11 +141,11 @@ object MatchRoomService {
         socket.emit(MatchEvents.SEND_PLAYERS_DATA.value, roomCode)
     }
 
-    fun banUsername(username: String) {
-        if (this.username == HOST_USERNAME) {
+    fun banUsername(userId: String) {
+        if (this.userId == this.hostId) {
             val sentInfo = JSONObject().apply {
                 put("roomCode", matchRoomCode)
-                put("username", username)
+                put("userId", userId)
             }
             socket.emit(MatchEvents.BAN_USERNAME.value, sentInfo)
         }
@@ -235,7 +250,6 @@ object MatchRoomService {
     }
 
     fun resetMatchValues() {
-        println("resetting match values")
         matchRoomCode = ""
         username = ""
         players = emptyList()
@@ -253,6 +267,8 @@ object MatchRoomService {
     fun onRouteToResultsPage() {
         socket.on(MatchEvents.ROUTE_TO_RESULTS_PAGE.value) { _ ->
             isResults = true
+            isTimeToNavigateToResults = true
+            //navigateToResultsPage()
         }
     }
 
@@ -264,8 +280,7 @@ object MatchRoomService {
     }
 
     fun toggleLock() {
-        if (username == HOST_USERNAME) {
-            socket.emit(MatchEvents.TOGGLE_LOCK.value, matchRoomCode)
-        }
+        socket.emit(MatchEvents.TOGGLE_LOCK.value, matchRoomCode)
+        isLocked = !isLocked
     }
 }

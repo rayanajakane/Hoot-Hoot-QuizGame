@@ -34,6 +34,7 @@ fun LongAnswerArea(
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
+        println("gardes${answerService.gradeAnswers}")
         if (matchContext != MatchContext.HOSTVIEW) {
                 if (!answerService.isSelectionEnabled && !answerService.showFeedback) {
                     Text(
@@ -68,35 +69,37 @@ fun LongAnswerArea(
                         .align(Alignment.End)
                         .padding(top = 4.dp)
                 )
-        } else if (answerService.gradeAnswers) {
-            Text(
-                text = GradingFeedback.GRADE_PLAYERS.value,
-                fontSize = 18.sp,
-                modifier = Modifier.padding(8.dp)
-            )
-
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp)
-                    .background(Color.White)
-                    .padding(8.dp)
-            ) {
-                items(answerService.playersAnswers) { playerAnswer ->
-                    AnswerCard(playerAnswer)
-                }
-            }
-
-
-            Button(
-                onClick = { answerService.sendGrades() },
-                enabled = answerService.isGradingComplete,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
+        } else {
+            if (answerService.gradeAnswers) {
                 Text(
-                    text = if (answerService.isGradingComplete) MatchButtonActions.SUBMIT_GRADING.value
-                    else GradingFeedback.PLAYERS_TO_GRADE.value
+                    text = GradingFeedback.GRADE_PLAYERS.value,
+                    fontSize = 18.sp,
+                    modifier = Modifier.padding(8.dp)
                 )
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        .background(Color.White)
+                        .padding(8.dp)
+                ) {
+                    items(answerService.playersAnswers) { playerAnswer ->
+                        AnswerCard(playerAnswer)
+                    }
+                }
+
+
+                Button(
+                    onClick = { answerService.sendGrades() },
+                    enabled = answerService.isGradingComplete,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Text(
+                        text = if (answerService.isGradingComplete) MatchButtonActions.SUBMIT_GRADING.value
+                        else GradingFeedback.PLAYERS_TO_GRADE.value
+                    )
+                }
             }
         }
     }
@@ -104,22 +107,24 @@ fun LongAnswerArea(
 
 @Composable
 fun AnswerCard(playerAnswer: LongAnswerInfo) {
+    val answerService = AnswerService
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Row(modifier = Modifier.padding(16.dp)) {
             Text(text = playerAnswer.username, fontSize = 16.sp, fontWeight = FontWeight.Bold)
             Text(text = playerAnswer.answer, fontSize = 14.sp, modifier = Modifier.padding(top = 8.dp))
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 AnswerCorrectness.entries.forEach { option ->
                     Button(
-                        onClick = { playerAnswer.score = option.value.toString() },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = getGradeColor(option)
-                        )
+                        onClick = { playerAnswer.score = option.value.toString()
+                                answerService.handleGrading()},
+//                        colors = ButtonDefaults.buttonColors(
+//                            containerColor = getGradeColor(option)
+//                        )
                     ) {
                         Text("${option.value}%")
                     }

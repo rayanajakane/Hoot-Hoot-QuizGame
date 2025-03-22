@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Game } from '@app/interfaces/game';
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { CommunicationService } from '@app/services/communication/communication.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { Subject } from 'rxjs';
@@ -18,6 +19,7 @@ export class MatchService extends CommunicationService<Game> {
     constructor(
         http: HttpClient,
         private readonly matchRoomService: MatchRoomService,
+        private readonly authenticationService: AuthenticationService,
     ) {
         super(http, 'match');
     }
@@ -46,8 +48,10 @@ export class MatchService extends CommunicationService<Game> {
         return this.delete(`backups/${id}`);
     }
 
-    createMatch() {
+    createMatch(isFriendsOnly: boolean = false, isClassicMode: boolean = false) {
+        const hostId = this.authenticationService.userId;
+        const hostUsername = this.authenticationService.userDisplayName;
         this.matchRoomService.connect();
-        this.matchRoomService.createRoom(this.currentGame.id);
+        this.matchRoomService.createRoom(this.currentGame.id, hostId, hostUsername, isClassicMode, isFriendsOnly);
     }
 }

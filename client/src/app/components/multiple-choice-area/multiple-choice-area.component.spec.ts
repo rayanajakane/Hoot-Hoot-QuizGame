@@ -40,6 +40,7 @@ describe('MultipleChoiceAreaComponent', () => {
         matchRoomSpy = jasmine.createSpyObj('MatchRoomService', [
             'goToNextQuestion',
             'getUsername',
+            'getUserId',
             'getRoomCode',
             'disconnect',
             'sendPlayersData',

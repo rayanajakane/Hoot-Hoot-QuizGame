@@ -6,7 +6,6 @@ import { MatchContextService } from '@app/services/match-context/match-context.s
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { MatchService } from '@app/services/match/match.service';
 import { TimeService } from '@app/services/time/time.service';
-import { HOST_USERNAME } from '@common/constants/match-constants';
 
 @Component({
     selector: 'app-wait-page',
@@ -34,7 +33,7 @@ export class WaitPageComponent implements OnInit {
     }
 
     get isHost() {
-        return this.matchRoomService.getUsername() === 'Organisateur';
+        return this.matchContextService.getContext() === MatchContext.HostView;
     }
 
     get currentGame() {
@@ -60,9 +59,9 @@ export class WaitPageComponent implements OnInit {
         this.isLocked = this.isLocked ? false : true;
     }
 
-    banPlayerUsername(username: string) {
-        if (username === HOST_USERNAME) return; // TODO: Migrate the logic to server, use UserID instead (need to track Host User ID in match room)
-        this.matchRoomService.banUsername(username);
+    banPlayerId(userId: string) {
+        if (userId === this.matchRoomService.getHostId()) return; // TODO: Migrate the logic to server, use UserID instead (need to track Host User ID in match room)
+        this.matchRoomService.banUser(userId);
     }
 
     startMatch() {
