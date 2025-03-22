@@ -11,6 +11,7 @@ const GEMINI_MODEL = "gemini-1.5-flash";
 //Sources/tutorials: 
 //https://www.youtube.com/watch?v=gBLrCdkZTec&ab_channel=ComputingPower
 //https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/control-generated-output
+// https://ai.google.dev/gemini-api/docs/structured-output?lang=node
 
 @Injectable()
 export class QuestionsGeneratorService {
@@ -20,20 +21,39 @@ export class QuestionsGeneratorService {
 
     private readonly logger = new Logger(QuestionsGeneratorService.name); 
     schema: Schema = {
-        type: SchemaType.ARRAY,
-        items: {
-          type: SchemaType.OBJECT,
+        type: SchemaType.OBJECT,
+        //items: {
+        //  type: SchemaType.OBJECT,
           properties: {
             Question: {
               type: SchemaType.STRING,
               nullable: false,
             },
-            Response: {
-                type: SchemaType.STRING,
-                nullable: false,
-              },
+            // Response: {
+            //     type: SchemaType.STRING,
+            //     nullable: false,
+            //   },
+            Choices:{
+                type: SchemaType.ARRAY,
+                minItems: 2,
+                items:{ 
+                    type: SchemaType.OBJECT,
+                    properties: {                  
+                    Text: {
+                    type: SchemaType.STRING,
+                    nullable: false,
+                    },
+                    isCorrect: {  
+                        type: SchemaType.BOOLEAN,
+                        nullable: false,
+                    },
+                 //  },
+                },
+                required: ['Text', 'isCorrect']
+            },
           },
         },
+        required: ["Question"],
       };
     constructor (configService: ConfigService){
         const geminiApiKey = "AIzaSyDtfJfe29-BN22yt8RDUboSdFb7LXWKHyo";

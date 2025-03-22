@@ -1,7 +1,8 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { HttpResponse } from '@angular/common/http';
 import { Component, EventEmitter, Inject, Input, OnChanges, OnInit, Optional, Output, SimpleChanges } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { IMAGE_MAX_FILE_SIZE } from '@app/constants/image-constants';
 import { MAX_CHOICES, MIN_CHOICES, SNACK_BAR_DISPLAY_TIME, VALID_MARGIN_FRACTION } from '@app/constants/question-creation';
@@ -10,6 +11,10 @@ import { Question } from '@app/interfaces/question';
 import { BankService } from '@app/services/bank/bank.service';
 import { QuestionService } from '@app/services/question/question.service';
 import { QuestionType } from '@common/constants/question-types';
+import { DialogTextInputComponent } from '../dialog-text-input/dialog-text-input.component';
+import { Choice } from '@common/interfaces/choice';
+//import { Choice } from '@common/interfaces/choice';
+
 
 export interface DialogManagement {
     modificationState: ManagementState;
@@ -41,6 +46,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         private readonly formBuilder: FormBuilder,
         private questionService: QuestionService,
         public bankService: BankService,
+        private dialog: MatDialog,
         @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: DialogManagement,
     ) {
         this.initializeForm();
@@ -55,6 +61,20 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
 
     get managementState(): typeof ManagementState {
         return ManagementState;
+    }
+
+    openQuestionDialog(){
+        const dialogRef = this.dialog.open(DialogTextInputComponent, {
+            data:{
+                title:"Veuillez fournir le texte de la question",
+                input: ""},
+        });
+
+        dialogRef.afterClosed().subscribe((result: string | null) => {
+            if (result) {
+                this.generateQuestion(result);
+            }
+        });
     }
 
     buildChoices(): FormGroup {
@@ -114,6 +134,58 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
             duration,
         });
     }
+
+    parseGeneratedAnswer(data: { return: string, sessionId: string }) {
+        const result = data.return;
+        const parsedData = JSON.parse(result);
+        if (parsedData.Question && Array.isArray(parsedData.Choices)) {
+            const question = parsedData.Question.trim();
+            const choices = parsedData.Choices.map((choice: { isCorrect: boolean, Text: string }) => ({
+                text: choice.Text,
+                isCorrect: choice.isCorrect
+            }));
+
+            return [
+                {
+                    question: question,
+                    choices: choices, 
+                }
+            ];
+        
+        } else {
+            this.openSnackBar("Erreur lors de la génération de la question", 5000);
+            return [];
+        }
+    }
+
+    generateQuestion(questionSent: any) {
+        if (this.questionForm.get('type')?.value === 'QCM') {
+            const choicesLength = this.questionForm.get('choices')?.value.length;
+            // TO DO: FIND OUT IF WE CAN TAILOR THE PROMPT SERVER SIDE.
+            questionSent = questionSent + ` avec ${choicesLength} choix de réponse, une bonne et une mauvaise`;
+        }
+
+
+        this.questionService.generateQuestion(questionSent).subscribe((response: HttpResponse<string>) => {
+            if (response.body) {
+                const generatedQuestion = JSON.parse(response.body);
+                const parsedAnswer = this.parseGeneratedAnswer(generatedQuestion);
+                this.questionForm.get('text')?.setValue(parsedAnswer[0].question);   
+                if (this.questionForm.get('type')?.value === 'QCM') {
+                const choicesArray = this.questionForm.get('choices') as FormArray;
+                choicesArray.clear();
+                parsedAnswer[0].choices.forEach((choice: Choice, index: number) => {
+                    choicesArray.push(
+                        this.formBuilder.group({
+                            text: choice.text,  
+                            isCorrect: choice.isCorrect,  
+                        })
+                    );
+                });
+            }
+        }})
+    }
+
 
     ngOnInit(): void {
         if (this.modifyingForm) {
