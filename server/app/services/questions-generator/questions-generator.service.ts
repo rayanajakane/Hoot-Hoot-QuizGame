@@ -22,17 +22,11 @@ export class QuestionsGeneratorService {
     private readonly logger = new Logger(QuestionsGeneratorService.name); 
     schema: Schema = {
         type: SchemaType.OBJECT,
-        //items: {
-        //  type: SchemaType.OBJECT,
           properties: {
             Question: {
               type: SchemaType.STRING,
               nullable: false,
             },
-            // Response: {
-            //     type: SchemaType.STRING,
-            //     nullable: false,
-            //   },
             Choices:{
                 type: SchemaType.ARRAY,
                 minItems: 2,
@@ -47,30 +41,32 @@ export class QuestionsGeneratorService {
                         type: SchemaType.BOOLEAN,
                         nullable: false,
                     },
-                 //  },
                 },
-                required: ['Text', 'isCorrect']
+                required: ['Text', 'isCorrect'],
             },
           },
           Numericals:{
             type: SchemaType.OBJECT,
             properties:{
-                //type: SchemaType.OBJECT,
                 lowerBound:{
                     type: SchemaType.INTEGER,
+                    nullable: false,
                 },
                 upperBound:{
                     type: SchemaType.INTEGER,
+                    nullable: false,
                 },
                 exactValue:{
                     type: SchemaType.NUMBER,
+                    nullable: false,
                 },
                 errorMargin:{
                     type: SchemaType.NUMBER,
+                    nullable: false,
                 },
             },
-            required: ['lowerBound', 'upperBound', 'exactValue', 'errorMargin']
-          }
+            required: ['lowerBound', 'upperBound', 'exactValue', 'errorMargin'],
+          },
         },
         required: ['Question'],
       };

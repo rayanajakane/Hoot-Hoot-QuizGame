@@ -138,18 +138,20 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
     parseGeneratedAnswer(data: { return: string, sessionId: string }) {
         const result = data.return;
         const parsedData = JSON.parse(result);
+        console.log(parsedData)
         if (parsedData.Question && Array.isArray(parsedData.Choices) ) {
             //if(this.questionForm.get('type')?.value === 'QCM'){
             const question = parsedData.Question.trim();
-            const lowerBound = parsedData.Numericals.lowerBound;
-            const upperBound = parsedData.Numericals.upperBound;
-            const exactValue = parsedData.Numericals.exactValue;
-            const errorMargin = parsedData.Numericals.errorMargin;
 
             const choices = parsedData.Choices.map((choice: { isCorrect: boolean, Text: string }) => ({
                 text: choice.Text,
                 isCorrect: choice.isCorrect
             }));
+
+            const lowerBound = parsedData.Numericals?.lowerBound;
+            const upperBound = parsedData.Numericals?.upperBound;
+            const exactValue = parsedData.Numericals?.exactValue;
+            const errorMargin = parsedData.Numericals?.errorMargin;
 
             return [
                 {
@@ -171,16 +173,16 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
 }
 
     generateQuestion(questionSent: any) {
-        if (this.questionForm.get('type')?.value === 'QCM') {
+        if (this.questionForm.get('type')?.value === 'QCM' || this.questionForm.get('type')?.value === 'QRE' ) {
             const choicesLength = this.questionForm.get('choices')?.value.length;
             // TO DO: FIND OUT IF WE CAN TAILOR THE PROMPT SERVER SIDE.
-            questionSent = questionSent + ` avec ${choicesLength} choix de réponse, une bonne et une mauvaise`;
+            questionSent = questionSent + ` avec ${choicesLength} choix de réponse, une bonne et une mauvaise` 
+            + ` avec une valeur exacte et une marge d'erreur et une borne inférieure et supérieure`;
         }
-        if (this.questionForm.get('type')?.value === 'QRE') {
-          //  const choicesLength = this.questionForm.get('choices')?.value.length;
-            // TO DO: FIND OUT IF WE CAN TAILOR THE PROMPT SERVER SIDE.
-            questionSent = questionSent + ` avec une valeur exacte et une marge d'erreur et une borne inférieure et supérieure`;
-        }
+        // if (this.questionForm.get('type')?.value === 'QRE') {
+        //     // TO DO: FIND OUT IF WE CAN TAILOR THE PROMPT SERVER SIDE.
+        //     questionSent = questionSent + ` avec une valeur exacte et une marge d'erreur et une borne inférieure et supérieure`;
+        // }
 
 
         this.questionService.generateQuestion(questionSent).subscribe((response: HttpResponse<string>) => {
@@ -192,7 +194,6 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
                 if (this.questionForm.get('type')?.value === 'QCM') {
                 const choicesArray = this.questionForm.get('choices') as FormArray;
                 choicesArray.clear();
-              //  if (parsedAnswer.length > 0 && parsedAnswer[0].choices) {
                     parsedAnswer[0].choices.forEach((choice: Choice, index: number) => {
                         this.choices.push(
                             this.formBuilder.group({
@@ -201,7 +202,6 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
                             })
                         );
                     });
-                //}
             }
             if(this.questionForm.get('type')?.value === 'QRE'){
                 const estimatedParams = this.questionForm.get('estimatedParameters') as FormGroup;
