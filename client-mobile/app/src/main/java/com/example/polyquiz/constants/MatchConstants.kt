@@ -12,6 +12,7 @@ const val LONG_ANSWER_TIME = 60
 const val HISTOGRAM_UPDATE_TIME_SECONDS = 5
 const val HISTOGRAM_UPDATE_TIME_MS = 5000
 const val PANIC_ALERT_DELAY = 1000
+const val HOST_USERNAME = "Organisateur"
 
 enum class MatchButtonActions(val value: String){
     NEXT_QUESTION("QUESTION SUIVANTE"),

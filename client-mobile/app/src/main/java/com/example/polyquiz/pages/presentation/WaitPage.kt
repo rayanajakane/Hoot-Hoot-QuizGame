@@ -15,6 +15,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TimeInput
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -71,7 +72,7 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
 
     }
     fun getTime(): Int {
-        return timeService.time
+        return TimeService.time
     }
 
     fun isHost(): Boolean {
@@ -82,7 +83,7 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
 //    }
 
     fun getCurrentGame(): Game {
-        return matchService.currentGame!!;
+        return MatchService.currentGame!!;
     }
 
     LaunchedEffect(MatchRoomService.isTimeToNavigate, MatchRoomService.username) {
@@ -107,7 +108,7 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
 
     LaunchedEffect(Unit) {
         resetWaitPage()
-        timeService.listenToTimerEvents()
+        TimeService.listenToTimerEvents()
     }
 
 

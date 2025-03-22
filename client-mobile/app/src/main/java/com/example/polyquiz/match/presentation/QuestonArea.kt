@@ -47,6 +47,7 @@ fun QuestionArea(
     answerService: AnswerService,
     authViewModel: AuthViewModel,
     navigateToHome: () -> Unit,
+    navigateToResultsPage: () -> Unit,
     modifier: Modifier
 ) {
 

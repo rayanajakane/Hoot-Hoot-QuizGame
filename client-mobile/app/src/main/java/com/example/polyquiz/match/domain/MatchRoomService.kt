@@ -2,7 +2,6 @@ package com.example.polyquiz.match.domain
 import android.annotation.SuppressLint
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.constants.MatchEvents
-import com.example.polyquiz.constants.HOST_USERNAME
 import com.example.polyquiz.chat.domain.Message
 import com.example.vanillaprototype.socket.SocketHandler
 import com.google.gson.Gson
@@ -17,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.polyquiz.constants.Route
 import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.constants.ChatEvents
+import com.example.polyquiz.constants.MatchStatus
 
 @SuppressLint("StaticFieldLeak")
 object MatchRoomService {
