@@ -1,7 +1,5 @@
 package com.example.polyquiz.auth.presentation
 
-import android.graphics.Bitmap
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -25,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -44,6 +41,7 @@ import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.constants.SIZE_CONSTANTS
+import com.example.polyquiz.ui.features.camera.CameraViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -51,12 +49,12 @@ fun SignupPage(
     modifier: Modifier,
     navigateToChat: () -> Unit,
     navigateToLogin: () -> Unit,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    cameraViewModel: CameraViewModel
 ) {
     val context = LocalContext.current
     val email by authViewModel.email.collectAsState()
     var username by remember { mutableStateOf(authViewModel.getUsername()) }
-//    val username by authViewModel.username.collectAsState()
     val password by authViewModel.password.collectAsState()
 
     val emailError by authViewModel.emailError.collectAsState()
@@ -69,6 +67,10 @@ fun SignupPage(
     val scope = rememberCoroutineScope()
 
     val keyboardController = LocalSoftwareKeyboardController.current
+    val avatarURL by authViewModel.avatarURL.collectAsState()
+    val onClickAvatar: (String) -> Unit = { url ->
+        cameraViewModel.setPresetAvatar(authViewModel, url)
+    }
 
     LaunchedEffect(authState.value) {
         when (authState.value) {
@@ -132,7 +134,7 @@ fun SignupPage(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         // TODO: Select avatar
-                        AvatarPlaceholder(128.dp, PresetAvatar.DEFAULT.value)
+                        AvatarPlaceholder(128.dp, avatarURL)
                         Button(
                             onClick =
                             {
@@ -141,11 +143,11 @@ fun SignupPage(
                         ) { Text(stringResource(R.string.upload_avatar)) }
                         Text(stringResource(R.string.preset_avatars))
                         Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                            AvatarPlaceholder(32.dp, PresetAvatar.A.value)
-                            AvatarPlaceholder(32.dp, PresetAvatar.B.value)
-                            AvatarPlaceholder(32.dp, PresetAvatar.C.value)
-                            AvatarPlaceholder(32.dp, PresetAvatar.D.value)
-                            AvatarPlaceholder(32.dp, PresetAvatar.DEFAULT.value)
+                            ClickableAvatarPlaceholder(32.dp, PresetAvatar.A.value, onClickAvatar)
+                            ClickableAvatarPlaceholder(32.dp, PresetAvatar.B.value, onClickAvatar)
+                            ClickableAvatarPlaceholder(32.dp, PresetAvatar.C.value, onClickAvatar)
+                            ClickableAvatarPlaceholder(32.dp, PresetAvatar.D.value, onClickAvatar)
+                            ClickableAvatarPlaceholder(32.dp, PresetAvatar.DEFAULT.value, onClickAvatar)
                         }
                     }
                     Column() {

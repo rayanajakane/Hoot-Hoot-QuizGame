@@ -78,7 +78,8 @@ fun Navigation(
                 navigateToChat = {
                     navController.navigate(Route.Home)
                 },
-                authViewModel = authViewModel
+                authViewModel = authViewModel,
+                cameraViewModel = cameraViewModel
             )
         }
         composable<Route.MatchRoom> {

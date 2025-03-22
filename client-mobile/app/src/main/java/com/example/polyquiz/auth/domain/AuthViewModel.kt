@@ -117,6 +117,7 @@ class AuthViewModel : ViewModel() {
 
     fun setAvatarUrl(url: String) {
         _avatarURL.value = url
+        Log.d("Set avatar", "Set avatar url to $url")
     }
 
     fun resetSignUpFields() {
