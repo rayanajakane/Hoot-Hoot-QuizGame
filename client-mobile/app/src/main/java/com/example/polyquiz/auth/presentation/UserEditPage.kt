@@ -38,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -99,13 +100,13 @@ fun UserEditPage(
     val textFieldStateLang = rememberTextFieldState(currentLang)
     val textFieldStateTheme = rememberTextFieldState(themes[0])
 
-    // TODO : Cleanup function use launched effect
-    DisposableEffect(Unit) {
-        onDispose {
-            authViewModel.resetUsername()
-            cameraViewModel.resetCapturedPhotoState()
-        }
-    }
+   DisposableEffect(Unit) {
+       onDispose {
+           authViewModel.resetUsername()
+           cameraViewModel.resetCapturedPhotoState()
+       }
+   }
+
     val avatarURL by authViewModel.avatarURL.collectAsState()
     val isPresetAvatar by cameraViewModel.isPresetAvatar.collectAsState()
     val temporaryAvatar by cameraViewModel.temporaryAvatar.collectAsState()
@@ -117,6 +118,7 @@ fun UserEditPage(
 
     fun deleteUser() {
         authViewModel.deleteUser()
+        authViewModel.resetSignUpFields()
         navigateToLogin()
     }
 

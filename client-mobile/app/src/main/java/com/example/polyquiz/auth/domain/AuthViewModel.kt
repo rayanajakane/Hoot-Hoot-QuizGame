@@ -129,6 +129,7 @@ class AuthViewModel : ViewModel() {
         _usernameError.value = ""
         _passwordError.value = ""
         _avatarURL.value = ""
+        Log.d("Reset", "Reset sign up fields")
     }
 
     fun resetUsername() {
