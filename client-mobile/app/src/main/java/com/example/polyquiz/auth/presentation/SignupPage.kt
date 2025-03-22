@@ -1,6 +1,7 @@
 package com.example.polyquiz.auth.presentation
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -72,9 +73,16 @@ fun SignupPage(
     val avatarURL by authViewModel.avatarURL.collectAsState()
     val isPresetAvatar by cameraViewModel.isPresetAvatar.collectAsState()
     val temporaryAvatar by cameraViewModel.temporaryAvatar.collectAsState()
-    val avatarToShow = temporaryAvatar ?: avatarURL
+    val avatarToShow =  temporaryAvatar ?: avatarURL
     val onClickAvatar: (String) -> Unit = { url ->
         cameraViewModel.setPresetAvatar(authViewModel, url)
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+//            authViewModel.resetUsername()
+            cameraViewModel.resetCapturedPhotoState()
+        }
     }
 
     LaunchedEffect(authState.value) {
@@ -140,6 +148,7 @@ fun SignupPage(
                     ) {
                         // TODO: Select avatar
                         if (avatarToShow is Bitmap) {
+                            Log.d("Signup page", "Set avatar to show as Bitmap")
                             TemporaryAvatar(128.dp, avatarToShow)
                         } else {
                             if (avatarURL.isNotEmpty()) {
@@ -214,7 +223,7 @@ fun SignupPage(
                             },
                             singleLine = true,
                             keyboardActions = KeyboardActions(onDone = {
-                                authViewModel.signUp(email, username, password, context)
+                                authViewModel.signUp(email, username, password, context, avatarToShow)
                                 keyboardController?.hide()
                             }),
                             label = { Text(stringResource(R.string.password)) },
@@ -261,7 +270,7 @@ fun SignupPage(
                     Button(
                         onClick =
                         {
-                            authViewModel.signUp(email, username, password, context)
+                            authViewModel.signUp(email, username, password, context, avatarToShow)
                             keyboardController?.hide()
                         },
                         enabled = authState.value != AuthState.Loading

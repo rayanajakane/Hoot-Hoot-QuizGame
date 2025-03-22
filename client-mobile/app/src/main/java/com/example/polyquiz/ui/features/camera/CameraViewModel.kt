@@ -28,6 +28,7 @@ class CameraViewModel : ViewModel() {
 
     fun clearTemporaryAvatar() {
         _temporaryAvatar.value = null
+        Log.d("Camera", "Cleared temp avatar")
     }
 
     fun updateCapturedPhotoState(updatedPhoto: Bitmap?) {
@@ -45,6 +46,7 @@ class CameraViewModel : ViewModel() {
     }
 
     fun resetCapturedPhotoState() {
+        Log.d("Camera", "Called reset")
         _state.value = _state.value.copy(capturedImage = null)
         clearTemporaryAvatar()
         _isPresetAvatar.value = true

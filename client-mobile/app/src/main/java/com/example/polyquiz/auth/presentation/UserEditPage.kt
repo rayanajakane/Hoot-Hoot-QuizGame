@@ -229,9 +229,11 @@ fun UserEditPage(
                             // TODO : Fix clickable avatar
                             if (avatarToShow is Bitmap) {
                                 TemporaryAvatar(128.dp, avatarToShow)
+                                Log.d("UserEditPage", "Showing temp avatar")
                             } else {
                                 if (avatarURL.isNotEmpty()) {
                                     AvatarPlaceholder(128.dp, avatarURL)
+                                    Log.d("UserEditPage", "Showing avatar from url : $avatarURL")
                                 } else {
                                     AvatarPlaceholder(128.dp, PresetAvatar.DEFAULT.value)
                                 }
