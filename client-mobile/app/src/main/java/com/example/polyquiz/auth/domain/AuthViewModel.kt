@@ -348,7 +348,9 @@ class AuthViewModel : ViewModel() {
                             user = task.result.user
                             val displayNameUpdate = UserProfileChangeRequest.Builder()
                                 .setDisplayName(username)
+                                .setPhotoUri(Uri.parse(_avatarURL.value))
                                 .build()
+                            Log.d("Sign up", "Set avatar uri to ${_avatarURL.value}")
                             user?.updateProfile(displayNameUpdate)
                                 ?.addOnCompleteListener { updateTask ->
                                     if (updateTask.isSuccessful) {
