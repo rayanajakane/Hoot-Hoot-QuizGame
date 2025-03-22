@@ -9,4 +9,5 @@ export enum FriendsEvents {
     ReturnAllPendingRequests = 'returnAllPendingRequests',
     ReturnAllSentRequests = 'returnAllSentRequests',
     ReturnAllData = 'returnAllData',
+    UpdateData = 'updateData',
 }
