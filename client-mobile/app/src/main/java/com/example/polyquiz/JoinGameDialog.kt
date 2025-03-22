@@ -12,14 +12,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.ImeAction
+import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.match.domain.JoinMatchService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.TimeService
+import kotlinx.coroutines.launch
 
 @Composable
 fun JoinGameDialog(
@@ -35,6 +39,7 @@ fun JoinGameDialog(
     var room by remember { mutableStateOf("") }
     val username by remember { mutableStateOf(authViewModel.getUsername() )}
     val userId by remember { mutableStateOf(authViewModel.getUserId()) }
+
     fun submitCode(matchRoomCode: String) {
         JoinMatchService.matchRoomCode = "";
         JoinMatchService.validateMatchRoomCode(
@@ -45,6 +50,7 @@ fun JoinGameDialog(
             },
             onError = { errorMessage ->
                 println("Error: $errorMessage")
+
                 JoinMatchService.matchRoomCode = ""
             }
         )
