@@ -52,8 +52,27 @@ export class QuestionsGeneratorService {
                 required: ['Text', 'isCorrect']
             },
           },
+          Numericals:{
+            type: SchemaType.OBJECT,
+            properties:{
+                //type: SchemaType.OBJECT,
+                lowerBound:{
+                    type: SchemaType.INTEGER,
+                },
+                upperBound:{
+                    type: SchemaType.INTEGER,
+                },
+                exactValue:{
+                    type: SchemaType.NUMBER,
+                },
+                errorMargin:{
+                    type: SchemaType.NUMBER,
+                },
+            },
+            required: ['lowerBound', 'upperBound', 'exactValue', 'errorMargin']
+          }
         },
-        required: ["Question"],
+        required: ['Question'],
       };
     constructor (configService: ConfigService){
         const geminiApiKey = "AIzaSyDtfJfe29-BN22yt8RDUboSdFb7LXWKHyo";

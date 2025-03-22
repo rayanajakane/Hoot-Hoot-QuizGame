@@ -138,8 +138,14 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
     parseGeneratedAnswer(data: { return: string, sessionId: string }) {
         const result = data.return;
         const parsedData = JSON.parse(result);
-        if (parsedData.Question && Array.isArray(parsedData.Choices)) {
+        if (parsedData.Question && Array.isArray(parsedData.Choices) ) {
+            //if(this.questionForm.get('type')?.value === 'QCM'){
             const question = parsedData.Question.trim();
+            const lowerBound = parsedData.Numericals.lowerBound;
+            const upperBound = parsedData.Numericals.upperBound;
+            const exactValue = parsedData.Numericals.exactValue;
+            const errorMargin = parsedData.Numericals.errorMargin;
+
             const choices = parsedData.Choices.map((choice: { isCorrect: boolean, Text: string }) => ({
                 text: choice.Text,
                 isCorrect: choice.isCorrect
@@ -149,14 +155,20 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
                 {
                     question: question,
                     choices: choices, 
+                    lowerBound: lowerBound,
+                    upperBound: upperBound,
+                    exactValue: exactValue,
+                    errorMargin: errorMargin,
                 }
             ];
+        //}
+    }
         
-        } else {
+        else {
             this.openSnackBar("Erreur lors de la génération de la question", 5000);
             return [];
         }
-    }
+}
 
     generateQuestion(questionSent: any) {
         if (this.questionForm.get('type')?.value === 'QCM') {
@@ -164,27 +176,43 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
             // TO DO: FIND OUT IF WE CAN TAILOR THE PROMPT SERVER SIDE.
             questionSent = questionSent + ` avec ${choicesLength} choix de réponse, une bonne et une mauvaise`;
         }
+        if (this.questionForm.get('type')?.value === 'QRE') {
+          //  const choicesLength = this.questionForm.get('choices')?.value.length;
+            // TO DO: FIND OUT IF WE CAN TAILOR THE PROMPT SERVER SIDE.
+            questionSent = questionSent + ` avec une valeur exacte et une marge d'erreur et une borne inférieure et supérieure`;
+        }
 
 
         this.questionService.generateQuestion(questionSent).subscribe((response: HttpResponse<string>) => {
             if (response.body) {
                 const generatedQuestion = JSON.parse(response.body);
                 const parsedAnswer = this.parseGeneratedAnswer(generatedQuestion);
-                this.questionForm.get('text')?.setValue(parsedAnswer[0].question);   
+                console.log(parsedAnswer)
+               this.questionForm.get('text')?.setValue(parsedAnswer[0].question);   
                 if (this.questionForm.get('type')?.value === 'QCM') {
                 const choicesArray = this.questionForm.get('choices') as FormArray;
                 choicesArray.clear();
-                parsedAnswer[0].choices.forEach((choice: Choice, index: number) => {
-                    choicesArray.push(
-                        this.formBuilder.group({
-                            text: choice.text,  
-                            isCorrect: choice.isCorrect,  
-                        })
-                    );
-                });
+              //  if (parsedAnswer.length > 0 && parsedAnswer[0].choices) {
+                    parsedAnswer[0].choices.forEach((choice: Choice, index: number) => {
+                        this.choices.push(
+                            this.formBuilder.group({
+                                text: choice.text,
+                                isCorrect: choice.isCorrect,
+                            })
+                        );
+                    });
+                //}
             }
-        }})
+            if(this.questionForm.get('type')?.value === 'QRE'){
+                const estimatedParams = this.questionForm.get('estimatedParameters') as FormGroup;
+                estimatedParams.get('lowerBound')?.setValue(parsedAnswer[0].lowerBound);
+                estimatedParams.get('upperBound')?.setValue(parsedAnswer[0].upperBound);
+                estimatedParams.get('correctAnswer')?.setValue(parsedAnswer[0].exactValue);
+                estimatedParams.get('margin')?.setValue(parsedAnswer[0].errorMargin);
+        }
+    }})
     }
+
 
 
     ngOnInit(): void {

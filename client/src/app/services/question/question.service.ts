@@ -30,7 +30,7 @@ export class QuestionService extends CommunicationService<Question> {
     }
 
     generateQuestion(generatedQuestion:string){
-        console.log(generatedQuestion)
+        //TODO: AGAIN FIND OUT IF WE CAN MODIFY THE PROMPT SERVER SIDE
         const questionString = {"prompt" : JSON.stringify(generatedQuestion) + "genérer question"}
         console.log(questionString)
         return this.add(questionString,'generate-question');
