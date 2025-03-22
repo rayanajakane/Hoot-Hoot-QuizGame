@@ -71,7 +71,6 @@ fun SignupPage(
 
     val keyboardController = LocalSoftwareKeyboardController.current
     val avatarURL by authViewModel.avatarURL.collectAsState()
-    val isPresetAvatar by cameraViewModel.isPresetAvatar.collectAsState()
     val temporaryAvatar by cameraViewModel.temporaryAvatar.collectAsState()
     val avatarToShow =  temporaryAvatar ?: avatarURL
     val onClickAvatar: (String) -> Unit = { url ->
@@ -80,7 +79,6 @@ fun SignupPage(
 
     DisposableEffect(Unit) {
         onDispose {
-//            authViewModel.resetUsername()
             cameraViewModel.resetCapturedPhotoState()
         }
     }

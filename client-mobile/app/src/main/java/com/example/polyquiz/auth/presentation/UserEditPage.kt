@@ -138,7 +138,7 @@ fun UserEditPage(
                 username, authViewModel.getUsername()
             )
         } else {
-            Log.e("caca", "CACA")
+            Log.e("save profile", "Username has not changed.")
         }
 
         // Save avatar image + url
@@ -228,7 +228,6 @@ fun UserEditPage(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            // TODO : Fix clickable avatar
                             if (avatarToShow is Bitmap) {
                                 TemporaryAvatar(128.dp, avatarToShow)
                                 Log.d("UserEditPage", "Showing temp avatar")
