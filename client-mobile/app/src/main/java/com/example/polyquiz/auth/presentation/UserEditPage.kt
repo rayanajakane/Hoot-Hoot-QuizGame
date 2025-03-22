@@ -64,11 +64,10 @@ import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.core.storage.ImageStorage
 import com.example.polyquiz.ui.features.camera.CameraViewModel
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.example.polyquiz.core.TranslationService
 import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserEditPage(
     modifier: Modifier,
@@ -100,7 +99,7 @@ fun UserEditPage(
     val textFieldStateLang = rememberTextFieldState(currentLang)
     val textFieldStateTheme = rememberTextFieldState(themes[0])
 
-    // TODO : Cleanup function
+    // TODO : Cleanup function use launched effect
     DisposableEffect(Unit) {
         onDispose {
             authViewModel.resetUsername()
@@ -231,8 +230,8 @@ fun UserEditPage(
                             if (avatarToShow is Bitmap) {
                                 TemporaryAvatar(128.dp, avatarToShow)
                             } else {
-                                if (avatarURL != null) {
-                                    AvatarPlaceholder(128.dp, avatarURL!!)
+                                if (avatarURL.isNotEmpty()) {
+                                    AvatarPlaceholder(128.dp, avatarURL)
                                 } else {
                                     AvatarPlaceholder(128.dp, PresetAvatar.DEFAULT.value)
                                 }

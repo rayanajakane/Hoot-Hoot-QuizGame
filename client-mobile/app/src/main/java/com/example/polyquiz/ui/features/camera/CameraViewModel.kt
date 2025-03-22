@@ -23,6 +23,7 @@ class CameraViewModel : ViewModel() {
 
     fun setTemporaryAvatar(capturedImage: Bitmap?) {
         _temporaryAvatar.value = capturedImage
+        Log.d("Camera", "Set temporary avatar")
     }
 
     fun clearTemporaryAvatar() {

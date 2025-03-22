@@ -1,5 +1,6 @@
 package com.example.polyquiz.auth.presentation
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -49,6 +50,7 @@ fun SignupPage(
     modifier: Modifier,
     navigateToChat: () -> Unit,
     navigateToLogin: () -> Unit,
+    navigateToCamera: () -> Unit,
     authViewModel: AuthViewModel,
     cameraViewModel: CameraViewModel
 ) {
@@ -68,6 +70,9 @@ fun SignupPage(
 
     val keyboardController = LocalSoftwareKeyboardController.current
     val avatarURL by authViewModel.avatarURL.collectAsState()
+    val isPresetAvatar by cameraViewModel.isPresetAvatar.collectAsState()
+    val temporaryAvatar by cameraViewModel.temporaryAvatar.collectAsState()
+    val avatarToShow = temporaryAvatar ?: avatarURL
     val onClickAvatar: (String) -> Unit = { url ->
         cameraViewModel.setPresetAvatar(authViewModel, url)
     }
@@ -134,11 +139,19 @@ fun SignupPage(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         // TODO: Select avatar
-                        AvatarPlaceholder(128.dp, avatarURL)
+                        if (avatarToShow is Bitmap) {
+                            TemporaryAvatar(128.dp, avatarToShow)
+                        } else {
+                            if (avatarURL.isNotEmpty()) {
+                                AvatarPlaceholder(128.dp, avatarURL)
+                            } else {
+                                AvatarPlaceholder(128.dp, PresetAvatar.DEFAULT.value)
+                            }
+                        }
                         Button(
                             onClick =
                             {
-                                // TODO
+                                navigateToCamera()
                             },
                         ) { Text(stringResource(R.string.upload_avatar)) }
                         Text(stringResource(R.string.preset_avatars))

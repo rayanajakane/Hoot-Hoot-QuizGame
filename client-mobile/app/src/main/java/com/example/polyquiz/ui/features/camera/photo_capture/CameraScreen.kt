@@ -43,6 +43,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.ui.features.camera.CameraState
 import com.example.polyquiz.ui.features.camera.CameraViewModel
@@ -52,7 +53,8 @@ import java.util.concurrent.Executor
 fun CameraScreen(
     authViewModel: AuthViewModel,
     cameraViewModel: CameraViewModel,
-    navigateToUserEdit: () -> Unit
+    navigateToUserEdit: () -> Unit,
+    navigateToSignup: () -> Unit
 ) {
     val cameraState: CameraState by cameraViewModel.state.collectAsStateWithLifecycle()
 
@@ -64,7 +66,13 @@ fun CameraScreen(
         ImagePreview(
             capturedImage = cameraState.capturedImage!!,
             onRetake = { cameraViewModel.updateCapturedPhotoState(null) },
-            onSave = { navigateToUserEdit() }
+            onSave = {
+                if(authViewModel.authState.value === AuthState.Authenticated) {
+                    navigateToUserEdit()
+                } else {
+                    navigateToSignup()
+                }
+            }
         )
     }
 }
