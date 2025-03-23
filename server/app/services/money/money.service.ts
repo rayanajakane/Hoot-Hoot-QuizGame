@@ -1,5 +1,5 @@
 import { DonationRecord } from '@app/constants/donation-record';
-import { DONATION_LIMIT_EXCEEDED, LOW_BALANCE } from '@app/constants/money-errors';
+import { DONATION_LIMIT_EXCEEDED, INVALID_AMOUNT, LOW_BALANCE } from '@app/constants/money-errors';
 import { FirebaseAuthService } from '@app/modules/firebase/firebase-auth/firebase-auth.service';
 import { FirebaseRepositoryService } from '@app/modules/firebase/firebase-repository/firebase-repository.service';
 import { Injectable } from '@nestjs/common';
@@ -8,7 +8,7 @@ import { Database } from 'firebase-admin/lib/database/database';
 @Injectable()
 export class MoneyService {
     private database: Database;
-    private readonly DAILY_DONATION_LIMIT = 10;
+    private readonly DAILY_DONATION_LIMIT = 100000;
 
     constructor(
         private readonly firebaseService: FirebaseRepositoryService,
@@ -18,6 +18,7 @@ export class MoneyService {
     }
 
     async getCurrentBalance(uid: string): Promise<number> {
+        console.log('Getting balance for:', uid);
         const snapshot = await this.database.ref(`users/${uid}/balance`).once('value');
         return snapshot.exists() ? snapshot.val() : 0;
     }
@@ -45,6 +46,7 @@ export class MoneyService {
             const records = Object.values(donationHistory) as DonationRecord[];
             for (const record of records) {
                 if (record.timestamp >= todayTimestamp) {
+                    //TODO: Logic a revoir
                     donationsToday += record.amount;
                 }
             }
@@ -79,6 +81,10 @@ export class MoneyService {
 
         if (balance < amount) {
             errors.push(LOW_BALANCE);
+        }
+
+        if (typeof amount !== 'number' || amount <= 0) {
+            errors.push(INVALID_AMOUNT);
         }
 
         if (isDonation) {

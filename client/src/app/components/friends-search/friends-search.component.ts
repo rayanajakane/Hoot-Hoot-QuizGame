@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogTextInputComponent } from '@app/components/dialog-text-input/dialog-text-input.component'; // Import the dialog
-import { TextDialogData } from '@app/interfaces/dialog-data/text-dialog-data'; // Import dialog data type
+import { DialogTextInputComponent } from '@app/components/dialog-text-input/dialog-text-input.component';
+import { TextDialogData } from '@app/interfaces/dialog-data/text-dialog-data';
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { FriendsService } from '@app/services/friends/friends.service';
 import { MoneyService } from '@app/services/money/money.service';
 import { Subscription } from 'rxjs';
@@ -18,6 +19,7 @@ export class FriendsSearchComponent implements OnInit, OnDestroy {
 
     constructor(
         public friendsService: FriendsService,
+        private readonly authService: AuthenticationService,
         private moneyService: MoneyService,
         private dialog: MatDialog,
     ) {}
@@ -45,9 +47,7 @@ export class FriendsSearchComponent implements OnInit, OnDestroy {
 
         dialogRef.afterClosed().subscribe((donationAmount: string) => {
             if (donationAmount && !isNaN(+donationAmount) && +donationAmount > 0) {
-                this.moneyService.donateMoney(friendId, +donationAmount);
-            } else {
-                alert('Invalid amount. Please enter a valid number.');
+                this.moneyService.donateMoney(this.authService.userId, friendId, +donationAmount);
             }
         });
     }
