@@ -1,6 +1,4 @@
-package com.example.polyquiz
-
-import com.example.polyquiz.match.domain.Question
+package com.example.polyquiz.match.domain
 
 data class Game(
     val id: String? ="",
@@ -10,6 +8,6 @@ data class Game(
     val questions: List<Question>? = null,
     val lastModification: String?,
     val isVisible: Boolean?,
-    val nMatchesPlayed: Number,
+    var nMatchesPlayed: Number,
     val duration: Number,
 )

@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.example.polyquiz.Game
 import com.example.polyquiz.http.GameService
 import com.example.polyquiz.http.CommunicationService
 import com.google.gson.Gson
@@ -31,7 +30,7 @@ object MatchService {
         return gameService.getGames(onSuccess = {}, onError = {})
     }
 
-    fun saveBackupGame(id: String, hostId: String, hostUsername: String, isFriendsOnly: Boolean= false){
+    fun saveBackupGame(id: String, hostId: String , hostUsername: String, isFriendsOnly: Boolean= false){
             return backupService.add(
                 currentGame!!,
                 onSuccess = { response ->
