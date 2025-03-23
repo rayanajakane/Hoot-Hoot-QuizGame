@@ -15,7 +15,8 @@ import com.google.accompanist.permissions.rememberPermissionState
 fun MainCameraScreen(
     authViewModel: AuthViewModel,
     cameraViewModel: CameraViewModel,
-    navigateToUserEdit: () -> Unit
+    navigateToUserEdit: () -> Unit,
+    navigateToSignup: () -> Unit
 ) {
     val cameraPermissionState: PermissionState =
         rememberPermissionState(android.Manifest.permission.CAMERA)
@@ -25,7 +26,8 @@ fun MainCameraScreen(
         authViewModel,
         cameraViewModel,
         onRequestPermission = cameraPermissionState::launchPermissionRequest,
-        navigateToUserEdit
+        navigateToUserEdit,
+        navigateToSignup
     )
 }
 
@@ -35,10 +37,11 @@ private fun MainContent(
     authViewModel: AuthViewModel,
     cameraViewModel: CameraViewModel,
     onRequestPermission: () -> Unit,
-    navigateToUserEdit: () -> Unit
+    navigateToUserEdit: () -> Unit,
+    navigateToSignup: () -> Unit
 ) {
     if (hasPermission) {
-        CameraScreen(authViewModel, cameraViewModel, navigateToUserEdit)
+        CameraScreen(authViewModel, cameraViewModel, navigateToUserEdit, navigateToSignup)
     } else {
         NoPermissionScreen(onRequestPermission)
     }
