@@ -121,18 +121,6 @@ fun HomePage(
             Button(onClick = { navigateToJoinRoom() }) {
                 Text("Joindre une partie")
             }
-
-            JoinGameDialog(
-                isOpen = showDialog,
-                onDismiss = { showDialog = false },
-                onJoin = {
-                    showDialog = false
-                },
-                authViewModel = authViewModel,
-                navigateToHome = navigateToHome,
-                navigateToMatchPage = navigateToWaitPage,
-                navigateToWaitPage = navigateToWaitPage
-            )
             Button(
                 onClick = {
                     navigateToCreate()
