@@ -18,7 +18,6 @@ export class MoneyService {
     }
 
     async getCurrentBalance(uid: string): Promise<number> {
-        console.log('Getting balance for:', uid);
         const snapshot = await this.database.ref(`users/${uid}/balance`).once('value');
         return snapshot.exists() ? snapshot.val() : 0;
     }
@@ -93,8 +92,6 @@ export class MoneyService {
                 errors.push(DONATION_LIMIT_EXCEEDED);
             }
         }
-
-        console.log('Errors:', errors);
 
         return errors.join(' ');
     }

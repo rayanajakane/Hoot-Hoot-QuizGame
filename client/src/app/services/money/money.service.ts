@@ -29,20 +29,17 @@ export class MoneyService {
     }
 
     getCurrentBalance(userId: string) {
-        console.log('Sending GetBalance event with userId:', userId);
         this.socketHandler.send(MoneyEvents.GetBalance, userId);
     }
 
     onReturnBalance() {
         this.socketHandler.on(MoneyEvents.ReturnBalance, (data: number) => {
-            console.log('Current balance:', data);
             this.currentBalance = data;
             return data;
         });
     }
 
     donateMoney(userId: string, friendId: string, amount: number) {
-        console.log('Donating money', friendId, amount);
         this.socketHandler.send(MoneyEvents.DonateMoney, {
             user: userId,
             friend: friendId,
@@ -51,7 +48,6 @@ export class MoneyService {
     }
 
     onDonationGiven() {
-        console.log('onDonationGiven');
         this.socketHandler.on(MoneyEvents.DonationGiven, (data: { to: string; amount: number; newBalance: number }) => {
             this.notificationService.displaySuccessMessage(`You have donated ${data.amount} to ${data.to}`);
             this.currentBalance = data.newBalance;
@@ -59,7 +55,6 @@ export class MoneyService {
     }
 
     onDonationReceived() {
-        console.log('onDonationReceived');
         this.socketHandler.on(MoneyEvents.DonationReceived, (data: { from: string; amount: number; newBalance: number }) => {
             this.notificationService.displaySuccessMessage(`${data.from} has donated ${data.amount} to you`);
             this.currentBalance = data.newBalance;
