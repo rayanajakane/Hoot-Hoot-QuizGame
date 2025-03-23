@@ -53,10 +53,9 @@ fun HomePage(
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     var showDialog by remember { mutableStateOf(false) }
-    val shouldNavigate = rememberUpdatedState(MatchRoomService.timeToGoToWaitPage)
     val shouldNavigateToResults = rememberUpdatedState(MatchRoomService.isTimeToNavigateToResults)
 
-    LaunchedEffect(authState.value, MatchRoomService.timeToGoToWaitPage) {
+    LaunchedEffect(authState.value) {
         when (authState.value) {
             is AuthState.Unauthenticated -> {
                 scope.launch {
@@ -81,15 +80,7 @@ fun HomePage(
 
             else -> Unit
         }
-        when (shouldNavigate.value) {
-            true -> {
-                println("we are navigating again")
-                MatchRoomService.timeToGoToWaitPage = false
-                navigateToWaitPage()
-            }
 
-            else -> Unit
-        }
     }
 
 
@@ -110,29 +101,22 @@ fun HomePage(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxHeight()
         ) {
-//            Button(
-//                onClick = {joinGameDialog()},
-//                colors = ButtonDefaults.buttonColors(
-//                    containerColor = MaterialTheme.colorScheme.primary,
-//                    contentColor = MaterialTheme.colorScheme.onPrimary)
-//            ) {
-//                Text(text = "Joindre une partie")
-//            }
+
             Button(onClick = { navigateToJoinRoom() }) {
                 Text("Joindre une partie")
             }
 
-            JoinGameDialog(
-                isOpen = showDialog,
-                onDismiss = { showDialog = false },
-                onJoin = {
-                    showDialog = false
-                },
-                authViewModel = authViewModel,
-                navigateToHome = navigateToHome,
-                navigateToMatchPage = navigateToWaitPage,
-                navigateToWaitPage = navigateToWaitPage
-            )
+//            JoinGameDialog(
+//                isOpen = showDialog,
+//                onDismiss = { showDialog = false },
+//                onJoin = {
+//                    showDialog = false
+//                },
+//                authViewModel = authViewModel,
+//                navigateToHome = navigateToHome,
+//                navigateToMatchPage = navigateToWaitPage,
+//                navigateToWaitPage = navigateToWaitPage
+//            )
             Button(
                 onClick = {
                     navigateToCreate()
