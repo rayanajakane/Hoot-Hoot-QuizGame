@@ -57,7 +57,8 @@ fun SignupPage(
 ) {
     val context = LocalContext.current
     val email by authViewModel.email.collectAsState()
-    var username by remember { mutableStateOf(authViewModel.getUsername()) }
+//    var username by remember { mutableStateOf(authViewModel.getUsername()) }
+    val username by authViewModel.username.collectAsState()
     val password by authViewModel.password.collectAsState()
 
     val emailError by authViewModel.emailError.collectAsState()
@@ -193,7 +194,6 @@ fun SignupPage(
                         TextField(
                             value = username,
                             onValueChange = {
-                                username = it
                                 if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.setAndUpdateUsername(
                                     it,
                                     context
