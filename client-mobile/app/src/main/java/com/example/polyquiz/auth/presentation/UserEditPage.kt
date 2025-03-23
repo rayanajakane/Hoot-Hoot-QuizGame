@@ -51,6 +51,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -66,6 +67,7 @@ import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.core.storage.ImageStorage
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.core.TranslationService
+import com.example.polyquiz.ui.theme.Theme
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,28 +79,34 @@ fun UserEditPage(
     navigateToLogin: () -> Unit,
     authViewModel: AuthViewModel,
     context: Context,
-    cameraViewModel: CameraViewModel
+    cameraViewModel: CameraViewModel,
+    currentTheme: Theme,
+    onThemeUpdated: () -> Unit
 ) {
 
     val focusManager = LocalFocusManager.current
     val translationService = TranslationService
 
     var currentLang by remember { mutableStateOf(Locale.getDefault().language) }
+    var theme by remember { mutableStateOf(currentTheme) }
 
     val email by authViewModel.email.collectAsState()
     var username by remember { mutableStateOf(authViewModel.getUsername()) }
     val usernameError by authViewModel.usernameError.collectAsState()
 
-    var expandedTheme by remember { mutableStateOf(false) }
     var expandedLang by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
+
+    val availableThemes = mapOf(
+        Theme.LIGHT to stringResource(R.string.light_theme),
+        Theme.DARK to stringResource(R.string.dark_theme)
+    )
 
     val availableLangs =
         mapOf("en" to stringResource(R.string.english), "fr" to stringResource(R.string.french))
 
-    val themes = listOf("light theme", "dark theme")
     val textFieldStateLang = rememberTextFieldState(currentLang)
-    val textFieldStateTheme = rememberTextFieldState(themes[0])
+
 
    DisposableEffect(Unit) {
        onDispose {
@@ -114,6 +122,11 @@ fun UserEditPage(
 
     val onClickAvatar: (String) -> Unit = { url ->
         cameraViewModel.setPresetAvatar(authViewModel, url)
+    }
+
+    val onClickTheme: (Theme) -> Unit = { selectedTheme ->
+        theme = selectedTheme
+        Log.d("Theme changer", "Selected $theme")
     }
 
     fun deleteUser() {
@@ -305,48 +318,7 @@ fun UserEditPage(
                             Spacer(modifier = Modifier.height(8.dp))
                             // REF : https://composables.com/material3/exposeddropdownmenubox
                             // Visual themes menu
-                            ExposedDropdownMenuBox(
-                                expanded = expandedTheme,
-                                onExpandedChange = { expandedTheme = it },
-                            ) {
-                                TextField(
-                                    value = "",
-                                    modifier = Modifier
-                                        .menuAnchor()
-                                        .fillMaxWidth(),
-                                    label = { Text(stringResource(R.string.visual_themes)) },
-                                    onValueChange = {
-                                        // TODO
-                                    },
-                                    readOnly = true,
-                                    trailingIcon = {
-                                        ExposedDropdownMenuDefaults.TrailingIcon(
-                                            expanded = expandedTheme
-                                        )
-                                    },
-                                    colors = ExposedDropdownMenuDefaults.textFieldColors(),
-
-                                    )
-                                ExposedDropdownMenu(
-                                    expanded = expandedTheme,
-                                    onDismissRequest = { expandedTheme = false }) {
-                                    themes.forEach { theme ->
-                                        DropdownMenuItem(
-                                            text = {
-                                                Text(
-                                                    theme,
-                                                    style = MaterialTheme.typography.bodyLarge
-                                                )
-                                            },
-                                            onClick = {
-                                                textFieldStateTheme.setTextAndPlaceCursorAtEnd(theme)
-                                                expandedTheme = false
-                                            },
-                                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                                        )
-                                    }
-                                }
-                            }
+                            ThemeDropdown(context, availableThemes, currentTheme, onClickTheme)
                             Spacer(modifier = Modifier.height(8.dp))
                             // Languages
                             // REF : https://github.com/android/user-interface-samples/blob/main/PerAppLanguages/compose_app/app/src/main/java/com/example/perapplanguages/MainActivity.kt
@@ -438,6 +410,68 @@ fun UserEditPage(
             }
         }
 
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ThemeDropdown(
+    context: Context,
+    themes: Map<Theme, String>,
+    currentTheme: Theme,
+    onClick: (Theme) -> Unit
+) {
+    var expandedTheme by remember { mutableStateOf(false) }
+    var selectedTheme by remember { mutableStateOf(currentTheme) }
+    val textFieldStateTheme = rememberTextFieldState(currentTheme.toString())
+
+    ExposedDropdownMenuBox(
+        expanded = expandedTheme,
+        onExpandedChange = { expandedTheme = it },
+    ) {
+        TextField(
+            value = themes[selectedTheme].toString(),
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth(),
+            label = { Text(stringResource(R.string.visual_themes)) },
+            onValueChange = {
+                // TODO
+            },
+            readOnly = true,
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(
+                    expanded = expandedTheme
+                )
+            },
+            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+
+            )
+        ExposedDropdownMenu(
+            expanded = expandedTheme,
+            onDismissRequest = { expandedTheme = false }) {
+            themes.keys.forEach { theme ->
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            theme.displayName.asString(context),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    },
+                    onClick = {
+                        onClick(theme)
+                        selectedTheme = theme
+                        textFieldStateTheme.setTextAndPlaceCursorAtEnd(
+                            theme.displayName.asString(
+                                context
+                            )
+                        )
+                        expandedTheme = false
+                    },
+                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                )
+            }
+        }
     }
 }
 

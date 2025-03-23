@@ -1,5 +1,6 @@
 package com.example.polyquiz.ui.theme
 
+import StringValue
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -10,6 +11,13 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import com.example.polyquiz.R
+
+enum class Theme(val displayName: StringValue) {
+    LIGHT(StringValue.StringResource(R.string.light_theme)),
+    DARK(StringValue.StringResource(R.string.dark_theme))
+    // TODO : Add more themes
+}
 
 // Ref : https://lh3.googleusercontent.com/2tz16tRWvWsNwxg22BmLGDpZ7Pp3SqAg6Zr10WUCbjeEJHFSBzkbb4gwkjIQ5m4rfYoSntR412o7bC7sr8Xi5-gpiciNiQyjssfNWQ=w1064-v0
 private val DarkColorScheme = darkColorScheme(

@@ -28,6 +28,7 @@ import com.example.polyquiz.friends.presentation.FriendsSearchScreen
 import com.example.polyquiz.money.domain.MoneyService
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.ui.features.camera.MainCameraScreen
+import com.example.polyquiz.ui.theme.Theme
 
 // References: https://youtu.be/AIC_OFQ1r3k  and  https://youtu.be/lv1raAvwcgI
 @Composable
@@ -35,7 +36,9 @@ fun Navigation(
     modifier: Modifier,
     authViewModel: AuthViewModel,
     cameraViewModel: CameraViewModel,
-    context: Context
+    context: Context,
+    currentTheme: Theme,
+    onThemeUpdated: () -> Unit
 ) {
     val navController = rememberNavController()
     NavHost(
@@ -196,7 +199,9 @@ fun Navigation(
                 },
                 authViewModel = authViewModel,
                 context = context,
-                cameraViewModel = cameraViewModel
+                cameraViewModel = cameraViewModel,
+                currentTheme = currentTheme,
+                onThemeUpdated = onThemeUpdated
             )
         }
         composable<Route.FriendsSearchScreen> {
