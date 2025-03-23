@@ -81,7 +81,7 @@ fun UserEditPage(
     context: Context,
     cameraViewModel: CameraViewModel,
     currentTheme: Theme,
-    onThemeUpdated: () -> Unit
+    onThemeUpdated: (Theme) -> Unit
 ) {
 
     val focusManager = LocalFocusManager.current
@@ -136,14 +136,15 @@ fun UserEditPage(
     }
 
     fun saveUserProfile() {
-        // TODO : save themes
-
         // To hide the keyboard in case it's open
         keyboardController?.hide()
 
         // Change app language
         translationService.setLanguage(currentLang)
         translationService.saveLanguageToDB(currentLang, authViewModel.getUserConfigsDatabaseRef())
+
+        // Change app theme
+        onThemeUpdated(theme)
 
         // Change username
         if (authViewModel.getUsername() != username) {

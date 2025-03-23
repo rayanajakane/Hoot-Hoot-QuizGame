@@ -2,6 +2,7 @@ package com.example.polyquiz
 
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -40,9 +41,13 @@ class MainActivity : AppCompatActivity() {
         SocketHandler.setSocket()
         val authViewModel : AuthViewModel by viewModels()
         val cameraViewModel: CameraViewModel by viewModels()
+
         setContent {
             var currentTheme by remember{ mutableStateOf(Theme.LIGHT)}
-            PolyQuizTheme {
+            val setTheme: (Theme) -> Unit = { selectedTheme ->
+                currentTheme = selectedTheme
+            }
+            PolyQuizTheme(currentTheme) {
                 val snackbarHostState = remember {
                     SnackbarHostState()
                 }
@@ -77,9 +82,7 @@ class MainActivity : AppCompatActivity() {
                         cameraViewModel = cameraViewModel,
                         context = applicationContext,
                         currentTheme = currentTheme,
-                        onThemeUpdated = {
-                           // TODO
-                        }
+                        onThemeUpdated = setTheme
                     )
                 }
             }
@@ -90,7 +93,7 @@ class MainActivity : AppCompatActivity() {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    PolyQuizTheme {
+    PolyQuizTheme(currentTheme = Theme.DARK) {
         // Can be used to preview composable
     }
 }

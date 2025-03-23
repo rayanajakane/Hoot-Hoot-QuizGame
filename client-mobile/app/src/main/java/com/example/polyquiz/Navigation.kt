@@ -38,7 +38,7 @@ fun Navigation(
     cameraViewModel: CameraViewModel,
     context: Context,
     currentTheme: Theme,
-    onThemeUpdated: () -> Unit
+    onThemeUpdated: (Theme) -> Unit
 ) {
     val navController = rememberNavController()
     NavHost(

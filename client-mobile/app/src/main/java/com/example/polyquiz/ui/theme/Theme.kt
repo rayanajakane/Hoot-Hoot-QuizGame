@@ -61,12 +61,12 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun PolyQuizTheme(
     // Ref : https://developer.android.com/reference/kotlin/androidx/compose/foundation/package-summary#isSystemInDarkTheme()
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    currentTheme: Theme,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+    val colorScheme = when (currentTheme) {
+        Theme.DARK -> DarkColorScheme
+        Theme.LIGHT -> LightColorScheme
     }
 
     MaterialTheme(
