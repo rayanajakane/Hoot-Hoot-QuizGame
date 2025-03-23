@@ -52,17 +52,11 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun PolyQuizTheme(
+    // Ref : https://developer.android.com/reference/kotlin/androidx/compose/foundation/package-summary#isSystemInDarkTheme()
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
