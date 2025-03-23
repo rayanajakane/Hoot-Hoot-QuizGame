@@ -55,6 +55,7 @@
                     [isRequestSent]="false"
                     [isEligible]="false"
                     (removeFriend)="friendsService.removeFriend($event)"
+                    (donate)="onDonate($event)"
                 ></app-friends-list-item>
             </ul>
         </div>

@@ -52,7 +52,6 @@ export class MatchGateway implements OnGatewayDisconnect {
         if (errorMessage) {
             this.sendError(socket.id, errorMessage);
         } else {
-            console.log('Joining room', data.userId, data.username);
             socket.join(data.roomCode);
             const newPlayer = this.playerRoomService.addPlayer(socket, data.roomCode, data.userId, data.username);
             this.returnAllMatches();

@@ -110,6 +110,9 @@
         "decline-request": "Refuser",
         "request-sent": "⏳ Demande envoyée",
         "cancel-request": "Annuler",
-        "add-friend": "Ajouter un ami"
+        "add-friend": "Ajouter un ami",
+        "donate-money": "Donner de l'argent",
+        "enter-donation-amout": "Entrer le montant de la donation",
+        "donation-amount": "Montant de la donation"
     }
 }

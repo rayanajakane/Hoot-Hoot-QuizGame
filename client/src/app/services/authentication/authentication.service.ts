@@ -7,6 +7,7 @@ import { PresetAvatar } from '@app/constants/image-constants';
 import { AuthError } from '@app/services/authentication/auth-error';
 import { ChatService } from '@app/services/chat/chat.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
+import { MoneyService } from '@app/services/money/money.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { ChatEvents } from '@common/events/chat.events';
@@ -35,6 +36,7 @@ export class AuthenticationService {
         private readonly translocoService: TranslocoService,
         private readonly chatService: ChatService,
         private matchRoomService: MatchRoomService,
+        private readonly moneyService: MoneyService,
         private auth: Auth,
     ) {
         setPersistence(this.auth, browserSessionPersistence);
@@ -125,6 +127,7 @@ export class AuthenticationService {
 
             set(userRef, {
                 isOnline: true,
+                balance: 1000,
             });
             onDisconnect(userRef).update({
                 isOnline: false,
@@ -254,6 +257,8 @@ export class AuthenticationService {
             this.chatService.handleRoomMessages();
             this.chatService.handleGeneralEmoji();
             this.chatService.handleRoomEmoji();
+            this.moneyService.getCurrentBalance(this.userId);
+            this.moneyService.listenForMoneyEvents();
         }
     }
 
@@ -262,6 +267,7 @@ export class AuthenticationService {
         this.socketHandler.disconnect();
         this.socketHandler.socket.removeListener(ChatEvents.NewMessage);
         this.chatService.clearMessages();
+        this.moneyService.stopListeningForMoneyEvents();
     }
 
     signOut() {

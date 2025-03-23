@@ -1,6 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogTextInputComponent } from '@app/components/dialog-text-input/dialog-text-input.component';
+import { TextDialogData } from '@app/interfaces/dialog-data/text-dialog-data';
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { FriendsService } from '@app/services/friends/friends.service';
+import { MoneyService } from '@app/services/money/money.service';
+import { TranslocoService } from '@jsverse/transloco';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -12,7 +18,13 @@ export class FriendsSearchComponent implements OnInit, OnDestroy {
     searchControl = new FormControl('');
     private searchSubscription: Subscription;
 
-    constructor(public friendsService: FriendsService) {}
+    constructor(
+        public friendsService: FriendsService,
+        private readonly authService: AuthenticationService,
+        private moneyService: MoneyService,
+        private dialog: MatDialog,
+        private translocoService: TranslocoService,
+    ) {}
 
     ngOnInit(): void {
         this.friendsService.returnAllData();
@@ -24,5 +36,21 @@ export class FriendsSearchComponent implements OnInit, OnDestroy {
         if (this.searchSubscription) {
             this.searchSubscription.unsubscribe();
         }
+    }
+
+    onDonate(friendId: string): void {
+        const dialogRef = this.dialog.open(DialogTextInputComponent, {
+            data: {
+                title: this.translocoService.translate('friends-search.enter-donation-amout'),
+                placeholder: this.translocoService.translate('friends-search.donation-amount'),
+                input: '',
+            } as TextDialogData,
+        });
+
+        dialogRef.afterClosed().subscribe((donationAmount: string) => {
+            if (donationAmount) {
+                this.moneyService.donateMoney(this.authService.userId, friendId, +donationAmount);
+            }
+        });
     }
 }

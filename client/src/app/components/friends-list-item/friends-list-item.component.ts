@@ -21,6 +21,7 @@ export class FriendsListItemComponent {
     @Output() acceptRequest = new EventEmitter<string>();
     @Output() rejectRequest = new EventEmitter<string>();
     @Output() removeFriend = new EventEmitter<string>();
+    @Output() donate = new EventEmitter<string>();
 
     onSend(): void {
         this.sendRequest.emit(this.user.id);
@@ -40,5 +41,9 @@ export class FriendsListItemComponent {
 
     onRemove(): void {
         this.removeFriend.emit(this.user.id);
+    }
+
+    onDonate(): void {
+        this.donate.emit(this.user.id);
     }
 }
