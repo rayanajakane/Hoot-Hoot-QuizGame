@@ -11,14 +11,12 @@ import { HistoryService } from '@app/services/history/history.service';
 import { MatchBackupService } from '@app/services/match-backup/match-backup.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { MoneyService } from '@app/services/money/money.service';
-import { PartyService } from '@app/services/party/party.service';
 import { PlayerRoomService } from '@app/services/player-room/player-room.service';
 import { TimeService } from '@app/services/time/time.service';
 import { PlayerState } from '@common/constants/player-states';
 import { ChatEvents } from '@common/events/chat.events';
 import { MatchEvents } from '@common/events/match.events';
 import { MoneyEvents } from '@common/events/money.events';
-import { PartyConfig } from '@common/interfaces/party-config';
 import { UserInfo } from '@common/interfaces/user-info';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
@@ -39,7 +37,8 @@ export class MatchGateway implements OnGatewayDisconnect {
         private readonly matchBackupService: MatchBackupService,
         private readonly friendService: FriendsService,
         private readonly moneyService: MoneyService,
-        private readonly timeService: TimeService,
+        // private readonly histogramService: HistogramService,
+        // private readonly historyService: HistoryService,
         private historyService: HistoryService,
         private readonly partyService: PartyService,
         private readonly eventEmitter: EventEmitter2,
@@ -126,12 +125,14 @@ export class MatchGateway implements OnGatewayDisconnect {
 
         this.playerRoomService.setStateForAll(matchRoomCode, PlayerState.default);
         this.server.to(matchRoomCode).emit(MatchEvents.RouteToResultsPage);
+        // this.emitHistogramHistory(matchRoomCode);
 
-        await this.moneyService.rewardPlayers(matchRoomCode);
-        for (const player of this.matchRoomService.matchRooms[roomIndex].players) {
-            const currPlayerBalance = await this.moneyService.getCurrentBalance(player.id);
-            this.server.in(player.socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
-        }
+        // this.matchRoomService.declareWinner(matchRoomCode);
+        // this.historyService.createHistoryItem(this.matchRoomService.getRoom(matchRoomCode));
+        this.moneyService.rewardPlayers(matchRoomCode);
+        this.matchRoomService.matchRooms[roomIndex].players.forEach((player: Player) => {
+            this.server.in(player.socket.id).emit(MoneyEvents.ReturnBalance, this.moneyService.getCurrentBalance(player.id));
+        });
         this.matchBackupService.updateNMatchesPlayed(this.matchRoomService.matchRooms[roomIndex].game.originalId);
 
         this.matchRoomService.matchRooms[roomIndex].players.forEach((player: Player) => {
@@ -196,6 +197,7 @@ export class MatchGateway implements OnGatewayDisconnect {
 
     @OnEvent(MatchEvents.RouteToResultsPage)
     onRouteToResultsPage(matchRoomCode: string) {
+        // add money prize to winners
         this.routeToResultsPage({} as Socket, matchRoomCode);
     }
 

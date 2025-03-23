@@ -2,16 +2,18 @@ import { DonationRecord } from '@app/constants/donation-record';
 import { DONATION_LIMIT_EXCEEDED, INVALID_AMOUNT, LOW_BALANCE, ZERO_AMOUNT } from '@app/constants/money-errors';
 import { FirebaseRepositoryService } from '@app/modules/firebase/firebase-repository/firebase-repository.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
-import { MAX_REWARD, MIN_REWARD } from '@common/constants/match-constants';
 import { Injectable } from '@nestjs/common';
 import { Database } from 'firebase-admin/lib/database/database';
 @Injectable()
 export class MoneyService {
     private database: Database;
-    private readonly DAILY_DONATION_LIMIT = 500;
+    private readonly DAILY_DONATION_LIMIT = 100;
+    private readonly MAX_REWARD = 100;
+    private readonly MIN_REWARD = 50;
 
     constructor(
         private readonly firebaseService: FirebaseRepositoryService,
+        private readonly firebaseAuthService: FirebaseAuthService,
         private matchRoomService: MatchRoomService,
     ) {
         this.database = this.firebaseService.database;
@@ -94,30 +96,18 @@ export class MoneyService {
         return errors.join(' ');
     }
 
-    async rewardPlayers(roomCode: string): Promise<void> {
-        const room = this.matchRoomService.getRoom(roomCode);
-        const activePlayers = room.players.filter((player) => player.state !== 'exit');
-        const partyConfig = room.partyConfig;
-        const winners = this.matchRoomService.declareWinner(roomCode);
-        const isEntryFeeRequired = partyConfig.isEntryFeeRequired;
-
-        let minReward = MIN_REWARD;
-        let maxReward = MAX_REWARD;
-
-        if (isEntryFeeRequired) {
-            const totalReward = activePlayers.length * partyConfig.entryFeeAmount;
-            maxReward = Math.round(totalReward * (2 / 3));
-            const nonWinnersCount = activePlayers.length - winners.length;
-            if (nonWinnersCount > 0) {
-                minReward = Math.round((totalReward * (1 / 3)) / nonWinnersCount);
-            } else {
-                minReward = maxReward;
+    async rewardPlayers(roomCode: string) {
+        const playersWithMaxScore = this.matchRoomService.declareWinner(roomCode);
+        const players = this.matchRoomService.getRoom(roomCode).players;
+        for (const player of players) {
+            let reward = this.MIN_REWARD;
+            if (playersWithMaxScore.includes(player)) {
+                reward = this.MAX_REWARD;
             }
-        }
-
-        for (const player of activePlayers) {
-            const reward = winners.includes(player) ? maxReward : minReward;
+            console.log('rewarding player', player.id);
+            console.log('current balance', await this.getCurrentBalance(player.id));
             await this.updateBalance(player.id, reward);
+            console.log('new balance', await this.getCurrentBalance(player.id));
         }
     }
 }
