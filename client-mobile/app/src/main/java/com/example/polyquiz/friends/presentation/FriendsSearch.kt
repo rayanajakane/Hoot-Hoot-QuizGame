@@ -27,7 +27,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun FriendsSearchScreen(
     currentUserID: String,
-//    moneyService: MoneyService,
     navigateToHome: () -> Unit
 ) {
     val friendsService = remember { FriendsService() }
@@ -35,7 +34,6 @@ fun FriendsSearchScreen(
     var searchQuery by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
 
-    // Initialize services only once.
     LaunchedEffect(currentUserID) {
         friendsService.initialize(currentUserID)
         friendsService.returnAllData()
@@ -44,7 +42,6 @@ fun FriendsSearchScreen(
     }
 
 
-    // Collect friend lists from your FriendsService state flows.
     val pendingRequests by friendsService.pendingRequests.collectAsState()
     val sentRequests by friendsService.sentRequests.collectAsState()
     val friends by friendsService.friends.collectAsState()
@@ -58,13 +55,11 @@ fun FriendsSearchScreen(
         }
     }
 
-    // State for donation dialog.
     var showDonationDialog by remember { mutableStateOf(false) }
     var selectedFriendId by remember { mutableStateOf("") }
     var donationAmount by remember { mutableStateOf("") }
 
 
-        // Donation dialog.
     if (showDonationDialog) {
         AlertDialog(
             onDismissRequest = { showDonationDialog = false },
@@ -121,7 +116,6 @@ fun FriendsSearchScreen(
                     .padding(paddingValues)
                     .padding(16.dp)
             ) {
-                // Search field.
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
@@ -130,7 +124,6 @@ fun FriendsSearchScreen(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Friend Requests Received Section.
                 if (pendingRequests.isNotEmpty()) {
                     Text(text = "WILL U BE MY AMIGO?")
                     LazyColumn {
@@ -153,7 +146,6 @@ fun FriendsSearchScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
-                // Friend Requests Sent Section.
                 if (sentRequests.isNotEmpty()) {
                     Text(text = "SENT REQUESTS")
                     LazyColumn {
@@ -176,7 +168,6 @@ fun FriendsSearchScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
-                // Friends List Section with Donation.
                 if (friends.isNotEmpty()) {
                     Text(text = "AMIGOS")
                     LazyColumn {
@@ -202,7 +193,6 @@ fun FriendsSearchScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
-                // Search Results Section.
                 if (searchResults.isNotEmpty()) {
                     Text(text = FriendsDisplayText.SEARCH_FRIENDS_PLACEHOLDER.value)
                     LazyColumn {

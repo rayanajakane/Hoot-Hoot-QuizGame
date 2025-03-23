@@ -1,29 +1,11 @@
 package com.example.polyquiz.money.domain
-
-import com.example.polyquiz.SnackbarController
-import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.constants.MoneyEvents
 import com.example.vanillaprototype.socket.SocketHandler
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.json.JSONObject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
-// Data classes for donation events
-data class DonationGivenData(
-    val to: String,
-    val amount: Int,
-    val newBalance: Int
-)
-
-data class DonationReceivedData(
-    val from: String,
-    val amount: Int,
-    val newBalance: Int
-)
 
 class MoneyService() {
 
