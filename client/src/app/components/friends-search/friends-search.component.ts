@@ -6,6 +6,7 @@ import { TextDialogData } from '@app/interfaces/dialog-data/text-dialog-data';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { FriendsService } from '@app/services/friends/friends.service';
 import { MoneyService } from '@app/services/money/money.service';
+import { TranslocoService } from '@jsverse/transloco';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -22,6 +23,7 @@ export class FriendsSearchComponent implements OnInit, OnDestroy {
         private readonly authService: AuthenticationService,
         private moneyService: MoneyService,
         private dialog: MatDialog,
+        private translocoService: TranslocoService,
     ) {}
 
     ngOnInit(): void {
@@ -39,8 +41,8 @@ export class FriendsSearchComponent implements OnInit, OnDestroy {
     onDonate(friendId: string): void {
         const dialogRef = this.dialog.open(DialogTextInputComponent, {
             data: {
-                title: 'Enter Donation Amount',
-                placeholder: 'Amount',
+                title: this.translocoService.translate('friends-search.enter-donation-amout'),
+                placeholder: this.translocoService.translate('friends-search.donation-amount'),
                 input: '',
             } as TextDialogData,
         });
