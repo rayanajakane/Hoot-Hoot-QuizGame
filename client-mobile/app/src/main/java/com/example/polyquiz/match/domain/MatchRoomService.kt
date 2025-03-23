@@ -86,6 +86,7 @@ object MatchRoomService {
         socket.off(MatchEvents.ROUTE_TO_RESULTS_PAGE.value)
         socket.emit(MatchEvents.DISCONNECT.value)
         MatchContextService.resetContext()
+        hostId=""
         timeToGoToWaitPage = false
         hasBeenKickedOut = true
     }
@@ -114,6 +115,7 @@ object MatchRoomService {
         players.find { it.username == username }
 
     fun joinRoom(roomCode: String, username: String, userId:String) {
+        Log.d("Join room", "Hostid : $hostId")
         val sentInfo = JSONObject().apply {
             put("roomCode", roomCode)
             put("username", username)
