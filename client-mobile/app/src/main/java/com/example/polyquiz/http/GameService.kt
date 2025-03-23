@@ -1,6 +1,6 @@
 package com.example.polyquiz.http
 
-import com.example.polyquiz.Game
+import com.example.polyquiz.match.domain.Game
 import com.google.gson.reflect.TypeToken
 
 val BASE_URL: String = "admin/games"

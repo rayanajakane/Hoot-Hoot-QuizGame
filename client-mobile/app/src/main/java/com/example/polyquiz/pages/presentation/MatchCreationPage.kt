@@ -96,7 +96,8 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
 
 
             ElevatedButton(
-                onClick = { authViewModel.signOut() },
+                onClick = { authViewModel.signOut()
+                          navigateToLogin()},
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.surfaceBright,
                     contentColor = MaterialTheme.colorScheme.onSurface
