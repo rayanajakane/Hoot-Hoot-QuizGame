@@ -9,10 +9,12 @@ import { Player } from '@app/model/schema/player.schema';
 import { FriendsService } from '@app/services/friends/friends.service';
 import { MatchBackupService } from '@app/services/match-backup/match-backup.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
+import { MoneyService } from '@app/services/money/money.service';
 import { PlayerRoomService } from '@app/services/player-room/player-room.service';
 import { PlayerState } from '@common/constants/player-states';
 import { ChatEvents } from '@common/events/chat.events';
 import { MatchEvents } from '@common/events/match.events';
+import { MoneyEvents } from '@common/events/money.events';
 import { UserInfo } from '@common/interfaces/user-info';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
@@ -31,6 +33,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         private readonly playerRoomService: PlayerRoomService,
         private readonly matchBackupService: MatchBackupService,
         private readonly friendService: FriendsService,
+        private readonly moneyService: MoneyService,
         // private readonly histogramService: HistogramService,
         // private readonly historyService: HistoryService,
         private readonly eventEmitter: EventEmitter2,
@@ -108,9 +111,12 @@ export class MatchGateway implements OnGatewayDisconnect {
         this.server.to(matchRoomCode).emit(MatchEvents.RouteToResultsPage);
         // this.emitHistogramHistory(matchRoomCode);
 
-        this.matchRoomService.declareWinner(matchRoomCode);
+        // this.matchRoomService.declareWinner(matchRoomCode);
         // this.historyService.createHistoryItem(this.matchRoomService.getRoom(matchRoomCode));
-
+        this.moneyService.rewardPlayers(matchRoomCode);
+        this.matchRoomService.matchRooms[roomIndex].players.forEach((player: Player) => {
+            this.server.in(player.socket.id).emit(MoneyEvents.ReturnBalance, this.moneyService.getCurrentBalance(player.id));
+        });
         this.matchBackupService.updateNMatchesPlayed(this.matchRoomService.matchRooms[roomIndex].game.originalId);
 
         this.matchRoomService.matchRooms[roomIndex].players.forEach((player: Player) => {
@@ -175,6 +181,7 @@ export class MatchGateway implements OnGatewayDisconnect {
 
     @OnEvent(MatchEvents.RouteToResultsPage)
     onRouteToResultsPage(matchRoomCode: string) {
+        // add money prize to winners
         this.routeToResultsPage({} as Socket, matchRoomCode);
     }
 
@@ -242,12 +249,6 @@ export class MatchGateway implements OnGatewayDisconnect {
     sendError(socketId: string, error: string) {
         this.server.to(socketId).emit(MatchEvents.Error, error);
     }
-
-    // sendMessageOnDisconnect(roomCode: string, username: string) {
-    //     this.server
-    //         .to(roomCode)
-    //         .emit(ChatEvents.NewMessage, { roomCode, message: { author: '', text: `${username} a quitté la partie.`, date: new Date() } });
-    // }
 
     private isRoomEmpty(room: MatchRoom) {
         return room.players.every((player) => !player.isPlaying);

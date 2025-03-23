@@ -2,17 +2,21 @@ import { DonationRecord } from '@app/constants/donation-record';
 import { DONATION_LIMIT_EXCEEDED, INVALID_AMOUNT, LOW_BALANCE } from '@app/constants/money-errors';
 import { FirebaseAuthService } from '@app/modules/firebase/firebase-auth/firebase-auth.service';
 import { FirebaseRepositoryService } from '@app/modules/firebase/firebase-repository/firebase-repository.service';
+import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { Injectable } from '@nestjs/common';
 import { Database } from 'firebase-admin/lib/database/database';
 
 @Injectable()
 export class MoneyService {
     private database: Database;
-    private readonly DAILY_DONATION_LIMIT = 100000;
+    private readonly DAILY_DONATION_LIMIT = 100;
+    private readonly MAX_REWARD = 100;
+    private readonly MIN_REWARD = 50;
 
     constructor(
         private readonly firebaseService: FirebaseRepositoryService,
         private readonly firebaseAuthService: FirebaseAuthService,
+        private matchRoomService: MatchRoomService,
     ) {
         this.database = this.firebaseService.database;
     }
@@ -45,7 +49,6 @@ export class MoneyService {
             const records = Object.values(donationHistory) as DonationRecord[];
             for (const record of records) {
                 if (record.timestamp >= todayTimestamp) {
-                    //TODO: Logic a revoir
                     donationsToday += record.amount;
                 }
             }
@@ -94,5 +97,20 @@ export class MoneyService {
         }
 
         return errors.join(' ');
+    }
+
+    async rewardPlayers(roomCode: string) {
+        const playersWithMaxScore = this.matchRoomService.declareWinner(roomCode);
+        const players = this.matchRoomService.getRoom(roomCode).players;
+        for (const player of players) {
+            let reward = this.MIN_REWARD;
+            if (playersWithMaxScore.includes(player)) {
+                reward = this.MAX_REWARD;
+            }
+            console.log('rewarding player', player.id);
+            console.log('current balance', await this.getCurrentBalance(player.id));
+            await this.updateBalance(player.id, reward);
+            console.log('new balance', await this.getCurrentBalance(player.id));
+        }
     }
 }

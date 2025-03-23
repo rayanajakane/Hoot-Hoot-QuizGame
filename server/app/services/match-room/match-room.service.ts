@@ -229,12 +229,13 @@ export class MatchRoomService {
         return matchRoom.game.questions[matchRoom.currentQuestionIndex];
     }
 
-    declareWinner(matchRoomCode: string) {
+    declareWinner(matchRoomCode: string): Player[] {
         const players: Player[] = this.getRoom(matchRoomCode).players;
         const playingPlayers = players.filter((player) => player.isPlaying);
         const maxScore = Math.max(...playingPlayers.map((player) => player.score));
         const playersWithMaxScore = playingPlayers.filter((player) => player.score === maxScore);
         playersWithMaxScore.forEach((player) => player.socket.emit(MatchEvents.Winner));
+        return playersWithMaxScore;
     }
 
     getAllMatchesInfo() {
