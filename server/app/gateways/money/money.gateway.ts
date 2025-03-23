@@ -6,7 +6,6 @@ import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/web
 import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({ cors: true })
-@WebSocketGateway()
 export class MoneyGateway {
     @WebSocketServer() private server: Server;
     private userSockets: Map<string, string> = new Map();
@@ -18,6 +17,7 @@ export class MoneyGateway {
     @SubscribeMessage(MoneyEvents.GetBalance)
     async getBalance(client: Socket, userId: string) {
         this.userSockets.set(userId, client.id);
+        console.log(`Registered user ${userId} with socket ${client.id} into ${this.userSockets}`);
         client.emit(MoneyEvents.ReturnBalance, await this.moneyService.getCurrentBalance(userId));
     }
 
@@ -39,11 +39,12 @@ export class MoneyGateway {
         }
 
         const success = await this.moneyService.donateMoney(data.user, data.friend, data.amount);
-
+        console.log('Donation success:', success);
         if (!success) return;
-        const friendUsername = await this.firebaseAuthService.getUsername(data.friend);
-        const userUsername = await this.firebaseAuthService.getUsername(data.user);
-
+        const friendUsername = (await this.firebaseAuthService.getUserById(data.friend)).displayName;
+        const userUsername = (await this.firebaseAuthService.getUserById(data.user)).displayName;
+        console.log('Friend username:', friendUsername);
+        console.log('User username:', userUsername);
         client.emit(MoneyEvents.DonationGiven, {
             to: friendUsername,
             amount: data.amount,

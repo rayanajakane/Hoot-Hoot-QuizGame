@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { MoneyEvents } from '@common/events/money.events';
@@ -11,7 +10,6 @@ export class MoneyService {
     currentBalance: number;
 
     constructor(
-        private readonly authService: AuthenticationService,
         private readonly socketHandler: SocketHandlerService,
         private notificationService: NotificationService,
     ) {}
@@ -23,27 +21,37 @@ export class MoneyService {
         this.handleError();
     }
 
-    getCurrentBalance() {
-        this.socketHandler.send(MoneyEvents.GetBalance, this.authService.userId);
+    stopListeningForMoneyEvents() {
+        this.socketHandler.socket.removeListener(MoneyEvents.ReturnBalance);
+        this.socketHandler.socket.removeListener(MoneyEvents.DonationGiven);
+        this.socketHandler.socket.removeListener(MoneyEvents.DonationReceived);
+        this.socketHandler.socket.removeListener(MoneyEvents.Error);
+    }
+
+    getCurrentBalance(userId: string) {
+        console.log('Sending GetBalance event with userId:', userId);
+        this.socketHandler.send(MoneyEvents.GetBalance, userId);
     }
 
     onReturnBalance() {
         this.socketHandler.on(MoneyEvents.ReturnBalance, (data: number) => {
+            console.log('Current balance:', data);
             this.currentBalance = data;
             return data;
         });
     }
 
-    donateMoney(friendId: string, amount: number) {
+    donateMoney(userId: string, friendId: string, amount: number) {
         console.log('Donating money', friendId, amount);
         this.socketHandler.send(MoneyEvents.DonateMoney, {
-            user: this.authService.userId,
+            user: userId,
             friend: friendId,
             amount,
         });
     }
 
     onDonationGiven() {
+        console.log('onDonationGiven');
         this.socketHandler.on(MoneyEvents.DonationGiven, (data: { to: string; amount: number; newBalance: number }) => {
             this.notificationService.displaySuccessMessage(`You have donated ${data.amount} to ${data.to}`);
             this.currentBalance = data.newBalance;
@@ -51,6 +59,7 @@ export class MoneyService {
     }
 
     onDonationReceived() {
+        console.log('onDonationReceived');
         this.socketHandler.on(MoneyEvents.DonationReceived, (data: { from: string; amount: number; newBalance: number }) => {
             this.notificationService.displaySuccessMessage(`${data.from} has donated ${data.amount} to you`);
             this.currentBalance = data.newBalance;
