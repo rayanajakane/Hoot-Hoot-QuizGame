@@ -20,15 +20,9 @@ export class MoneyGateway {
         client.emit(MoneyEvents.ReturnBalance, await this.moneyService.getCurrentBalance(userId));
     }
 
-    // *** Temp solution to get free money for testing, remove when done ***
-    @SubscribeMessage(MoneyEvents.AddMoney)
-    async addMoney(client: Socket, data: { userId: string; amount: number }) {
-        const newBalance = await this.moneyService.updateBalance(data.userId, data.amount);
-        client.emit(MoneyEvents.ReturnBalance, newBalance);
-    }
-
     @SubscribeMessage(MoneyEvents.DonateMoney)
     async donateMoney(client: Socket, data: TransferInfo) {
+        console.log('Donating money:', data);
         const moneyErrors = await this.moneyService.getMoneyError(data.user, data.amount, true);
         if (moneyErrors) {
             this.sendError(client.id, moneyErrors);
@@ -53,6 +47,9 @@ export class MoneyGateway {
                 newBalance: await this.moneyService.getCurrentBalance(data.friend),
             });
         }
+        console.log('Donation successful');
+        console.log('User balance:', await this.moneyService.getCurrentBalance(data.user));
+        console.log('Friend balance:', await this.moneyService.getCurrentBalance(data.friend));
     }
 
     handleDisconnect(client: Socket) {
