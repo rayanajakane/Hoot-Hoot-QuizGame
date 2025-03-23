@@ -78,7 +78,11 @@ fun Navigation(
                 navigateToChat = {
                     navController.navigate(Route.Home)
                 },
-                authViewModel = authViewModel
+                navigateToCamera = {
+                    navController.navigate(Route.MainCameraScreen)
+                },
+                authViewModel = authViewModel,
+                cameraViewModel = cameraViewModel
             )
         }
         composable<Route.MatchRoom> {
@@ -106,7 +110,7 @@ fun Navigation(
                 navigateToCreate = {
                     navController.navigate(Route.MatchCreation)
                 },
-                navigateToJoinRoom = {navController.navigate(Route.JoinMatchPage)},
+                navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
                 authViewModel = authViewModel,
                 navigateToHome = {
                     navController.navigate(Route.Home)
@@ -132,16 +136,16 @@ fun Navigation(
                     navController.navigate(Route.Home)
                 },
                 authViewModel = authViewModel,
-                navigateToWaitPage = {navController.navigate(Route.WaitPage)}
+                navigateToWaitPage = { navController.navigate(Route.WaitPage) }
             )
         }
         composable<Route.ResultsPage> {
-           ResultsPage(
-               matchRoomService = MatchRoomService,
-               navigateToHome = {navController.navigate(Route.Home)},
-               players,
-               modifier,
-               extraContent ={}
+            ResultsPage(
+                matchRoomService = MatchRoomService,
+                navigateToHome = { navController.navigate(Route.Home) },
+                players,
+                modifier,
+                extraContent = {}
             )
         }
 
@@ -149,9 +153,9 @@ fun Navigation(
             JoinMatchPage(
                 modifier,
                 authViewModel,
-                navigateToHome = {navController.navigate(Route.Home)},
-                navigateToMatchPage = {navController.navigate(Route.MatchRoom)},
-                navigateToWaitPage = {navController.navigate(Route.WaitPage)}
+                navigateToHome = { navController.navigate(Route.Home) },
+                navigateToMatchPage = { navController.navigate(Route.MatchRoom) },
+                navigateToWaitPage = { navController.navigate(Route.WaitPage) }
             )
         }
 
@@ -207,7 +211,9 @@ fun Navigation(
             MainCameraScreen(
                 authViewModel,
                 cameraViewModel,
-                navigateToUserEdit = { navController.navigate(Route.UserEditPage) })
+                navigateToUserEdit = { navController.navigate(Route.UserEditPage) },
+                navigateToSignup = { navController.navigate(Route.Signup) }
+            )
         }
     }
 

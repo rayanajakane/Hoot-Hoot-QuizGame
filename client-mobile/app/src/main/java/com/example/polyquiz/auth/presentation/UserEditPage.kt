@@ -38,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,11 +65,10 @@ import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.core.storage.ImageStorage
 import com.example.polyquiz.ui.features.camera.CameraViewModel
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.example.polyquiz.core.TranslationService
 import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserEditPage(
     modifier: Modifier,
@@ -100,13 +100,13 @@ fun UserEditPage(
     val textFieldStateLang = rememberTextFieldState(currentLang)
     val textFieldStateTheme = rememberTextFieldState(themes[0])
 
-    // TODO : Cleanup function
-    DisposableEffect(Unit) {
-        onDispose {
-            authViewModel.resetUsername()
-            cameraViewModel.resetCapturedPhotoState()
-        }
-    }
+   DisposableEffect(Unit) {
+       onDispose {
+           authViewModel.resetUsername()
+           cameraViewModel.resetCapturedPhotoState()
+       }
+   }
+
     val avatarURL by authViewModel.avatarURL.collectAsState()
     val isPresetAvatar by cameraViewModel.isPresetAvatar.collectAsState()
     val temporaryAvatar by cameraViewModel.temporaryAvatar.collectAsState()
@@ -118,6 +118,7 @@ fun UserEditPage(
 
     fun deleteUser() {
         authViewModel.deleteUser()
+        authViewModel.resetSignUpFields()
         navigateToLogin()
     }
 
@@ -137,7 +138,7 @@ fun UserEditPage(
                 username, authViewModel.getUsername()
             )
         } else {
-            Log.e("caca", "CACA")
+            Log.e("save profile", "Username has not changed.")
         }
 
         // Save avatar image + url
@@ -227,12 +228,13 @@ fun UserEditPage(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            // TODO : Fix clickable avatar
                             if (avatarToShow is Bitmap) {
                                 TemporaryAvatar(128.dp, avatarToShow)
+                                Log.d("UserEditPage", "Showing temp avatar")
                             } else {
-                                if (avatarURL != null) {
-                                    AvatarPlaceholder(128.dp, avatarURL!!)
+                                if (avatarURL.isNotEmpty()) {
+                                    AvatarPlaceholder(128.dp, avatarURL)
+                                    Log.d("UserEditPage", "Showing avatar from url : $avatarURL")
                                 } else {
                                     AvatarPlaceholder(128.dp, PresetAvatar.DEFAULT.value)
                                 }
