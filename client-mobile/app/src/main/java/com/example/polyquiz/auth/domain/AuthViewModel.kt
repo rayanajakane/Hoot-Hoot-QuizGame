@@ -202,6 +202,8 @@ class AuthViewModel : ViewModel() {
                         )
                     )
                 }
+                SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
+
                 SocketHandler.getSocket().emit(FriendsEvents.USER_DELETED.value, userId)
 
                 // Disconnect socket
@@ -499,7 +501,7 @@ class AuthViewModel : ViewModel() {
                 .asString(context) + "\n"
         }
         if (_passwordError.value.isNotEmpty()) {
-            _passwordError.value.dropLast(1);
+            _passwordError.value.dropLast(1)
         }
     }
 
@@ -518,7 +520,7 @@ class AuthViewModel : ViewModel() {
                 .asString(context) + "\n"
         }
         if (_usernameError.value.isNotEmpty()) {
-            _usernameError.value.dropLast(1);
+            _usernameError.value.dropLast(1)
         }
     }
 

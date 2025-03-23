@@ -34,6 +34,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -51,7 +52,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -212,7 +212,7 @@ fun UserEditPage(
                 .fillMaxSize()
                 .imePadding()
         ) {
-            Column() {
+            Column {
                 Button(
                     onClick = {
                         navigateToHome()
@@ -292,7 +292,7 @@ fun UserEditPage(
 
                         }
                         // Form stuff column
-                        Column() {
+                        Column {
                             TextField(
                                 value = email,
                                 onValueChange = {
@@ -332,7 +332,7 @@ fun UserEditPage(
                                 TextField(
                                     value = availableLangs[currentLang].toString(),
                                     modifier = Modifier
-                                        .menuAnchor()
+                                        .menuAnchor(MenuAnchorType.PrimaryNotEditable)
                                         .fillMaxWidth(),
                                     label = { Text(stringResource(R.string.language)) },
                                     onValueChange = {
@@ -435,7 +435,7 @@ fun ThemeDropdown(
         TextField(
             value = themes[selectedTheme].toString(),
             modifier = Modifier
-                .menuAnchor()
+                .menuAnchor(MenuAnchorType.PrimaryNotEditable)
                 .fillMaxWidth(),
             label = { Text(stringResource(R.string.visual_themes)) },
             onValueChange = {
@@ -506,7 +506,7 @@ fun TemporaryAvatar(avatarSize: Dp, bitmap: Bitmap?) {
 }
 
 
-@Composable()
+@Composable
 fun ClickableAvatarPlaceholder(avatarSize: Dp, imageUrl: String, onClickAvatar: (String) -> Unit) {
     Box(
         contentAlignment = Alignment.Center,

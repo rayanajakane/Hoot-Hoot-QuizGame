@@ -1,7 +1,6 @@
 package com.example.polyquiz.auth.presentation
 
 import StringValue
-import android.util.Log
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
