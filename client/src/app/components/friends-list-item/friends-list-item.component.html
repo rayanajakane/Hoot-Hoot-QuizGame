@@ -4,25 +4,28 @@
         <span class="username">{{ user.name }}</span>
     </div>
     <ng-container [ngSwitch]="true">
-        <!-- <button *ngSwitchCase="isFriend" mat-raised-button color="basic" disabled>✅ Amis</button> -->
         <ng-container *ngSwitchCase="isFriend">
             <div class="action-buttons">
                 <button mat-raised-button color="basic" disabled>{{ t('is-friend') }}</button>
                 <button mat-raised-button color="warn" (click)="onRemove()">{{ t('remove-friend') }}</button>
+                <button mat-raised-button color="accent" (click)="onDonate()">{{ t('donate-money') }}</button>
             </div>
         </ng-container>
+
         <ng-container *ngSwitchCase="isRequestPending">
             <div class="action-buttons">
                 <button mat-raised-button color="accent" (click)="onAccept()">{{ t('accept-request') }}</button>
                 <button mat-raised-button color="warn" (click)="onReject()">{{ t('decline-request') }}</button>
             </div>
         </ng-container>
+
         <ng-container *ngSwitchCase="isRequestSent">
             <div class="action-buttons">
                 <button mat-raised-button color="warn" disabled>{{ t('request-sent') }}</button>
                 <button mat-raised-button color="accent" (click)="onCancel()">{{ t('cancel-request') }}</button>
             </div>
         </ng-container>
+
         <button *ngSwitchDefault mat-raised-button color="primary" (click)="onSend()" [disabled]="!isEligible">{{ t('add-friend') }}</button>
     </ng-container>
 </li>

@@ -13,6 +13,7 @@
             <input matInput [formControl]="searchControl" [placeholder]="t('search-input-placeholder')" />
         </mat-form-field>
 
+        <!-- Friend Requests Received -->
         <div class="friends-section" *ngIf="friendsService.pendingRequests && friendsService.pendingRequests.length > 0">
             <h3>{{ t('friend-requests-received') }}</h3>
             <ul>
@@ -55,6 +56,7 @@
                     [isRequestSent]="false"
                     [isEligible]="false"
                     (removeFriend)="friendsService.removeFriend($event)"
+                    (donate)="onDonate($event)"
                 ></app-friends-list-item>
             </ul>
         </div>

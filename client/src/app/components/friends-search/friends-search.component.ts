@@ -1,6 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogTextInputComponent } from '@app/components/dialog-text-input/dialog-text-input.component'; // Import the dialog
+import { TextDialogData } from '@app/interfaces/dialog-data/text-dialog-data'; // Import dialog data type
 import { FriendsService } from '@app/services/friends/friends.service';
+import { MoneyService } from '@app/services/money/money.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -12,7 +16,11 @@ export class FriendsSearchComponent implements OnInit, OnDestroy {
     searchControl = new FormControl('');
     private searchSubscription: Subscription;
 
-    constructor(public friendsService: FriendsService) {}
+    constructor(
+        public friendsService: FriendsService,
+        private moneyService: MoneyService,
+        private dialog: MatDialog, // Inject MatDialog
+    ) {}
 
     ngOnInit(): void {
         this.friendsService.returnAllData();
@@ -24,5 +32,24 @@ export class FriendsSearchComponent implements OnInit, OnDestroy {
         if (this.searchSubscription) {
             this.searchSubscription.unsubscribe();
         }
+    }
+
+    // Handle the donate event and open the dialog
+    onDonate(friendId: string): void {
+        const dialogRef = this.dialog.open(DialogTextInputComponent, {
+            data: {
+                title: 'Enter Donation Amount',
+                placeholder: 'Amount',
+                input: '',
+            } as TextDialogData, // Pass initial data to dialog
+        });
+
+        dialogRef.afterClosed().subscribe((donationAmount: string) => {
+            if (donationAmount && !isNaN(+donationAmount) && +donationAmount > 0) {
+                this.moneyService.donateMoney(friendId, +donationAmount); // Call donateMoney method
+            } else {
+                alert('Invalid amount. Please enter a valid number.');
+            }
+        });
     }
 }
