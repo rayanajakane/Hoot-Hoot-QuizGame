@@ -17,7 +17,6 @@ export class MoneyGateway {
     @SubscribeMessage(MoneyEvents.GetBalance)
     async getBalance(client: Socket, userId: string) {
         this.userSockets.set(userId, client.id);
-        console.log(`Registered user ${userId} with socket ${client.id} into ${this.userSockets}`);
         client.emit(MoneyEvents.ReturnBalance, await this.moneyService.getCurrentBalance(userId));
     }
 
@@ -30,21 +29,16 @@ export class MoneyGateway {
 
     @SubscribeMessage(MoneyEvents.DonateMoney)
     async donateMoney(client: Socket, data: TransferInfo) {
-        console.log('Donating money', data);
         const moneyErrors = await this.moneyService.getMoneyError(data.user, data.amount, true);
-        console.log('Money errors:', moneyErrors);
         if (moneyErrors) {
             this.sendError(client.id, moneyErrors);
             return;
         }
 
         const success = await this.moneyService.donateMoney(data.user, data.friend, data.amount);
-        console.log('Donation success:', success);
         if (!success) return;
         const friendUsername = (await this.firebaseAuthService.getUserById(data.friend)).displayName;
         const userUsername = (await this.firebaseAuthService.getUserById(data.user)).displayName;
-        console.log('Friend username:', friendUsername);
-        console.log('User username:', userUsername);
         client.emit(MoneyEvents.DonationGiven, {
             to: friendUsername,
             amount: data.amount,
@@ -67,6 +61,7 @@ export class MoneyGateway {
     }
 
     sendError(socketId: string, error: string) {
+        console.log('Sending error:', error);
         this.server.to(socketId).emit(MoneyEvents.Error, error);
     }
 }

@@ -46,7 +46,7 @@ export class FriendsSearchComponent implements OnInit, OnDestroy {
         });
 
         dialogRef.afterClosed().subscribe((donationAmount: string) => {
-            if (donationAmount && !isNaN(+donationAmount) && +donationAmount > 0) {
+            if (donationAmount) {
                 this.moneyService.donateMoney(this.authService.userId, friendId, +donationAmount);
             }
         });
