@@ -25,6 +25,7 @@ import com.example.polyquiz.pages.presentation.JoinMatchPage
 import com.example.polyquiz.pages.presentation.MatchCreationPage
 import com.example.polyquiz.pages.presentation.WaitPage
 import com.example.polyquiz.friends.presentation.FriendsSearchScreen
+import com.example.polyquiz.money.domain.MoneyService
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.ui.features.camera.MainCameraScreen
 
@@ -197,6 +198,8 @@ fun Navigation(
         composable<Route.FriendsSearchScreen> {
             FriendsSearchScreen(
                 currentUserID = authViewModel.getUserId(),
+//                friendsService = FriendsService(),
+//                moneyService = MoneyService(),
                 navigateToHome = { navController.navigate(Route.Home) }
             )
         }

@@ -1,3 +1,6 @@
+import { EventEmitter } from 'events';
+EventEmitter.defaultMaxListeners = 20;
+
 import { AppModule } from '@app/app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
