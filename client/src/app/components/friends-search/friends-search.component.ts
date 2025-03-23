@@ -19,7 +19,7 @@ export class FriendsSearchComponent implements OnInit, OnDestroy {
     constructor(
         public friendsService: FriendsService,
         private moneyService: MoneyService,
-        private dialog: MatDialog, // Inject MatDialog
+        private dialog: MatDialog,
     ) {}
 
     ngOnInit(): void {
@@ -34,19 +34,18 @@ export class FriendsSearchComponent implements OnInit, OnDestroy {
         }
     }
 
-    // Handle the donate event and open the dialog
     onDonate(friendId: string): void {
         const dialogRef = this.dialog.open(DialogTextInputComponent, {
             data: {
                 title: 'Enter Donation Amount',
                 placeholder: 'Amount',
                 input: '',
-            } as TextDialogData, // Pass initial data to dialog
+            } as TextDialogData,
         });
 
         dialogRef.afterClosed().subscribe((donationAmount: string) => {
             if (donationAmount && !isNaN(+donationAmount) && +donationAmount > 0) {
-                this.moneyService.donateMoney(friendId, +donationAmount); // Call donateMoney method
+                this.moneyService.donateMoney(friendId, +donationAmount);
             } else {
                 alert('Invalid amount. Please enter a valid number.');
             }

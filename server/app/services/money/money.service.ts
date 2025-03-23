@@ -1,11 +1,14 @@
+import { DonationRecord } from '@app/constants/donation-record';
 import { DONATION_LIMIT_EXCEEDED, LOW_BALANCE } from '@app/constants/money-errors';
 import { FirebaseAuthService } from '@app/modules/firebase/firebase-auth/firebase-auth.service';
 import { FirebaseRepositoryService } from '@app/modules/firebase/firebase-repository/firebase-repository.service';
 import { Injectable } from '@nestjs/common';
 import { Database } from 'firebase-admin/lib/database/database';
+
 @Injectable()
 export class MoneyService {
     private database: Database;
+    private readonly DAILY_DONATION_LIMIT = 10;
 
     constructor(
         private readonly firebaseService: FirebaseRepositoryService,
@@ -16,40 +19,77 @@ export class MoneyService {
 
     async getCurrentBalance(uid: string): Promise<number> {
         const snapshot = await this.database.ref(`users/${uid}/balance`).once('value');
-        if (!snapshot.exists()) return 0;
-        return snapshot.val();
+        return snapshot.exists() ? snapshot.val() : 0;
     }
 
     async updateBalance(uid: string, amount: number): Promise<number> {
         const balance = await this.getCurrentBalance(uid);
         const newBalance = balance + amount;
-        if (newBalance < 0) return balance; // error
+        if (newBalance < 0) {
+            return balance;
+        }
         await this.database.ref(`users/${uid}/balance`).set(newBalance);
         return newBalance;
     }
 
+    private async getAndClearDonationsToday(uid: string): Promise<number> {
+        const donationHistoryRef = this.database.ref(`users/${uid}/donation_history`);
+        const snapshot = await donationHistoryRef.once('value');
+        let donationsToday = 0;
+        const todayStart = new Date();
+        todayStart.setHours(0, 0, 0, 0);
+        const todayTimestamp = todayStart.getTime();
+
+        if (snapshot.exists()) {
+            const donationHistory = snapshot.val();
+            const records = Object.values(donationHistory) as DonationRecord[];
+            for (const record of records) {
+                if (record.timestamp >= todayTimestamp) {
+                    donationsToday += record.amount;
+                }
+            }
+            if (donationsToday === 0) {
+                await donationHistoryRef.remove();
+            }
+        }
+        return donationsToday;
+    }
+
     async donateMoney(fromUid: string, toUid: string, amount: number): Promise<boolean> {
         const fromBalance = await this.getCurrentBalance(fromUid);
-        if (fromBalance < amount) return false; // error
+        if (fromBalance < amount) return false;
+
+        const donationsToday = await this.getAndClearDonationsToday(fromUid);
+        if (donationsToday + amount > this.DAILY_DONATION_LIMIT) return false;
+
         await this.updateBalance(fromUid, -amount);
         await this.updateBalance(toUid, amount);
+
+        await this.database.ref(`users/${fromUid}/donation_history`).push().set({
+            amount,
+            timestamp: Date.now(),
+        });
 
         return true;
     }
 
     async getMoneyError(uid: string, amount: number, isDonation: boolean = false): Promise<string> {
-        let errors = '';
+        const errors: string[] = [];
         const balance = await this.getCurrentBalance(uid);
-        const donationLimit = Number.MAX_SAFE_INTEGER;
-        const amountDonated = 0; // get from  and add to it the amount that the user wants to donate
-        const errorConditions: Map<string, boolean> = new Map([
-            [LOW_BALANCE, balance < amount],
-            [DONATION_LIMIT_EXCEEDED, isDonation && amountDonated > donationLimit], // adjust the conditions
-        ]);
 
-        errorConditions.forEach((hasError: boolean, message: string) => {
-            if (hasError) errors += message;
-        });
-        return errors;
+        if (balance < amount) {
+            errors.push(LOW_BALANCE);
+        }
+
+        if (isDonation) {
+            const donationsToday = await this.getAndClearDonationsToday(uid);
+            if (donationsToday + amount > this.DAILY_DONATION_LIMIT) {
+                errors.push(DONATION_LIMIT_EXCEEDED);
+            }
+        }
+
+        console.log('Errors:', errors);
+
+        return errors.join(' ');
     }
 }
