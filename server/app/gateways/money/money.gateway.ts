@@ -9,7 +9,7 @@ import { Server, Socket } from 'socket.io';
 @WebSocketGateway()
 export class MoneyGateway {
     @WebSocketServer() private server: Server;
-    private userSockets: Map<string, string> = new Map(); // userId -> socketId
+    private userSockets: Map<string, string> = new Map();
     constructor(
         private moneyService: MoneyService,
         private readonly firebaseAuthService: FirebaseAuthService,
@@ -32,13 +32,13 @@ export class MoneyGateway {
     async donateMoney(client: Socket, data: TransferInfo) {
         console.log('Donating money', data);
         const moneyErrors = await this.moneyService.getMoneyError(data.user, data.amount, true);
+        console.log('Money errors:', moneyErrors);
         if (moneyErrors) {
             this.sendError(client.id, moneyErrors);
             return;
         }
 
         const success = await this.moneyService.donateMoney(data.user, data.friend, data.amount);
-        client.emit('transferResult', success);
 
         if (!success) return;
         const friendUsername = await this.firebaseAuthService.getUsername(data.friend);
