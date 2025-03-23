@@ -69,7 +69,8 @@ fun Navigation(
                 navigateToForgotPassword = {
                     navController.navigate(Route.ForgotPassword)
                 },
-                authViewModel = authViewModel
+                authViewModel = authViewModel,
+                onThemeUpdated = onThemeUpdated
             )
         }
         composable<Route.Signup> {

@@ -64,6 +64,7 @@ import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.PresetAvatar
+import com.example.polyquiz.core.ThemeService
 import com.example.polyquiz.core.storage.ImageStorage
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.core.TranslationService
@@ -145,6 +146,7 @@ fun UserEditPage(
 
         // Change app theme
         onThemeUpdated(theme)
+        ThemeService.saveThemeToDB(theme, authViewModel.getUserConfigsDatabaseRef())
 
         // Change username
         if (authViewModel.getUsername() != username) {
