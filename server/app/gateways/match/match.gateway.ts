@@ -213,19 +213,17 @@ export class MatchGateway implements OnGatewayDisconnect {
     async handlePlayersDisconnect(@ConnectedSocket() socket: Socket) {
         const player = this.playerRoomService.getPlayerBySocket(socket.id);
         const roomCode = this.playerRoomService.deletePlayerBySocket(socket.id);
-        const room = this.matchRoomService.getRoom(roomCode);
-        const isRoomEmpty = this.isRoomEmpty(room);
-        if (room && player) {
-            if (!room.isPlaying && !room.currentQuestionIndex && room.partyConfig.isEntryFeeRequired) {
-                await this.partyService.leaveParty(player.id, roomCode);
-                const currPlayerBalance = await this.moneyService.getCurrentBalance(player.id);
-                this.server.in(socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
-            }
-        }
-        socket.leave(roomCode);
         if (!roomCode || !player) {
             return;
         }
+        const room = this.matchRoomService.getRoom(roomCode);
+        const isRoomEmpty = this.isRoomEmpty(room);
+        if (!room.isPlaying && !room.currentQuestionIndex && room.partyConfig.isEntryFeeRequired) {
+            await this.partyService.leaveParty(player.id, roomCode);
+            const currPlayerBalance = await this.moneyService.getCurrentBalance(player.id);
+            this.server.in(socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
+        }
+        socket.leave(roomCode);
         if (room.isPlaying && isRoomEmpty) {
             this.sendError(roomCode, NO_MORE_PLAYERS);
             this.deleteRoom(roomCode);

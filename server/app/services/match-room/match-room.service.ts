@@ -247,6 +247,7 @@ export class MatchRoomService {
                 isPlaying: matchRoom.isPlaying,
                 gameTitle: matchRoom.game.title,
                 nPlayers: matchRoom.players.length,
+                partyConfig: matchRoom.partyConfig,
             });
         });
         return matchPagesInfo;
