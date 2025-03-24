@@ -1,3 +1,8 @@
+export interface UserHistory {
+    auth: HistoryAuthItem[];
+    match: HistoryMatchItem[];
+}
+
 export interface HistoryAuthItem {
     id: string;
     isLogin: boolean;
