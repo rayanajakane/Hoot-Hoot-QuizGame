@@ -81,6 +81,7 @@ import { PartyService } from './services/party/party.service';
         MoneyGateway,
         PartyService,
         HistoryService,
+        PartyService,
     ],
 })
 export class AppModule {}
