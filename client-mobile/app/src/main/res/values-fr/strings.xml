@@ -65,5 +65,11 @@
     <string name="all_games">"Tous les jeux"</string>
     <string name="scan_qr">Balayer un code QR</string>
     <string name="join_match">Joindre une partie</string>
+    <string name="join_action">Joindre</string>
+    <string name="waiting_matches">Parties en attente</string>
+    <string name="unlocked_matches">Parties déverrouillées</string>
+    <string name="no_match">Aucune partie à afficher</string>
+    <string name="locked_matches">Parties verrouillées</string>
+    <string name="inprogress_match">Parties en cours</string>
 
 </resources>

@@ -65,4 +65,10 @@
     <string name="all_games">"All Games"</string>
     <string name="scan_qr">Scan QR code</string>
     <string name="join_match">Join a match</string>
+    <string name="join_action">Join</string>
+    <string name="waiting_matches">Pending matches</string>
+    <string name="unlocked_matches">Unlocked Matches</string>
+    <string name="no_match">No Match to Display</string>
+    <string name="locked_matches">Locked Matches</string>
+    <string name="inprogress_match">Matches in progress</string>
 </resources>

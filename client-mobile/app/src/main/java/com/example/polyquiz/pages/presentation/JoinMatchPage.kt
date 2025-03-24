@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -49,6 +50,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -222,6 +224,7 @@ fun JoinMatchPage(
                     Row(horizontalArrangement = Arrangement.End) {
                         TextField(
                             value = room,
+                            modifier = Modifier.padding(bottom = 30.dp),
                             onValueChange = { room = it },
                             label = { Text("Code") },
                             maxLines = 1,
@@ -230,46 +233,58 @@ fun JoinMatchPage(
                             })
                         )
                         Button(
-                            modifier = Modifier.width(120.dp),
+                            modifier = Modifier
+                                .width(120.dp)
+                                .height(55.dp),
                             onClick = { joinRoom(room) },
-                            shape = RectangleShape
+                            shape = RoundedCornerShape(3.dp)
                         ) {
-                            Text(text = "Joindre")
+                            Text(text = stringResource(R.string.join_action))
                         }
-                        Button(onClick = {
-                            // TODO: QR CODE
-                        }, shape = RectangleShape) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Button(
+                            onClick = {
+                                // TODO: QR CODE
+                            }, shape = RoundedCornerShape(3.dp), modifier = Modifier.height(55.dp)
+                        ) {
                             Text(text = stringResource(R.string.scan_qr))
                         }
                     }
 
                 }
 
-                Column(modifier = Modifier.padding(26.dp, 0.dp)) {
+                Column(
+                    modifier = Modifier.padding(26.dp, 0.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
                     Text(
-                        text = "Parties en attente", style = TextStyle(
+                        text = stringResource(R.string.waiting_matches), style = TextStyle(
                             fontSize = 30.sp,
                             fontWeight = FontWeight.Bold
                         )
                     )
+                    Text(
+                        text = stringResource(R.string.unlocked_matches),
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        fontSize = 24.sp,
+                    )
                     if (matchInfos.isEmpty()) {
-                        Text(text = "Aucune partie à afficher")
+                        Text(text = stringResource(R.string.no_match))
                     }
-                    if (unlockedMatches().isEmpty()) {
-                        Text(text = "Parties Verrouillées")
-                    } else {
-                        Text(text = "Parties deverrouillées")
-                        Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
-                            unlockedMatches().forEach { match ->
-                                MatchCard(match = match, onClick = { joinRoom(match.code) })
-                            }
+                    Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
+                        unlockedMatches().forEach { match ->
+                            MatchCard(match = match, onClick = { joinRoom(match.code) })
                         }
                     }
                     Spacer(modifier = Modifier.padding(5.dp))
                     Text(
-                        text = "Parties Verrouillées", style = TextStyle(
+                        text = stringResource(R.string.locked_matches),
+                        style = TextStyle(
                             fontWeight = FontWeight.Bold
-                        )
+                        ),
+                        fontSize = 24.sp,
                     )
                     if (lockedMatches().isNotEmpty()) {
                         Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
@@ -278,15 +293,16 @@ fun JoinMatchPage(
                             }
                         }
                     } else {
-                        Text(text = "Aucune partie à afficher")
+                        Text(text = stringResource(R.string.no_match), fontStyle = FontStyle.Italic)
                     }
                     Column(modifier = Modifier.padding(2.dp, 20.dp)) {
                         Text(
-                            text = "Parties en cours", fontSize = 30.sp,
+                            text = stringResource(R.string.inprogress_match), fontSize = 30.sp,
                             fontWeight = FontWeight.Bold
                         )
+                        // TODO : Change if. Must show aucune partie even if one is unlocked but not en cours
                         if (matchInfos.isEmpty()) {
-                            Text(text = "Aucune partie à afficher")
+                            Text(text = stringResource(R.string.no_match), fontStyle = FontStyle.Italic)
                         } else {
                             Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
                                 playingMatches().forEach { match ->
@@ -322,7 +338,7 @@ fun MatchCard(match: MatchPageInfo, onClick: () -> Unit = {}) {
             }
             if (onClick != {}) {
                 Button(onClick = onClick, modifier = Modifier.padding(top = 10.dp)) {
-                    Text(text = "Joindre")
+                    Text(text = stringResource(R.string.join_action))
                 }
             }
         }
