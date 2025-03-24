@@ -21,7 +21,7 @@ export class FriendsSearchComponent implements OnInit, OnDestroy {
     constructor(
         public friendsService: FriendsService,
         private readonly authService: AuthenticationService,
-        private moneyService: MoneyService,
+        public moneyService: MoneyService,
         private dialog: MatDialog,
         private translocoService: TranslocoService,
     ) {}
