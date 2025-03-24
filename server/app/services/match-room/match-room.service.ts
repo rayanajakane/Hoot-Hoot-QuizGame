@@ -15,10 +15,10 @@ import { MatchEvents } from '@common/events/match.events';
 import { TimerEvents } from '@common/events/timer.events';
 import { GameInfo } from '@common/interfaces/game-info';
 import { MatchPageInfo } from '@common/interfaces/match-page-info';
+import { PartyConfig } from '@common/interfaces/party-config';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Server, Socket } from 'socket.io';
-
 @Injectable()
 export class MatchRoomService {
     matchRooms: MatchRoom[];
@@ -58,7 +58,7 @@ export class MatchRoomService {
 
     // allow more parameters to make method more reusable
     // eslint-disable-next-line max-params
-    async addRoom(selectedGame: Game, socket: Socket, hostId: string, isClassicMode: boolean = true, isFriendsOnly = false): Promise<MatchRoom> {
+    async addRoom(selectedGame: Game, socket: Socket, hostId: string, partyConfig: PartyConfig, isClassicMode: boolean = true): Promise<MatchRoom> {
         const isLocked = false;
         const isPlaying = false;
 
@@ -87,7 +87,7 @@ export class MatchRoomService {
             startTime: new Date(),
             qrCodeUrl,
             hostId,
-            isFriendsOnly,
+            partyConfig: partyConfig,
         };
         this.matchRooms.push(newRoom);
         this.setQuestionStrategy(newRoom);

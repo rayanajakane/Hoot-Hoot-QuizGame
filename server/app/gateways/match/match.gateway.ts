@@ -10,11 +10,13 @@ import { FriendsService } from '@app/services/friends/friends.service';
 import { MatchBackupService } from '@app/services/match-backup/match-backup.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { MoneyService } from '@app/services/money/money.service';
+import { PartyService } from '@app/services/party/party.service';
 import { PlayerRoomService } from '@app/services/player-room/player-room.service';
 import { PlayerState } from '@common/constants/player-states';
 import { ChatEvents } from '@common/events/chat.events';
 import { MatchEvents } from '@common/events/match.events';
 import { MoneyEvents } from '@common/events/money.events';
+import { PartyConfig } from '@common/interfaces/party-config';
 import { UserInfo } from '@common/interfaces/user-info';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
@@ -36,6 +38,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         private readonly moneyService: MoneyService,
         // private readonly histogramService: HistogramService,
         // private readonly historyService: HistoryService,
+        private readonly partyService: PartyService,
         private readonly eventEmitter: EventEmitter2,
     ) {}
 
@@ -45,16 +48,19 @@ export class MatchGateway implements OnGatewayDisconnect {
         const codeErrors = this.matchRoomService.getRoomCodeErrors(data.roomCode);
         const usernameErrors = this.playerRoomService.getUsernameErrors(data.roomCode, data.userId);
         let errorMessage = codeErrors + usernameErrors;
-        if (matchRoom.isFriendsOnly) {
-            const friendshipErrors = await this.friendService.getFriendshipErrors(matchRoom.hostId, false, data.userId);
-            if (friendshipErrors) {
-                errorMessage += friendshipErrors;
-            }
+        if (matchRoom.partyConfig.isFriendsOnly || matchRoom.partyConfig.isEntryFeeRequired) {
+            const partyErrors = await this.partyService.canJoinParty(data.userId, data.roomCode);
+            errorMessage += partyErrors;
         }
 
         if (errorMessage) {
             this.sendError(socket.id, errorMessage);
         } else {
+            if (matchRoom.partyConfig.isEntryFeeRequired) {
+                await this.partyService.joinParty(data.userId, data.roomCode);
+                const currPlayerBalance = await this.moneyService.getCurrentBalance(data.userId);
+                this.server.in(socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
+            }
             socket.join(data.roomCode);
             const newPlayer = this.playerRoomService.addPlayer(socket, data.roomCode, data.userId, data.username);
             this.returnAllMatches();
@@ -65,10 +71,10 @@ export class MatchGateway implements OnGatewayDisconnect {
     @SubscribeMessage(MatchEvents.CreateRoom)
     async createRoom(
         @ConnectedSocket() socket: Socket,
-        @MessageBody() data: { gameId: string; hostId: string; isClassicMode: boolean; isFriendsOnly: boolean },
+        @MessageBody() data: { gameId: string; hostId: string; isClassicMode: boolean; partyConfig: PartyConfig },
     ) {
         console.log('Creating room', data.hostId);
-        if (data.isFriendsOnly) {
+        if (data.partyConfig.isFriendsOnly) {
             const friendshipErrors = await this.friendService.getFriendshipErrors(data.hostId, true);
             if (friendshipErrors) {
                 this.sendError(socket.id, friendshipErrors);
@@ -78,13 +84,7 @@ export class MatchGateway implements OnGatewayDisconnect {
 
         let selectedGame: Game = {} as Game;
         selectedGame = this.matchBackupService.getBackupGame(data.gameId);
-        const newMatchRoom: MatchRoom = await this.matchRoomService.addRoom(
-            selectedGame,
-            socket,
-            data.hostId,
-            data.isClassicMode,
-            data.isFriendsOnly,
-        );
+        const newMatchRoom: MatchRoom = await this.matchRoomService.addRoom(selectedGame, socket, data.hostId, data.partyConfig, data.isClassicMode);
 
         socket.join(newMatchRoom.code);
         this.returnAllMatches();
@@ -109,14 +109,11 @@ export class MatchGateway implements OnGatewayDisconnect {
 
         this.playerRoomService.setStateForAll(matchRoomCode, PlayerState.default);
         this.server.to(matchRoomCode).emit(MatchEvents.RouteToResultsPage);
-        // this.matchRoomService.declareWinner(matchRoomCode);
-        //end game money reward
         await this.moneyService.rewardPlayers(matchRoomCode);
         for (const player of this.matchRoomService.matchRooms[roomIndex].players) {
             const currPlayerBalance = await this.moneyService.getCurrentBalance(player.id);
             this.server.in(player.socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
         }
-        ////end game money reward
         this.matchBackupService.updateNMatchesPlayed(this.matchRoomService.matchRooms[roomIndex].game.originalId);
 
         this.matchRoomService.matchRooms[roomIndex].players.forEach((player: Player) => {
@@ -215,6 +212,7 @@ export class MatchGateway implements OnGatewayDisconnect {
     handlePlayersDisconnect(@ConnectedSocket() socket: Socket) {
         const player = this.playerRoomService.getPlayerBySocket(socket.id);
         const roomCode = this.playerRoomService.deletePlayerBySocket(socket.id);
+        const matchRoom = this.matchRoomService.getRoom(roomCode);
         socket.leave(roomCode);
         if (!roomCode || !player) {
             return;
@@ -230,8 +228,10 @@ export class MatchGateway implements OnGatewayDisconnect {
             this.deleteRoom(roomCode);
             return;
         }
+        if (!room.isPlaying && !matchRoom.currentQuestionIndex && matchRoom.partyConfig.isEntryFeeRequired) {
+            this.partyService.leaveParty(player.id, roomCode);
+        }
         this.handleSendPlayersData(roomCode);
-        // this.sendMessageOnDisconnect(roomCode, player.username);
         this.returnAllMatches();
     }
 

@@ -33,6 +33,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { FriendsGateway } from './gateways/friends/friends.gateway';
 import { MoneyGateway } from './gateways/money/money.gateway';
 import { MoneyService } from './services/money/money.service';
+import { PartyService } from './services/party/party.service';
 
 @Module({
     imports: [
@@ -76,6 +77,7 @@ import { MoneyService } from './services/money/money.service';
         QrCodeService,
         MoneyService,
         MoneyGateway,
+        PartyService,
     ],
 })
 export class AppModule {}
