@@ -58,7 +58,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.polyquiz.R
 import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthViewModel
@@ -68,7 +67,6 @@ import com.example.polyquiz.match.domain.JoinMatchService
 import com.example.polyquiz.match.domain.JoinMatchService.matchInfos
 import com.example.polyquiz.match.domain.JoinMatchService.matchesInfos
 import com.example.polyquiz.match.domain.MatchRoomService
-import com.example.polyquiz.ui.MenuButton
 import kotlinx.coroutines.launch
 
 @SuppressLint("MutableCollectionMutableState")
@@ -94,9 +92,6 @@ fun JoinMatchPage(
     val errorMessage by remember {
         derivedStateOf { MatchRoomService.errorMsg }
     }
-
-    val focusManager = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
 
     val joinMatchService = JoinMatchService
 
@@ -134,7 +129,7 @@ fun JoinMatchPage(
                     message = StringValue.DynamicString(errorMessage),
                 )
             )
-            MatchRoomService.errorMsg = ""
+            MatchRoomService.errorMsg = "" // Clear after handling
         }
     }
 
@@ -157,7 +152,7 @@ fun JoinMatchPage(
                     navigateToWaitPage,
                     navigateToMatchPage,
 
-                    )
+                )
             },
             onError = { errorMessage ->
                 println("Error: $errorMessage")

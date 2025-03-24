@@ -148,6 +148,8 @@ fun WaitPage(
         if (userId != matchRoomService.hostId) {
             MatchRoomService.banUsername(userId)
         }
+//        println(userId)
+        MatchRoomService.banUsername(userId)
     }
 
     fun startMatch() {
