@@ -106,7 +106,7 @@ export class MatchGateway implements OnGatewayDisconnect {
     }
 
     @SubscribeMessage(MatchEvents.RouteToResultsPage)
-    routeToResultsPage(@ConnectedSocket() socket: Socket, @MessageBody() matchRoomCode: string) {
+    async routeToResultsPage(@ConnectedSocket() socket: Socket, @MessageBody() matchRoomCode: string) {
         const roomIndex = this.matchRoomService.getRoomIndex(matchRoomCode);
         this.matchRoomService.matchRooms[roomIndex].isPlaying = false;
 
@@ -114,14 +114,14 @@ export class MatchGateway implements OnGatewayDisconnect {
 
         this.playerRoomService.setStateForAll(matchRoomCode, PlayerState.default);
         this.server.to(matchRoomCode).emit(MatchEvents.RouteToResultsPage);
-        // this.emitHistogramHistory(matchRoomCode);
-
         // this.matchRoomService.declareWinner(matchRoomCode);
-        // this.historyService.createHistoryItem(this.matchRoomService.getRoom(matchRoomCode));
-        this.moneyService.rewardPlayers(matchRoomCode);
-        this.matchRoomService.matchRooms[roomIndex].players.forEach((player: Player) => {
-            this.server.in(player.socket.id).emit(MoneyEvents.ReturnBalance, this.moneyService.getCurrentBalance(player.id));
-        });
+        //end game money reward
+        await this.moneyService.rewardPlayers(matchRoomCode);
+        for (const player of this.matchRoomService.matchRooms[roomIndex].players) {
+            const currPlayerBalance = await this.moneyService.getCurrentBalance(player.id);
+            this.server.in(player.socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
+        }
+        ////end game money reward
         this.matchBackupService.updateNMatchesPlayed(this.matchRoomService.matchRooms[roomIndex].game.originalId);
 
         this.matchRoomService.matchRooms[roomIndex].players.forEach((player: Player) => {
