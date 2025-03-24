@@ -34,7 +34,6 @@ export class MoneyService {
 
     onReturnBalance() {
         this.socketHandler.on(MoneyEvents.ReturnBalance, (data: number) => {
-            console.log('Current balance:', data);
             this.currentBalance = data;
             return data;
         });
