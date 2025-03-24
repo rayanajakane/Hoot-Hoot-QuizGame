@@ -1,16 +1,18 @@
 <div *transloco="let t">
-    <button
-        mat-raised-button
-        id="logout-button"
-        *ngIf="this.authenticationService.isUserAuthenticated()"
-        (click)="this.authenticationService.signOut()"
-    >
-        {{ t('page.logout-action') }}
-    </button>
+    <div *ngIf="authenticationService.isUserAuthenticated()" class="right-panel">
+        <button mat-raised-button id="logout-button" (click)="authenticationService.signOut()">
+            {{ t('page.logout-action') }}
+        </button>
+        <div class="balance-container">
+            <mat-icon class="balance-icon">account_balance_wallet</mat-icon>
+            <span class="balance-text"> {{ moneyService.currentBalance | currency: 'USD' : 'symbol' }} </span>
+        </div>
+    </div>
 </div>
-<div [ngClass]="this.authenticationService.isUserAuthenticated() ? 'two-columns-layout' : ''">
-    <app-chat *ngIf="this.authenticationService.isUserAuthenticated()"> </app-chat>
-    <div [ngClass]="this.authenticationService.isUserAuthenticated() ? 'second-column' : ''">
+
+<div [ngClass]="authenticationService.isUserAuthenticated() ? 'two-columns-layout' : ''">
+    <app-chat *ngIf="authenticationService.isUserAuthenticated()"> </app-chat>
+    <div [ngClass]="authenticationService.isUserAuthenticated() ? 'second-column' : ''">
         <router-outlet> </router-outlet>
     </div>
 </div>
