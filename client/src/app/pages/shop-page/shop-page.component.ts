@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PremiumAvatar } from '@app/constants/image-constants';
+import { AvatarService } from '@app/services/avatar/avatar.service';
 import { MoneyService } from '@app/services/money/money.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 
@@ -15,34 +16,43 @@ interface ShopItem {
     templateUrl: './shop-page.component.html',
     styleUrls: ['./shop-page.component.scss'],
 })
-export class ShopPageComponent {
+export class ShopPageComponent implements OnInit {
     readonly AVATAR_PRICE = 1000;
-    shopItems: ShopItem[] = [];
+    avatarItems: ShopItem[] = [];
 
     constructor(
         public moneyService: MoneyService,
-        // private authService: AuthenticationService,
+        private avatarService: AvatarService,
         private notificationService: NotificationService,
-    ) {
-        this.initializeShopItems();
+    ) {}
+
+    async ngOnInit() {
+        await this.initializeShopItems();
     }
 
-    purchaseAvatar(item: ShopItem) {
+    async purchaseAvatar(item: ShopItem) {
         if (this.moneyService.currentBalance >= item.price) {
-            // this.moneyService.decreaseBalance(item.price);
-            item.owned = true;
-            this.notificationService.displaySuccessMessage('Avatar purchased successfully!');
+            try {
+                await this.avatarService.purchaseAvatar(item.id);
+                // await this.moneyService.decreaseBalance(item.price);
+                item.owned = true;
+                this.notificationService.displaySuccessMessage('Avatar purchased successfully!');
+            } catch (error) {
+                this.notificationService.displayErrorMessage('Failed to purchase avatar');
+            }
         } else {
             this.notificationService.displayErrorMessage('Insufficient funds!');
         }
     }
 
-    private initializeShopItems() {
-        this.shopItems = Object.entries(PremiumAvatar).map(([key, value]) => ({
+    private async initializeShopItems() {
+        const purchasedAvatars = await this.avatarService.getPurchasedAvatars();
+
+        this.avatarItems = Object.entries(PremiumAvatar).map(([key, value]) => ({
             id: key,
             imageUrl: value,
             price: this.AVATAR_PRICE,
-            owned: false, // TODO: Add logic to check if user owns the avatar
+            owned: purchasedAvatars.includes(key),
         }));
     }
 }

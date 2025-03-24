@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { User } from '@angular/fire/auth';
 import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MAX_LENGTH, MIN_LENGTH } from '@app/constants/authentication';
 import { IMAGE_MAX_FILE_SIZE, PremiumAvatar, PresetAvatar } from '@app/constants/image-constants';
 import { Language } from '@app/interfaces/language';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
+import { AvatarService } from '@app/services/avatar/avatar.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { TranslationService } from '@app/translation/translation.service';
 import { TranslocoService } from '@jsverse/transloco';
@@ -19,12 +20,13 @@ export interface UserEditData {
     templateUrl: './user-edit-page.component.html',
     styleUrl: './user-edit-page.component.scss',
 })
-export class UserEditPageComponent {
+export class UserEditPageComponent implements OnInit {
     currentUser: User | null;
     isPresetAvatar = true; // TODO: Determine if we consider an existing avatar to be "preset"
     minUsernameLength = MIN_LENGTH;
     maxUsernameLength = MAX_LENGTH;
     loadedImageFile: File | null = null;
+    purchasedPremiumAvatars: { [key: string]: PremiumAvatar } = {};
 
     availableLangs: string[];
 
@@ -45,6 +47,7 @@ export class UserEditPageComponent {
         public notificationService: NotificationService,
         private translocoService: TranslocoService,
         private translationService: TranslationService,
+        private readonly avatarService: AvatarService,
     ) {
         this.availableLangs = this.translocoService.getAvailableLangs() as string[];
         this.currentUser = this.authenticationService.currentUser;
@@ -72,6 +75,13 @@ export class UserEditPageComponent {
 
     static isEmptyData(userEditData: UserEditData | undefined): boolean {
         return userEditData?.email === '' && userEditData.username === '' && userEditData.currentLang === null;
+    }
+
+    async ngOnInit() {
+        const purchasedAvatars = await this.avatarService.getPurchasedAvatars();
+        this.purchasedPremiumAvatars = Object.entries(PremiumAvatar)
+            .filter(([key]) => purchasedAvatars.includes(key))
+            .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
     }
 
     async save() {
