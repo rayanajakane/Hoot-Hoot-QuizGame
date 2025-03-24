@@ -1,5 +1,6 @@
 <div *transloco="let t; read: 'friends-search'">
     <div class="nav">
+        <h1>Money : {{ moneyService.currentBalance }}</h1>
         <h1 class="page-title">{{ 'main-page.friends' | transloco }}</h1>
         <div class="navigation-buttons">
             <button mat-raised-button routerLink="/home"><mat-icon>home</mat-icon>{{ 'nav.main-page' | transloco }}</button>
