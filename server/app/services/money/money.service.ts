@@ -96,14 +96,29 @@ export class MoneyService {
         return errors.join(' ');
     }
 
-    async rewardPlayers(roomCode: string) {
-        const playersWithMaxScore = this.matchRoomService.declareWinner(roomCode);
-        const players = this.matchRoomService.getRoom(roomCode).players;
-        for (const player of players) {
-            let reward = this.MIN_REWARD;
-            if (playersWithMaxScore.includes(player)) {
-                reward = this.MAX_REWARD;
+    async rewardPlayers(roomCode: string): Promise<void> {
+        const room = this.matchRoomService.getRoom(roomCode);
+        const activePlayers = room.players.filter((player) => player.state !== 'exit');
+        const partyConfig = room.partyConfig;
+        const winners = this.matchRoomService.declareWinner(roomCode);
+        const isEntryFeeRequired = partyConfig.isEntryFeeRequired;
+
+        let minReward = this.MIN_REWARD;
+        let maxReward = this.MAX_REWARD;
+
+        if (isEntryFeeRequired) {
+            const totalReward = activePlayers.length * partyConfig.entryFeeAmount;
+            maxReward = Math.round(totalReward * (2 / 3));
+            const nonWinnersCount = activePlayers.length - winners.length;
+            if (nonWinnersCount > 0) {
+                minReward = Math.round((totalReward * (1 / 3)) / nonWinnersCount);
+            } else {
+                minReward = maxReward;
             }
+        }
+
+        for (const player of activePlayers) {
+            const reward = winners.includes(player) ? maxReward : minReward;
             await this.updateBalance(player.id, reward);
         }
     }
