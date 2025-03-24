@@ -1,5 +1,7 @@
 import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { PartyConfigDialogComponent } from '@app/components/party-config-dialog/party-config-dialog.component';
 import { RandomModeStatus, SnackBarAction, SnackBarError } from '@app/constants/feedback-messages';
 import { RANDOM_MODE_GAME } from '@app/constants/question-creation';
 import { MatchContext } from '@app/constants/states';
@@ -12,6 +14,7 @@ import { NotificationService } from '@app/services/notification/notification.ser
 import { QuestionService } from '@app/services/question/question.service';
 import { MINIMUM_QUESTIONS } from '@common/constants/match-constants';
 import { QuestionType } from '@common/constants/question-types';
+import { PartyConfig } from '@common/interfaces/party-config';
 
 const N_POPULAR_GAMES = 3;
 
@@ -30,7 +33,12 @@ export class MatchCreationPageComponent implements OnInit {
     isLoadingSelectedGame: boolean;
     mostPopularGames: Game[] = [];
     buttonClicked = false;
-    isFriendsOnly = false;
+
+    partyConfig: PartyConfig = {
+        isFriendsOnly: false,
+        isEntryFeeRequired: false,
+        entryFeeAmount: 0,
+    };
 
     // Services are required to decouple logic
     // eslint-disable-next-line max-params
@@ -40,6 +48,7 @@ export class MatchCreationPageComponent implements OnInit {
         private readonly matchService: MatchService,
         private readonly matchContextService: MatchContextService,
         private readonly questionService: QuestionService,
+        private readonly dialog: MatDialog,
     ) {
         this.gameIsValid = false;
         this.isRandomGame = false;
@@ -89,7 +98,6 @@ export class MatchCreationPageComponent implements OnInit {
     }
 
     loadSelectedGame(selectedGame: Game): void {
-        // this.isLoadingSelectedGame = true; // Deactivated animation because it looked weird on localhost. TODO: Check if it's still required on deployed app.
         this.isRandomGame = false;
         this.gameService.getGameById(selectedGame.id).subscribe({
             next: (data: Game) => {
@@ -135,7 +143,7 @@ export class MatchCreationPageComponent implements OnInit {
                 if (response.body) {
                     const backupGame = JSON.parse(response.body);
                     this.matchService.currentGame = backupGame;
-                    this.matchService.createMatch(this.isFriendsOnly);
+                    this.matchService.createMatch(this.partyConfig);
                 }
             });
         } else {
@@ -148,6 +156,42 @@ export class MatchCreationPageComponent implements OnInit {
         this.buttonClicked = true;
         this.matchContextService.setContext(context);
         this.reloadSelectedGame();
+    }
+
+    openPartyConfigDialog(): void {
+        if (!this.gameIsValid) {
+            return;
+        }
+
+        const dialogRef = this.dialog.open(PartyConfigDialogComponent, {
+            width: '400px',
+            data: { ...this.partyConfig },
+        });
+
+        dialogRef.afterClosed().subscribe((result) => {
+            if (result) {
+                this.partyConfig = result;
+                this.createMatch(this.matchContext.HostView);
+            }
+        });
+    }
+
+    createStandardMatch(): void {
+        this.partyConfig = {
+            isFriendsOnly: false,
+            isEntryFeeRequired: false,
+            entryFeeAmount: 0,
+        };
+        this.createMatch(this.matchContext.HostView);
+    }
+
+    createFriendsOnlyMatch(): void {
+        this.partyConfig = {
+            isFriendsOnly: true,
+            isEntryFeeRequired: false,
+            entryFeeAmount: 0,
+        };
+        this.createMatch(this.matchContext.HostView);
     }
 
     private sortMostPopularGames() {

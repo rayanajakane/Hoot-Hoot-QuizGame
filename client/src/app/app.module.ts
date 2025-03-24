@@ -51,6 +51,7 @@ import { TranslocoRootModule } from '@app/transloco-root.module';
 import { FIREBASE_CONFIG } from 'src/environments/firebase-config';
 import { FriendsListItemComponent } from './components/friends-list-item/friends-list-item.component';
 import { FriendsSearchComponent } from './components/friends-search/friends-search.component';
+import { PartyConfigDialogComponent } from './components/party-config-dialog/party-config-dialog.component';
 import { JoinMatchPageComponent } from './pages/join-match-page/join-match-page.component';
 /**
  * Main module that is used in main.ts.
@@ -101,6 +102,7 @@ import { JoinMatchPageComponent } from './pages/join-match-page/join-match-page.
         JoinMatchPageComponent,
         FriendsSearchComponent,
         FriendsListItemComponent,
+        PartyConfigDialogComponent,
     ],
     imports: [
         AppMaterialModule,
