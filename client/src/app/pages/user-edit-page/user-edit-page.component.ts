@@ -29,7 +29,10 @@ export class UserEditPageComponent implements OnInit {
     loadedImageFile: File | null = null;
 
     availableLangs: string[];
-    userHistory: UserHistory;
+    userHistory: UserHistory = {
+        auth: [],
+        match: [],
+    };
 
     form = this.fb.group({
         email: [{ value: this.authenticationService.userEmail, disabled: true }],
@@ -78,9 +81,17 @@ export class UserEditPageComponent implements OnInit {
             };
             return;
         }
-        this.historyService.getUserHistory(this.currentUser.uid).subscribe((userHistory: UserHistory) => {
-            console.log(userHistory);
-            this.userHistory = userHistory;
+        this.historyService.getUserHistory(this.currentUser.uid).subscribe({
+            next: (userHistory: UserHistory) => {
+                console.log(userHistory);
+                this.userHistory = userHistory;
+            },
+            error: () => {
+                this.userHistory = {
+                    auth: [],
+                    match: [],
+                };
+            },
         });
     }
 

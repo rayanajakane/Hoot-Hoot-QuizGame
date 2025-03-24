@@ -8,6 +8,8 @@ export class HistoryController {
 
     @Get('/:id')
     async getUserHistory(@Param('id') id: string, @Res() response: Response) {
+        // This could have been done with Firebase client-side.
+        // Doing it server-side allows us to reduce logic from client and eventually extend the code if we need to display history for other users.
         try {
             const userHistory = await this.historyService.getHistory(id);
             response.status(HttpStatus.OK).json(userHistory);
