@@ -135,6 +135,7 @@ export class MatchGateway implements OnGatewayDisconnect {
             this.playerRoomService.deletePlayer(data.roomCode, data.userId);
             this.sendError(playerToBan.socket.id, BAN_PLAYER);
             this.server.in(playerToBan.socket.id).emit(MatchEvents.KickPlayer);
+            playerToBan.socket.leave(data.roomCode);
             // this.server.in(playerToBan.socket.id).disconnectSockets();
         }
         this.sendPlayersData(socket, data.roomCode);
