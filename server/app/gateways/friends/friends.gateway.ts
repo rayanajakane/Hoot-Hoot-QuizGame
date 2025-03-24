@@ -33,6 +33,7 @@ export class FriendsGateway implements OnGatewayDisconnect {
 
     @SubscribeMessage(FriendsEvents.ReturnAllData)
     async returnAllData(client: Socket, userId: string) {
+        this.userSockets.set(userId, client.id);
         client.emit(FriendsEvents.ReturnAllUsers, await this.friendsService.getAllUsers(userId));
         client.emit(FriendsEvents.ReturnAllFriends, await this.friendsService.getFriendsList(userId));
         client.emit(FriendsEvents.ReturnAllPendingRequests, await this.friendsService.getPendingRequests(userId));
