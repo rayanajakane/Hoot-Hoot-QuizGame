@@ -11,6 +11,7 @@ import { QrCodeService } from '@app/services/qr-code/qr-code.service';
 import { QuestionStrategyContext } from '@app/services/question-strategy-context/question-strategy-context.service';
 import { TimeService } from '@app/services/time/time.service';
 import { COOLDOWN_TIME, COUNTDOWN_TIME, FACTOR, MAXIMUM_CODE_LENGTH } from '@common/constants/match-constants';
+import { PlayerState } from '@common/constants/player-states';
 import { MatchEvents } from '@common/events/match.events';
 import { TimerEvents } from '@common/events/timer.events';
 import { GameInfo } from '@common/interfaces/game-info';
@@ -231,7 +232,7 @@ export class MatchRoomService {
 
     declareWinner(matchRoomCode: string): Player[] {
         const players: Player[] = this.getRoom(matchRoomCode).players;
-        const playingPlayers = players.filter((player) => player.isPlaying);
+        const playingPlayers = players.filter((player) => player.isPlaying && player.state !== PlayerState.exit);
         const maxScore = Math.max(...playingPlayers.map((player) => player.score));
         const playersWithMaxScore = playingPlayers.filter((player) => player.score === maxScore);
         playersWithMaxScore.forEach((player) => player.socket.emit(MatchEvents.Winner));
