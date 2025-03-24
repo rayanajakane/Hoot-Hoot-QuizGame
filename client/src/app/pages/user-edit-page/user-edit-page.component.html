@@ -78,8 +78,8 @@
             <p *ngIf="userHistory.match.length === 0" class="no-item-to-display">{{ t('history.no-item') }}</p>
             <div *ngFor="let item of userHistory.match">
                 <mat-card class="history-match-item">
-                    <p>{{ item.start }}</p>
-                    <p>{{ item.end }}</p>
+                    <p>{{ item.start | date: 'YYYY-MM-dd HH:mm' }}</p>
+                    <p>{{ item.end | date: 'YYYY-MM-dd HH:mm' }}</p>
                     <p>{{ item.hasWon ? t('history.victory') : t('history.defeat') }}</p>
                     <p>{{ item.hasGivenUp ? t('history.gaveUp') : '' }}</p>
                 </mat-card>
@@ -89,7 +89,7 @@
                 <mat-card class="history-auth-item">
                     <p *ngIf="item.isLogin">{{ t('history.signin') }}</p>
                     <p *ngIf="!item.isLogin">{{ t('history.signout') }}</p>
-                    <p>{{ item.date }}</p>
+                    <p>{{ item.date | date: 'YYYY-MM-dd HH:mm' }}</p>
                 </mat-card>
             </div>
         </div>
