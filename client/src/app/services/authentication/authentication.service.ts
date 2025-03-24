@@ -253,6 +253,7 @@ export class AuthenticationService {
     connectToSocket() {
         if (!this.socketHandler.isSocketAlive()) {
             this.socketHandler.connect();
+            this.socketHandler.send(FriendsEvents.Connect, this.userId);
             this.chatService.handleReceivedMessages();
             this.chatService.handleRoomMessages();
             this.chatService.handleGeneralEmoji();

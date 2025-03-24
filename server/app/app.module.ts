@@ -32,6 +32,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FriendsGateway } from './gateways/friends/friends.gateway';
 import { MoneyGateway } from './gateways/money/money.gateway';
+import { HistoryService } from './services/history/history.service';
 import { MoneyService } from './services/money/money.service';
 
 @Module({
@@ -76,6 +77,7 @@ import { MoneyService } from './services/money/money.service';
         QrCodeService,
         MoneyService,
         MoneyGateway,
+        HistoryService,
     ],
 })
 export class AppModule {}
