@@ -35,7 +35,6 @@ object JoinMatchService : CommunicationService("match") {
     fun getAllMatches() {
         onReturnAllMatches()
         mSocket.emit(MatchEvents.GET_ALL_MATCHES.value)
-        println(matchInfos)
     }
 
     fun stopReturningAllMatches(){
@@ -49,7 +48,6 @@ object JoinMatchService : CommunicationService("match") {
                 val gson = Gson()
                 val matchListType = object : TypeToken<MutableList<MatchPageInfo>>() {}.type
                 matchInfos = gson.fromJson(matchesArray.toString(), matchListType)
-                println(matchInfos)
             }
         }
     }

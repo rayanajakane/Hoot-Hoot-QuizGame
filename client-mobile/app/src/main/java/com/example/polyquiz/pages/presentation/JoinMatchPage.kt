@@ -28,9 +28,12 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,11 +48,15 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.polyquiz.SnackbarController
+import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.MatchPageInfo
 import com.example.polyquiz.match.domain.JoinMatchService
 import com.example.polyquiz.match.domain.JoinMatchService.matchInfos
 import com.example.polyquiz.match.domain.JoinMatchService.matchesInfos
+import com.example.polyquiz.match.domain.MatchRoomService
+import kotlinx.coroutines.launch
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
@@ -59,6 +66,11 @@ fun JoinMatchPage(modifier: Modifier, authViewModel: AuthViewModel,navigateToHom
     var room by remember { mutableStateOf("") }
     val username by remember { mutableStateOf(authViewModel.getUsername()) }
     val userId by remember { mutableStateOf(authViewModel.getUserId()) }
+    val scope = rememberCoroutineScope()
+    val shouldNavigate = rememberUpdatedState(MatchRoomService.timeToGoToWaitPage)
+    val errorMessage by remember {
+        derivedStateOf { MatchRoomService.errorMsg }
+    }
 
     val joinMatchService = JoinMatchService
 
@@ -78,6 +90,28 @@ fun JoinMatchPage(modifier: Modifier, authViewModel: AuthViewModel,navigateToHom
         joinMatchService.getAllMatches()
     }
 
+    LaunchedEffect(MatchRoomService.timeToGoToWaitPage) {
+        when (shouldNavigate.value) {
+            true -> {
+                MatchRoomService.timeToGoToWaitPage = false
+                navigateToWaitPage()
+            }
+
+            else -> Unit
+        }
+    }
+
+    LaunchedEffect(errorMessage) {
+        if (errorMessage.isNotEmpty()) {
+            SnackbarController.sendEvent(
+                event = SnackbarEvent(
+                    message = StringValue.DynamicString(errorMessage),
+                )
+            )
+            MatchRoomService.errorMsg = "" // Clear after handling
+        }
+    }
+
     DisposableEffect(Unit) {
         onDispose {
             joinMatchService.stopReturningAllMatches()
@@ -95,11 +129,20 @@ fun JoinMatchPage(modifier: Modifier, authViewModel: AuthViewModel,navigateToHom
                     userId,
                     navigateToHome,
                     navigateToWaitPage,
-                    navigateToMatchPage
+                    navigateToMatchPage,
+
                 )
             },
             onError = { errorMessage ->
                 println("Error: $errorMessage")
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.DynamicString(errorMessage),
+                        )
+                    )
+                }
+
                 JoinMatchService.matchRoomCode = ""
             }
         )
@@ -107,7 +150,7 @@ fun JoinMatchPage(modifier: Modifier, authViewModel: AuthViewModel,navigateToHom
 
     fun joinRoom(code: String) {
         submitCode(code)
-        navigateToWaitPage()
+//        navigateToWaitPage()
     }
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
     Column() {

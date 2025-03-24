@@ -66,8 +66,8 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
     }
 
     fun isHost(): Boolean {
-        println(MatchRoomService.hostId)
-        println( MatchRoomService.hostId == authViewModel.getUserId())
+//        println(MatchRoomService.hostId)
+//        println( MatchRoomService.hostId == authViewModel.getUserId())
         return MatchRoomService.hostId == authViewModel.getUserId()
     }
 
@@ -108,7 +108,7 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
         if (userId === matchRoomService.hostId) {
             return
         }
-        println(userId)
+//        println(userId)
         MatchRoomService.banUsername(userId)
     }
 
