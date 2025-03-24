@@ -74,21 +74,21 @@
             </form>
             <h2>{{ t('page.danger-zone') }}</h2>
             <button mat-raised-button color="accent" (click)="deleteUser()" id="delete-button">{{ t('page.delete-user') }}</button>
-            <h2>Historique des parties jouées</h2>
-            <p *ngIf="userHistory.match.length === 0" class="no-item-to-display">Aucun élément à afficher</p>
+            <h2>{{ t('history.match-history') }}</h2>
+            <p *ngIf="userHistory.match.length === 0" class="no-item-to-display">{{ t('history.no-item') }}</p>
             <div *ngFor="let item of userHistory.match">
                 <mat-card class="history-match-item">
                     <p>{{ item.start }}</p>
                     <p>{{ item.end }}</p>
-                    <p>{{ item.hasWon ? 'Victoire' : 'Défaite' }}</p>
-                    <p>{{ item.hasGivenUp ? 'Abandon' : '' }}</p>
+                    <p>{{ item.hasWon ? t('history.victory') : t('history.defeat') }}</p>
+                    <p>{{ item.hasGivenUp ? t('history.gaveUp') : '' }}</p>
                 </mat-card>
             </div>
-            <h2>Relevé des connexions et déconnexions</h2>
+            <h2>{{ t('history.auth-history') }}</h2>
             <div *ngFor="let item of userHistory.auth">
                 <mat-card class="history-auth-item">
-                    <p *ngIf="item.isLogin">Connexion</p>
-                    <p *ngIf="!item.isLogin">Déconnexion</p>
+                    <p *ngIf="item.isLogin">{{ t('history.signin') }}</p>
+                    <p *ngIf="!item.isLogin">{{ t('history.signout') }}</p>
                     <p>{{ item.date }}</p>
                 </mat-card>
             </div>

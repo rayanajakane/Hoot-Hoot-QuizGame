@@ -114,5 +114,15 @@
         "donate-money": "Donner de l'argent",
         "enter-donation-amout": "Entrer le montant de la donation",
         "donation-amount": "Montant de la donation"
+    },
+    "history": {
+        "match-history": "Historique des parties jouées",
+        "victory": "Victoire",
+        "defeat": "Défaite",
+        "gaveUp": "Abandon",
+        "auth-history": "Historique d'authentification",
+        "signin": "Connexion",
+        "signout": "Déconnexion",
+        "no-item": "Aucun élément à afficher"
     }
 }
