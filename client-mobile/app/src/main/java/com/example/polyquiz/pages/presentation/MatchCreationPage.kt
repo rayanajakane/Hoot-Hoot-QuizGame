@@ -78,9 +78,6 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
         ) {
 
             Surface(
-                shadowElevation = 10.dp,
-                tonalElevation = 10.dp,
-                color = MaterialTheme.colorScheme.surfaceColorAtElevation(10.dp),
                 modifier = Modifier.padding(10.dp)
             ) {
                 Button(
