@@ -28,8 +28,21 @@ export class HistoryService {
     async getAuthHistory(userId: string) {
         const snapshot = await this.database.ref(`users/${userId}/auth_history`).once('value');
         if (!snapshot.exists()) return [];
-        console.log(snapshot.val()); // TODO: Convert date (LocaleDateString --> Date obj)
-        return snapshot.val();
+        // TODO: Consider optimizing to avoid calling ref too many times (maybe just parse the current snapshot.val())
+        const itemIds = Object.keys(snapshot.val());
+        const historyAuthItems: HistoryAuthItem[] = await Promise.all(
+            itemIds.map(async (id) => {
+                const itemSnapshot = await this.database.ref(`users/${userId}/auth_history/${id}`).once('value');
+                const itemData = itemSnapshot.exists() ? itemSnapshot.val() : {};
+                return {
+                    id,
+                    isLogin: itemData.isLogin,
+                    date: new Date(itemData.date),
+                };
+            }),
+        );
+        console.log(historyAuthItems);
+        return historyAuthItems;
     }
 
     async addAuthHistoryItem(userId: string, historyAuthItem: HistoryAuthItem) {
@@ -47,8 +60,25 @@ export class HistoryService {
         if (!userId) return;
         const snapshot = await this.database.ref(`users/${userId}/match_history`).once('value');
         if (!snapshot.exists()) return [];
-        console.log(snapshot.val()); // TODO: Convert date
-        return snapshot.val();
+        // TODO: Consider optimizing to avoid calling ref too many times (maybe just parse the current snapshot.val())
+        const itemIds = Object.keys(snapshot.val());
+        const historyMatchItems: HistoryMatchItem[] = await Promise.all(
+            itemIds.map(async (id) => {
+                const itemSnapshot = await this.database.ref(`users/${userId}/match_history/${id}`).once('value');
+                const itemData = itemSnapshot.exists() ? itemSnapshot.val() : {};
+                return {
+                    id,
+                    start: new Date(itemData.start),
+                    end: new Date(itemData.end),
+                    hasWon: itemData.hasWon,
+                    hasGivenUp: itemData.hasGivenUp,
+                    nGoodAnswers: itemData.nGoodAnswers,
+                    nTotalQuestions: itemData.nTotalQuestions,
+                };
+            }),
+        );
+        console.log(historyMatchItems);
+        return historyMatchItems;
     }
 
     async addMatchHistoryItem(userId: string, historyMatchItem: HistoryMatchItem) {

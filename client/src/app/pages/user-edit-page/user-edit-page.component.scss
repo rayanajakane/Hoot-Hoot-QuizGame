@@ -75,3 +75,23 @@ img {
     object-fit: fill;
     border-radius: 100rem;
 }
+
+.history-auth-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.history-match-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.no-item-to-display {
+    font-style: italic;
+}
