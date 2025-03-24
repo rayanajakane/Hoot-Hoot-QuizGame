@@ -12,7 +12,7 @@
                 <button
                     mat-raised-button
                     color="primary"
-                    (click)="purchaseAvatar(item)"
+                    (click)="buyAvatar(item)"
                     [disabled]="item.owned || moneyService.currentBalance < item.price"
                 >
                     {{ item.owned ? t('shop.owned') : t('shop.buy') }}
