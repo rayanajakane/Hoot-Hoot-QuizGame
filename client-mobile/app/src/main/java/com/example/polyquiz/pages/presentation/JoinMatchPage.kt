@@ -64,12 +64,15 @@ import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.MatchPageInfo
 import com.example.polyquiz.match.domain.JoinMatchService
 import com.example.polyquiz.match.domain.JoinMatchService.matchInfos
+import com.example.polyquiz.match.domain.JoinMatchService.matchesInfos
+import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.match.domain.MatchRoomService
 import kotlinx.coroutines.launch
 
 @Composable
 fun JoinMatchPage(
     modifier: Modifier, authViewModel: AuthViewModel, navigateToHome: () -> Unit,
+    cameraViewModel: CameraViewModel,
     navigateToMatchPage: () -> Unit,
     navigateToWaitPage: () -> Unit,
     navigateToCamera: () -> Unit,
@@ -143,8 +146,8 @@ fun JoinMatchPage(
                     userId,
                     navigateToHome,
                     navigateToWaitPage,
-                    navigateToMatchPage,
-                    )
+                    navigateToMatchPage
+                )
             },
             onError = { errorMessage ->
                 println("Error: $errorMessage")
@@ -201,26 +204,6 @@ fun JoinMatchPage(
                 }
 
 
-        Column(modifier = Modifier.padding(26.dp, 1.dp)) {
-            TextField(
-                value = room,
-                onValueChange = { room = it },
-                label = { Text("Code") },
-                maxLines = 1,
-                keyboardActions = KeyboardActions(onDone = {
-                    submitCode(room)
-                })
-            )
-            Button(
-                modifier = Modifier.width(120.dp),
-                onClick = {
-                    joinRoom(room)
-                    keyboardController?.hide()
-                },
-            ) {
-                Text(text = "Joindre")
-            }
-        }
                 Column(modifier = Modifier.padding(26.dp, 1.dp)) {
                     Row(horizontalArrangement = Arrangement.End) {
                         TextField(
@@ -245,6 +228,7 @@ fun JoinMatchPage(
                         Spacer(modifier = Modifier.width(8.dp))
                         Button(
                             onClick = {
+                                cameraViewModel.setCameraContent(true)
                                 navigateToCamera()
                             }, shape = RoundedCornerShape(3.dp), modifier = Modifier.height(55.dp)
                         ) {
@@ -316,6 +300,8 @@ fun JoinMatchPage(
             }
         }
     }
+
+
 }
 
 @Composable

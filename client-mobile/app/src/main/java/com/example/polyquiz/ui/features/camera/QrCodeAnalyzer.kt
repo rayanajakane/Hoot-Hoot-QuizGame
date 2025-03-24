@@ -1,6 +1,7 @@
 package com.example.polyquiz.ui.features.camera
 
 import android.graphics.ImageFormat
+import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.google.zxing.BarcodeFormat
@@ -60,6 +61,7 @@ class QrCodeAnalyzer(
                 }.decode(binaryBmp)
 
                 onQrCodeScanned(result.text)
+                Log.d("Reading QR", "Reading: ${result.text}")
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {

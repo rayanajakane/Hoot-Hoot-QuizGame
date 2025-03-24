@@ -2,6 +2,7 @@ package com.example.polyquiz.ui.features.camera
 
 import android.graphics.Bitmap
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,11 +16,18 @@ class CameraViewModel : ViewModel() {
     private val _state = MutableStateFlow(CameraState())
     val state: StateFlow<CameraState> = _state
 
+    private val _showQrContent = MutableStateFlow(false)
+    val showQrContent: StateFlow<Boolean> = _showQrContent
+
     private val _temporaryAvatar = MutableStateFlow<Bitmap?>(null)
     val temporaryAvatar: StateFlow<Bitmap?> get() = _temporaryAvatar
 
     private val _isPresetAvatar = MutableStateFlow<Boolean>(true)
     val isPresetAvatar: StateFlow<Boolean> = _isPresetAvatar
+
+    fun setCameraContent(showQr: Boolean) {
+        _showQrContent.value = showQr
+    }
 
     fun setTemporaryAvatar(capturedImage: Bitmap?) {
         _temporaryAvatar.value = capturedImage

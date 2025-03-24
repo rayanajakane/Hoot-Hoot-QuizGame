@@ -242,6 +242,7 @@ fun UserEditPage(
 
                             Button(
                                 onClick = {
+                                    cameraViewModel.setCameraContent(false)
                                     navigateToCamera()
                                 },
                             ) { Text(stringResource(R.string.upload_avatar)) }
