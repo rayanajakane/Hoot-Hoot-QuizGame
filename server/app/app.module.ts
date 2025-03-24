@@ -35,6 +35,7 @@ import { FriendsGateway } from './gateways/friends/friends.gateway';
 import { MoneyGateway } from './gateways/money/money.gateway';
 import { HistoryService } from './services/history/history.service';
 import { MoneyService } from './services/money/money.service';
+import { PartyService } from './services/party/party.service';
 
 @Module({
     imports: [
@@ -79,6 +80,7 @@ import { MoneyService } from './services/money/money.service';
         MoneyService,
         MoneyGateway,
         HistoryService,
+        PartyService,
     ],
 })
 export class AppModule {}

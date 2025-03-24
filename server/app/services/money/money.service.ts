@@ -85,11 +85,10 @@ export class MoneyService {
             errors.push(LOW_BALANCE);
         }
 
-        if (typeof amount !== 'number' || amount <= 0) {
-            errors.push(INVALID_AMOUNT);
-        }
-
         if (isDonation) {
+            if (typeof amount !== 'number' || amount <= 0) {
+                errors.push(INVALID_AMOUNT);
+            }
             const donationsToday = await this.getAndClearDonationsToday(uid);
             if (donationsToday + amount > this.DAILY_DONATION_LIMIT) {
                 errors.push(DONATION_LIMIT_EXCEEDED);
