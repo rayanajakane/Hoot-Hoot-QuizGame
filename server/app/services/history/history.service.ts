@@ -41,7 +41,9 @@ export class HistoryService {
                 };
             }),
         );
-        console.log(historyAuthItems);
+        historyAuthItems.sort((a: HistoryAuthItem, b: HistoryAuthItem) => {
+            return a.date.getTime() - b.date.getTime();
+        });
         return historyAuthItems;
     }
 
@@ -77,7 +79,9 @@ export class HistoryService {
                 };
             }),
         );
-        console.log(historyMatchItems);
+        historyMatchItems.sort((a: HistoryMatchItem, b: HistoryMatchItem) => {
+            return a.start.getTime() - b.start.getTime();
+        });
         return historyMatchItems;
     }
 
