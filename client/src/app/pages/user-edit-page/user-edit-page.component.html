@@ -25,6 +25,14 @@
                                 </div>
                             </div>
                         </div>
+                        <div id="avatar-choices-container">
+                            <p>Avatars premiums</p>
+                            <div id="avatar-choices">
+                                <div class="avatar-mini" *ngFor="let enum of premiumAvatar | keyvalue" (click)="setPremiumAvatar(enum.value)">
+                                    <img src="{{ enum.value }}" alt="" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div id="form-fields">
                         <mat-form-field id="email">

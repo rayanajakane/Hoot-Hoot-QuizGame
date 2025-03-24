@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { User } from '@angular/fire/auth';
 import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MAX_LENGTH, MIN_LENGTH } from '@app/constants/authentication';
-import { IMAGE_MAX_FILE_SIZE, PresetAvatar } from '@app/constants/image-constants';
+import { IMAGE_MAX_FILE_SIZE, PremiumAvatar, PresetAvatar } from '@app/constants/image-constants';
 import { Language } from '@app/interfaces/language';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { NotificationService } from '@app/services/notification/notification.service';
@@ -66,6 +66,10 @@ export class UserEditPageComponent {
         return PresetAvatar;
     }
 
+    get premiumAvatar() {
+        return PremiumAvatar;
+    }
+
     static isEmptyData(userEditData: UserEditData | undefined): boolean {
         return userEditData?.email === '' && userEditData.username === '' && userEditData.currentLang === null;
     }
@@ -73,7 +77,7 @@ export class UserEditPageComponent {
     async save() {
         this.form.markAllAsTouched();
         if (this.form.valid) {
-            var url: string = this.avatar.value as string;
+            let url: string = this.avatar.value as string;
             if (!this.isPresetAvatar && (this.avatar.value as string) !== this.authenticationService.userAvatarUrl) {
                 const resultUrl = await this.authenticationService.uploadUserAvatar(this.authenticationService.userId, this.loadedImageFile);
                 url = resultUrl !== '' ? resultUrl : this.authenticationService.userAvatarUrl;
@@ -111,6 +115,11 @@ export class UserEditPageComponent {
     setPresetAvatar(presetAvatar: PresetAvatar) {
         this.isPresetAvatar = true;
         this.form.get('avatar')?.setValue(presetAvatar);
+    }
+
+    setPremiumAvatar(premiumAvatar: PremiumAvatar) {
+        this.isPresetAvatar = true;
+        this.form.get('avatar')?.setValue(premiumAvatar);
     }
 
     deleteUser() {
