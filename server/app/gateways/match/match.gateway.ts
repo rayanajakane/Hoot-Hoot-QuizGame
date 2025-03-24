@@ -63,7 +63,7 @@ export class MatchGateway implements OnGatewayDisconnect {
                 await this.partyService.joinParty(data.userId, data.roomCode);
                 const currPlayerBalance = await this.moneyService.getCurrentBalance(data.userId);
                 console.log('Returning balance', currPlayerBalance);
-                this.server.in(socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
+                this.server.to(socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
             }
             const newPlayer = this.playerRoomService.addPlayer(socket, data.roomCode, data.userId, data.username);
             this.returnAllMatches();

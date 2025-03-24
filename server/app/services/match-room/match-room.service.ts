@@ -88,7 +88,7 @@ export class MatchRoomService {
             startTime: new Date(),
             qrCodeUrl,
             hostId,
-            partyConfig: partyConfig,
+            partyConfig,
         };
         this.matchRooms.push(newRoom);
         this.setQuestionStrategy(newRoom);

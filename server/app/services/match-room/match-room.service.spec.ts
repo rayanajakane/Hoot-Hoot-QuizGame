@@ -16,6 +16,7 @@ import { MultipleChoiceStrategy } from '@app/question-strategies/multiple-choice
 import { QuestionStrategyContext } from '@app/services/question-strategy-context/question-strategy-context.service';
 import { TimeService } from '@app/services/time/time.service';
 import { MatchEvents } from '@common/events/match.events';
+import { PartyConfig } from '@common/interfaces/party-config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { SinonStubbedInstance, createStubInstance } from 'sinon';
@@ -176,10 +177,10 @@ describe('MatchRoomService', () => {
             isClassicMode: true,
             startTime: new Date(),
             qrCodeUrl: '',
-            isFriendsOnly: false,
+            partyConfig: {} as PartyConfig,
         };
 
-        const result = await service.addRoom(mockGame, socket, '');
+        const result = await service.addRoom(mockGame, socket, '', {} as PartyConfig);
         expect(generateSpy).toHaveBeenCalled();
         expect(result).toEqual(expectedResult);
         expect(service.matchRooms.length).toEqual(1);

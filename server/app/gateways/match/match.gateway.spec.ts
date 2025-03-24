@@ -22,6 +22,8 @@ import { FriendsService } from '@app/services/friends/friends.service';
 // import { HistoryService } from '@app/services/history/history.service';
 import { MatchBackupService } from '@app/services/match-backup/match-backup.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
+import { MoneyService } from '@app/services/money/money.service';
+import { PartyService } from '@app/services/party/party.service';
 import { PlayerRoomService } from '@app/services/player-room/player-room.service';
 import { TimeService } from '@app/services/time/time.service';
 import { PlayerState } from '@common/constants/player-states';
@@ -40,6 +42,9 @@ describe('MatchGateway', () => {
     let timeSpy: SinonStubbedInstance<TimeService>;
     let playerRoomSpy: SinonStubbedInstance<PlayerRoomService>;
     // let historySpy: SinonStubbedInstance<HistoryService>;
+    let friendsSpy: SinonStubbedInstance<FriendsService>;
+    let moneySpy: SinonStubbedInstance<MoneyService>;
+    let partySpy: SinonStubbedInstance<PartyService>;
     let socket: SinonStubbedInstance<Socket>;
     let server: SinonStubbedInstance<Server>;
     let eventEmitter: EventEmitter2;
@@ -51,6 +56,9 @@ describe('MatchGateway', () => {
         timeSpy = createStubInstance(TimeService);
         // historySpy = createStubInstance(HistoryService);
         playerRoomSpy = createStubInstance(PlayerRoomService);
+        friendsSpy = createStubInstance(FriendsService);
+        moneySpy = createStubInstance(MoneyService);
+        partySpy = createStubInstance(PartyService);
         socket = createStubInstance<Socket>(Socket);
         server = createStubInstance<Server>(Server);
 
@@ -62,7 +70,9 @@ describe('MatchGateway', () => {
                 { provide: MatchBackupService, useValue: matchBackupSpy },
                 { provide: TimeService, useValue: timeSpy },
                 { provide: PlayerRoomService, useValue: playerRoomSpy },
-                { provide: FriendsService, useValue: createStubInstance(FriendsService) },
+                { provide: FriendsService, useValue: friendsSpy },
+                { provide: MoneyService, useValue: moneySpy },
+                { provide: PartyService, useValue: partySpy },
                 // { provide: HistoryService, useValue: historySpy },
                 EventEmitter2,
             ],
