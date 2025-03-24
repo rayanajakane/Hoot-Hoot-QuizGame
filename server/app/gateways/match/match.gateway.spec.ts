@@ -125,7 +125,7 @@ describe('MatchGateway', () => {
             gameId: MOCK_MATCH_ROOM.game.id,
             hostId: MOCK_PLAYER.id,
             isClassicMode: true,
-            isFriendsOnly: false,
+            partyConfig: { isFriendsOnly: false, isEntryFeeRequired: false, entryFeeAmount: 0 },
         });
         expect(socket.join.calledOnce).toBeTruthy();
         expect(result).toEqual({ code: MOCK_MATCH_ROOM.code });
@@ -137,7 +137,7 @@ describe('MatchGateway', () => {
             gameId: MOCK_TEST_MATCH_ROOM.game.id,
             hostId: MOCK_PLAYER.id,
             isClassicMode: true,
-            isFriendsOnly: false,
+            partyConfig: { isFriendsOnly: false, isEntryFeeRequired: false, entryFeeAmount: 0 },
         });
         expect(socket.join.calledOnce).toBeTruthy();
         expect(result).toEqual({ code: MOCK_TEST_MATCH_ROOM.code });
@@ -150,7 +150,7 @@ describe('MatchGateway', () => {
             gameId: MOCK_RANDOM_MATCH_ROOM.game.id,
             hostId: MOCK_PLAYER.id,
             isClassicMode: true,
-            isFriendsOnly: false,
+            partyConfig: { isFriendsOnly: false, isEntryFeeRequired: false, entryFeeAmount: 0 },
         });
         expect(socket.join.calledOnce).toBeTruthy();
         expect(result).toEqual({ code: MOCK_RANDOM_MATCH_ROOM.code });
@@ -414,6 +414,7 @@ describe('MatchGateway', () => {
                 isPlaying: true,
                 gameTitle: '',
                 nPlayers: 1,
+                partyConfig: { isFriendsOnly: false, isEntryFeeRequired: false, entryFeeAmount: 0 },
             },
             {
                 code: '1234',
@@ -421,6 +422,7 @@ describe('MatchGateway', () => {
                 isPlaying: true,
                 gameTitle: '',
                 nPlayers: 1,
+                partyConfig: { isFriendsOnly: false, isEntryFeeRequired: false, entryFeeAmount: 0 },
             },
         ];
         const allMatchesSpy = jest.spyOn(matchRoomSpy, 'getAllMatchesInfo').mockReturnValue(mockMatches);
