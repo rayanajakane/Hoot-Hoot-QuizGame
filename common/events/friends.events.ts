@@ -10,5 +10,5 @@ export enum FriendsEvents {
     ReturnAllSentRequests = 'returnAllSentRequests',
     ReturnAllData = 'returnAllData',
     UpdateData = 'updateData',
-    Connect = 'connect',
+    Connect = 'connectUser',
 }
