@@ -71,7 +71,8 @@ import kotlinx.coroutines.launch
 fun JoinMatchPage(
     modifier: Modifier, authViewModel: AuthViewModel, navigateToHome: () -> Unit,
     navigateToMatchPage: () -> Unit,
-    navigateToWaitPage: () -> Unit
+    navigateToWaitPage: () -> Unit,
+    navigateToCamera: () -> Unit,
 ) {
     var room by remember { mutableStateOf("") }
     val username by remember { mutableStateOf(authViewModel.getUsername()) }
@@ -244,7 +245,7 @@ fun JoinMatchPage(
                         Spacer(modifier = Modifier.width(8.dp))
                         Button(
                             onClick = {
-                                // TODO: QR CODE
+                                navigateToCamera()
                             }, shape = RoundedCornerShape(3.dp), modifier = Modifier.height(55.dp)
                         ) {
                             Text(text = stringResource(R.string.scan_qr))

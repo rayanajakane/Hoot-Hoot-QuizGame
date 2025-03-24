@@ -71,5 +71,6 @@
     <string name="no_match">Aucune partie à afficher</string>
     <string name="locked_matches">Parties verrouillées</string>
     <string name="inprogress_match">Parties en cours</string>
+    <string name="camera_permission">Veuillez accorder l\'autorisation d\'utiliser l\'appareil photo.</string>
 
 </resources>

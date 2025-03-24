@@ -155,7 +155,8 @@ fun Navigation(
                 authViewModel,
                 navigateToHome = { navController.navigate(Route.Home) },
                 navigateToMatchPage = { navController.navigate(Route.MatchRoom) },
-                navigateToWaitPage = { navController.navigate(Route.WaitPage) }
+                navigateToWaitPage = { navController.navigate(Route.WaitPage) },
+                navigateToCamera = {navController.navigate(Route.MainCameraScreen)}
             )
         }
 

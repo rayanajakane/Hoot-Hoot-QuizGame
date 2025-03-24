@@ -71,4 +71,5 @@
     <string name="no_match">No Match to Display</string>
     <string name="locked_matches">Locked Matches</string>
     <string name="inprogress_match">Matches in progress</string>
+    <string name="camera_permission">Please grant the permission to use the camera.</string>
 </resources>
