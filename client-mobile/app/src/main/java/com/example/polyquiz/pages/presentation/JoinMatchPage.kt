@@ -4,14 +4,17 @@ import android.annotation.SuppressLint
 import android.graphics.Paint.Join
 import android.graphics.drawable.Icon
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -41,6 +44,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.pointer.motionEventSpy
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -49,17 +54,17 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.polyquiz.R
 import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.MatchPageInfo
 import com.example.polyquiz.match.domain.JoinMatchService
 import com.example.polyquiz.match.domain.JoinMatchService.matchInfos
-import com.example.polyquiz.match.domain.JoinMatchService.matchesInfos
 import com.example.polyquiz.match.domain.MatchRoomService
 import kotlinx.coroutines.launch
 
-@SuppressLint("MutableCollectionMutableState")
 @Composable
 fun JoinMatchPage(
     modifier: Modifier, authViewModel: AuthViewModel, navigateToHome: () -> Unit,
@@ -75,8 +80,10 @@ fun JoinMatchPage(
         derivedStateOf { MatchRoomService.errorMsg }
     }
 
-    val keyboardController = LocalSoftwareKeyboardController.current
     val joinMatchService = JoinMatchService
+
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     fun unlockedMatches(): List<MatchPageInfo> {
         return matchInfos.filter { !it.isLocked && !it.isPlaying }
@@ -134,7 +141,6 @@ fun JoinMatchPage(
                     navigateToHome,
                     navigateToWaitPage,
                     navigateToMatchPage,
-
                     )
             },
             onError = { errorMessage ->
@@ -156,20 +162,41 @@ fun JoinMatchPage(
         submitCode(code)
 //        navigateToWaitPage()
     }
-    Column(modifier = modifier.verticalScroll(rememberScrollState())) {
-        Column() {
-            Text(
-                text = "Joindre une partie",
-                style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold)
-            )
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                Button(onClick = { navigateToHome() }) {
-                    Text(text = "Page d'accueil")
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                })
+            }
+    ) {
+        ChatComponent(modifier = modifier, authViewModel = authViewModel)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .imePadding()
+        ) {
+            Column(modifier = modifier.verticalScroll(rememberScrollState())) {
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(26.dp, 1.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(
+                        text = stringResource(R.string.join_match),
+                        style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold)
+                    )
+                    Button(onClick = { navigateToHome() }) {
+                        Text(text = stringResource(R.string.home_page))
+                    }
                 }
 
-            }
-        }
 
         Column(modifier = Modifier.padding(26.dp, 1.dp)) {
             TextField(
@@ -191,53 +218,81 @@ fun JoinMatchPage(
                 Text(text = "Joindre")
             }
         }
+                Column(modifier = Modifier.padding(26.dp, 1.dp)) {
+                    Row(horizontalArrangement = Arrangement.End) {
+                        TextField(
+                            value = room,
+                            onValueChange = { room = it },
+                            label = { Text("Code") },
+                            maxLines = 1,
+                            keyboardActions = KeyboardActions(onDone = {
+                                submitCode(room)
+                            })
+                        )
+                        Button(
+                            modifier = Modifier.width(120.dp),
+                            onClick = { joinRoom(room) },
+                            shape = RectangleShape
+                        ) {
+                            Text(text = "Joindre")
+                        }
+                        Button(onClick = {
+                            // TODO: QR CODE
+                        }, shape = RectangleShape) {
+                            Text(text = stringResource(R.string.scan_qr))
+                        }
+                    }
 
-        Column(modifier = Modifier.padding(26.dp, 0.dp)) {
-            Text(
-                text = "Parties en attente", style = TextStyle(
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            )
-            if (matchInfos.isEmpty()) {
-                Text(text = "Aucune partie à afficher")
-            }
-            if (unlockedMatches().isEmpty()) {
-                Text(text = "Parties Verrouillées")
-            } else {
-                Text(text = "Parties deverrouillées")
-                Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
-                    unlockedMatches().forEach { match ->
-                        MatchCard(match = match, onClick = { joinRoom(match.code) })
-                    }
                 }
-            }
-            Spacer(modifier = Modifier.padding(5.dp))
-            Text(
-                text = "Parties Verrouillées", style = TextStyle(
-                    fontWeight = FontWeight.Bold
-                )
-            )
-            if (lockedMatches().isNotEmpty()) {
-                Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
-                    lockedMatches().forEach { match ->
-                        MatchCard(match = match, onClick = { joinRoom(match.code) })
+
+                Column(modifier = Modifier.padding(26.dp, 0.dp)) {
+                    Text(
+                        text = "Parties en attente", style = TextStyle(
+                            fontSize = 30.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                    if (matchInfos.isEmpty()) {
+                        Text(text = "Aucune partie à afficher")
                     }
-                }
-            } else {
-                Text(text = "Aucune partie à afficher")
-            }
-            Column(modifier = Modifier.padding(2.dp, 20.dp)) {
-                Text(
-                    text = "Parties en cours", fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                if (matchInfos.isEmpty()) {
-                    Text(text = "Aucune partie à afficher")
-                } else {
-                    Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
-                        playingMatches().forEach { match ->
-                            MatchCard(match = match, onClick = {})
+                    if (unlockedMatches().isEmpty()) {
+                        Text(text = "Parties Verrouillées")
+                    } else {
+                        Text(text = "Parties deverrouillées")
+                        Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
+                            unlockedMatches().forEach { match ->
+                                MatchCard(match = match, onClick = { joinRoom(match.code) })
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.padding(5.dp))
+                    Text(
+                        text = "Parties Verrouillées", style = TextStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                    if (lockedMatches().isNotEmpty()) {
+                        Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
+                            lockedMatches().forEach { match ->
+                                MatchCard(match = match, onClick = { joinRoom(match.code) })
+                            }
+                        }
+                    } else {
+                        Text(text = "Aucune partie à afficher")
+                    }
+                    Column(modifier = Modifier.padding(2.dp, 20.dp)) {
+                        Text(
+                            text = "Parties en cours", fontSize = 30.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        if (matchInfos.isEmpty()) {
+                            Text(text = "Aucune partie à afficher")
+                        } else {
+                            Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
+                                playingMatches().forEach { match ->
+                                    MatchCard(match = match, onClick = {})
+                                }
+                            }
                         }
                     }
                 }

@@ -63,4 +63,6 @@
     <string name="play">Play</string>
     <string name="matches_played">"Matches Played: "</string>
     <string name="all_games">"All Games"</string>
+    <string name="scan_qr">Scan QR code</string>
+    <string name="join_match">Join a match</string>
 </resources>

@@ -63,5 +63,7 @@
     <string name="play">"Jouer"</string>
     <string name="matches_played">"Parties Jouées: "</string>
     <string name="all_games">"Tous les jeux"</string>
+    <string name="scan_qr">Balayer un code QR</string>
+    <string name="join_match">Joindre une partie</string>
 
 </resources>
