@@ -1,0 +1,23 @@
+<div class="shop-container" *transloco="let t">
+    <div class="nav">
+        <h1>{{ t('page.shop') }}</h1>
+        <button mat-raised-button routerLink="/home"><mat-icon>home</mat-icon>Page principale</button>
+    </div>
+
+    <div class="items-grid">
+        <mat-card *ngFor="let item of shopItems" class="shop-item">
+            <img [src]="item.imageUrl" [alt]="'Avatar ' + item.id" class="avatar-preview" />
+            <div class="item-details">
+                <span class="price">{{ item.price }}</span>
+                <button
+                    mat-raised-button
+                    color="primary"
+                    (click)="purchaseAvatar(item)"
+                    [disabled]="item.owned || moneyService.currentBalance < item.price"
+                >
+                    {{ item.owned ? t('shop.owned') : t('shop.buy') }}
+                </button>
+            </div>
+        </mat-card>
+    </div>
+</div>
