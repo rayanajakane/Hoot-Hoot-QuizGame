@@ -18,8 +18,8 @@ export class HistoryService {
     async getAuthHistory(userId: string) {
         const snapshot = await this.database.ref(`users/${userId}/auth_history`).once('value');
         if (!snapshot.exists()) return [];
-        console.log(snapshot.val());
-        return snapshot.val();
+        console.log(snapshot.val()); // TODO: Convert date (LocaleDateString --> Date obj)
+        // return snapshot.val();
     }
 
     async addAuthHistoryItem(userId: string, historyAuthItem: HistoryAuthItem) {
@@ -29,7 +29,7 @@ export class HistoryService {
         snapshot.set({
             id: historyAuthItem.id,
             isLogin: historyAuthItem.isLogin,
-            date: historyAuthItem.date,
+            date: historyAuthItem.date.toUTCString(),
         });
     }
 
@@ -37,16 +37,16 @@ export class HistoryService {
         if (!userId) return;
         const snapshot = await this.database.ref(`users/${userId}/match_history`).once('value');
         if (!snapshot.exists()) return [];
-        console.log(snapshot.val());
-        return snapshot.val();
+        console.log(snapshot.val()); // TODO: Convert date
+        // return snapshot.val();
     }
 
     async addMatchHistoryItem(userId: string, historyMatchItem: HistoryMatchItem) {
         const snapshot = this.database.ref(`users/${userId}/match_history/${historyMatchItem.id}`);
         snapshot.set({
             id: historyMatchItem.id,
-            start: historyMatchItem.start,
-            end: historyMatchItem.end,
+            start: historyMatchItem.start.toUTCString(),
+            end: historyMatchItem.end.toUTCString(),
             hasWon: historyMatchItem.hasWon,
             hasGivenUp: historyMatchItem.hasGivenUp,
             nGoodAnswers: historyMatchItem.nGoodAnswers,
