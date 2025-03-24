@@ -48,6 +48,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         const codeErrors = this.matchRoomService.getRoomCodeErrors(data.roomCode);
         const usernameErrors = this.playerRoomService.getUsernameErrors(data.roomCode, data.userId);
         let errorMessage = codeErrors + usernameErrors;
+        console.log('Joining room', matchRoom.partyConfig);
         if (matchRoom.partyConfig.isFriendsOnly || matchRoom.partyConfig.isEntryFeeRequired) {
             const partyErrors = await this.partyService.canJoinParty(data.userId, data.roomCode);
             errorMessage += partyErrors;
@@ -56,12 +57,14 @@ export class MatchGateway implements OnGatewayDisconnect {
         if (errorMessage) {
             this.sendError(socket.id, errorMessage);
         } else {
+            socket.join(data.roomCode);
             if (matchRoom.partyConfig.isEntryFeeRequired) {
+                console.log('Joining party');
                 await this.partyService.joinParty(data.userId, data.roomCode);
                 const currPlayerBalance = await this.moneyService.getCurrentBalance(data.userId);
+                console.log('Returning balance', currPlayerBalance);
                 this.server.in(socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
             }
-            socket.join(data.roomCode);
             const newPlayer = this.playerRoomService.addPlayer(socket, data.roomCode, data.userId, data.username);
             this.returnAllMatches();
             return { code: data.roomCode, username: newPlayer.username, userId: newPlayer.id };
@@ -168,7 +171,6 @@ export class MatchGateway implements OnGatewayDisconnect {
     @OnEvent(ExpiredTimerEvents.CountdownTimerExpired)
     onCountdownTimerExpired(matchRoomCode: string) {
         this.matchRoomService.sendFirstQuestion(this.server, matchRoomCode);
-        // this.histogramService.sendEmptyHistogram(matchRoomCode);
     }
 
     @OnEvent(ExpiredTimerEvents.CooldownTimerExpired)
@@ -178,18 +180,17 @@ export class MatchGateway implements OnGatewayDisconnect {
 
     @OnEvent(MatchEvents.RouteToResultsPage)
     onRouteToResultsPage(matchRoomCode: string) {
-        // add money prize to winners
         this.routeToResultsPage({} as Socket, matchRoomCode);
     }
 
     @SubscribeMessage(MatchEvents.Disconnect)
-    handleDisconnectFromRoom(@ConnectedSocket() socket: Socket) {
+    async handleDisconnectFromRoom(@ConnectedSocket() socket: Socket) {
         const isHostDisconnected = this.handleHostDisconnect(socket);
-        if (!isHostDisconnected) this.handlePlayersDisconnect(socket);
+        if (!isHostDisconnected) await this.handlePlayersDisconnect(socket);
     }
 
-    handleDisconnect(@ConnectedSocket() socket: Socket) {
-        this.handleDisconnectFromRoom(socket);
+    async handleDisconnect(@ConnectedSocket() socket: Socket) {
+        await this.handleDisconnectFromRoom(socket);
     }
 
     handleHostDisconnect(@ConnectedSocket() socket: Socket): boolean {
@@ -209,16 +210,22 @@ export class MatchGateway implements OnGatewayDisconnect {
         return false;
     }
 
-    handlePlayersDisconnect(@ConnectedSocket() socket: Socket) {
+    async handlePlayersDisconnect(@ConnectedSocket() socket: Socket) {
         const player = this.playerRoomService.getPlayerBySocket(socket.id);
         const roomCode = this.playerRoomService.deletePlayerBySocket(socket.id);
-        const matchRoom = this.matchRoomService.getRoom(roomCode);
+        const room = this.matchRoomService.getRoom(roomCode);
+        const isRoomEmpty = this.isRoomEmpty(room);
+        if (room && player) {
+            if (!room.isPlaying && !room.currentQuestionIndex && room.partyConfig.isEntryFeeRequired) {
+                await this.partyService.leaveParty(player.id, roomCode);
+                const currPlayerBalance = await this.moneyService.getCurrentBalance(player.id);
+                this.server.in(socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
+            }
+        }
         socket.leave(roomCode);
         if (!roomCode || !player) {
             return;
         }
-        const room = this.matchRoomService.getRoom(roomCode);
-        const isRoomEmpty = this.isRoomEmpty(room);
         if (room.isPlaying && isRoomEmpty) {
             this.sendError(roomCode, NO_MORE_PLAYERS);
             this.deleteRoom(roomCode);
@@ -227,9 +234,6 @@ export class MatchGateway implements OnGatewayDisconnect {
         if (isRoomEmpty && (!room.hostSocket.connected || !room.hostSocket.rooms.has(roomCode))) {
             this.deleteRoom(roomCode);
             return;
-        }
-        if (!room.isPlaying && !matchRoom.currentQuestionIndex && matchRoom.partyConfig.isEntryFeeRequired) {
-            this.partyService.leaveParty(player.id, roomCode);
         }
         this.handleSendPlayersData(roomCode);
         this.returnAllMatches();

@@ -29,9 +29,7 @@ export class MoneyService {
     async updateBalance(uid: string, amount: number): Promise<number> {
         const balance = await this.getCurrentBalance(uid);
         const newBalance = balance + amount;
-        if (newBalance < 0) {
-            return balance;
-        }
+        console.log(`Updating balance for ${uid}: ${balance} + ${amount} = ${newBalance}`);
         await this.database.ref(`users/${uid}/balance`).set(newBalance);
         return newBalance;
     }

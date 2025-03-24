@@ -1,0 +1,24 @@
+<h1 mat-dialog-title><mat-icon>settings</mat-icon> Configuration de la partie</h1>
+<div mat-dialog-content>
+    <div class="config-section">
+        <mat-slide-toggle [(ngModel)]="partyConfig.isFriendsOnly"> Partie entre amis uniquement </mat-slide-toggle>
+        <p class="helper-text" *ngIf="partyConfig.isFriendsOnly">Seuls vos amis pourront rejoindre cette partie.</p>
+    </div>
+
+    <div class="config-section">
+        <mat-slide-toggle [(ngModel)]="partyConfig.isEntryFeeRequired"> Partie payante </mat-slide-toggle>
+
+        <div *ngIf="partyConfig.isEntryFeeRequired" class="fee-section">
+            <mat-form-field appearance="outline">
+                <mat-label>Frais d'entrée</mat-label>
+                <input matInput type="number" [(ngModel)]="partyConfig.entryFeeAmount" min="0" />
+                <mat-icon matSuffix>attach_money</mat-icon>
+            </mat-form-field>
+            <p class="helper-text">Les joueurs devront payer ce montant pour rejoindre la partie.</p>
+        </div>
+    </div>
+</div>
+<div mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Annuler</button>
+    <button mat-raised-button cdkFocusInitial color="primary" (click)="onConfirm()">Confirmer</button>
+</div>

@@ -30,15 +30,11 @@ export class PartyService {
 
     async joinParty(userId: string, roomCode: string): Promise<void> {
         const matchRoom = this.matchRoomService.getRoom(roomCode);
-        if (matchRoom.partyConfig.isEntryFeeRequired) {
-            await this.moneyService.updateBalance(userId, -matchRoom.partyConfig.entryFeeAmount);
-        }
+        await this.moneyService.updateBalance(userId, -matchRoom.partyConfig.entryFeeAmount);
     }
 
     async leaveParty(userId: string, roomCode: string): Promise<void> {
         const matchRoom = this.matchRoomService.getRoom(roomCode);
-        if (matchRoom.partyConfig.isEntryFeeRequired) {
-            await this.moneyService.updateBalance(userId, matchRoom.partyConfig.entryFeeAmount);
-        }
+        await this.moneyService.updateBalance(userId, matchRoom.partyConfig.entryFeeAmount);
     }
 }
