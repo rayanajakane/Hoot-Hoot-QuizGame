@@ -9,7 +9,7 @@ import { Database } from 'firebase-admin/lib/database/database';
 @Injectable()
 export class MoneyService {
     private database: Database;
-    private readonly DAILY_DONATION_LIMIT = 100;
+    private readonly DAILY_DONATION_LIMIT = 100000;
     private readonly MAX_REWARD = 100;
     private readonly MIN_REWARD = 50;
 
@@ -107,10 +107,7 @@ export class MoneyService {
             if (playersWithMaxScore.includes(player)) {
                 reward = this.MAX_REWARD;
             }
-            console.log('rewarding player', player.id);
-            console.log('current balance', await this.getCurrentBalance(player.id));
             await this.updateBalance(player.id, reward);
-            console.log('new balance', await this.getCurrentBalance(player.id));
         }
     }
 }
