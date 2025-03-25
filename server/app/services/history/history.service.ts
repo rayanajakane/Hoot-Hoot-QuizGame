@@ -49,7 +49,6 @@ export class HistoryService {
 
     async addAuthHistoryItem(userId: string, historyAuthItem: HistoryAuthItem) {
         if (!userId) return;
-        console.log(userId);
         const snapshot = this.database.ref(`users/${userId}/auth_history/${historyAuthItem.id}`);
         snapshot.set({
             id: historyAuthItem.id,
