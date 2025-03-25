@@ -140,14 +140,6 @@ fun UserEditPage(
         // To hide the keyboard in case it's open
         keyboardController?.hide()
 
-        // Change app language
-        translationService.setLanguage(currentLang)
-        translationService.saveLanguageToDB(currentLang, authViewModel.getUserConfigsDatabaseRef())
-
-        // Change app theme
-        onThemeUpdated(theme)
-        ThemeService.saveThemeToDB(theme, authViewModel.getUserConfigsDatabaseRef())
-
         // Change username
         if (authViewModel.getUsername() != username) {
             authViewModel.changeUsername(
@@ -179,8 +171,17 @@ fun UserEditPage(
             val newAvatarUrl = authViewModel.getAvatarURL()
             authViewModel.updateUserProfile(newAvatarUrl)
 
-            ImageStorage.deleteAvatar(authViewModel.getUserId())
+//            ImageStorage.deleteAvatar(authViewModel.getUserId())
         }
+
+        // Change app theme
+        onThemeUpdated(theme)
+        ThemeService.saveThemeToDB(theme, authViewModel.getUserConfigsDatabaseRef())
+
+        // Change app language
+        translationService.setLanguage(currentLang)
+        translationService.saveLanguageToDB(currentLang, authViewModel.getUserConfigsDatabaseRef())
+
     }
 
     Button(
