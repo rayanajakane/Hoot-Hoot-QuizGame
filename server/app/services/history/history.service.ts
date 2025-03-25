@@ -18,11 +18,33 @@ export class HistoryService {
     async getHistory(userId: string) {
         const authHistory = await this.getAuthHistory(userId);
         const matchHistory = await this.getMatchHistory(userId);
+        const stats = this.getMatchStats(matchHistory);
         const history: UserHistory = {
             auth: authHistory,
             match: matchHistory,
+            stats,
         };
         return history;
+    }
+
+    getMatchStats(historyMatchItems: HistoryMatchItem[]) {
+        const nMatchesPlayed = historyMatchItems.length;
+        const nMatchesWon = historyMatchItems.filter((historyMatchItem) => historyMatchItem.hasWon).length;
+        let totalPercentage = 0;
+        let totalTime = 0;
+        historyMatchItems.forEach((historyMatchItem) => {
+            totalPercentage += historyMatchItem.nGoodAnswers / historyMatchItem.nTotalQuestions;
+            totalTime += historyMatchItem.end.getTime() - historyMatchItem.start.getTime();
+        });
+        const averageGoodAnswersPercentage = totalPercentage / nMatchesPlayed;
+        const averageTime = totalTime / nMatchesPlayed / 1000;
+        const stats = {
+            nMatchesPlayed,
+            nMatchesWon,
+            averageGoodAnswersPercentage,
+            averageTime,
+        };
+        return stats;
     }
 
     async getAuthHistory(userId: string) {

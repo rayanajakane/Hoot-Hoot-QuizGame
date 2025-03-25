@@ -129,6 +129,11 @@
         "result": "Result",
         "gave-up-label": "Gave Up?",
         "date": "Date",
-        "action": "Action"
+        "action": "Action",
+        "stats-header": "Statistics",
+        "nMatchesPlayed": "Number of Matches Played",
+        "nMatchesWon": "Number of Matches Won",
+        "averageGoodAnswersPercentage": "Average Well Answered Questions",
+        "averageTime": "Average Time"
     }
 }

@@ -74,6 +74,25 @@
             </form>
             <h2>{{ t('page.danger-zone') }}</h2>
             <button mat-raised-button color="accent" (click)="deleteUser()" id="delete-button">{{ t('page.delete-user') }}</button>
+            <h2>{{ t('history.stats-header') }}</h2>
+            <mat-card class="stats-card">
+                <div class="stat">
+                    <p>{{ t('history.nMatchesPlayed') }}</p>
+                    <p>{{ userHistory.stats.nMatchesPlayed }}</p>
+                </div>
+                <div class="stat">
+                    <p>{{ t('history.nMatchesWon') }}</p>
+                    <p>{{ userHistory.stats.nMatchesWon }}</p>
+                </div>
+                <div class="stat">
+                    <p>{{ t('history.averageGoodAnswersPercentage') }}</p>
+                    <p>{{ userHistory.stats.averageGoodAnswersPercentage }} %</p>
+                </div>
+                <div class="stat">
+                    <p>{{ t('history.averageTime') }}</p>
+                    <p>{{ userHistory.stats.averageTime }} s</p>
+                </div>
+            </mat-card>
             <h2>{{ t('history.match-history') }}</h2>
             <p *ngIf="userHistory.match.length === 0" class="no-item-to-display">{{ t('history.no-item') }}</p>
             <mat-card class="history-match-item header-card" *ngIf="userHistory.match.length !== 0">

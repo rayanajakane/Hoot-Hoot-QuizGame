@@ -81,7 +81,6 @@ img {
     grid-template-columns: 1fr 1fr;
     padding: 0rem 1rem;
     margin-bottom: 0.5rem;
-    width: 30vw;
 }
 
 .history-match-item {
@@ -98,4 +97,17 @@ img {
 .header-card {
     background-color: rgb(0, 0, 0, 0.05);
     font-weight: 500;
+}
+
+.stats-card {
+    display: flex;
+    flex-direction: column;
+    padding: 0rem 1rem;
+    gap: 1rem;
+}
+
+.stat {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
 }

@@ -32,6 +32,12 @@ export class UserEditPageComponent implements OnInit {
     userHistory: UserHistory = {
         auth: [],
         match: [],
+        stats: {
+            nMatchesPlayed: 0,
+            nMatchesWon: 0,
+            averageGoodAnswersPercentage: 0,
+            averageTime: 0,
+        },
     };
 
     form = this.fb.group({
@@ -78,6 +84,12 @@ export class UserEditPageComponent implements OnInit {
             this.userHistory = {
                 auth: [],
                 match: [],
+                stats: {
+                    nMatchesPlayed: 0,
+                    nMatchesWon: 0,
+                    averageGoodAnswersPercentage: 0,
+                    averageTime: 0,
+                },
             };
             return;
         }
@@ -90,6 +102,12 @@ export class UserEditPageComponent implements OnInit {
                 this.userHistory = {
                     auth: [],
                     match: [],
+                    stats: {
+                        nMatchesPlayed: 0,
+                        nMatchesWon: 0,
+                        averageGoodAnswersPercentage: 0,
+                        averageTime: 0,
+                    },
                 };
             },
         });

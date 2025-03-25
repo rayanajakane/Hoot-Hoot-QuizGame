@@ -129,6 +129,11 @@
         "result": "Résultat",
         "gave-up-label": "Abandon ?",
         "date": "Date",
-        "action": "Action"
+        "action": "Action",
+        "stats-header": "Statistiques",
+        "nMatchesPlayed": "Nombre de parties jouées",
+        "nMatchesWon": "Nombre de parties gagnées",
+        "averageGoodAnswersPercentage": "Moyenne de questions bien répondues par partie",
+        "averageTime": "Temps moyen par partie"
     }
 }

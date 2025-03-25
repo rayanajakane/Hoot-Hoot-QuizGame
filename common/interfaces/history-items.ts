@@ -1,6 +1,7 @@
 export interface UserHistory {
     auth: HistoryAuthItem[];
     match: HistoryMatchItem[];
+    stats: MatchStats;
 }
 
 export interface HistoryAuthItem {
@@ -17,4 +18,11 @@ export interface HistoryMatchItem {
     hasGivenUp: boolean;
     nGoodAnswers: number;
     nTotalQuestions: number;
+}
+
+export interface MatchStats {
+    nMatchesPlayed: number;
+    nMatchesWon: number;
+    averageGoodAnswersPercentage: number;
+    averageTime: number;
 }
