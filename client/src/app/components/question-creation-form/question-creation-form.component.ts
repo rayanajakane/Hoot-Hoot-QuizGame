@@ -94,10 +94,10 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
             if (this.questionForm.get('type')?.value === 'QRE') {
                 this.questionForm.get('type')?.setValue('QRE');
                 const estimatedParams = this.questionForm.get('estimatedParameters') as FormGroup;
-                estimatedParams.get('lowerBound')?.setValue(generatedQuestion.question.lowerBound);
-                estimatedParams.get('upperBound')?.setValue(generatedQuestion.question.upperBound);
-                estimatedParams.get('correctAnswer')?.setValue(generatedQuestion.question.exactValue);
-                estimatedParams.get('margin')?.setValue(generatedQuestion.question.errorMargin);
+                estimatedParams.get('lowerBound')?.setValue(generatedQuestion.lowerBound);
+                estimatedParams.get('upperBound')?.setValue(generatedQuestion.upperBound);
+                estimatedParams.get('correctAnswer')?.setValue(generatedQuestion.exactValue);
+                estimatedParams.get('margin')?.setValue(generatedQuestion.errorMargin);
             }
         }
     }
