@@ -77,21 +77,25 @@ img {
 }
 
 .history-auth-item {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 0.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0rem 1rem;
     margin-bottom: 0.5rem;
+    width: 30vw;
 }
 
 .history-match-item {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 0.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    padding: 0rem 1rem;
     margin-bottom: 0.5rem;
 }
 
 .no-item-to-display {
     font-style: italic;
+}
+
+.header-card {
+    background-color: rgb(0, 0, 0, 0.05);
+    font-weight: 500;
 }

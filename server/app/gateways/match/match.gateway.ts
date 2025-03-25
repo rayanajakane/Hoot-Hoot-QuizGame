@@ -188,6 +188,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         if (!isHostDisconnected) this.handlePlayersDisconnect(socket);
     }
 
+    @SubscribeMessage('Disconnect')
     handleDisconnect(@ConnectedSocket() socket: Socket) {
         this.handleDisconnectFromRoom(socket);
     }
@@ -248,8 +249,9 @@ export class MatchGateway implements OnGatewayDisconnect {
 
     deleteRoom(matchRoomCode: string) {
         this.server.to(matchRoomCode).emit(MatchEvents.HostQuitMatch);
-        // this.server.in(matchRoomCode).disconnectSockets(); // TODO: Check if we need to manually remove from room instead.
+        this.server.in(matchRoomCode).socketsLeave(matchRoomCode);
         this.matchRoomService.deleteRoom(matchRoomCode);
+        console.log(`Deleting room ${matchRoomCode}`); // For debugging purposes
         this.returnAllMatches();
     }
 

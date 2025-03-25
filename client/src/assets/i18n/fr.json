@@ -123,6 +123,12 @@
         "auth-history": "Historique d'authentification",
         "signin": "Connexion",
         "signout": "Déconnexion",
-        "no-item": "Aucun élément à afficher"
+        "no-item": "Aucun élément à afficher",
+        "start": "Début de la partie",
+        "end": "Fin de la partie",
+        "result": "Résultat",
+        "gave-up-label": "Abandon ?",
+        "date": "Date",
+        "action": "Action"
     }
 }

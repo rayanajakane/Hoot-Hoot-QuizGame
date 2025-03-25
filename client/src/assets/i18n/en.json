@@ -123,6 +123,12 @@
         "auth-history": "Authentication History",
         "signin": "Sign In",
         "signout": "Sign Out",
-        "no-item": "Aucun élément à afficher"
+        "no-item": "Aucun élément à afficher",
+        "start": "Match Start",
+        "end": "Match End",
+        "result": "Result",
+        "gave-up-label": "Gave Up?",
+        "date": "Date",
+        "action": "Action"
     }
 }
