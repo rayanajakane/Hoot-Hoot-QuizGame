@@ -7,6 +7,7 @@ import { Question } from '@app/model/database/question';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
 import { Player } from '@app/model/schema/player.schema';
 import { ChoiceTracker } from '@app/model/tally-trackers/choice-tracker/choice-tracker';
+import { HistoryService } from '@app/services/history/history.service';
 import { QrCodeService } from '@app/services/qr-code/qr-code.service';
 import { QuestionStrategyContext } from '@app/services/question-strategy-context/question-strategy-context.service';
 import { TimeService } from '@app/services/time/time.service';
@@ -18,6 +19,7 @@ import { MatchPageInfo } from '@common/interfaces/match-page-info';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Server, Socket } from 'socket.io';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class MatchRoomService {
@@ -29,6 +31,7 @@ export class MatchRoomService {
         private readonly timeService: TimeService,
         private readonly questionStrategyService: QuestionStrategyContext,
         private qrCodeService: QrCodeService,
+        private historyService: HistoryService,
     ) {
         this.matchRooms = [];
     }
@@ -230,11 +233,37 @@ export class MatchRoomService {
     }
 
     declareWinner(matchRoomCode: string) {
-        const players: Player[] = this.getRoom(matchRoomCode).players;
+        const matchRoom = this.getRoom(matchRoomCode);
+        const players: Player[] = matchRoom.players;
         const playingPlayers = players.filter((player) => player.isPlaying);
         const maxScore = Math.max(...playingPlayers.map((player) => player.score));
         const playersWithMaxScore = playingPlayers.filter((player) => player.score === maxScore);
-        playersWithMaxScore.forEach((player) => player.socket.emit(MatchEvents.Winner));
+        const playersWithoutMaxScore = playingPlayers.filter((player) => player.score !== maxScore);
+
+        playersWithMaxScore.forEach((player) => {
+            player.socket.emit(MatchEvents.Winner);
+            this.historyService.addMatchHistoryItem(player.id, {
+                id: uuidv4(),
+                start: matchRoom.startTime,
+                end: matchRoom.end,
+                nGoodAnswers: player.nGoodAnswers,
+                nTotalQuestions: matchRoom.gameLength,
+                hasWon: true,
+                hasGivenUp: false,
+            });
+        });
+
+        playersWithoutMaxScore.forEach((player) => {
+            this.historyService.addMatchHistoryItem(player.id, {
+                id: uuidv4(),
+                start: matchRoom.startTime,
+                end: matchRoom.end,
+                nGoodAnswers: player.nGoodAnswers,
+                nTotalQuestions: matchRoom.gameLength,
+                hasWon: false,
+                hasGivenUp: false,
+            });
+        });
     }
 
     getAllMatchesInfo() {
