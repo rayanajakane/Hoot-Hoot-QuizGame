@@ -83,6 +83,9 @@ fun JoinMatchPage(
     navigateToMatchPage: () -> Unit,
     navigateToLogin: () -> Unit,
     navigateToRankingsPage: () -> Unit,
+    modifier: Modifier, authViewModel: AuthViewModel, navigateToHome: () -> Unit,
+    navigateToMatchPage: () -> Unit,
+    navigateToWaitPage: () -> Unit
 ) {
     var room by remember { mutableStateOf("") }
     val username by remember { mutableStateOf(authViewModel.getUsername()) }
@@ -93,6 +96,7 @@ fun JoinMatchPage(
         derivedStateOf { MatchRoomService.errorMsg }
     }
 
+    val keyboardController = LocalSoftwareKeyboardController.current
     val joinMatchService = JoinMatchService
 
     fun unlockedMatches(): List<MatchPageInfo> {
@@ -152,7 +156,7 @@ fun JoinMatchPage(
                     navigateToWaitPage,
                     navigateToMatchPage,
 
-                )
+                    )
             },
             onError = { errorMessage ->
                 println("Error: $errorMessage")
@@ -173,15 +177,39 @@ fun JoinMatchPage(
         submitCode(code)
 //        navigateToWaitPage()
     }
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .fillMaxSize()
-            .pointerInput(Unit) {
-                detectTapGestures(onTap = {
-                    focusManager.clearFocus()
-                    keyboardController?.hide()
+    Column(modifier = modifier.verticalScroll(rememberScrollState())) {
+        Column() {
+            Text(
+                text = "Joindre une partie",
+                style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold)
+            )
+
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Button(onClick = { navigateToHome() }) {
+                    Text(text = "Page d'accueil")
+                }
+
+            }
+        }
+
+        Column(modifier = Modifier.padding(26.dp, 1.dp)) {
+            TextField(
+                value = room,
+                onValueChange = { room = it },
+                label = { Text("Code") },
+                maxLines = 1,
+                keyboardActions = KeyboardActions(onDone = {
+                    submitCode(room)
                 })
+            )
+            Button(
+                modifier = Modifier.width(120.dp),
+                onClick = {
+                    joinRoom(room)
+                    keyboardController?.hide()
+                },
+            ) {
+                Text(text = "Joindre")
             }
     ) {
         ChatComponent(modifier = modifier, authViewModel = authViewModel)
