@@ -65,7 +65,6 @@ import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.MatchPageInfo
 import com.example.polyquiz.match.domain.JoinMatchService
 import com.example.polyquiz.match.domain.JoinMatchService.matchInfos
-import com.example.polyquiz.match.domain.JoinMatchService.matchesInfos
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.match.domain.MatchRoomService
 import kotlinx.coroutines.launch
