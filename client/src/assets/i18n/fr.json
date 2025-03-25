@@ -52,7 +52,8 @@
         "forgot-password": "Mot de passe oublié ?",
         "reset-password": "Réinitialiser le mot de passe",
         "sent-email": "Courriel envoyé !",
-        "sent-email-extra-info": "Si vous avez déjà un compte, vous recevrez un courriel pour réinitialiser votre mot de passe."
+        "sent-email-extra-info": "Si vous avez déjà un compte, vous recevrez un courriel pour réinitialiser votre mot de passe.",
+        "shop": "Boutique"
     },
     "nav": {
         "main-page": "Page principale"
@@ -64,7 +65,8 @@
         "edit-profile": "Modifier le profil",
         "team-name": "Équipe 201",
         "access-code": "Code d'accès",
-        "friends": "Amis"
+        "friends": "Amis",
+        "shop": "Boutique"
     },
     "match-creation-page": {
         "games-list-label": "Liste des jeux",
@@ -114,5 +116,11 @@
         "donate-money": "Donner de l'argent",
         "enter-donation-amout": "Entrer le montant de la donation",
         "donation-amount": "Montant de la donation"
+    },
+    "shop": {
+        "owned": "✅ Possédé",
+        "buy": "Acheter",
+        "insufficient-funds": "Fonds insuffisants",
+        "buy-successfully": "Acheté avec succès!"
     }
 }

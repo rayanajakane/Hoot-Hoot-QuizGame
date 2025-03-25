@@ -52,7 +52,8 @@
         "forgot-password": "Forgot Password?",
         "reset-password": "Reset password",
         "sent-email": "Sent Email!",
-        "sent-email-extra-info": "If you already have an account, you will receive an email to reset your password."
+        "sent-email-extra-info": "If you already have an account, you will receive an email to reset your password.",
+        "shop": "Shop"
     },
     "nav": {
         "main-page": "Main page"
@@ -64,7 +65,8 @@
         "edit-profile": "Edit profile",
         "team-name": "Team 201",
         "access-code": "Access code",
-        "friends": "Friends"
+        "friends": "Friends",
+        "shop": "Shop"
     },
     "match-creation-page": {
         "games-list": "Games list",
@@ -114,5 +116,11 @@
         "donate-money": "Donate Money",
         "enter-donation-amout": "Enter donation amount",
         "donation-amount": "Donation amount"
+    },
+    "shop": {
+        "owned": "✅ Owned",
+        "buy": "Buy",
+        "insufficient-funds": "Insufficient funds",
+        "buy-successfully": "Bought successfully!"
     }
 }

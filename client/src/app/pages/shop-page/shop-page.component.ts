@@ -7,6 +7,7 @@ import { NotificationService } from '@app/services/notification/notification.ser
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { MoneyEvents } from '@common/events/money.events';
 import { ShopItem } from '@common/interfaces/shop-item';
+import { TranslocoService } from '@jsverse/transloco';
 
 @Component({
     selector: 'app-shop-page',
@@ -23,6 +24,7 @@ export class ShopPageComponent implements OnInit {
         private notificationService: NotificationService,
         private readonly authService: AuthenticationService,
         private readonly socketHandler: SocketHandlerService,
+        private readonly translocoService: TranslocoService,
     ) {}
 
     async ngOnInit() {
@@ -45,7 +47,7 @@ export class ShopPageComponent implements OnInit {
             if (foundAvatar) {
                 foundAvatar.owned = true;
             }
-            this.notificationService.displaySuccessMessage('Avatar purchased successfully!');
+            this.notificationService.displaySuccessMessage(this.translocoService.translate('shop.buy-successfully'));
         });
     }
 

@@ -1,7 +1,7 @@
-<div class="shop-container" *transloco="let t">
+<div class="shop-container" *transloco="let t; read: 'shop'">
     <div class="nav">
-        <h1>{{ t('page.shop') }}</h1>
-        <button mat-raised-button routerLink="/home"><mat-icon>home</mat-icon>Page principale</button>
+        <h1>{{ 'main-page.shop' | transloco }}</h1>
+        <button mat-raised-button routerLink="/home"><mat-icon>home</mat-icon>{{ 'nav.main-page' | transloco }}</button>
     </div>
 
     <div class="items-grid">
@@ -15,10 +15,10 @@
                     (click)="buyAvatar(item)"
                     [disabled]="item.owned || moneyService.currentBalance < item.price"
                 >
-                    {{ item.owned ? t('shop.owned') : t('shop.buy') }}
+                    {{ item.owned ? t('owned') : t('buy') }}
                 </button>
                 <span *ngIf="moneyService.currentBalance < item.price && !item.owned" class="error-message">
-                    {{ t('shop.insufficientFunds') }}
+                    {{ t('insufficient-funds') }}
                 </span>
             </div>
         </mat-card>
