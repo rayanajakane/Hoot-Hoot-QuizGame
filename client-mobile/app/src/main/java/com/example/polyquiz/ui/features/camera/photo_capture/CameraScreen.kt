@@ -30,6 +30,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -43,6 +45,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.ui.features.camera.CameraState
 import com.example.polyquiz.ui.features.camera.CameraViewModel
@@ -52,7 +55,8 @@ import java.util.concurrent.Executor
 fun CameraScreen(
     authViewModel: AuthViewModel,
     cameraViewModel: CameraViewModel,
-    navigateToUserEdit: () -> Unit
+    navigateToUserEdit: () -> Unit,
+    navigateToSignup: () -> Unit
 ) {
     val cameraState: CameraState by cameraViewModel.state.collectAsStateWithLifecycle()
 
@@ -64,7 +68,14 @@ fun CameraScreen(
         ImagePreview(
             capturedImage = cameraState.capturedImage!!,
             onRetake = { cameraViewModel.updateCapturedPhotoState(null) },
-            onSave = { navigateToUserEdit() }
+            onSave = {
+                if(authViewModel.authState.value === AuthState.Authenticated) {
+                    navigateToUserEdit()
+                } else {
+                    Log.d("CameraViewModel", cameraViewModel.state.value.toString())
+                    navigateToSignup()
+                }
+            }
         )
     }
 }

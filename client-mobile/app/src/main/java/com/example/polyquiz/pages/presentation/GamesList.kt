@@ -26,8 +26,6 @@ import androidx.compose.ui.text.font.FontWeight
 import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.match.domain.Game
-import com.example.polyquiz.Game
-import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.http.GameService
 import com.example.polyquiz.match.domain.MatchContextService
@@ -107,7 +105,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
         }, onError = {})
     }
 
-    fun reloadSelectedGame(isFriendsOnly: Boolean = false){
+    fun reloadSelectedGame(isFriendsOnly:Boolean = false){
         gameService.getGameById(selectedGame?.id!!, onSuccess = {
             response ->
             val gson = Gson()
@@ -118,7 +116,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
 
     }
 
-    fun createMatch(context: MatchContext, isFriendsOnly: Boolean = false){
+    fun createMatch(context: MatchContext, isFriendsOnly:Boolean = false){
         contextService.setContext(context)
         reloadSelectedGame(isFriendsOnly)
     }
@@ -230,23 +228,6 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                             .padding(16.dp)
                     ) {
                         Text(text = "Jouer")
-
-                    }
-                    Button(
-                        onClick = {
-                            createMatch(MatchContext.HOSTVIEW, true)
-                            navigateToWaitPage()
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary
-                        ),
-                        modifier = Modifier
-                            .padding(16.dp)
-                    ) {
-                        Text(text = "Jouer avec amis")
-
-                    }
 
                     }
                     Button(

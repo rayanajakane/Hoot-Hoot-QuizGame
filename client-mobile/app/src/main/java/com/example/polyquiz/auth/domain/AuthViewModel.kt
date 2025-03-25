@@ -2,6 +2,7 @@ package com.example.polyquiz.auth.domain
 
 import StringValue
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import android.text.TextUtils
 import android.util.Log
@@ -117,6 +118,7 @@ class AuthViewModel : ViewModel() {
 
     fun setAvatarUrl(url: String) {
         _avatarURL.value = url
+        Log.d("Set avatar", "Set avatar url to $url")
     }
 
     fun resetSignUpFields() {
@@ -127,6 +129,7 @@ class AuthViewModel : ViewModel() {
         _usernameError.value = ""
         _passwordError.value = ""
         _avatarURL.value = ""
+        Log.d("Reset", "Reset sign up fields")
     }
 
     fun resetUsername() {
@@ -320,7 +323,7 @@ class AuthViewModel : ViewModel() {
             }
     }
 
-    fun signUp(email: String, username: String, password: String, context: Context) {
+    fun signUp(email: String, username: String, password: String, context: Context, avatarToShow: Any?) {
         if (email.isEmpty() || username.isEmpty() || password.isEmpty()) {
             _authState.value =
                 AuthState.Error(StringValue.StringResource(R.string.empty_username_password))
@@ -345,9 +348,24 @@ class AuthViewModel : ViewModel() {
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             user = task.result.user
+                            // Save temp avatar if needed
+                            if(avatarToShow is Bitmap) {
+                                user?.let {
+                                    ImageStorage.uploadAvatar(avatarToShow, user!!.uid) { url ->
+                                        if (url != null) {
+                                            setAvatarUrl(url)
+                                        } else {
+                                            Log.e("Signin avatar", "Cannot save captured image")
+                                        }
+                                    }
+                                }
+                            }
+
                             val displayNameUpdate = UserProfileChangeRequest.Builder()
                                 .setDisplayName(username)
+                                .setPhotoUri(Uri.parse(_avatarURL.value))
                                 .build()
+                            Log.d("Sign up", "Set avatar uri to ${_avatarURL.value}")
                             user?.updateProfile(displayNameUpdate)
                                 ?.addOnCompleteListener { updateTask ->
                                     if (updateTask.isSuccessful) {
