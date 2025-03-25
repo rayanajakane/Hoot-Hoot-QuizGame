@@ -1,6 +1,7 @@
 import { FirebaseAuthService } from '@app/modules/firebase/firebase-auth/firebase-auth.service';
 import { MoneyService } from '@app/services/money/money.service';
 import { MoneyEvents } from '@common/events/money.events';
+import { PurchaseInfo } from '@common/interfaces/shop-item';
 import { TransferInfo } from '@common/interfaces/transfer-info';
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
@@ -49,6 +50,22 @@ export class MoneyGateway {
                 newBalance: await this.moneyService.getCurrentBalance(data.friend),
             });
         }
+    }
+
+    @SubscribeMessage(MoneyEvents.BuyAvatar)
+    async buyAvatar(client: Socket, data: PurchaseInfo) {
+        if (data.item.owned) {
+            this.sendError(client.id, 'Avatar already owned');
+            return;
+        }
+        const moneyErrors = await this.moneyService.getMoneyError(data.user, data.item.price, false);
+        if (moneyErrors) {
+            this.sendError(client.id, moneyErrors);
+            return;
+        }
+
+        await this.moneyService.updateBalance(data.user, -data.item.price);
+        client.emit(MoneyEvents.AvatarBought, data.item);
     }
 
     handleDisconnect(client: Socket) {

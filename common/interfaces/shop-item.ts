@@ -4,3 +4,8 @@ export interface ShopItem {
     price: number;
     owned: boolean;
 }
+
+export interface PurchaseInfo extends ShopItem {
+    user: string;
+    item: ShopItem;
+}
