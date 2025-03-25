@@ -68,8 +68,8 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         this.questionForm.get('text')?.setValue(generatedQuestion.question);
         this.questionForm.get('type')?.setValue(generatedQuestion.type);
 
-        if (generatedQuestion.type === 'QCM') {
-            this.questionForm.get('type')?.setValue('QCM');
+        if (generatedQuestion.type === QuestionType.MultipleChoice) {
+            this.questionForm.get('type')?.setValue(QuestionType.MultipleChoice);
             const choicesArray = this.questionForm.get('choices') as FormArray;
             choicesArray?.clear();
 
@@ -83,9 +83,9 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
             });
         }
 
-        if (generatedQuestion.type === 'QRE') {
-            if (this.questionForm.get('type')?.value === 'QRE') {
-                this.questionForm.get('type')?.setValue('QRE');
+        if (generatedQuestion.type === QuestionType.EstimatedAnswer) {
+            if (this.questionForm.get('type')?.value === QuestionType.EstimatedAnswer) {
+                this.questionForm.get('type')?.setValue(QuestionType.EstimatedAnswer);
                 const estimatedParams = this.questionForm.get('estimatedParameters') as FormGroup;
                 estimatedParams.get('lowerBound')?.setValue(generatedQuestion.lowerBound);
                 estimatedParams.get('upperBound')?.setValue(generatedQuestion.upperBound);

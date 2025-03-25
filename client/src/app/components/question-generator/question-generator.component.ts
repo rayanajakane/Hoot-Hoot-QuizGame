@@ -85,7 +85,8 @@ export class QuestionGeneratorComponent {
         }
 
         if (this.data.type == 'QRE') {
-            questionSent = this.data.input + ` avec une valeur exacte et une marge d'erreur et une borne inférieure et supérieure`;
+            questionSent = this.data.input + ` avec une valeur exacte et une marge d'erreur et une borne inférieure et supérieure
+            +la marge doit représenter que 25% de lintervalle entre les bornes`;
         }
 
         this.questionService.generateQuestion(questionSent).subscribe((response: HttpResponse<string>) => {
