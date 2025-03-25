@@ -239,7 +239,7 @@ describe('MatchGateway', () => {
         const deleteSpy = jest.spyOn(matchRoomSpy, 'deleteRoom').mockReturnThis();
         const returnSpy = jest.spyOn(gateway, 'returnAllMatches').mockReturnThis();
         server.in.returns({
-            disconnectSockets: () => {
+            socketsLeave: (code) => {
                 return null;
             },
         } as BroadcastOperator<unknown, unknown>);
@@ -256,8 +256,9 @@ describe('MatchGateway', () => {
 
     it('handleDisconnect() should disconnect host and all other players and delete the match room if the host disconnects', () => {
         const mockRoom = MOCK_MATCH_ROOM;
-        matchRoomSpy.getRoomCodeByHostSocket.returns(MOCK_ROOM_CODE);
         mockRoom.players = [];
+        matchRoomSpy.getRoomCodeByHostSocket.returns(MOCK_ROOM_CODE);
+
         matchRoomSpy.getRoom.resolves(mockRoom);
         jest.spyOn(gateway as any, 'isRoomEmpty').mockReturnThis();
         const sendErrorSpy = jest.spyOn(gateway, 'sendError').mockReturnThis();

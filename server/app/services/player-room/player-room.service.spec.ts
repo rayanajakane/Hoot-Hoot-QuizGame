@@ -58,7 +58,7 @@ describe('PlayerRoomService', () => {
         // disable max lines since cant be split for string comparision
         // eslint-disable-next-line max-len
         const expectedResult =
-            '"[{"username":"","id":"","answer":{"isSubmitted":false,"selectedChoices":{}},"score":0,"answerCorrectness":0,"bonusCount":0,"isPlaying":true,"isChatActive":true,"nGoodAnswers":0,"state":"default"}]';
+            '[{"username":"","id":"","answer":{"isSubmitted":false,"selectedChoices":{}},"score":0,"answerCorrectness":0,"bonusCount":0,"isPlaying":true,"isChatActive":true,"nGoodAnswers":0,"state":"default"}]';
         const result = service.getPlayersStringified('');
         expect(result).toEqual(expectedResult);
     });
