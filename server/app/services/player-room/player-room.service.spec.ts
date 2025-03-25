@@ -9,6 +9,7 @@ import { PlayerState } from '@common/constants/player-states';
 import { Test, TestingModule } from '@nestjs/testing';
 import { SinonStubbedInstance, createStubInstance } from 'sinon';
 import { Socket } from 'socket.io';
+import { HistoryService } from '../history/history.service';
 import { PlayerRoomService } from './player-room.service';
 
 describe('PlayerRoomService', () => {
@@ -17,6 +18,7 @@ describe('PlayerRoomService', () => {
     let service: PlayerRoomService;
     let matchRoomSpy: SinonStubbedInstance<MatchRoomService>;
     let socket: SinonStubbedInstance<Socket>;
+    let historyService: SinonStubbedInstance<HistoryService>;
 
     beforeEach(async () => {
         emitMock = jest.fn();
@@ -29,8 +31,13 @@ describe('PlayerRoomService', () => {
 
         matchRoomSpy = createStubInstance(MatchRoomService);
         socket = createStubInstance<Socket>(Socket);
+        historyService = createStubInstance(HistoryService);
         const module: TestingModule = await Test.createTestingModule({
-            providers: [PlayerRoomService, { provide: MatchRoomService, useValue: matchRoomSpy }],
+            providers: [
+                PlayerRoomService,
+                { provide: MatchRoomService, useValue: matchRoomSpy },
+                { provide: HistoryService, useValue: historyService },
+            ],
         }).compile();
 
         service = module.get<PlayerRoomService>(PlayerRoomService);
@@ -48,10 +55,10 @@ describe('PlayerRoomService', () => {
 
     it('getPlayersStringified() should return the list of stringified players without socket attribute', () => {
         jest.spyOn(service, 'getPlayers').mockReturnValue([MOCK_PLAYER]);
+        // disable max lines since cant be split for string comparision
+        // eslint-disable-next-line max-len
         const expectedResult =
-            // disable max lines since cant be split for string comparision
-            // eslint-disable-next-line max-len
-            '[{"username":"","id":"","answer":{"isSubmitted":false,"selectedChoices":{}},"score":0,"answerCorrectness":0,"bonusCount":0,"isPlaying":true,"isChatActive":true,"state":"default"}]';
+            '"[{"username":"","id":"","answer":{"isSubmitted":false,"selectedChoices":{}},"score":0,"answerCorrectness":0,"bonusCount":0,"isPlaying":true,"isChatActive":true,"nGoodAnswers":0,"state":"default"}]';
         const result = service.getPlayersStringified('');
         expect(result).toEqual(expectedResult);
     });
@@ -74,6 +81,7 @@ describe('PlayerRoomService', () => {
             answer: { selectedChoices: new Map<string, boolean>(), isSubmitted: false } as MultipleChoiceAnswer,
             score: 0,
             answerCorrectness: AnswerCorrectness.WRONG,
+            nGoodAnswers: 0,
             bonusCount: 0,
             isPlaying: true,
             isChatActive: true,
