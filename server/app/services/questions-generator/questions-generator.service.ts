@@ -81,8 +81,7 @@ export class QuestionsGeneratorService {
 
     async generateText(data: GenerateQuestionDto){
         try{
-            const{sessionId,chat} = this.getChatSession(data.sessionId);
-            console.log(data.prompt)    
+            const{sessionId,chat} = this.getChatSession(data.sessionId); 
             const result = await chat.sendMessage(data.prompt);
 
             return{

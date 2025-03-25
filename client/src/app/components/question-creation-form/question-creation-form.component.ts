@@ -11,7 +11,6 @@ import { Question } from '@app/interfaces/question';
 import { BankService } from '@app/services/bank/bank.service';
 import { QuestionService } from '@app/services/question/question.service';
 import { QuestionType } from '@common/constants/question-types';
-import { DialogTextInputComponent } from '../dialog-text-input/dialog-text-input.component';
 import { QuestionGeneratorComponent } from '../question-generator/question-generator.component';
 import { Choice } from '@app/interfaces/choice';
 
@@ -48,7 +47,6 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         private questionService: QuestionService,
         public bankService: BankService,
         private dialog: MatDialog,
-        /// private questionGeneratoComponent: QuestionGeneratorComponent,
 
         @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: DialogManagement,
     ) {
@@ -56,10 +54,6 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         if (dialogData) {
             this.modificationState = dialogData.modificationState;
         }
-
-        this.dialogForm = this.formBuilder.group({
-            //text: [data.input, Validators.required],
-        });
     }
 
     get choices(): FormArray {
@@ -71,7 +65,6 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
     }
 
     handleGeneratedQuestion(generatedQuestion: any) {
-        console.log('23', generatedQuestion);
         this.questionForm.get('text')?.setValue(generatedQuestion.question);
         this.questionForm.get('type')?.setValue(generatedQuestion.type);
 
@@ -110,34 +103,12 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
             },
         });
 
-        // dialogRef.afterClosed().subscribe((result: string | null) => {
-        //     console.log('r', result);
-        //     if (result) {
-        //         this.generateQuestion(result);
-        //     }
-        // });
-
         dialogRef.componentInstance.questionGenerated.subscribe((generatedQuestion: any) => {
-            console.log('genere', generatedQuestion);
             this.handleGeneratedQuestion(generatedQuestion);
         });
     }
 
-    submitDialog() {
-        if (this.dialogForm.valid) {
-            this.dialog.open(DialogTextInputComponent, {
-                width: '500px',
-                height: '400px',
-                data: {
-                    title: 'Veuillez fournir le texte de la question',
-                    input: '',
-                },
-            });
-        }
-    }
-
     closeDialog() {
-        //this.dialog.close();
         this.dialog.closeAll();
     }
 
@@ -202,9 +173,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
     parseGeneratedAnswer(data: { return: string; sessionId: string }) {
         const result = data.return;
         const parsedData = JSON.parse(result);
-        console.log(parsedData);
         if (parsedData.Question && Array.isArray(parsedData.Choices)) {
-            //if(this.questionForm.get('type')?.value === 'QCM'){
             const question = parsedData.Question.trim();
 
             const choices = parsedData.Choices.map((choice: { isCorrect: boolean; Text: string }) => ({
@@ -227,13 +196,11 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
                     errorMargin: errorMargin,
                 },
             ];
-            //}
         } else {
             this.openSnackBar('Erreur lors de la génération de la question', 5000);
             return [];
         }
     }
-
 
     ngOnInit(): void {
         if (this.modifyingForm) {

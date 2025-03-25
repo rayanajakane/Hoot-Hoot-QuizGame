@@ -73,7 +73,6 @@ export class QuestionGeneratorComponent {
                 },
             ];
         } else {
-            //  this.openSnackBar('Erreur lors de la génération de la question', 5000);
             return [];
         }
     }
@@ -88,16 +87,11 @@ export class QuestionGeneratorComponent {
         if (this.data.type == 'QRE') {
             questionSent = this.data.input + ` avec une valeur exacte et une marge d'erreur et une borne inférieure et supérieure`;
         }
-        console.log(this.data.input);
-
-        console.log(questionSent);
 
         this.questionService.generateQuestion(questionSent).subscribe((response: HttpResponse<string>) => {
             if (response.body) {
                 const generatedQuestion = JSON.parse(response.body);
-                console.log(generatedQuestion);
                 const parsedAnswer = this.parseGeneratedAnswer(generatedQuestion);
-                console.log(parsedAnswer);
 
                 this.questionText = parsedAnswer[0].question;
 
@@ -141,7 +135,6 @@ export class QuestionGeneratorComponent {
     }
 
     submitToQuestionForm() {
-        console.log('parsed', this.parsedAnswer);
         if (this.parsedAnswer) {
             const questionData = {
                 question: this.parsedAnswer.question,
