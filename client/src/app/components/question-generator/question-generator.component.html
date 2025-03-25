@@ -1,0 +1,63 @@
+<ng-container *transloco="let t">
+    <h1 mat-dialog-title>{{ data.title }}</h1>
+    <div mat-dialog-content>
+        <mat-form-field>
+            <mat-label>{{ data.placeholder }}</mat-label>
+            <input autofocus cdkFocusInitial matInput [(ngModel)]="data.input" />
+        </mat-form-field>
+        <div *ngIf="questionText">
+            <mat-form-field>
+                <mat-label>{{ data.placeholder }}</mat-label>
+                <input autofocus cdkFocusInitial matInput [(ngModel)]="questionText" />
+            </mat-form-field>
+        </div>
+
+        <mat-form-field>
+            <mat-select [(ngModel)]="data.type" name="type">
+                <mat-option *ngFor="let type of ['QCM', 'QRL', 'QRE']" [value]="type">{{ type }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field *ngIf="data.type === 'QCM'">
+            <mat-label>Nombre de choix</mat-label>
+            <input matInput type="number" [(ngModel)]="numChoices" (ngModelChange)="generateChoiceFields()" min="2" max="4" />
+        </mat-form-field>
+
+        <div *ngIf="data.type === 'QCM'">
+            <div *ngFor="let choice of choices; let i = index">
+                <mat-form-field>
+                    <mat-label>Choix {{ i + 1 }}</mat-label>
+                    <input matInput [(ngModel)]="choices[i].text" placeholder="Entrez le choix" />
+                    <mat-checkbox [(ngModel)]="choices[i].isCorrect"></mat-checkbox>
+                </mat-form-field>
+            </div>
+        </div>
+        <mat-form-field *ngIf="data.type === 'QRE'">
+            <mat-label>Paramètres estimés</mat-label>
+            <div>
+                <label>Limite inférieure</label>
+                <input matInput [(ngModel)]="lowerBound" />
+            </div>
+            <div>
+                <label>Limite supérieure</label>
+                <input matInput [(ngModel)]="upperBound" />
+            </div>
+            <div>
+                <label>Réponse exacte</label>
+                <input matInput [(ngModel)]="exactValue" />
+            </div>
+            <div>
+                <label>Marque d'erreur</label>
+                <input matInput [(ngModel)]="errorMargin" />
+            </div>
+        </mat-form-field>
+
+        <div mat-dialog-actions align="end" id="buttons-container">
+            <button mat-raised-button (click)="generateQuestion()" color="primary">Generate</button>
+        </div>
+
+        <div mat-dialog-actions align="end" id="buttons-container">
+            <button mat-raised-button [mat-dialog-close]="data.input" (click)="this.submitToQuestionForm()" color="primary">Soumettre</button>
+        </div>
+    </div>
+</ng-container>

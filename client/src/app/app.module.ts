@@ -52,6 +52,7 @@ import { FIREBASE_CONFIG } from 'src/environments/firebase-config';
 import { FriendsListItemComponent } from './components/friends-list-item/friends-list-item.component';
 import { FriendsSearchComponent } from './components/friends-search/friends-search.component';
 import { JoinMatchPageComponent } from './pages/join-match-page/join-match-page.component';
+import { QuestionGeneratorComponent } from './components/question-generator/question-generator.component';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -65,6 +66,7 @@ import { JoinMatchPageComponent } from './pages/join-match-page/join-match-page.
         AdminQuestionBankComponent,
         ShortQuestionComponent,
         QuestionCreationFormComponent,
+        QuestionGeneratorComponent,
         DialogConfirmComponent,
         AdminEditPageComponent,
         ChatComponent,

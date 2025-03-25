@@ -1,5 +1,5 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { HttpResponse } from '@angular/common/http';
+//import { HttpResponse } from '@angular/common/http';
 import { Component, EventEmitter, Inject, Input, OnChanges, OnInit, Optional, Output, SimpleChanges } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
@@ -12,9 +12,8 @@ import { BankService } from '@app/services/bank/bank.service';
 import { QuestionService } from '@app/services/question/question.service';
 import { QuestionType } from '@common/constants/question-types';
 import { DialogTextInputComponent } from '../dialog-text-input/dialog-text-input.component';
-import { Choice } from '@common/interfaces/choice';
-//import { Choice } from '@common/interfaces/choice';
-
+import { QuestionGeneratorComponent } from '../question-generator/question-generator.component';
+import { Choice } from '@app/interfaces/choice';
 
 export interface DialogManagement {
     modificationState: ManagementState;
@@ -37,22 +36,30 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
     checked: boolean;
     disabled: boolean;
     notificationShown: boolean = false;
+
+    dialogForm: FormGroup;
     loadedImageFile: File | null = null;
 
     // Allow more constructor parameters to reduce logic in the component
     // eslint-disable-next-line max-params
     constructor(
         private readonly snackBar: MatSnackBar,
-        private readonly formBuilder: FormBuilder,
+        readonly formBuilder: FormBuilder,
         private questionService: QuestionService,
         public bankService: BankService,
         private dialog: MatDialog,
+        /// private questionGeneratoComponent: QuestionGeneratorComponent,
+
         @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: DialogManagement,
     ) {
         this.initializeForm();
         if (dialogData) {
             this.modificationState = dialogData.modificationState;
         }
+
+        this.dialogForm = this.formBuilder.group({
+            //text: [data.input, Validators.required],
+        });
     }
 
     get choices(): FormArray {
@@ -63,18 +70,75 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         return ManagementState;
     }
 
-    openQuestionDialog(){
-        const dialogRef = this.dialog.open(DialogTextInputComponent, {
-            data:{
-                title:"Veuillez fournir le texte de la question",
-                input: ""},
+    handleGeneratedQuestion(generatedQuestion: any) {
+        console.log('23', generatedQuestion);
+        this.questionForm.get('text')?.setValue(generatedQuestion.question);
+        this.questionForm.get('type')?.setValue(generatedQuestion.type);
+
+        if (generatedQuestion.type === 'QCM') {
+            this.questionForm.get('type')?.setValue('QCM');
+            const choicesArray = this.questionForm.get('choices') as FormArray;
+            choicesArray?.clear();
+
+            generatedQuestion.choices?.forEach((choice: Choice) => {
+                choicesArray.push(
+                    this.formBuilder.group({
+                        text: choice.text,
+                        isCorrect: choice.isCorrect,
+                    }),
+                );
+            });
+        }
+
+        if (generatedQuestion.type === 'QRE') {
+            if (this.questionForm.get('type')?.value === 'QRE') {
+                this.questionForm.get('type')?.setValue('QRE');
+                const estimatedParams = this.questionForm.get('estimatedParameters') as FormGroup;
+                estimatedParams.get('lowerBound')?.setValue(generatedQuestion.question.lowerBound);
+                estimatedParams.get('upperBound')?.setValue(generatedQuestion.question.upperBound);
+                estimatedParams.get('correctAnswer')?.setValue(generatedQuestion.question.exactValue);
+                estimatedParams.get('margin')?.setValue(generatedQuestion.question.errorMargin);
+            }
+        }
+    }
+
+    openQuestionDialog() {
+        const dialogRef = this.dialog.open(QuestionGeneratorComponent, {
+            data: {
+                title: 'Veuillez fournir le texte et le type de la question',
+                input: '',
+            },
         });
 
-        dialogRef.afterClosed().subscribe((result: string | null) => {
-            if (result) {
-                this.generateQuestion(result);
-            }
+        // dialogRef.afterClosed().subscribe((result: string | null) => {
+        //     console.log('r', result);
+        //     if (result) {
+        //         this.generateQuestion(result);
+        //     }
+        // });
+
+        dialogRef.componentInstance.questionGenerated.subscribe((generatedQuestion: any) => {
+            console.log('genere', generatedQuestion);
+            this.handleGeneratedQuestion(generatedQuestion);
         });
+    }
+
+    submitDialog() {
+        if (this.dialogForm.valid) {
+            this.dialog.open(DialogTextInputComponent, {
+                width: '500px',
+                height: '400px',
+                data: {
+                    title: 'Veuillez fournir le texte de la question',
+                    input: '',
+                },
+            });
+        }
+    }
+
+    closeDialog() {
+        //this.dialog.close();
+        this.dialog.closeAll();
     }
 
     buildChoices(): FormGroup {
@@ -135,17 +199,17 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         });
     }
 
-    parseGeneratedAnswer(data: { return: string, sessionId: string }) {
+    parseGeneratedAnswer(data: { return: string; sessionId: string }) {
         const result = data.return;
         const parsedData = JSON.parse(result);
-        console.log(parsedData)
-        if (parsedData.Question && Array.isArray(parsedData.Choices) ) {
+        console.log(parsedData);
+        if (parsedData.Question && Array.isArray(parsedData.Choices)) {
             //if(this.questionForm.get('type')?.value === 'QCM'){
             const question = parsedData.Question.trim();
 
-            const choices = parsedData.Choices.map((choice: { isCorrect: boolean, Text: string }) => ({
+            const choices = parsedData.Choices.map((choice: { isCorrect: boolean; Text: string }) => ({
                 text: choice.Text,
-                isCorrect: choice.isCorrect
+                isCorrect: choice.isCorrect,
             }));
 
             const lowerBound = parsedData.Numericals?.lowerBound;
@@ -156,63 +220,19 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
             return [
                 {
                     question: question,
-                    choices: choices, 
+                    choices: choices,
                     lowerBound: lowerBound,
                     upperBound: upperBound,
                     exactValue: exactValue,
                     errorMargin: errorMargin,
-                }
+                },
             ];
-        //}
-    }
-        
-        else {
-            this.openSnackBar("Erreur lors de la génération de la question", 5000);
+            //}
+        } else {
+            this.openSnackBar('Erreur lors de la génération de la question', 5000);
             return [];
         }
-}
-
-    generateQuestion(questionSent: any) {
-        if (this.questionForm.get('type')?.value === 'QCM' || this.questionForm.get('type')?.value === 'QRE' ) {
-            const choicesLength = this.questionForm.get('choices')?.value.length;
-            // TO DO: FIND OUT IF WE CAN TAILOR THE PROMPT SERVER SIDE.
-            questionSent = questionSent + ` avec ${choicesLength} choix de réponse, une bonne et une mauvaise` 
-            + ` avec une valeur exacte et une marge d'erreur et une borne inférieure et supérieure`;
-        }
-        // if (this.questionForm.get('type')?.value === 'QRE') {
-        //     // TO DO: FIND OUT IF WE CAN TAILOR THE PROMPT SERVER SIDE.
-        //     questionSent = questionSent + ` avec une valeur exacte et une marge d'erreur et une borne inférieure et supérieure`;
-        // }
-
-
-        this.questionService.generateQuestion(questionSent).subscribe((response: HttpResponse<string>) => {
-            if (response.body) {
-                const generatedQuestion = JSON.parse(response.body);
-                const parsedAnswer = this.parseGeneratedAnswer(generatedQuestion);
-                console.log(parsedAnswer)
-               this.questionForm.get('text')?.setValue(parsedAnswer[0].question);   
-                if (this.questionForm.get('type')?.value === 'QCM') {
-                const choicesArray = this.questionForm.get('choices') as FormArray;
-                choicesArray.clear();
-                    parsedAnswer[0].choices.forEach((choice: Choice, index: number) => {
-                        this.choices.push(
-                            this.formBuilder.group({
-                                text: choice.text,
-                                isCorrect: choice.isCorrect,
-                            })
-                        );
-                    });
-            }
-            if(this.questionForm.get('type')?.value === 'QRE'){
-                const estimatedParams = this.questionForm.get('estimatedParameters') as FormGroup;
-                estimatedParams.get('lowerBound')?.setValue(parsedAnswer[0].lowerBound);
-                estimatedParams.get('upperBound')?.setValue(parsedAnswer[0].upperBound);
-                estimatedParams.get('correctAnswer')?.setValue(parsedAnswer[0].exactValue);
-                estimatedParams.get('margin')?.setValue(parsedAnswer[0].errorMargin);
-        }
-    }})
     }
-
 
 
     ngOnInit(): void {
