@@ -40,6 +40,7 @@ object MatchRoomService {
     var username by mutableStateOf("")
     var userId by mutableStateOf("")
     var hostId by mutableStateOf("")
+    var errorMsg by mutableStateOf("")
 
     private var matchRoomCode: String = ""
     private var hasEnteredRoom = false
@@ -69,7 +70,7 @@ object MatchRoomService {
             handleError()
 //            onPlayerChatStateToggle()
             onRouteToResultsPage()
-            timeToGoToWaitPage = true
+//            timeToGoToWaitPage = true
         }
     }
 
@@ -129,6 +130,7 @@ object MatchRoomService {
                 this.username = response.getString("username")
                 this.userId = response.getString("userId")
                 sendPlayersData(roomCode)
+                timeToGoToWaitPage = true
             }
         })
     }
@@ -152,6 +154,7 @@ object MatchRoomService {
         socket.on(MatchEvents.ERROR.value) { args ->
             if (args.isNotEmpty()) {
                 val errorMessage = args[0] as? String ?: "Unknown error"
+                errorMsg = errorMessage
             }
         }
     }
