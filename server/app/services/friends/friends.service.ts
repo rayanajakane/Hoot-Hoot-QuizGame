@@ -34,15 +34,24 @@ export class FriendsService {
         const friendIds = Object.keys(snapshot.val());
         const friends: UserIdName[] = await Promise.all(
             friendIds.map(async (id) => {
-                const userRecord = await this.firebaseAuthService.getUserById(id);
-                const userSnapshot = await this.database.ref(`users/${id}`).once('value');
-                const userData = userSnapshot.exists() ? userSnapshot.val() : {};
-                return {
-                    id,
-                    name: userRecord.displayName || 'Unknown User',
-                    photoUrl: userRecord.photoURL || '',
-                    isOnline: userData.isOnline || false,
-                };
+                try {
+                    const userRecord = await this.firebaseAuthService.getUserById(id);
+                    const userSnapshot = await this.database.ref(`users/${id}`).once('value');
+                    const userData = userSnapshot.exists() ? userSnapshot.val() : {};
+                    return {
+                        id,
+                        name: userRecord.displayName || 'Unknown User',
+                        photoUrl: userRecord.photoURL || '',
+                        isOnline: userData.isOnline || false,
+                    };
+                } catch (error) {
+                    return {
+                        id,
+                        name: 'Unknown User',
+                        photoUrl: '',
+                        isOnline: false,
+                    };
+                }
             }),
         );
         return friends;
