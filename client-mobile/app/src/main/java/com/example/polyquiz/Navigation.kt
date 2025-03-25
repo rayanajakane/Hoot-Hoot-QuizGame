@@ -214,6 +214,9 @@ fun Navigation(
                 authViewModel,
                 cameraViewModel,
                 navigateToUserEdit = { navController.navigate(Route.UserEditPage) },
+                navigateToJoinRoom = {
+                    navController.navigate(Route.JoinMatchPage)
+                },
                 navigateToSignup = { navController.navigate(Route.Signup) }
             )
         }

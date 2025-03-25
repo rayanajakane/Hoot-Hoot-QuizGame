@@ -75,14 +75,30 @@ fun CameraScreen(
     authViewModel: AuthViewModel,
     cameraViewModel: CameraViewModel,
     navigateToUserEdit: () -> Unit,
+    navigateToJoinRoom: () -> Unit,
     navigateToSignup: () -> Unit
 ) {
     val cameraState: CameraState by cameraViewModel.state.collectAsStateWithLifecycle()
     val showQrCode: Boolean by cameraViewModel.showQrContent.collectAsState()
+    val scannedCode by cameraViewModel.scannedCode.collectAsState()
+
+    // Temp workaround: Set code back to null when opening QR camera
+    LaunchedEffect(showQrCode) {
+        if (showQrCode) {
+            cameraViewModel.setScannedCode(null)
+        }
+    }
+
+    LaunchedEffect(scannedCode) {
+        scannedCode?.let {
+            Log.d("Qr", "Scanned code $scannedCode and navigated back to join page")
+            navigateToJoinRoom()
+        }
+    }
 
     Log.d("CameraScreen", "Current camera state: $cameraState")
-    if(showQrCode) {
-        QRCameraContent()
+    if (showQrCode) {
+        QRCameraContent(onQrScanned = cameraViewModel::setScannedCode)
     } else {
         if (cameraState.capturedImage == null) {
             CameraContent(onPhotoCaptured = cameraViewModel::updateCapturedPhotoState)
@@ -105,7 +121,7 @@ fun CameraScreen(
 }
 
 @Composable
-fun QRCameraContent() {
+fun QRCameraContent(onQrScanned: (String) -> Unit) {
     var code by remember { mutableStateOf("") }
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -149,6 +165,7 @@ fun QRCameraContent() {
                         ContextCompat.getMainExecutor(context),
                         QrCodeAnalyzer { result ->
                             code = result
+                            onQrScanned(result)
                             Log.d("QR", "Seeing code: $code")
                         }
                     )

@@ -16,7 +16,7 @@ import java.nio.ByteBuffer
 // https://www.youtube.com/watch?v=asl1mFtkMkc
 
 class QrCodeAnalyzer(
-    private val onQrCodeScanned: (String) -> Unit
+    private val onQrCodeScanned: (String) -> Unit,
 ): ImageAnalysis.Analyzer {
 
     // To be able to scan QR codes
@@ -27,9 +27,13 @@ class QrCodeAnalyzer(
     )
 
     override fun analyze(image: ImageProxy) {
+        Log.d("Qr analyser", "Got image with format ${image.format}")
+        Log.d("Qr analyser", "Image dimensions: ${image.width}x${image.height}")
+
         if(image.format in supportedImageFormats) {
             // Get raw data
             val bytes = image.planes.first().buffer.toByteArray()
+            Log.d("Qr analyser", "Got bytes: $bytes")
 
             val source = PlanarYUVLuminanceSource(
                 bytes,
@@ -62,10 +66,11 @@ class QrCodeAnalyzer(
 
                 onQrCodeScanned(result.text)
                 Log.d("Reading QR", "Reading: ${result.text}")
+            } catch (e: com.google.zxing.NotFoundException) {
+                Log.d("QR Analysis", "No QR code found")
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e("QR Analysis", "Error processing image", e)
             } finally {
-                // Free resources
                 image.close()
             }
 

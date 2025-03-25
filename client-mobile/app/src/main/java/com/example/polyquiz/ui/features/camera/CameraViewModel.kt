@@ -25,6 +25,13 @@ class CameraViewModel : ViewModel() {
     private val _isPresetAvatar = MutableStateFlow<Boolean>(true)
     val isPresetAvatar: StateFlow<Boolean> = _isPresetAvatar
 
+    private val _scannedCode = MutableStateFlow<String?>(null)
+    val scannedCode: StateFlow<String?> = _scannedCode
+
+    fun setScannedCode(code: String?) {
+        _scannedCode.value = code
+    }
+
     fun setCameraContent(showQr: Boolean) {
         _showQrContent.value = showQr
     }
