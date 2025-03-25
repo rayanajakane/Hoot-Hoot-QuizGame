@@ -57,11 +57,11 @@ export class QuestionsGeneratorService {
                     nullable: false,
                 },
                 exactValue:{
-                    type: SchemaType.NUMBER,
+                    type: SchemaType.INTEGER,
                     nullable: false,
                 },
                 errorMargin:{
-                    type: SchemaType.NUMBER,
+                    type: SchemaType.INTEGER,
                     nullable: false,
                 },
             },
