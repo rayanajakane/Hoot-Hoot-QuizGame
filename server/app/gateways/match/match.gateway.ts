@@ -203,17 +203,19 @@ export class MatchGateway implements OnGatewayDisconnect {
         if (hostRoom.isPlaying || !hostRoom.currentQuestionIndex) {
             this.sendError(hostRoomCode, NO_MORE_HOST);
             const endDate = new Date();
-            hostRoom.players.forEach((player) => {
-                this.historyService.addMatchHistoryItem(player.id, {
-                    id: uuidv4(),
-                    start: hostRoom.startTime,
-                    end: endDate,
-                    nGoodAnswers: player.nGoodAnswers,
-                    nTotalQuestions: hostRoom.gameLength,
-                    hasWon: false,
-                    hasGivenUp: false,
+            if (hostRoom.players) {
+                hostRoom.players.forEach((player) => {
+                    this.historyService.addMatchHistoryItem(player.id, {
+                        id: uuidv4(),
+                        start: hostRoom.startTime,
+                        end: endDate,
+                        nGoodAnswers: player.nGoodAnswers,
+                        nTotalQuestions: hostRoom.gameLength,
+                        hasWon: false,
+                        hasGivenUp: false,
+                    });
                 });
-            });
+            }
             this.deleteRoom(hostRoomCode);
             return true;
         }
