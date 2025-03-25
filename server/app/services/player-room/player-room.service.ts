@@ -42,6 +42,7 @@ export class PlayerRoomService {
             answer: new MultipleChoiceAnswer(),
             score: 0,
             answerCorrectness: AnswerCorrectness.WRONG,
+            nGoodAnswers: 0,
             bonusCount: 0,
             isPlaying: true,
             isChatActive: true,
