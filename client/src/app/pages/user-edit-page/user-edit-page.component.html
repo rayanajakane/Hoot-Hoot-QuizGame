@@ -76,20 +76,30 @@
             <button mat-raised-button color="accent" (click)="deleteUser()" id="delete-button">{{ t('page.delete-user') }}</button>
             <h2>{{ t('history.match-history') }}</h2>
             <p *ngIf="userHistory.match.length === 0" class="no-item-to-display">{{ t('history.no-item') }}</p>
+            <mat-card class="history-match-item header-card" *ngIf="userHistory.match.length !== 0">
+                <p>{{ t('history.start') }}</p>
+                <p>{{ t('history.end') }}</p>
+                <p>{{ t('history.result') }}</p>
+                <p>{{ t('history.gave-up-label') }}</p>
+            </mat-card>
             <div *ngFor="let item of userHistory.match">
-                <mat-card class="history-match-item">
+                <mat-card class="history-match-item" color="primary">
                     <p>{{ item.start | date: 'YYYY-MM-dd HH:mm' }}</p>
                     <p>{{ item.end | date: 'YYYY-MM-dd HH:mm' }}</p>
                     <p>{{ item.hasWon ? t('history.victory') : t('history.defeat') }}</p>
-                    <p>{{ item.hasGivenUp ? t('history.gaveUp') : '' }}</p>
+                    <p>{{ item.hasGivenUp ? '✔' : '-' }}</p>
                 </mat-card>
             </div>
             <h2>{{ t('history.auth-history') }}</h2>
+            <mat-card class="history-auth-item header-card" color="primary">
+                <p>{{ t('history.date') }}</p>
+                <p>{{ t('history.action') }}</p>
+            </mat-card>
             <div *ngFor="let item of userHistory.auth">
                 <mat-card class="history-auth-item">
+                    <p>{{ item.date | date: 'YYYY-MM-dd HH:mm' }}</p>
                     <p *ngIf="item.isLogin">{{ t('history.signin') }}</p>
                     <p *ngIf="!item.isLogin">{{ t('history.signout') }}</p>
-                    <p>{{ item.date | date: 'YYYY-MM-dd HH:mm' }}</p>
                 </mat-card>
             </div>
         </div>

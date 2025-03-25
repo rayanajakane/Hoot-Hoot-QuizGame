@@ -127,6 +127,7 @@ export class FriendsGateway implements OnGatewayDisconnect {
         this.historyService.addAuthHistoryItem(userId, historyAuthItem);
     }
 
+    @SubscribeMessage('disconnect')
     handleDisconnect(client: Socket): void {
         const userId = Array.from(this.userSockets.entries()).find(([_, socketId]) => socketId === client.id)?.[0];
         const historyAuthItem: HistoryAuthItem = {
