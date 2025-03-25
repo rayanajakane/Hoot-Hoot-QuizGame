@@ -41,6 +41,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.pointer.motionEventSpy
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -60,9 +61,11 @@ import kotlinx.coroutines.launch
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
-fun JoinMatchPage(modifier: Modifier, authViewModel: AuthViewModel,navigateToHome: () -> Unit,
-                  navigateToMatchPage: () -> Unit,
-                  navigateToWaitPage: () -> Unit) {
+fun JoinMatchPage(
+    modifier: Modifier, authViewModel: AuthViewModel, navigateToHome: () -> Unit,
+    navigateToMatchPage: () -> Unit,
+    navigateToWaitPage: () -> Unit
+) {
     var room by remember { mutableStateOf("") }
     val username by remember { mutableStateOf(authViewModel.getUsername()) }
     val userId by remember { mutableStateOf(authViewModel.getUserId()) }
@@ -72,6 +75,7 @@ fun JoinMatchPage(modifier: Modifier, authViewModel: AuthViewModel,navigateToHom
         derivedStateOf { MatchRoomService.errorMsg }
     }
 
+    val keyboardController = LocalSoftwareKeyboardController.current
     val joinMatchService = JoinMatchService
 
     fun unlockedMatches(): List<MatchPageInfo> {
@@ -131,7 +135,7 @@ fun JoinMatchPage(modifier: Modifier, authViewModel: AuthViewModel,navigateToHom
                     navigateToWaitPage,
                     navigateToMatchPage,
 
-                )
+                    )
             },
             onError = { errorMessage ->
                 println("Error: $errorMessage")
@@ -153,19 +157,19 @@ fun JoinMatchPage(modifier: Modifier, authViewModel: AuthViewModel,navigateToHom
 //        navigateToWaitPage()
     }
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
-    Column() {
-        Text(
-            text = "Joindre une partie",
-            style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold)
-        )
+        Column() {
+            Text(
+                text = "Joindre une partie",
+                style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold)
+            )
 
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-            Button(onClick = { navigateToHome() }) {
-                Text(text = "Page d'accueil")
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Button(onClick = { navigateToHome() }) {
+                    Text(text = "Page d'accueil")
+                }
+
             }
-
         }
-    }
 
         Column(modifier = Modifier.padding(26.dp, 1.dp)) {
             TextField(
@@ -179,7 +183,10 @@ fun JoinMatchPage(modifier: Modifier, authViewModel: AuthViewModel,navigateToHom
             )
             Button(
                 modifier = Modifier.width(120.dp),
-                onClick = { joinRoom(room) },
+                onClick = {
+                    joinRoom(room)
+                    keyboardController?.hide()
+                },
             ) {
                 Text(text = "Joindre")
             }
@@ -242,26 +249,28 @@ fun JoinMatchPage(modifier: Modifier, authViewModel: AuthViewModel,navigateToHom
 @Composable
 fun MatchCard(match: MatchPageInfo, onClick: () -> Unit = {}) {
     Spacer(modifier = Modifier.padding(5.dp))
-    Card(modifier = Modifier.padding()
-        .shadow(4.dp, shape = RectangleShape)
-        .background(Color.White)
-        , onClick = onClick, shape =RectangleShape) {
-            Column(modifier = Modifier.padding(15.dp)) {
-                Text(text = match.gameTitle)
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        Icons.Rounded.People,
-                        contentDescription = null
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(text = match.nPlayers.toString())
+    Card(
+        modifier = Modifier
+            .padding()
+            .shadow(4.dp, shape = RectangleShape)
+            .background(Color.White), onClick = onClick, shape = RectangleShape
+    ) {
+        Column(modifier = Modifier.padding(15.dp)) {
+            Text(text = match.gameTitle)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    Icons.Rounded.People,
+                    contentDescription = null
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(text = match.nPlayers.toString())
+            }
+            if (onClick != {}) {
+                Button(onClick = onClick, modifier = Modifier.padding(top = 10.dp)) {
+                    Text(text = "Joindre")
                 }
-                if (onClick != {}  ) {
-                    Button(onClick = onClick, modifier = Modifier.padding(top = 10.dp)) {
-                        Text(text = "Joindre")
-                    }
-                }
-           }
+            }
+        }
     }
 }
 
