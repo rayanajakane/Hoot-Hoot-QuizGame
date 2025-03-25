@@ -95,8 +95,10 @@ export class UserEditPageComponent implements OnInit {
                 // Frees Firebase Storage space if user no longer needs uploaded avatar.
                 this.authenticationService.deleteUserAvatar(this.authenticationService.userId);
             }
-            // TODO: Consider adding the themes
-            this.translationService.setLanguage(this.currentLang.value as string);
+
+            if (this.loadedImageFile)
+                // TODO: Consider adding the themes
+                this.translationService.setLanguage(this.currentLang.value as string);
 
             this.authenticationService.editUserProfile(this.username.value as string, url);
             this.form.markAsPristine();

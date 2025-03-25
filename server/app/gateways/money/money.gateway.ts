@@ -66,6 +66,7 @@ export class MoneyGateway {
 
         await this.moneyService.updateBalance(data.user, -data.item.price);
         client.emit(MoneyEvents.AvatarBought, data.item);
+        client.emit(MoneyEvents.ReturnBalance, await this.moneyService.getCurrentBalance(data.user));
     }
 
     handleDisconnect(client: Socket) {
