@@ -32,6 +32,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -80,6 +81,7 @@ fun JoinMatchPage(
     var room by remember { mutableStateOf("") }
     val username by remember { mutableStateOf(authViewModel.getUsername()) }
     val userId by remember { mutableStateOf(authViewModel.getUserId()) }
+    val scannedCode by cameraViewModel.scannedCode.collectAsState()
     val scope = rememberCoroutineScope()
     val shouldNavigate = rememberUpdatedState(MatchRoomService.timeToGoToWaitPage)
     val errorMessage by remember {
@@ -132,6 +134,7 @@ fun JoinMatchPage(
     DisposableEffect(Unit) {
         onDispose {
             joinMatchService.stopReturningAllMatches()
+            cameraViewModel.setScannedCode(null)
         }
     }
 
@@ -163,6 +166,13 @@ fun JoinMatchPage(
             }
         )
     }
+
+    LaunchedEffect(scannedCode) {
+        scannedCode?.let {
+            submitCode(scannedCode!!)
+        }
+    }
+
 
     fun joinRoom(code: String) {
         submitCode(code)
@@ -287,7 +297,10 @@ fun JoinMatchPage(
                         )
                         // TODO : Change if. Must show aucune partie even if one is unlocked but not en cours
                         if (matchInfos.isEmpty()) {
-                            Text(text = stringResource(R.string.no_match), fontStyle = FontStyle.Italic)
+                            Text(
+                                text = stringResource(R.string.no_match),
+                                fontStyle = FontStyle.Italic
+                            )
                         } else {
                             Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
                                 playingMatches().forEach { match ->
