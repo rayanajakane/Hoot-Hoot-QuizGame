@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +27,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.polyquiz.R
 import com.example.polyquiz.core.storage.ImageStorage
@@ -57,8 +59,7 @@ fun DrawingScreen(viewModel: DrawingViewModel, navigateToUserEdit: () -> Unit, u
             currentPath = state.currentPath,
             onAction = viewModel::onAction,
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
+                .size(400.dp)
                 .onSizeChanged { canvasSize = it }
         )
 
@@ -72,17 +73,8 @@ fun DrawingScreen(viewModel: DrawingViewModel, navigateToUserEdit: () -> Unit, u
         Button(onClick = {
             if (canvasSize.width > 0 && canvasSize.height > 0) {
                 val bitmap = captureCanvasAsBitmap(state.paths, canvasSize.width, canvasSize.height)
-//                cameraViewModel.setTemporaryAvatar(bitmap)
                 cameraViewModel.setDrawingAvatar(bitmap)
                 navigateToUserEdit()
-//                ImageStorage.uploadAvatar(bitmap, uid) { imageUrl ->
-//                    if (imageUrl != null) {
-//                        navigateToUserEdit()
-//                        Toast.makeText(context, "Drawing got saved", Toast.LENGTH_LONG).show()
-//                    } else {
-//                        Toast.makeText(context, "Drawing didn't get saved", Toast.LENGTH_LONG).show()
-//                    }
-//                }
             }
         }) {
             Text(stringResource(R.string.save_canvas))
@@ -94,7 +86,6 @@ fun DrawingScreen(viewModel: DrawingViewModel, navigateToUserEdit: () -> Unit, u
     }
 }
 fun captureCanvasAsBitmap(paths: List<PathData>, width: Int, height: Int): Bitmap {
-    // Create a Bitmap with the same dimensions as the canvas
     val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
     val canvas = android.graphics.Canvas(bitmap)
 
@@ -121,20 +112,3 @@ fun captureCanvasAsBitmap(paths: List<PathData>, width: Int, height: Int): Bitma
 
     return bitmap
 }
-
-//fun saveBitmapToJPG(bitmap: ImageBitmap, context: Context) {
-//    val externalStorageDir = context.getExternalFilesDir(null)
-//    val file = File(externalStorageDir, "drawing.jpg")
-//
-//    try {
-//        val fileOutputStream = FileOutputStream(file)
-//        bitmap.asAndroidBitmap().compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
-//        fileOutputStream.flush()
-//        fileOutputStream.close()
-//
-//        Toast.makeText(context, "Drawing saved to ${file.absolutePath}", Toast.LENGTH_LONG).show()
-//    } catch (e: IOException) {
-//        e.printStackTrace()
-//        Toast.makeText(context, "Error saving drawing", Toast.LENGTH_LONG).show()
-//    }
-//}
