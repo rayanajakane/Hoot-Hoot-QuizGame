@@ -47,13 +47,12 @@ fun QuestionArea(
     navigateToResultsPage: () -> Unit,
     modifier: Modifier
 ) {
-
     var room by remember { mutableStateOf(matchRoomService.getRoomCode()) }
     var context by remember { mutableStateOf(matchContextService.getContext()) }
     val question by matchRoomService::currentQuestion
     val score by answerService::playerScore
 
-    LaunchedEffect(Unit, MatchRoomService.hasBeenKickedOut) {
+    LaunchedEffect(Unit, MatchRoomService.hasBeenKickedOut, MatchRoomService.isTimeToNavigateToResults) {
         answerService.resetStateForNewQuestion()
         timeService.listenToTimerEvents()
         answerService.listenToAnswerEvents()
@@ -65,6 +64,12 @@ fun QuestionArea(
             true -> {
                 MatchRoomService.hasBeenKickedOut = false
                 navigateToHome()
+            }
+            else -> Unit
+        }
+        when (MatchRoomService.isTimeToNavigateToResults) {
+            true -> {
+                navigateToResultsPage();
             }
             else -> Unit
         }
