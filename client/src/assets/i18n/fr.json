@@ -155,5 +155,15 @@
         "fri": "Ven",
         "sat": "Sam",
         "grid-label": "Parties au courant de l'année"
+    },
+    "match-config": {
+        "title-label": "Configuration de la partie",
+        "friends-label": "Partie entre amis uniquement",
+        "friends-description": "Seuls vos amis pourront rejoindre cette partie.",
+        "fee-section-label": "Partie avec prix d'entrée",
+        "fee-label": "Frais d'entrée",
+        "fee-description": "Les joueurs devront payer ce montant pour rejoindre la partie.",
+        "cancel": "Annuler",
+        "confirm": "Confirmer"
     }
 }
