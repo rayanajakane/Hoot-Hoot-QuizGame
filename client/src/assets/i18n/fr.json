@@ -134,6 +134,25 @@
         "nMatchesPlayed": "Nombre de parties jouées",
         "nMatchesWon": "Nombre de parties gagnées",
         "averageGoodAnswersPercentage": "Moyenne de questions bien répondues par partie",
-        "averageTime": "Temps moyen par partie"
+        "averageTime": "Temps moyen par partie",
+        "jan": "Jan",
+        "feb": "Fev",
+        "mar": "Mar",
+        "apr": "Avr",
+        "may": "Mai",
+        "jun": "Jui",
+        "jul": "Jul",
+        "aug": "Aou",
+        "sep": "Sep",
+        "oct": "Oct",
+        "nov": "Nov",
+        "dec": "Déc",
+        "sun": "Dim",
+        "mon": "Lun",
+        "tue": "Mar",
+        "wed": "Mer",
+        "thu": "Jeu",
+        "fri": "Ven",
+        "sat": "Sam"
     }
 }
