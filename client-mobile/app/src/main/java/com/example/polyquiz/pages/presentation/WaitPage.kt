@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.MatchButtonActions
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.constants.StartMatchFeedback
@@ -66,8 +67,6 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
     }
 
     fun isHost(): Boolean {
-//        println(MatchRoomService.hostId)
-//        println( MatchRoomService.hostId == authViewModel.getUserId())
         return MatchRoomService.hostId == authViewModel.getUserId()
     }
 
@@ -108,7 +107,6 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
         if (userId === matchRoomService.hostId) {
             return
         }
-//        println(userId)
         MatchRoomService.banUsername(userId)
     }
 
@@ -131,12 +129,13 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
             horizontalArrangement = Arrangement.End
         ) {
             Button(
-                onClick = { quitMatch(); navigateToHome() },
+                onClick = { quitMatch(); navigateToHome(); },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
             ) {
                 Text(MatchButtonActions.LEAVE_MATCH.value)
             }
         }
+        ChatComponent(modifier = Modifier, authViewModel = authViewModel)
 
         Spacer(modifier = Modifier.weight(1f))
 
