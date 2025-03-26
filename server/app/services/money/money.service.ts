@@ -1,21 +1,17 @@
 import { DonationRecord } from '@app/constants/donation-record';
 import { DONATION_LIMIT_EXCEEDED, INVALID_AMOUNT, LOW_BALANCE } from '@app/constants/money-errors';
-import { FirebaseAuthService } from '@app/modules/firebase/firebase-auth/firebase-auth.service';
 import { FirebaseRepositoryService } from '@app/modules/firebase/firebase-repository/firebase-repository.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
+import { MAX_REWARD, MIN_REWARD } from '@common/constants/match-constants';
 import { Injectable } from '@nestjs/common';
 import { Database } from 'firebase-admin/lib/database/database';
-
 @Injectable()
 export class MoneyService {
     private database: Database;
-    private readonly DAILY_DONATION_LIMIT = 100000;
-    private readonly MAX_REWARD = 100;
-    private readonly MIN_REWARD = 50;
+    private readonly DAILY_DONATION_LIMIT = 500;
 
     constructor(
         private readonly firebaseService: FirebaseRepositoryService,
-        private readonly firebaseAuthService: FirebaseAuthService,
         private matchRoomService: MatchRoomService,
     ) {
         this.database = this.firebaseService.database;
@@ -102,8 +98,8 @@ export class MoneyService {
         const winners = this.matchRoomService.declareWinner(roomCode);
         const isEntryFeeRequired = partyConfig.isEntryFeeRequired;
 
-        let minReward = this.MIN_REWARD;
-        let maxReward = this.MAX_REWARD;
+        let minReward = MIN_REWARD;
+        let maxReward = MAX_REWARD;
 
         if (isEntryFeeRequired) {
             const totalReward = activePlayers.length * partyConfig.entryFeeAmount;
