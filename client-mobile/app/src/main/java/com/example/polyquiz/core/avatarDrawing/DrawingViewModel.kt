@@ -20,6 +20,8 @@ val allColors = listOf(
     Color.Green,
     Color.Yellow,
     Color.White,
+    Color.Magenta,
+    Color.Cyan,
 )
 
 data class PathData(
