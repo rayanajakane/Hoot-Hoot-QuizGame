@@ -93,9 +93,8 @@ object MatchRoomService {
         socket.emit(MatchEvents.DISCONNECT.value)
         MatchContextService.resetContext()
         hostId=""
-      //  timeToGoToWaitPage = false
+        timeToGoToWaitPage = false
         hasBeenKickedOut = true
-        isTimeToNavigateToResults= false
     }
 
     fun createRoom(gameId: String, hostId: String, hostUsername: String, isClassicMode: Boolean = true, isFriendsOnly: Boolean = false) {
