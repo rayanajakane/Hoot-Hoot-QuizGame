@@ -110,7 +110,15 @@ export class QuestionGeneratorComponent {
                     this.lowerBound = parsedAnswer[0].lowerBound;
                     this.upperBound = parsedAnswer[0].upperBound;
                     this.exactValue = parsedAnswer[0].exactValue;
-                    this.errorMargin = parsedAnswer[0].errorMargin;
+                   // this.errorMargin = parsedAnswer[0].errorMargin;
+                    const marginValue = (parsedAnswer[0].upperBound - parsedAnswer[0].lowerBound) * 0.25;
+                    console.log(marginValue);
+                    if (parsedAnswer[0].errorMargin >= marginValue) {
+                        const correctMargin = Math.floor(Math.random() * marginValue);
+                        this.errorMargin = correctMargin;
+                        parsedAnswer[0].errorMargin = correctMargin;
+                        console.log(correctMargin);
+                    } else this.errorMargin = parsedAnswer[0].errorMargin;
                 }
                 const questionData = {
                     question: parsedAnswer[0],
@@ -142,8 +150,8 @@ export class QuestionGeneratorComponent {
                 choices: this.parsedAnswer.choices,
                 lowerBound: this.parsedAnswer.lowerBound,
                 upperBound: this.parsedAnswer.upperBound,
-                exactValue: this.parsedAnswer.exactValue,
-                errorMargin: this.parsedAnswer.errorMargin,
+                exactValue: this.exactValue,
+                errorMargin: this.errorMargin,
                 type: this.data.type,
             };
 
