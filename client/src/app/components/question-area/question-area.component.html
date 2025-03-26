@@ -56,8 +56,12 @@
             </div>
 
             <div
-                class="choice-container"
-                *ngIf="!this.matchRoomService.isCooldown || context === matchContext.TestPage || context === matchContext.RandomMode"
+                id="score-feedback-area"
+                *ngIf="
+                    (this.answerService.showFeedback && context === matchContext.PlayerView && !this.matchRoomService.isCooldown) ||
+                        (this.answerService.showFeedback && (context === matchContext.TestPage || context === matchContext.RandomMode))|| context === matchContext.CheaterView ;
+                    else elseBlock
+                "
             >
                 <app-multiple-choice-area *ngIf="currentQuestion.type === questionType.MultipleChoice" class="choice-area"></app-multiple-choice-area>
                 <app-long-answer-area *ngIf="currentQuestion.type === questionType.LongAnswer" class="choice-area"></app-long-answer-area>

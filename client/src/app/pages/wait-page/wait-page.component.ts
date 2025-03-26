@@ -37,6 +37,9 @@ export class WaitPageComponent implements OnInit {
     get isHost() {
         return this.matchContextService.getContext() === MatchContext.HostView;
     }
+    get isCheater() {
+        return this.matchContextService.getContext() === MatchContext.CheaterView;
+    }
 
     get currentGame() {
         return this.matchService.currentGame;
@@ -52,7 +55,6 @@ export class WaitPageComponent implements OnInit {
         } 
         else {
                 this.matchContextService.setContext(MatchContext.PlayerView);
-
         }
     }
 

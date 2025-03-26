@@ -114,7 +114,8 @@
         "secs": "secondes",
         "yes": "Oui",
         "no": "Non",
-        "warning": "Avertissement"
+        "warning": "Avertissement",
+        "play.modeCheater": "Jouer en mode tricheur"
     },
     "join": {
         "room-code": "Code de la partie",
