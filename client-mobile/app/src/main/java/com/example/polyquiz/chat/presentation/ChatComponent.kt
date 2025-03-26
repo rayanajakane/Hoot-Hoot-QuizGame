@@ -85,6 +85,8 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     val userId by remember { mutableStateOf(authViewModel.getUserId()) }
     val avatarURL by remember { mutableStateOf(authViewModel.getAvatarURL()) }
     val roomCode by MatchRoomService.matchRoomCode.collectAsState()
+    val avatarURL by remember { mutableStateOf(authViewModel.getAvatarURL())}
+//    var selectedChat by remember { mutableStateOf("General") }
     var selectedChat by remember {
         mutableStateOf(if (roomCode.isNotEmpty()) "Match" else "General")
     }
@@ -182,21 +184,10 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                 ),
                 keyboardActions = KeyboardActions(onDone = {
                     if (selectedChat == "General") {
-                        ChatService.sendMessage(
-                            newMessageText,
-                            userId,
-                            username,
-                            avatarURL,
-                            null
-                        )
-                    } else {
-                        ChatService.sendMessage(
-                            newMessageText,
-                            userId,
-                            username,
-                            avatarURL,
-                            MatchRoomService.getRoomCode()
-                        )
+                        ChatService.sendMessage(newMessageText, userId, username, avatarURL, null)
+                    }
+                    else {
+                        ChatService.sendMessage(newMessageText, userId, username, avatarURL, MatchRoomService.getRoomCode())
                     }
                     newMessageText = ""
                 }),
@@ -204,21 +195,10 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                     val image = Icons.AutoMirrored.Filled.Send;
                     IconButton(onClick = {
                         if (selectedChat == "General") {
-                            ChatService.sendMessage(
-                                newMessageText,
-                                userId,
-                                username,
-                                avatarURL,
-                                null
-                            )
-                        } else {
-                            ChatService.sendMessage(
-                                newMessageText,
-                                userId,
-                                username,
-                                avatarURL,
-                                MatchRoomService.getRoomCode()
-                            )
+                            ChatService.sendMessage(newMessageText, userId, username, avatarURL, null)
+                        }
+                        else {
+                            ChatService.sendMessage(newMessageText, userId, username, avatarURL, MatchRoomService.getRoomCode())
                         }
                         newMessageText = ""
                     }) {
@@ -408,31 +388,13 @@ fun ReactionsRow(
         horizontalArrangement = Arrangement.Absolute.Left,
     ) {
         ReactionButton("👍", message.userLikes.size) {
-            ChatService.reactToMessage(
-                message.id,
-                ChatEmoji.LIKE,
-                userId,
-                username,
-                if (roomCode.isNullOrEmpty()) null else roomCode
-            )
+            ChatService.reactToMessage(message.id, ChatEmoji.LIKE, userId, username, if(roomCode.isNullOrEmpty()) null else roomCode)
         }
         ReactionButton("❤️", message.userLoves.size) {
-            ChatService.reactToMessage(
-                message.id,
-                ChatEmoji.LOVE,
-                userId,
-                username,
-                if (roomCode.isNullOrEmpty()) null else roomCode
-            )
+            ChatService.reactToMessage(message.id, ChatEmoji.LOVE, userId, username, if(roomCode.isNullOrEmpty()) null else roomCode)
         }
         ReactionButton("👎", message.userDislikes.size) {
-            ChatService.reactToMessage(
-                message.id,
-                ChatEmoji.DISLIKE,
-                userId,
-                username,
-                if (roomCode.isNullOrEmpty()) null else roomCode
-            )
+            ChatService.reactToMessage(message.id, ChatEmoji.DISLIKE, userId, username, if(roomCode.isNullOrEmpty()) null else roomCode)
         }
     }
 }
