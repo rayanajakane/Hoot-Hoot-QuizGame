@@ -72,7 +72,7 @@ fun PartyConfigDialog(
                 if (partyConfig.isEntryFeeRequired) {
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
-                        value = if (partyConfig.entryFeeAmount == 0) "" else partyConfig.entryFeeAmount.toString(),
+                        value = partyConfig.entryFeeAmount.toString(),
                         onValueChange = { value ->
                             val intValue = value.toIntOrNull() ?: 0
                             partyConfig = partyConfig.copy(entryFeeAmount = intValue)

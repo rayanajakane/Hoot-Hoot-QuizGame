@@ -274,6 +274,7 @@ object MatchRoomService {
 
     fun onRouteToResultsPage() {
         socket.on(MatchEvents.ROUTE_TO_RESULTS_PAGE.value) { _ ->
+            println("Navigating to results page")
             isResults = true
             isTimeToNavigateToResults = true
             //navigateToResultsPage()

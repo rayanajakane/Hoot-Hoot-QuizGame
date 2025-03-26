@@ -322,7 +322,7 @@ fun MatchCard(match: MatchPageInfo, onClick: () -> Unit = {}) {
                     Spacer(modifier = Modifier.height(24.dp))
                 }
             }
-            if (onClick != {}) {
+            if (onClick != {} && !match.isLocked) {
                 Button(onClick = onClick, modifier = Modifier.padding(top = 10.dp)) {
                     Text(text = "Joindre")
                 }
