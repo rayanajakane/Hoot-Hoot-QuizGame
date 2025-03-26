@@ -10,14 +10,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.rounded.People
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -248,30 +252,85 @@ fun JoinMatchPage(
 
 @Composable
 fun MatchCard(match: MatchPageInfo, onClick: () -> Unit = {}) {
-    Spacer(modifier = Modifier.padding(5.dp))
     Card(
+        onClick = onClick,
+        shape = RectangleShape,
         modifier = Modifier
-            .padding()
+            .padding(5.dp)
+            .width(140.dp)
+            .height(180.dp)
             .shadow(4.dp, shape = RectangleShape)
-            .background(Color.White), onClick = onClick, shape = RectangleShape
+            .background(Color.White)
     ) {
-        Column(modifier = Modifier.padding(15.dp)) {
-            Text(text = match.gameTitle)
+        Column(
+            modifier = Modifier.padding(15.dp),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = match.gameTitle,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    Icons.Rounded.People,
+                    imageVector = Icons.Rounded.People,
                     contentDescription = null
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(text = match.nPlayers.toString())
+            }
+            Column {
+                if (match.partyConfig?.isFriendsOnly == true) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.height(24.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Group,
+                            contentDescription = "Friends Only",
+                            tint = Color(0xFF1976d2),
+
+                            modifier = Modifier.requiredSize(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "Amis",
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                } else {
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
+                if (match.partyConfig?.isEntryFeeRequired == true) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.height(24.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.AttachMoney,
+                            contentDescription = "Entry Fee",
+                            tint = Color(0xFF2e7d32),
+                            modifier = Modifier.requiredSize(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = match.partyConfig.entryFeeAmount.toString(),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                } else {
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
             }
             if (onClick != {}) {
                 Button(onClick = onClick, modifier = Modifier.padding(top = 10.dp)) {
                     Text(text = "Joindre")
                 }
             }
-        }
+
+            else {
+                    Spacer(modifier = Modifier.height(36.dp))
+                }
+            }
     }
 }
-
-
