@@ -14,8 +14,18 @@ export class HistoryService {
     async getHistory(userId: string) {
         const authHistory = await this.getAuthHistory(userId);
         const matchHistory = await this.getMatchHistory(userId);
-        const stats = this.getMatchStats(matchHistory);
-        const intensityGrid = this.getIntensityGrid(matchHistory);
+        let stats;
+        let intensityGrid;
+        if (!matchHistory || matchHistory.length === 0) {
+            stats = { nMatchesPlayed: 0, nMatchesWon: 0, averageGoodAnswersPercentage: 0, averageTime: 0 };
+            const year = new Date().getFullYear();
+            const isLeapYear = (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
+            const nDays = isLeapYear ? 366 : 365;
+            intensityGrid = Array(nDays).fill(0);
+        } else {
+            stats = this.getMatchStats(matchHistory);
+            intensityGrid = this.getIntensityGrid(matchHistory);
+        }
         const history: UserHistoryInfo = {
             auth: authHistory,
             match: matchHistory,
@@ -30,10 +40,8 @@ export class HistoryService {
         const yearStart = new Date(year, 0, 0);
         const isLeapYear = (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
         const nDays = isLeapYear ? 366 : 365;
-        const intensityGrid = Array(nDays);
-        const matchCount: number[] = Array(nDays);
-        intensityGrid.fill(0);
-        matchCount.fill(0);
+        const intensityGrid = Array(nDays).fill(0);
+        const matchCount: number[] = Array(nDays).fill(0);
         historyMatchItems.forEach((historyMatchItem) => {
             if (historyMatchItem.end.getFullYear() === year) {
                 // Reference: https://stackoverflow.com/questions/8619879/javascript-calculate-the-day-of-the-year-1-366

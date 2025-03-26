@@ -100,7 +100,8 @@ export class UserEditPageComponent implements OnInit {
                 console.log(userHistory);
                 this.userHistory = userHistory;
             },
-            error: () => {
+            error: (error) => {
+                console.log(error);
                 this.userHistory = {
                     auth: [],
                     match: [],
