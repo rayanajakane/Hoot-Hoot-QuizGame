@@ -7,8 +7,11 @@
         [class.correct]="answerService.showFeedback && isCorrectAnswer(choice)"
         [class.incorrect]="answerService.showFeedback && !isCorrectAnswer(choice) && isSelected(choice)"
         (click)="selectChoice(choice)"
+        [ngClass]="{
+            'fas fa-lightbulb lightbulb-icon':
+                matchContextService.getContext() === contextOptions.CheaterView && choice.isCorrect && !isSelected(choice)
+        }"
     >
-    <i class="fas fa-lightbulb lightbulb-icon" *ngIf="matchContextService.getContext() === contextOptions.CheaterView && choice.isCorrect &&!isSelected(choice)"></i>
         <p>{{ i + 1 }}. {{ choice.text }}</p>
     </button>
 </div>

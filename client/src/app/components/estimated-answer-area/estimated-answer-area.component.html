@@ -17,7 +17,8 @@
 
         <div class="slider-container">
             <span class="bound-label">{{ lowerBound }}</span>
-            <mat-slider class="full-width" [min]="lowerBound" [max]="upperBound" [step]="1">
+            <mat-slider class="full-width" [min]="lowerBound" [max]="upperBound" [step]="1"
+            [value]="matchContextService.getContext() === contextOptions.CheaterView ? answerService.feedback.correctAnswer : 0">
                 <input matSliderThumb [formControl]="currentLongAnswerControl" (input)="onSliderChange($event)" />
             </mat-slider>
             <span class="bound-label">{{ upperBound }}</span>
