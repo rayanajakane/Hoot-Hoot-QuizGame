@@ -17,6 +17,7 @@ const mockMatches = [
         isPlaying: false,
         gameTitle: '',
         nPlayers: 1,
+        partyConfig: { isFriendsOnly: false, isEntryFeeRequired: false, entryFeeAmount: 0 },
     },
 ];
 

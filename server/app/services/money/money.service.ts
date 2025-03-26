@@ -1,18 +1,18 @@
 import { DonationRecord } from '@app/constants/donation-record';
-import { DONATION_LIMIT_EXCEEDED, INVALID_AMOUNT, LOW_BALANCE } from '@app/constants/money-errors';
-import { FirebaseAuthService } from '@app/modules/firebase/firebase-auth/firebase-auth.service';
+import { DONATION_LIMIT_EXCEEDED, INVALID_AMOUNT, LOW_BALANCE, ZERO_AMOUNT } from '@app/constants/money-errors';
 import { FirebaseRepositoryService } from '@app/modules/firebase/firebase-repository/firebase-repository.service';
+import { MatchRoomService } from '@app/services/match-room/match-room.service';
+import { MAX_REWARD, MIN_REWARD } from '@common/constants/match-constants';
 import { Injectable } from '@nestjs/common';
 import { Database } from 'firebase-admin/lib/database/database';
-
 @Injectable()
 export class MoneyService {
     private database: Database;
-    private readonly DAILY_DONATION_LIMIT = 100000;
+    private readonly DAILY_DONATION_LIMIT = 500;
 
     constructor(
         private readonly firebaseService: FirebaseRepositoryService,
-        private readonly firebaseAuthService: FirebaseAuthService,
+        private matchRoomService: MatchRoomService,
     ) {
         this.database = this.firebaseService.database;
     }
@@ -25,9 +25,6 @@ export class MoneyService {
     async updateBalance(uid: string, amount: number): Promise<number> {
         const balance = await this.getCurrentBalance(uid);
         const newBalance = balance + amount;
-        if (newBalance < 0) {
-            return balance;
-        }
         await this.database.ref(`users/${uid}/balance`).set(newBalance);
         return newBalance;
     }
@@ -45,7 +42,6 @@ export class MoneyService {
             const records = Object.values(donationHistory) as DonationRecord[];
             for (const record of records) {
                 if (record.timestamp >= todayTimestamp) {
-                    //TODO: Logic a revoir
                     donationsToday += record.amount;
                 }
             }
@@ -81,12 +77,14 @@ export class MoneyService {
         if (balance < amount) {
             errors.push(LOW_BALANCE);
         }
-
-        if (typeof amount !== 'number' || amount <= 0) {
+        if (amount < 0) {
             errors.push(INVALID_AMOUNT);
         }
 
         if (isDonation) {
+            if (amount == 0) {
+                errors.push(ZERO_AMOUNT);
+            }
             const donationsToday = await this.getAndClearDonationsToday(uid);
             if (donationsToday + amount > this.DAILY_DONATION_LIMIT) {
                 errors.push(DONATION_LIMIT_EXCEEDED);
@@ -94,5 +92,32 @@ export class MoneyService {
         }
 
         return errors.join(' ');
+    }
+
+    async rewardPlayers(roomCode: string): Promise<void> {
+        const room = this.matchRoomService.getRoom(roomCode);
+        const activePlayers = room.players.filter((player) => player.state !== 'exit');
+        const partyConfig = room.partyConfig;
+        const winners = this.matchRoomService.declareWinner(roomCode);
+        const isEntryFeeRequired = partyConfig.isEntryFeeRequired;
+
+        let minReward = MIN_REWARD;
+        let maxReward = MAX_REWARD;
+
+        if (isEntryFeeRequired) {
+            const totalReward = activePlayers.length * partyConfig.entryFeeAmount;
+            maxReward = Math.round(totalReward * (2 / 3));
+            const nonWinnersCount = activePlayers.length - winners.length;
+            if (nonWinnersCount > 0) {
+                minReward = Math.round((totalReward * (1 / 3)) / nonWinnersCount);
+            } else {
+                minReward = maxReward;
+            }
+        }
+
+        for (const player of activePlayers) {
+            const reward = winners.includes(player) ? maxReward : minReward;
+            await this.updateBalance(player.id, reward);
+        }
     }
 }
