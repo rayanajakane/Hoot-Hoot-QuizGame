@@ -28,9 +28,12 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +41,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.pointer.motionEventSpy
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -45,21 +49,33 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.polyquiz.SnackbarController
+import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.MatchPageInfo
 import com.example.polyquiz.match.domain.JoinMatchService
 import com.example.polyquiz.match.domain.JoinMatchService.matchInfos
 import com.example.polyquiz.match.domain.JoinMatchService.matchesInfos
+import com.example.polyquiz.match.domain.MatchRoomService
+import kotlinx.coroutines.launch
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
-fun JoinMatchPage(modifier: Modifier, authViewModel: AuthViewModel,navigateToHome: () -> Unit,
-                  navigateToMatchPage: () -> Unit,
-                  navigateToWaitPage: () -> Unit) {
+fun JoinMatchPage(
+    modifier: Modifier, authViewModel: AuthViewModel, navigateToHome: () -> Unit,
+    navigateToMatchPage: () -> Unit,
+    navigateToWaitPage: () -> Unit
+) {
     var room by remember { mutableStateOf("") }
     val username by remember { mutableStateOf(authViewModel.getUsername()) }
     val userId by remember { mutableStateOf(authViewModel.getUserId()) }
+    val scope = rememberCoroutineScope()
+    val shouldNavigate = rememberUpdatedState(MatchRoomService.timeToGoToWaitPage)
+    val errorMessage by remember {
+        derivedStateOf { MatchRoomService.errorMsg }
+    }
 
+    val keyboardController = LocalSoftwareKeyboardController.current
     val joinMatchService = JoinMatchService
 
     fun unlockedMatches(): List<MatchPageInfo> {
@@ -76,6 +92,28 @@ fun JoinMatchPage(modifier: Modifier, authViewModel: AuthViewModel,navigateToHom
 
     LaunchedEffect(Unit) {
         joinMatchService.getAllMatches()
+    }
+
+    LaunchedEffect(MatchRoomService.timeToGoToWaitPage) {
+        when (shouldNavigate.value) {
+            true -> {
+                MatchRoomService.timeToGoToWaitPage = false
+                navigateToWaitPage()
+            }
+
+            else -> Unit
+        }
+    }
+
+    LaunchedEffect(errorMessage) {
+        if (errorMessage.isNotEmpty()) {
+            SnackbarController.sendEvent(
+                event = SnackbarEvent(
+                    message = StringValue.DynamicString(errorMessage),
+                )
+            )
+            MatchRoomService.errorMsg = "" // Clear after handling
+        }
     }
 
     DisposableEffect(Unit) {
@@ -95,11 +133,20 @@ fun JoinMatchPage(modifier: Modifier, authViewModel: AuthViewModel,navigateToHom
                     userId,
                     navigateToHome,
                     navigateToWaitPage,
-                    navigateToMatchPage
-                )
+                    navigateToMatchPage,
+
+                    )
             },
             onError = { errorMessage ->
                 println("Error: $errorMessage")
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.DynamicString(errorMessage),
+                        )
+                    )
+                }
+
                 JoinMatchService.matchRoomCode = ""
             }
         )
@@ -107,22 +154,22 @@ fun JoinMatchPage(modifier: Modifier, authViewModel: AuthViewModel,navigateToHom
 
     fun joinRoom(code: String) {
         submitCode(code)
-        navigateToWaitPage()
+//        navigateToWaitPage()
     }
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
-    Column() {
-        Text(
-            text = "Joindre une partie",
-            style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold)
-        )
+        Column() {
+            Text(
+                text = "Joindre une partie",
+                style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold)
+            )
 
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-            Button(onClick = { navigateToHome() }) {
-                Text(text = "Page d'accueil")
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Button(onClick = { navigateToHome() }) {
+                    Text(text = "Page d'accueil")
+                }
+
             }
-
         }
-    }
 
         Column(modifier = Modifier.padding(26.dp, 1.dp)) {
             TextField(
@@ -136,7 +183,10 @@ fun JoinMatchPage(modifier: Modifier, authViewModel: AuthViewModel,navigateToHom
             )
             Button(
                 modifier = Modifier.width(120.dp),
-                onClick = { joinRoom(room) },
+                onClick = {
+                    joinRoom(room)
+                    keyboardController?.hide()
+                },
             ) {
                 Text(text = "Joindre")
             }
@@ -199,26 +249,28 @@ fun JoinMatchPage(modifier: Modifier, authViewModel: AuthViewModel,navigateToHom
 @Composable
 fun MatchCard(match: MatchPageInfo, onClick: () -> Unit = {}) {
     Spacer(modifier = Modifier.padding(5.dp))
-    Card(modifier = Modifier.padding()
-        .shadow(4.dp, shape = RectangleShape)
-        .background(Color.White)
-        , onClick = onClick, shape =RectangleShape) {
-            Column(modifier = Modifier.padding(15.dp)) {
-                Text(text = match.gameTitle)
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        Icons.Rounded.People,
-                        contentDescription = null
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(text = match.nPlayers.toString())
+    Card(
+        modifier = Modifier
+            .padding()
+            .shadow(4.dp, shape = RectangleShape)
+            .background(Color.White), onClick = onClick, shape = RectangleShape
+    ) {
+        Column(modifier = Modifier.padding(15.dp)) {
+            Text(text = match.gameTitle)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    Icons.Rounded.People,
+                    contentDescription = null
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(text = match.nPlayers.toString())
+            }
+            if (onClick != {}) {
+                Button(onClick = onClick, modifier = Modifier.padding(top = 10.dp)) {
+                    Text(text = "Joindre")
                 }
-                if (onClick != {}  ) {
-                    Button(onClick = onClick, modifier = Modifier.padding(top = 10.dp)) {
-                        Text(text = "Joindre")
-                    }
-                }
-           }
+            }
+        }
     }
 }
 
