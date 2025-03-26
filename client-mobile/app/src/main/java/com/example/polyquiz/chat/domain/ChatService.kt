@@ -13,26 +13,30 @@ import java.util.Date
 
 object ChatService {
     // REFERENCE: https://stackoverflow.com/questions/76115972/how-to-add-a-new-item-to-a-mutablelivedata-mutablelist-android-kotlin
-    private var _messages = MutableLiveData<List<Message>>()
-    val messages: LiveData<List<Message>> = _messages
+    private var _generalMessages = MutableLiveData<List<Message>>()
+    val generalMessages: LiveData<List<Message>> = _generalMessages
+    private var _matchRoomMessages = MutableLiveData<List<Message>>()
+    val matchRoomMessages: LiveData<List<Message>> = _matchRoomMessages
+    var channel = ChatChannel.GENERAL.value
+
 
     private val mSocket = SocketHandler.getSocket()
 
     fun addMessage(newMessage: Message) {
-        if (_messages.value != null && _messages.value!!.isNotEmpty()) {
-            if (newMessage.equals(messages.value!![_messages.value!!.size - 1])) {
+        if (_generalMessages.value != null && _generalMessages.value!!.isNotEmpty()) {
+            if (newMessage.equals(_generalMessages.value!![_generalMessages.value!!.size - 1])) {
                 // TEMPORARY HOTFIX: To avoid double messages
                 return
             }
         }
-        val newMessages = (_messages.value ?: emptyList()).plus(newMessage)
+        val newMessages = (_generalMessages.value ?: emptyList()).plus(newMessage)
         // REFERENCE: //https://stackoverflow.com/questions/53304347/mutablelivedata-cannot-invoke-setvalue-on-a-background-thread-from-coroutine
         // Using postValue is asynchronous (unlike setValue)
-        _messages.postValue(newMessages)
+        _generalMessages.postValue(newMessages)
     }
 
     fun deleteMessages() {
-        _messages.postValue(emptyList())
+        _generalMessages.postValue(emptyList())
     }
 
     fun sendMessage(text: String, userId: String, username: String, photoUrl: String) {
@@ -53,4 +57,24 @@ object ChatService {
             }
         }
     }
+
+    fun handleRoomEmoji() {
+        mSocket.on(ChatEvents.SENT_ROOM_EMOJI.value) { args ->
+            if (args[0] != null) {
+                val updatedMessage =
+                    Gson().fromJson(args[0].toString(), Message::class.java) as Message
+                _matchRoomMessages.value?.let { messages ->
+                    val messageIndex = messages.indexOfFirst { it.id == updatedMessage.id }
+                    if (messageIndex > -1) {
+                        val updatedMessages =
+                            messages.toMutableList().apply { this[messageIndex] = updatedMessage }
+                        _matchRoomMessages.postValue(updatedMessages)
+                    }
+                }
+            }
+
+        }
+    }
+
+
 }
