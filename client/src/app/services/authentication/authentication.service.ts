@@ -303,8 +303,9 @@ export class AuthenticationService {
             remove(usernameRef);
         }
         this.deleteUserAvatar(user.uid);
+        const id = user.uid;
         user.delete().then(() => {
-            this.socketHandler.send(FriendsEvents.UpdateData);
+            this.socketHandler.send(FriendsEvents.UserDeleted, id);
             this.setUser(null);
             this.disconnectSocket();
             this.router.navigateByUrl('/login');
