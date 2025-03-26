@@ -16,6 +16,12 @@ export class FriendsGateway implements OnGatewayDisconnect {
         private historyService: HistoryService,
     ) {}
 
+    @SubscribeMessage(FriendsEvents.UserDeleted)
+    async updateDeletedUser(client: Socket, userId: string) {
+        await this.friendsService.updateDeletedUser(userId);
+        this.updateData(client);
+    }
+
     @SubscribeMessage(FriendsEvents.UpdateData)
     async updateData(client: Socket) {
         const allUsers = await this.friendsService.getAllUsers('');
