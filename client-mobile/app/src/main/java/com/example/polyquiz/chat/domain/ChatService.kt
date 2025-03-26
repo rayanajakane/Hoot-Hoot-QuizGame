@@ -71,6 +71,7 @@ object ChatService {
     fun handleReceivedMessage() {
         mSocket.on(ChatEvents.SENT_GENERAL_MESSAGE.value) { args ->
             if (args[0] != null) {
+                handleGeneralEmoji()
                 val newMessage = Gson().fromJson(args[0].toString(), Message::class.java) as Message
                 addMessage(newMessage)
             }
