@@ -1,5 +1,5 @@
 import { DonationRecord } from '@app/constants/donation-record';
-import { DONATION_LIMIT_EXCEEDED, INVALID_AMOUNT, LOW_BALANCE } from '@app/constants/money-errors';
+import { DONATION_LIMIT_EXCEEDED, INVALID_AMOUNT, LOW_BALANCE, ZERO_AMOUNT } from '@app/constants/money-errors';
 import { FirebaseRepositoryService } from '@app/modules/firebase/firebase-repository/firebase-repository.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { MAX_REWARD, MIN_REWARD } from '@common/constants/match-constants';
@@ -77,10 +77,13 @@ export class MoneyService {
         if (balance < amount) {
             errors.push(LOW_BALANCE);
         }
+        if (amount < 0) {
+            errors.push(INVALID_AMOUNT);
+        }
 
         if (isDonation) {
-            if (typeof amount !== 'number' || amount <= 0) {
-                errors.push(INVALID_AMOUNT);
+            if (amount == 0) {
+                errors.push(ZERO_AMOUNT);
             }
             const donationsToday = await this.getAndClearDonationsToday(uid);
             if (donationsToday + amount > this.DAILY_DONATION_LIMIT) {
