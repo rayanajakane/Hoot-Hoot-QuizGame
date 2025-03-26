@@ -156,7 +156,7 @@ fun WaitPage(
             verticalArrangement = Arrangement.Center
         ) {
             Button(
-                onClick = { quitMatch(); navigateToHome(); },
+                onClick = { quitMatch() },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
             ) {
                 Text(MatchButtonActions.LEAVE_MATCH.value)
