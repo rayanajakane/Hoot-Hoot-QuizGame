@@ -14,6 +14,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.polyquiz.chat.domain.ChatService
+import com.example.polyquiz.constants.ChatEvents
 import com.example.polyquiz.constants.Route
 
 @SuppressLint("StaticFieldLeak")
@@ -75,7 +77,6 @@ object MatchRoomService {
     }
 
     fun disconnectFromRoom() {
-        println("still no crash")
         hasEnteredRoom = false
         socket.off(MatchEvents.FETCH_PLAYERS_DATA.value)
         socket.off(MatchEvents.MATCH_STARTING.value)
@@ -86,12 +87,14 @@ object MatchRoomService {
         socket.off(MatchEvents.KICK_PLAYER.value)
         socket.off(MatchEvents.ERROR.value)
         socket.off(MatchEvents.ROUTE_TO_RESULTS_PAGE.value)
+        socket.off(ChatEvents.NEW_MESSAGE.value)
+        socket.off(ChatEvents.SENT_ROOM_EMOJI.value)
+        ChatService.deleteRoomMessages()
         socket.emit(MatchEvents.DISCONNECT.value)
         MatchContextService.resetContext()
         hostId=""
         timeToGoToWaitPage = false
         hasBeenKickedOut = true
-        println("still no crash 2")
     }
 
     fun createRoom(gameId: String, hostId: String, hostUsername: String, isClassicMode: Boolean = true, isFriendsOnly: Boolean = false) {
@@ -127,6 +130,7 @@ object MatchRoomService {
 
         socket.emit(MatchEvents.JOIN_ROOM.value, sentInfo, Ack { args ->
             if (args.isNotEmpty()) {
+                ChatService.handleRoomMessage()
                 val response = args[0] as JSONObject
                 matchRoomCode = response.getString("code")
                 this.username = response.getString("username")

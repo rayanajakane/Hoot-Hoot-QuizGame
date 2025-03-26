@@ -45,6 +45,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -70,11 +71,9 @@ import java.util.Locale
 
 @Composable
 fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
-    // TODO : Update username when user changes username in userEditPage
-    val username by authViewModel.username.collectAsState()
+    val username by remember { mutableStateOf(authViewModel.getUsername() )}
     val userId by remember { mutableStateOf(authViewModel.getUserId() )}
-    var newMessageText by remember{ mutableStateOf("") }
-
+//    var selectedChat by remember { mutableStateOf("General") }
     var selectedChat by remember {
         mutableStateOf(if (MatchRoomService.getRoomCode().isNotEmpty()) "Match" else "General")
     }
@@ -83,6 +82,7 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
         "Match" -> ChatService.matchRoomMessages.observeAsState().value
         else -> ChatService.generalMessages.observeAsState().value
     }
+    var newMessageText by remember{ mutableStateOf("") }
 
     LaunchedEffect(messages?.size) {
         messages?.let { list ->
@@ -103,7 +103,7 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
             verticalArrangement = Arrangement.SpaceAround,
         ) {
             Text(text = username, fontSize = 30.sp, fontWeight = FontWeight(800), modifier = Modifier.padding(20.dp, 20.dp, 20.dp, 0.dp))
-            ChatSelectionMenu(selectedChat) { selectedChat = it }
+            ChatSelectionMenu(selectedChat) { newChat -> selectedChat = newChat }
             // REFERENCE: https://youtu.be/P3xQdINdrWY
             // To handle the situation where there would be no message to display.
             messages?.let {
@@ -112,7 +112,7 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                     modifier = Modifier.weight(1f).padding(20.dp, 20.dp, 20.dp, 0.dp),
                 ) {
                     itemsIndexed(it) { _: Int, message: Message ->
-                        MessageContainer(message, userId)
+                        MessageContainer(message, userId, username)
                     }
                 }
             } ?: LazyColumn(
@@ -134,14 +134,24 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                 ),
                 keyboardActions = KeyboardActions(onDone = {
                     // TODO: Change to actual user avatar
-                    ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, null)
+                    if (selectedChat == "General") {
+                        ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, null)
+                    }
+                    else {
+                        ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, MatchRoomService.getRoomCode())
+                    }
                     newMessageText = ""
                 }),
                 trailingIcon = {
                     val image = Icons.AutoMirrored.Filled.Send;
                     IconButton(onClick = {
                         // TODO: Change to actual user avatar
-                        ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, null)
+                        if (selectedChat == "General") {
+                            ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, null)
+                        }
+                        else {
+                            ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, MatchRoomService.getRoomCode())
+                        }
                         newMessageText = ""
                     }) {
                         Icon(imageVector = image, "send")
@@ -152,8 +162,9 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     }
 }
 
+
 @Composable
-fun MessageContainer(message: Message, currentUserId: String) {
+fun MessageContainer(message: Message, currentUserId: String, username: String) {
     val containerWidth = 225.dp
     val containerAlignment: Alignment.Horizontal
     val containerCorner: RoundedCornerShape
@@ -177,21 +188,29 @@ fun MessageContainer(message: Message, currentUserId: String) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.width(containerWidth)
             ) {
+                if(message.authorId != currentUserId) {
+                    AvatarImage(message.photoUrl)
+                }
                 Text(text = message.authorUsername, fontWeight = FontWeight(600))
                 Text(text = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(message.date).toString())
+                if(message.authorId == currentUserId) {
+                    AvatarImage(message.photoUrl)
+                }
             }
-            Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = containerColor
-                ),
-                shape = containerCorner,
-                modifier = Modifier.width(containerWidth)
-            ) {
-                Text(text = message.text, modifier = Modifier.padding(10.dp))
+            Column(modifier = Modifier.padding(top = 10.dp).align(alignment = AbsoluteAlignment.Left)) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = containerColor),
+                    shape = containerCorner,
+                    modifier = Modifier.width(containerWidth)
+                ) {
+                    Text(text = message.text, modifier = Modifier.padding(10.dp))
+                }
+                ReactionsRow(message, currentUserId, username, MatchRoomService.getRoomCode(), modifier = Modifier.align(alignment = AbsoluteAlignment.Left))
             }
         }
     }
 }
+
 
 
 
