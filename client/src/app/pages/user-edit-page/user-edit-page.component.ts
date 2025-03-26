@@ -9,6 +9,7 @@ import { Language } from '@app/interfaces/language';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { HistoryService } from '@app/services/history/history.service';
 import { NotificationService } from '@app/services/notification/notification.service';
+import { Theme, ThemeService } from '@app/services/theme/theme.service';
 import { TranslationService } from '@app/translation/translation.service';
 import { UserHistoryInfo } from '@common/interfaces/history-items';
 import { TranslocoService } from '@jsverse/transloco';
@@ -31,6 +32,7 @@ export class UserEditPageComponent implements OnInit {
     loadedImageFile: File | null = null;
 
     availableLangs: string[];
+    availableThemes: Theme[];
     userHistory: UserHistoryInfo = {
         auth: [],
         match: [],
@@ -51,6 +53,7 @@ export class UserEditPageComponent implements OnInit {
         ],
         avatar: [this.authenticationService.userAvatarUrl ? this.authenticationService.userAvatarUrl : PresetAvatar.Default],
         currentLang: [this.translationService.currentLangugage],
+        currentTheme: [this.themeService.currentTheme],
     });
 
     // eslint-disable-next-line max-params
@@ -60,11 +63,18 @@ export class UserEditPageComponent implements OnInit {
         public notificationService: NotificationService,
         private translocoService: TranslocoService,
         private translationService: TranslationService,
+        private themeService: ThemeService,
         private historyService: HistoryService,
         public dialog: MatDialog,
     ) {
         this.availableLangs = this.translocoService.getAvailableLangs() as string[];
+        this.availableThemes = this.themeService.getAvailableThemes() as Theme[];
+
         this.currentUser = this.authenticationService.currentUser;
+    }
+
+    get currentTheme() {
+        return this.form.controls['currentTheme'];
     }
 
     get username() {
@@ -133,7 +143,7 @@ export class UserEditPageComponent implements OnInit {
                 // Frees Firebase Storage space if user no longer needs uploaded avatar.
                 this.authenticationService.deleteUserAvatar(this.authenticationService.userId);
             }
-            // TODO: Consider adding the themes
+            this.themeService.setTheme(this.currentTheme.value as Theme);
             this.translationService.setLanguage(this.currentLang.value as string);
 
             this.authenticationService.editUserProfile(this.username.value as string, url);
