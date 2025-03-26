@@ -75,6 +75,7 @@ fun UserEditPage(
     navigateToHome: () -> Unit,
     navigateToCamera: () -> Unit,
     navigateToLogin: () -> Unit,
+    navigateToDrawing: () -> Unit,
     authViewModel: AuthViewModel,
     context: Context,
     cameraViewModel: CameraViewModel
@@ -245,6 +246,11 @@ fun UserEditPage(
                                     navigateToCamera()
                                 },
                             ) { Text(stringResource(R.string.upload_avatar)) }
+                            Button(
+                                onClick = {
+                                    navigateToDrawing()
+                                },
+                            ) { Text(stringResource(R.string.draw_avatar)) }
                             Text(stringResource(R.string.preset_avatars))
                             Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                                 ClickableAvatarPlaceholder(
