@@ -74,6 +74,7 @@ import java.util.Locale
 fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     val username by remember { mutableStateOf(authViewModel.getUsername() )}
     val userId by remember { mutableStateOf(authViewModel.getUserId() )}
+    val avatarURL by remember { mutableStateOf(authViewModel.getAvatarURL())}
 //    var selectedChat by remember { mutableStateOf("General") }
     var selectedChat by remember {
         mutableStateOf(if (MatchRoomService.getRoomCode().isNotEmpty()) "Match" else "General")
@@ -144,22 +145,21 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                 keyboardActions = KeyboardActions(onDone = {
                     // TODO: Change to actual user avatar
                     if (selectedChat == "General") {
-                        ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, null)
+                        ChatService.sendMessage(newMessageText, userId, username, avatarURL, null)
                     }
                     else {
-                        ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, MatchRoomService.getRoomCode())
+                        ChatService.sendMessage(newMessageText, userId, username, avatarURL, MatchRoomService.getRoomCode())
                     }
                     newMessageText = ""
                 }),
                 trailingIcon = {
                     val image = Icons.AutoMirrored.Filled.Send;
                     IconButton(onClick = {
-                        // TODO: Change to actual user avatar
                         if (selectedChat == "General") {
-                            ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, null)
+                            ChatService.sendMessage(newMessageText, userId, username, avatarURL, null)
                         }
                         else {
-                            ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, MatchRoomService.getRoomCode())
+                            ChatService.sendMessage(newMessageText, userId, username, avatarURL, MatchRoomService.getRoomCode())
                         }
                         newMessageText = ""
                     }) {
