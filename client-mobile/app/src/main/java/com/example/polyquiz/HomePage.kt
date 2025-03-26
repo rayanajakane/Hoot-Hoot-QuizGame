@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -52,9 +53,10 @@ fun HomePage(
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    var showDialog by remember { mutableStateOf(false) }
     val shouldNavigate = rememberUpdatedState(MatchRoomService.timeToGoToWaitPage)
-    val shouldNavigateToResults = rememberUpdatedState(MatchRoomService.isTimeToNavigateToResults)
+    val errorMessage by remember {
+        derivedStateOf { MatchRoomService.errorMsg }
+    }
 
     LaunchedEffect(authState.value, MatchRoomService.timeToGoToWaitPage) {
         when (authState.value) {
@@ -89,6 +91,17 @@ fun HomePage(
             }
 
             else -> Unit
+        }
+    }
+
+    LaunchedEffect(errorMessage) {
+        if (errorMessage.isNotEmpty()) {
+            SnackbarController.sendEvent(
+                event = SnackbarEvent(
+                    message = StringValue.DynamicString(errorMessage),
+                )
+            )
+            MatchRoomService.errorMsg = ""
         }
     }
 
