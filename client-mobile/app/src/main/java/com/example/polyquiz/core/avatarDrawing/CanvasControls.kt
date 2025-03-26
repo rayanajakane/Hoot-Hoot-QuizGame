@@ -27,6 +27,7 @@ import androidx.compose.ui.util.fastForEach
 import com.example.polyquiz.R
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
+import com.example.polyquiz.R
 
 @Composable
 fun ColumnScope.CanvasControls(
@@ -47,7 +48,7 @@ fun ColumnScope.CanvasControls(
             Box(
                 modifier = Modifier
                     .graphicsLayer {
-                        val scale = if(isSelected) 1.2f else 1f
+                        val scale = if (isSelected) 1.2f else 1f
                         scaleX = scale
                         scaleY = scale
                     }
@@ -56,7 +57,7 @@ fun ColumnScope.CanvasControls(
                     .background(color)
                     .border(
                         width = 2.dp,
-                        color = if(selectedColor == color) {
+                        color = if (selectedColor == color) {
                             Color.Black
                         } else {
                             Color.Transparent
@@ -65,8 +66,17 @@ fun ColumnScope.CanvasControls(
                     )
                     .clickable {
                         onSelectColor(color)
-                    }
-            )
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                if (color == Color.White) {
+                    Image(
+                        painter = painterResource(id = R.drawable.erasor),
+                        contentDescription = "Eraser",
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
         }
     }
     Button(
