@@ -47,6 +47,7 @@ export class FriendsService {
         this.socketHandler.socket.removeListener(FriendsEvents.ReturnAllFriends);
         this.socketHandler.socket.removeListener(FriendsEvents.ReturnAllPendingRequests);
         this.socketHandler.socket.removeListener(FriendsEvents.ReturnAllSentRequests);
+        this.currentQuery = '';
     }
 
     sendFriendRequest(toUserId: string) {

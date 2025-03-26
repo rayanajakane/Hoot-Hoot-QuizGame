@@ -34,6 +34,9 @@ export class LongAnswerStrategy extends QuestionStrategy {
 
             const currentPlayer = players.find((player) => player.id === grade.userId);
             currentPlayer.answerCorrectness = score;
+            if (currentPlayer.answerCorrectness > 0) {
+                currentPlayer.nGoodAnswers++;
+            }
             currentPlayer.score += currentQuestionPoints * (score / MULTIPLICATION_FACTOR);
         });
         // this.buildGradesHistogram(matchRoom, gradeTracker);
