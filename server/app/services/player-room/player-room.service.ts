@@ -129,6 +129,12 @@ export class PlayerRoomService {
         return this.matchRoomService.getRoom(matchRoomCode).bannedIds;
     }
 
+    getActivePlayers(matchRoomCode: string): Player[] {
+        return this.getPlayers(matchRoomCode).filter((player: Player) => {
+            return player.state !== PlayerState.exit;
+        });
+    }
+
     addBannedPlayers(matchRoomCode: string, userId: string) {
         const room = this.matchRoomService.getRoom(matchRoomCode);
         if (room) {
