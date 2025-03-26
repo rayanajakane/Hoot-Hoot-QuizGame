@@ -118,6 +118,7 @@ img {
     grid-template-areas:
         'empty months'
         'days squares';
+    grid-template-columns: auto 1fr;
     grid-gap: 0.1rem;
     font-size: 0.75rem;
 }
@@ -144,11 +145,16 @@ img {
     grid-area: days;
     display: grid;
     grid-gap: 0.1rem;
-    grid-template-rows: repeat(7, 1rem);
+    grid-template-rows: repeat(7, 0.75rem);
+}
+
+.days p {
+    height: 0.75rem;
+    font-size: 0.75rem;
 }
 
 .days :nth-child(odd) {
-    visibility: hidden;
+    // visibility: hidden;
 }
 
 .grid-container {
