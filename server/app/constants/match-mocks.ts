@@ -20,6 +20,7 @@ const MOCK_PLAYER: Player = {
     isPlaying: true,
     isChatActive: true,
     socket: undefined,
+    nGoodAnswers: 0,
     state: PlayerState.default,
 };
 const MOCK_MATCH_ROOM: MatchRoom = {

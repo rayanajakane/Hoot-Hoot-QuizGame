@@ -20,6 +20,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { SinonStubbedInstance, createStubInstance } from 'sinon';
 import { Socket } from 'socket.io';
+import { HistoryService } from '../history/history.service';
 import { QrCodeService } from '../qr-code/qr-code.service';
 import { MatchRoomService } from './match-room.service';
 
@@ -31,6 +32,7 @@ describe('MatchRoomService', () => {
     let timeService: TimeService;
     let qrCodeSpy: SinonStubbedInstance<QrCodeService>;
     let questionStrategyService: QuestionStrategyContext;
+    let historyService: SinonStubbedInstance<HistoryService>;
     let socket: SinonStubbedInstance<Socket>;
     let startTimerMock: jest.Mock;
     let mockServer;
@@ -42,6 +44,7 @@ describe('MatchRoomService', () => {
     beforeEach(async () => {
         socket = createStubInstance<Socket>(Socket);
         qrCodeSpy = createStubInstance(QrCodeService);
+        historyService = createStubInstance(HistoryService);
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 MatchRoomService,
@@ -55,6 +58,7 @@ describe('MatchRoomService', () => {
                     provide: QrCodeService,
                     useValue: qrCodeSpy,
                 },
+                { provide: HistoryService, useValue: historyService },
             ],
         }).compile();
 

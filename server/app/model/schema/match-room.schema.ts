@@ -29,4 +29,5 @@ export interface MatchRoom {
     startTime: Date;
     qrCodeUrl: string;
     isFriendsOnly: boolean;
+    end?: Date;
 }

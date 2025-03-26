@@ -41,6 +41,7 @@ export class ChatService {
         if (matchRoomIndex === INDEX_NOT_FOUND) {
             return;
         }
+        message.id = uuidv4();
         message.date = new Date();
         this.matchRoomService.matchRooms[matchRoomIndex].messages.push(message);
         return message;

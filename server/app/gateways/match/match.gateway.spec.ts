@@ -18,6 +18,7 @@ import {
 import { MatchGateway } from '@app/gateways/match/match.gateway';
 import { Player } from '@app/model/schema/player.schema';
 import { FriendsService } from '@app/services/friends/friends.service';
+import { HistoryService } from '@app/services/history/history.service';
 // import { HistogramService } from '@app/services/histogram/histogram.service';
 // import { HistoryService } from '@app/services/history/history.service';
 import { MatchBackupService } from '@app/services/match-backup/match-backup.service';
@@ -43,9 +44,11 @@ describe('MatchGateway', () => {
     let socket: SinonStubbedInstance<Socket>;
     let server: SinonStubbedInstance<Server>;
     let eventEmitter: EventEmitter2;
+    let historySpy: SinonStubbedInstance<HistoryService>;
 
     beforeEach(async () => {
         // histogramSpy = createStubInstance(HistogramService);
+        historySpy = createStubInstance(HistoryService);
         matchRoomSpy = createStubInstance(MatchRoomService);
         matchBackupSpy = createStubInstance(MatchBackupService);
         timeSpy = createStubInstance(TimeService);
@@ -63,6 +66,7 @@ describe('MatchGateway', () => {
                 { provide: TimeService, useValue: timeSpy },
                 { provide: PlayerRoomService, useValue: playerRoomSpy },
                 { provide: FriendsService, useValue: createStubInstance(FriendsService) },
+                { provide: HistoryService, useValue: historySpy },
                 // { provide: HistoryService, useValue: historySpy },
                 EventEmitter2,
             ],
@@ -105,7 +109,7 @@ describe('MatchGateway', () => {
         playerRoomSpy.getUsernameErrors.returns(HOST_CONFLICT);
         const sendErrorSpy = jest.spyOn(gateway, 'sendError').mockReturnThis();
         server.in.returns({
-            disconnectSockets: () => {
+            socketsLeave: (code) => {
                 return null;
             },
         } as BroadcastOperator<unknown, unknown>);
@@ -235,7 +239,7 @@ describe('MatchGateway', () => {
         const deleteSpy = jest.spyOn(matchRoomSpy, 'deleteRoom').mockReturnThis();
         const returnSpy = jest.spyOn(gateway, 'returnAllMatches').mockReturnThis();
         server.in.returns({
-            disconnectSockets: () => {
+            socketsLeave: (code) => {
                 return null;
             },
         } as BroadcastOperator<unknown, unknown>);
@@ -251,8 +255,11 @@ describe('MatchGateway', () => {
     });
 
     it('handleDisconnect() should disconnect host and all other players and delete the match room if the host disconnects', () => {
+        const mockRoom = MOCK_MATCH_ROOM;
+        mockRoom.players = [];
         matchRoomSpy.getRoomCodeByHostSocket.returns(MOCK_ROOM_CODE);
-        matchRoomSpy.getRoom.resolves(MOCK_MATCH_ROOM);
+
+        matchRoomSpy.getRoom.resolves(mockRoom);
         jest.spyOn(gateway as any, 'isRoomEmpty').mockReturnThis();
         const sendErrorSpy = jest.spyOn(gateway, 'sendError').mockReturnThis();
         const deleteSpy = jest.spyOn(gateway, 'deleteRoom').mockReturnThis();
