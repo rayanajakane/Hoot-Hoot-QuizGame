@@ -84,7 +84,8 @@
     },
     "common": {
         "cancel": "Annuler",
-        "play": "Jouer"
+        "play": "Jouer",
+        "play.modeCheater": "Jouer en mode tricheur"
     },
     "join": {
         "room-code": "Code de la partie",

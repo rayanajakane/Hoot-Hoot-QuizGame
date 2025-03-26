@@ -52,6 +52,12 @@ export class MatchService extends CommunicationService<Game> {
         const hostId = this.authenticationService.userId;
         const hostUsername = this.authenticationService.userDisplayName;
         this.matchRoomService.connect();
-        this.matchRoomService.createRoom(this.currentGame.id, hostId, hostUsername, isClassicMode, isFriendsOnly);
+        console.log(isClassicMode);
+        if (isClassicMode) {
+            this.matchRoomService.createRoom(this.currentGame.id, hostId, hostUsername, isClassicMode, isFriendsOnly);
+        }
+        else {
+            this.matchRoomService.createRoom(this.currentGame.id, hostId, hostUsername, isClassicMode = false, isFriendsOnly)
+        }
     }
 }

@@ -29,6 +29,8 @@ export class MatchRoomService {
     isHostPlaying: boolean;
     isCooldown: boolean;
     isQuitting: boolean;
+    isCheaterMode: boolean;
+    cheaterPlayer: Player;
 
     private hostId: string;
     private matchRoomCode: string;
@@ -76,6 +78,8 @@ export class MatchRoomService {
             this.onRedirectAfterDisconnection();
             this.onFetchPlayersData();
             this.onMatchStarted();
+            this.onMatchCheaterModeStarted();
+            this.onSelectedCheater();
             this.onBeginQuiz();
             this.onNextQuestion();
             this.onStartCooldown();
@@ -115,6 +119,15 @@ export class MatchRoomService {
 
             this.sendPlayersData(this.matchRoomCode);
             this.router.navigateByUrl('/match-room');
+        });
+    }
+    onSelectedCheater() {
+        this.socketService.on(MatchEvents.SendCheater, (data: { player: string }) => {
+            //TO DO: ADD ERROR HANDLING
+            const cheaterPlayer = this.getPlayerByUsername(data.player);
+            if (cheaterPlayer) {
+                this.cheaterPlayer = cheaterPlayer;
+            }
         });
     }
 
@@ -168,6 +181,23 @@ export class MatchRoomService {
     startMatch() {
         this.isMatchStarted = true;
         this.socketService.send(MatchEvents.StartMatch, this.matchRoomCode);
+    }
+
+    startMatchCheaterMode() {
+        this.isCheaterMode = true;
+        this.isMatchStarted = true; // we can keep the same.
+        this.socketService.send(MatchEvents.StartMatchCheaterMode, this.matchRoomCode);
+    }
+
+    onMatchCheaterModeStarted() {
+        this.socketService.on(MatchEvents.CheaterModeMatchStarting, (data: { start: boolean; gameTitle: string }) => {
+            if (data.start) {
+                this.isMatchStarted = data.start;
+            }
+            if (data.gameTitle) {
+                this.gameTitle = data.gameTitle;
+            }
+        });
     }
 
     onMatchStarted() {

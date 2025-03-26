@@ -7,7 +7,7 @@
                 id="score-feedback-area"
                 *ngIf="
                     (this.answerService.showFeedback && context === matchContext.PlayerView && !this.matchRoomService.isCooldown) ||
-                        (this.answerService.showFeedback && (context === matchContext.TestPage || context === matchContext.RandomMode));
+                        (this.answerService.showFeedback && (context === matchContext.TestPage || context === matchContext.RandomMode))|| context === matchContext.CheaterView ;
                     else elseBlock
                 "
             >

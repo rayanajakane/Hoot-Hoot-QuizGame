@@ -9,6 +9,7 @@ export enum MatchEvents {
     FetchPlayersData = 'fetchPlayersData',
     StartMatch = 'startMatch',
     MatchStarting = 'matchStarting',
+    CheaterModeMatchStarting = 'CheaterModeMatchStarting',
     BeginQuiz = 'beginQuiz',
     GoToNextQuestion = 'goToNextQuestion',
     StartCooldown = 'startCooldown',
@@ -20,4 +21,6 @@ export enum MatchEvents {
     Error = 'error',
     GetAllMatches = 'getAllMatches',
     ReturnAllMatches = 'returnAllMatches',
+    StartMatchCheaterMode = 'startMatchCheaterMode',
+    SendCheater = 'sendCheater',
 }

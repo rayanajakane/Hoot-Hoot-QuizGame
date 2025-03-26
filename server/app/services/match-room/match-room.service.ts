@@ -23,6 +23,7 @@ import { Server, Socket } from 'socket.io';
 export class MatchRoomService {
     matchRooms: MatchRoom[];
     backgroundHostSocket: Socket;
+    cheaterPlayer:Player;
 
     constructor(
         private readonly eventEmitter: EventEmitter2,
@@ -134,9 +135,35 @@ export class MatchRoomService {
 
         const roomIndex = this.getRoomIndex(matchRoomCode);
         this.matchRooms[roomIndex].startTime = new Date();
+        this.timeService.startTimer(server, matchRoomCode, COUNTDOWN_TIME, ExpiredTimerEvents.CountdownTimerExpired);
+    }
+
+    startCheaterModeMatch(socket: Socket, server: Server, matchRoomCode: string) {
+       // if (!this.canStartMatchCheaterMode(matchRoomCode)) return;
+        const gameTitle = this.getGameTitle(matchRoomCode);
+        const gameInfo: GameInfo = { start: true, gameTitle };
+        socket.to(matchRoomCode).emit(MatchEvents.CheaterModeMatchStarting, gameInfo);
+
+        const roomIndex = this.getRoomIndex(matchRoomCode);
+        this.matchRooms[roomIndex].startTime = new Date();
+        console.log("dow e go here")
 
         this.timeService.startTimer(server, matchRoomCode, COUNTDOWN_TIME, ExpiredTimerEvents.CountdownTimerExpired);
     }
+
+    getRandomPlayer(roomCode):Player{
+        const players = this.getRoom(roomCode).players;
+        if (players && players.length > 0) {
+            const randomIndex = Math.floor(Math.random() * players.length);
+            //onsole.log("all players", players)
+            console.log("rando", players[randomIndex].username)
+            this.cheaterPlayer = players[randomIndex];
+            return players[randomIndex];
+        } else {
+            return null;
+        }
+    }
+
 
     pauseMatchTimer(server: Server, matchRoomCode: string) {
         this.timeService.pauseTimer(server, matchRoomCode);
@@ -189,6 +216,12 @@ export class MatchRoomService {
         this.timeService.startTimer(server, matchRoomCode, matchRoom.questionDuration, ExpiredTimerEvents.QuestionTimerExpired);
     }
 
+    sendCheaterPlayer(server: Server, matchRoomCode: string, player:string){
+        const matchRoom: MatchRoom = this.getRoom(matchRoomCode);
+        // TO DO: FIX SYNTAX
+        server.in(matchRoomCode).emit(MatchEvents.SendCheater, {player});
+    }
+
     defineCurrentQuestionAnswer(matchRoomCode: string, question: Question) {
         const matchRoom: MatchRoom = this.getRoom(matchRoomCode);
         switch (question.type) {
@@ -222,6 +255,27 @@ export class MatchRoomService {
             return false;
         }
         return room.isLocked && room.players.length > 0;
+    }
+
+    canStartMatchCheaterMode(matchRoomCode: string): boolean {
+        const room = this.getRoom(matchRoomCode);
+        if (!room) {
+            return false;
+        }
+        return room.isLocked && room.players.length > 2 && this.isQuestionTypeNotQRL(matchRoomCode);
+    }
+
+    isQuestionTypeNotQRL(matchRoomCode){
+        const room = this.getRoom(matchRoomCode);
+        if (!room) {
+            return false;
+        } 
+        for (let question of room.game.questions) {
+            if (question.type === QuestionType.LongAnswer) {
+                return false;  
+            }
+        }
+        return true;
     }
 
     getCurrentQuestion(matchRoomCode: string) {

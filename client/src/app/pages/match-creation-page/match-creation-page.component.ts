@@ -7,6 +7,7 @@ import { Game } from '@app/interfaces/game';
 import { Question } from '@app/interfaces/question';
 import { GameService } from '@app/services/game/game.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
+import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { MatchService } from '@app/services/match/match.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { QuestionService } from '@app/services/question/question.service';
@@ -24,6 +25,7 @@ export class MatchCreationPageComponent implements OnInit {
     games: Game[] = [];
     selectedGame: Game;
     gameIsValid: boolean;
+    gameIsValidCheaterMode: boolean;
     matchContext = MatchContext;
     isRandomGame: boolean;
     isLoadingGames: boolean;
@@ -40,9 +42,11 @@ export class MatchCreationPageComponent implements OnInit {
         private readonly matchService: MatchService,
         private readonly matchContextService: MatchContextService,
         private readonly questionService: QuestionService,
+        private readonly matchRoomService: MatchRoomService,
     ) {
         this.gameIsValid = false;
         this.isRandomGame = false;
+        this.gameIsValidCheaterMode = false;
         this.isLoadingGames = false;
         this.isLoadingSelectedGame = false;
     }
@@ -88,6 +92,27 @@ export class MatchCreationPageComponent implements OnInit {
         return true;
     }
 
+    hasCorrectType(questions: Question[]) {
+        questions.forEach((element) => {
+            if (element.type === 'QRL') {
+                this.gameIsValidCheaterMode = false;
+
+                return false;
+            }
+            this.gameIsValidCheaterMode = true;
+            return true;
+        });
+        return false;
+    }
+
+    // hasEnoughPlayers(playersCount: number) {
+    //     if (playersCount < MINIMUM_PLAYERS) {
+    //         this.gameIsValidCheaterMode = false;
+    //         return false;
+    //     }
+    //     return true;
+    // }
+
     loadSelectedGame(selectedGame: Game): void {
         // this.isLoadingSelectedGame = true; // Deactivated animation because it looked weird on localhost. TODO: Check if it's still required on deployed app.
         this.isRandomGame = false;
@@ -121,6 +146,7 @@ export class MatchCreationPageComponent implements OnInit {
     validateGame(selectedGame: Game): void {
         if (selectedGame.isVisible) {
             this.gameIsValid = true;
+            this.hasCorrectType(selectedGame.questions);
         } else {
             const snackBarRef = this.notificationService.displayErrorMessageAction(SnackBarError.INVISIBLE, SnackBarAction.REFRESH);
             snackBarRef.onAction().subscribe(() => this.reloadAllGames());
@@ -130,12 +156,18 @@ export class MatchCreationPageComponent implements OnInit {
     revalidateGame(): void {
         if (this.selectedGame.isVisible) {
             this.gameIsValid = true;
+            this.hasCorrectType(this.selectedGame.questions);
             this.matchService.currentGame = this.selectedGame;
             this.matchService.saveBackupGame(this.selectedGame.id).subscribe((response: HttpResponse<string>) => {
                 if (response.body) {
                     const backupGame = JSON.parse(response.body);
                     this.matchService.currentGame = backupGame;
-                    this.matchService.createMatch(this.isFriendsOnly);
+                    if (this.matchRoomService.isCheaterMode && this.hasCorrectType(backupGame.questions)) {
+                        console.log(this.gameIsValidCheaterMode);
+                        this.matchService.createMatch(this.isFriendsOnly);
+                    } else {
+                        this.matchService.createMatch(this.isFriendsOnly, true);
+                    }
                 }
             });
         } else {
@@ -149,6 +181,15 @@ export class MatchCreationPageComponent implements OnInit {
         this.matchContextService.setContext(context);
         this.reloadSelectedGame();
     }
+
+    createMatchCheaterMode(context: MatchContext) {
+        this.buttonClicked = true; //we can set it here
+        this.matchRoomService.isCheaterMode = true;
+        this.matchContextService.setContext(context);
+        this.reloadSelectedGame();
+    }
+
+    questionTypeNotQRL() {}
 
     private sortMostPopularGames() {
         if (this.games.length <= N_POPULAR_GAMES) this.mostPopularGames = this.games;

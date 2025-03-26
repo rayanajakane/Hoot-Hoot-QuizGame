@@ -50,6 +50,15 @@
                     >
                         Jouer avec des amis
                     </button>
+                    <button
+                    mat-raised-button
+                    color="primary"
+                    (click)="isFriendsOnly = false; createMatchCheaterMode(matchContext.HostView)"
+                    *ngIf="gameIsValidCheaterMode"
+                    [disabled]="buttonClicked"
+                >
+                    {{ t('common.play.modeCheater') }}
+                </button>
                 </div>
             </div>
             <cdk-virtual-scroll-viewport class="virtual-scroll" itemSize="50">

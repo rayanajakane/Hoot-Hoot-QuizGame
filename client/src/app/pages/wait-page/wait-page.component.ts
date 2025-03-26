@@ -35,6 +35,9 @@ export class WaitPageComponent implements OnInit {
     get isHost() {
         return this.matchContextService.getContext() === MatchContext.HostView;
     }
+    get isCheater() {
+        return this.matchContextService.getContext() === MatchContext.CheaterView;
+    }
 
     get currentGame() {
         return this.matchService.currentGame;
@@ -51,6 +54,9 @@ export class WaitPageComponent implements OnInit {
             if (!this.matchContextService.getContext()) {
                 this.matchContextService.setContext(MatchContext.PlayerView);
             }
+            if (this.matchRoomService.cheaterPlayer) {
+                this.matchContextService.setContext(MatchContext.CheaterView);
+            }
         }
     }
 
@@ -65,7 +71,13 @@ export class WaitPageComponent implements OnInit {
     }
 
     startMatch() {
-        this.matchRoomService.startMatch();
+        if (!this.matchRoomService.isCheaterMode) {
+            this.matchRoomService.startMatch();
+        }
+
+        if (this.matchRoomService.isCheaterMode) {
+            this.matchRoomService.startMatchCheaterMode();
+        }
     }
 
     quitGame() {

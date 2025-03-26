@@ -156,6 +156,20 @@ export class MatchGateway implements OnGatewayDisconnect {
         this.returnAllMatches();
     }
 
+    @SubscribeMessage(MatchEvents.StartMatchCheaterMode)
+    startMatchCheaterMode(@ConnectedSocket() socket: Socket, @MessageBody() roomCode: string) {
+        this.matchRoomService.markGameAsPlaying(roomCode);
+        this.matchRoomService.getRoom(roomCode).players;
+        this.matchRoomService.startCheaterModeMatch(socket, this.server, roomCode);
+        this.playerRoomService.setStateForAll(roomCode, PlayerState.noInteraction);
+        const randomPlayer = this.matchRoomService.getRandomPlayer(roomCode);
+        if (randomPlayer) {
+            this.matchRoomService.sendCheaterPlayer(this.server, roomCode, randomPlayer.username);
+        }
+
+        this.returnAllMatches();
+    }
+
     @SubscribeMessage(MatchEvents.GoToNextQuestion)
     goToNextQuestion(@ConnectedSocket() socket: Socket, @MessageBody() roomCode: string) {
         this.playerRoomService.setStateForAll(roomCode, PlayerState.noInteraction);
