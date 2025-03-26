@@ -94,6 +94,10 @@ import java.util.Locale
 @Composable
 fun UserEditPage(
     modifier: Modifier,
+    navigateToHome: () -> Unit,
+    navigateToCamera: () -> Unit,
+    navigateToLogin: () -> Unit,
+    navigateToDrawing: () -> Unit,
     context: Context,
     authViewModel: AuthViewModel,
     cameraViewModel: CameraViewModel,
@@ -188,8 +192,6 @@ fun UserEditPage(
 
         // To hide the keyboard in case it's open
         keyboardController?.hide()
-
-        // Change username
         if (initialUsername != username) {
             usernameUpdate = username
             initialUsername = username
@@ -197,8 +199,6 @@ fun UserEditPage(
         } else {
             Log.d("Save UserProfile", "Username has not changed.")
         }
-
-        // Save avatar image
         val capturedImage = cameraViewModel.state.value.capturedImage
         if (!isPresetAvatar && capturedImage != null) {
             Log.d("UserEditPage", "Saving new stuff")
@@ -243,8 +243,6 @@ fun UserEditPage(
         } else {
             Log.d("Save UserProfile", "Theme was not changed")
         }
-
-        // Change app language
         if (initialLang != currentLang) {
             isUpdated = true
             translationService.setLanguage(currentLang)
@@ -255,8 +253,6 @@ fun UserEditPage(
         } else {
             Log.d("Save UserProfile", "Lang was not changed")
         }
-
-        // Send snackbar if updated
         if (isUpdated) {
             authViewModel.setProfileUpdated(isUpdated)
         }
@@ -275,7 +271,6 @@ fun UserEditPage(
             )
         }
     }
-
     Row(
         horizontalArrangement = Arrangement.spacedBy(26.dp),
         modifier = Modifier
@@ -357,6 +352,11 @@ fun UserEditPage(
                                     navigateToCamera()
                                 }, shape = RoundedCornerShape(3.dp)
                             ) { Text(stringResource(R.string.upload_avatar)) }
+                            Button(
+                                onClick = {
+                                    navigateToDrawing()
+                                },
+                            ) { Text(stringResource(R.string.draw_avatar)) }
                             Text(stringResource(R.string.preset_avatars))
                             Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                                 ClickableAvatarPlaceholder(
@@ -509,7 +509,7 @@ fun UserEditPage(
                         .fillMaxWidth()
                         .padding(8.dp),
 
-                    ) {
+                ) {
                     Column(modifier = Modifier.padding(20.dp)) {
                         Row(
                             modifier = Modifier
@@ -520,7 +520,7 @@ fun UserEditPage(
                                 .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
 
-                            ) {
+                        ) {
                             Text(text = stringResource(R.string.matches_played))
                             Text(text = historyData.stats.nMatchesPlayed.toString())
                         }
@@ -708,7 +708,6 @@ fun UserEditPage(
         }
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
