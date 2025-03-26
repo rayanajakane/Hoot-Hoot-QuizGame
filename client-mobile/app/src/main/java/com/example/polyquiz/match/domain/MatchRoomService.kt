@@ -75,6 +75,7 @@ object MatchRoomService {
     }
 
     fun disconnectFromRoom() {
+        println("still no crash")
         hasEnteredRoom = false
         socket.off(MatchEvents.FETCH_PLAYERS_DATA.value)
         socket.off(MatchEvents.MATCH_STARTING.value)
@@ -90,6 +91,7 @@ object MatchRoomService {
         hostId=""
         timeToGoToWaitPage = false
         hasBeenKickedOut = true
+        println("still no crash 2")
     }
 
     fun createRoom(gameId: String, hostId: String, hostUsername: String, isClassicMode: Boolean = true, isFriendsOnly: Boolean = false) {

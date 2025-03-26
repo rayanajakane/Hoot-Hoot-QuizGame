@@ -34,6 +34,7 @@ import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.MatchStatus
 import com.example.polyquiz.constants.UserInfo
 import androidx.compose.foundation.layout.*
+import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AnswerCorrectness
 
 @Composable
@@ -83,6 +84,8 @@ fun QuestionArea(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(24.dp))
+
+            ChatComponent(modifier = Modifier, authViewModel = authViewModel)
 
             TimerComponent(
                 modifier = Modifier.fillMaxWidth(),
