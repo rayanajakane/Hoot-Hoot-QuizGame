@@ -59,6 +59,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import coil.compose.rememberAsyncImagePainter
 import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.chat.domain.ChatChannel
 import com.example.polyquiz.chat.domain.ChatEmoji
 import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.chat.domain.Message
@@ -77,6 +78,14 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     var selectedChat by remember {
         mutableStateOf(if (MatchRoomService.getRoomCode().isNotEmpty()) "Match" else "General")
     }
+    LaunchedEffect(selectedChat) {
+        if (selectedChat == "Match") {
+            ChatService.channel = ChatChannel.ROOM.value
+        } else {
+            ChatService.channel = ChatChannel.GENERAL.value
+        }
+    }
+
     val listState = rememberLazyListState()
     val messages = when (selectedChat) {
         "Match" -> ChatService.matchRoomMessages.observeAsState().value
