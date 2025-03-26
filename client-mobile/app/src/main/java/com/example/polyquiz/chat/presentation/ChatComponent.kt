@@ -80,6 +80,8 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     val username by remember { mutableStateOf(authViewModel.getUsername()) }
     val userId by remember { mutableStateOf(authViewModel.getUserId()) }
     val roomCode by MatchRoomService.matchRoomCode.collectAsState()
+    val avatarURL by remember { mutableStateOf(authViewModel.getAvatarURL())}
+//    var selectedChat by remember { mutableStateOf("General") }
     var selectedChat by remember {
         mutableStateOf(if (roomCode.isNotEmpty()) "Match" else "General")
     }
@@ -141,7 +143,6 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                 modifier = Modifier.padding(20.dp, 20.dp, 20.dp, 0.dp)
             )
             ChatSelectionMenu(selectedChat) { newChat -> selectedChat = newChat }
-
             // REFERENCE: https://youtu.be/P3xQdINdrWY
             // To handle the situation where there would be no message to display.
             messages?.let {
@@ -181,44 +182,21 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                 keyboardActions = KeyboardActions(onDone = {
                     // TODO: Change to actual user avatar
                     if (selectedChat == "General") {
-                        ChatService.sendMessage(
-                            newMessageText,
-                            userId,
-                            username,
-                            PresetAvatar.DEFAULT.value,
-                            null
-                        )
-                    } else {
-                        ChatService.sendMessage(
-                            newMessageText,
-                            userId,
-                            username,
-                            PresetAvatar.DEFAULT.value,
-                            MatchRoomService.getRoomCode()
-                        )
+                        ChatService.sendMessage(newMessageText, userId, username, avatarURL, null)
+                    }
+                    else {
+                        ChatService.sendMessage(newMessageText, userId, username, avatarURL, MatchRoomService.getRoomCode())
                     }
                     newMessageText = ""
                 }),
                 trailingIcon = {
                     val image = Icons.AutoMirrored.Filled.Send;
                     IconButton(onClick = {
-                        // TODO: Change to actual user avatar
                         if (selectedChat == "General") {
-                            ChatService.sendMessage(
-                                newMessageText,
-                                userId,
-                                username,
-                                PresetAvatar.DEFAULT.value,
-                                null
-                            )
-                        } else {
-                            ChatService.sendMessage(
-                                newMessageText,
-                                userId,
-                                username,
-                                PresetAvatar.DEFAULT.value,
-                                MatchRoomService.getRoomCode()
-                            )
+                            ChatService.sendMessage(newMessageText, userId, username, avatarURL, null)
+                        }
+                        else {
+                            ChatService.sendMessage(newMessageText, userId, username, avatarURL, MatchRoomService.getRoomCode())
                         }
                         newMessageText = ""
                     }) {
@@ -303,6 +281,8 @@ fun MessageContainer(message: Message, currentUserId: String, username: String) 
 }
 
 
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatSelectionMenu(selectedChat: String, onChatSelected: (String) -> Unit) {
@@ -374,6 +354,8 @@ fun ChatSelectionMenu(selectedChat: String, onChatSelected: (String) -> Unit) {
 }
 
 
+
+
 @Composable
 fun AvatarImage(photoUrl: String?) {
     Image(
@@ -426,7 +408,6 @@ fun ReactionsRow(
         }
     }
 }
-
 @Composable
 fun ReactionButton(emoji: String, count: Int, onClick: () -> Unit) {
     Button(
