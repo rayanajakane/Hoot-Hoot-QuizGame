@@ -2,6 +2,8 @@ package com.example.polyquiz.pages.presentation
 
 import android.annotation.SuppressLint
 import android.service.autofill.FieldClassification.Match
+import android.util.Log
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,6 +27,9 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
@@ -45,12 +50,19 @@ import com.example.polyquiz.match.presentation.TimerComponent
 @SuppressLint("UnrememberedMutableState")
 @Composable
 
-fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: AuthViewModel, navigateToMatchRoom: () -> Unit) {
-   // var isLocked: Boolean = false
-    var isHostPlaying: Boolean = false
+fun WaitPage(
+    modifier: Modifier,
+    navigateToHome: () -> Unit,
+    authViewModel: AuthViewModel,
+    navigateToMatchRoom: () -> Unit
+) {
+    // var isLocked: Boolean = false
     val matchService = MatchService
     val timeService = TimeService
-   // var isLocked by mutableStateOf(false)
+    // var isLocked by mutableStateOf(false)
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
 
 
     fun resetWaitPage() {
@@ -82,8 +94,10 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
         if (isHost()) {
             gameTitle = getCurrentGame().title
             MatchContextService.setContext(MatchContext.HOSTVIEW)
+            Log.d("WaitPage", "IsHost")
         } else {
             MatchContextService.setContext(MatchContext.PLAYERVIEW)
+            Log.d("WaitPage", "IsPlayer")
         }
     }
 
@@ -119,14 +133,27 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
     }
 
 
-    Column(
+//    Column(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .padding(16.dp)
+//    ) {
+    Row(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                })
+            }
     ) {
-        Row(
+        ChatComponent(modifier = Modifier, authViewModel = authViewModel)
+
+        Column(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             Button(
                 onClick = { quitMatch(); navigateToHome(); },
@@ -134,17 +161,6 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
             ) {
                 Text(MatchButtonActions.LEAVE_MATCH.value)
             }
-        }
-        ChatComponent(modifier = Modifier, authViewModel = authViewModel)
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-
             if (MatchRoomService.isMatchStarted) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
@@ -167,11 +183,14 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(StartMatchFeedback.LOCK_MATCH.value)
                             Spacer(modifier = Modifier.width(8.dp))
-                             Switch(checked = MatchRoomService.isLocked, onCheckedChange = { toggleLock() })
+                            Switch(
+                                checked = MatchRoomService.isLocked,
+                                onCheckedChange = { toggleLock() })
                         }
                         Button(
-                            onClick = { startMatch()
-                                },
+                            onClick = {
+                                startMatch()
+                            },
                             enabled = MatchRoomService.isLocked && players.isNotEmpty()
 
                         ) {
@@ -195,8 +214,10 @@ fun WaitPage(modifier: Modifier, navigateToHome: () -> Unit, authViewModel: Auth
                 }
             }
         }
-        Spacer(modifier = Modifier.weight(1f))
     }
+
+
+//    }
 
 }
 
