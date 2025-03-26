@@ -112,7 +112,7 @@ fun JoinMatchPage(
                     message = StringValue.DynamicString(errorMessage),
                 )
             )
-            MatchRoomService.errorMsg = "" // Clear after handling
+            MatchRoomService.errorMsg = ""
         }
     }
 
