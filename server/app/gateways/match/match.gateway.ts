@@ -196,7 +196,6 @@ export class MatchGateway implements OnGatewayDisconnect {
 
     @OnEvent(MatchEvents.RouteToResultsPage)
     onRouteToResultsPage(matchRoomCode: string) {
-        // add money prize to winners
         this.routeToResultsPage({} as Socket, matchRoomCode);
     }
 
