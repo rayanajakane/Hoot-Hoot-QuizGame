@@ -1,6 +1,5 @@
-import { FirebaseAuthService } from '@app/modules/firebase/firebase-auth/firebase-auth.service';
 import { FirebaseRepositoryService } from '@app/modules/firebase/firebase-repository/firebase-repository.service';
-import { HistoryAuthItem, HistoryMatchItem, UserHistory } from '@common/interfaces/history-items';
+import { HistoryAuthItem, HistoryMatchItem, UserHistoryInfo } from '@common/interfaces/history-items';
 import { Injectable } from '@nestjs/common';
 import { Database } from 'firebase-admin/lib/database/database';
 
@@ -8,10 +7,7 @@ import { Database } from 'firebase-admin/lib/database/database';
 export class HistoryService {
     private database: Database;
 
-    constructor(
-        private readonly firebaseService: FirebaseRepositoryService,
-        private readonly firebaseAuthService: FirebaseAuthService,
-    ) {
+    constructor(private readonly firebaseService: FirebaseRepositoryService) {
         this.database = this.firebaseService.database;
     }
 
@@ -19,12 +15,50 @@ export class HistoryService {
         const authHistory = await this.getAuthHistory(userId);
         const matchHistory = await this.getMatchHistory(userId);
         const stats = this.getMatchStats(matchHistory);
-        const history: UserHistory = {
+        const intensityGrid = this.getIntensityGrid(matchHistory);
+        const history: UserHistoryInfo = {
             auth: authHistory,
             match: matchHistory,
             stats,
+            intensityGrid,
         };
         return history;
+    }
+
+    getIntensityGrid(historyMatchItems: HistoryMatchItem[]) {
+        const year = historyMatchItems[historyMatchItems.length - 1].end.getFullYear();
+        const yearStart = new Date(year, 0, 0);
+        const isLeapYear = (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
+        const nDays = isLeapYear ? 366 : 365;
+        const intensityGrid = Array(nDays);
+        const matchCount: number[] = Array(nDays);
+        intensityGrid.fill(0);
+        matchCount.fill(0);
+        historyMatchItems.forEach((historyMatchItem) => {
+            if (historyMatchItem.end.getFullYear() === year) {
+                // Reference: https://stackoverflow.com/questions/8619879/javascript-calculate-the-day-of-the-year-1-366
+                const timeDifference =
+                    historyMatchItem.end.getTime() -
+                    yearStart.getTime() +
+                    (yearStart.getTimezoneOffset() - historyMatchItem.end.getTimezoneOffset()) * 60 * 1000;
+                const index = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+                matchCount[index]++;
+            }
+        });
+        const averageMatchCount = matchCount.reduce((a, b) => a + b) / nDays;
+        const maxMatchCount = Math.max(...matchCount);
+        matchCount.forEach((count, index) => {
+            if (count === 0) {
+                intensityGrid[index] = 0;
+            } else if (count < averageMatchCount) {
+                intensityGrid[index] = 1;
+            } else if (count >= averageMatchCount && count != maxMatchCount) {
+                intensityGrid[index] = 2;
+            } else if (count === maxMatchCount) {
+                intensityGrid[index] = 3;
+            }
+        });
+        return intensityGrid;
     }
 
     getMatchStats(historyMatchItems: HistoryMatchItem[]) {
@@ -36,8 +70,13 @@ export class HistoryService {
             totalPercentage += historyMatchItem.nGoodAnswers / historyMatchItem.nTotalQuestions;
             totalTime += historyMatchItem.end.getTime() - historyMatchItem.start.getTime();
         });
-        const averageGoodAnswersPercentage = totalPercentage / nMatchesPlayed;
-        const averageTime = totalTime / nMatchesPlayed / 1000;
+        let averageGoodAnswersPercentage: number;
+        if (nMatchesPlayed) {
+            averageGoodAnswersPercentage = Math.round((totalPercentage / nMatchesPlayed) * 100);
+        } else {
+            averageGoodAnswersPercentage = 0;
+        }
+        const averageTime = Math.round(totalTime / nMatchesPlayed / 1000);
         const stats = {
             nMatchesPlayed,
             nMatchesWon,

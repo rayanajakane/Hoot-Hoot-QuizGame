@@ -1,7 +1,8 @@
-export interface UserHistory {
+export interface UserHistoryInfo {
     auth: HistoryAuthItem[];
     match: HistoryMatchItem[];
     stats: MatchStats;
+    intensityGrid: number[];
 }
 
 export interface HistoryAuthItem {

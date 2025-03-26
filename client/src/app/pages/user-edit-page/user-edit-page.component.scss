@@ -111,3 +111,69 @@ img {
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
 }
+
+// Reference: https://codepen.io/ire/pen/Legmwo/
+.grid-labels-container {
+    display: inline grid;
+    grid-template-areas: 'empty months days squares';
+    grid-gap: 0.1rem;
+}
+
+.months {
+    grid-area: months;
+    display: grid;
+    grid-template-columns:
+        calc(var(--week-width) * 4) /* Jan */
+        calc(var(--week-width) * 4) /* Feb */
+        calc(var(--week-width) * 4) /* Mar */
+        calc(var(--week-width) * 5) /* Apr */
+        calc(var(--week-width) * 4) /* May */
+        calc(var(--week-width) * 4) /* Jun */
+        calc(var(--week-width) * 5) /* Jul */
+        calc(var(--week-width) * 4) /* Aug */
+        calc(var(--week-width) * 4) /* Sep */
+        calc(var(--week-width) * 5) /* Oct */
+        calc(var(--week-width) * 4) /* Nov */
+        calc(var(--week-width) * 5) /* Dec */;
+}
+
+.days {
+    grid-area: days;
+    display: grid;
+    grid-gap: 0.1rem;
+    grid-template-rows: repeat(7, 1rem);
+}
+
+.days li:nth-child(odd) {
+    visibility: hidden;
+}
+
+.grid-container {
+    display: grid;
+    grid-gap: 0.1rem;
+    grid-template-rows: repeat(7, 0.75rem);
+    grid-auto-flow: column;
+    grid-auto-columns: 0.75rem;
+    grid-area: squares;
+}
+
+.square {
+    width: 0.75rem;
+    height: 0.75rem;
+}
+
+.square {
+    background-color: #ebedf0;
+}
+
+.square1 {
+    background-color: #c6e48b;
+}
+
+.square2 {
+    background-color: #7bc96f;
+}
+
+.square3 {
+    background-color: #196127;
+}

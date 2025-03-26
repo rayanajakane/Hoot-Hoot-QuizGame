@@ -8,7 +8,7 @@ import { AuthenticationService } from '@app/services/authentication/authenticati
 import { HistoryService } from '@app/services/history/history.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { TranslationService } from '@app/translation/translation.service';
-import { UserHistory } from '@common/interfaces/history-items';
+import { UserHistoryInfo } from '@common/interfaces/history-items';
 import { TranslocoService } from '@jsverse/transloco';
 
 export interface UserEditData {
@@ -29,7 +29,7 @@ export class UserEditPageComponent implements OnInit {
     loadedImageFile: File | null = null;
 
     availableLangs: string[];
-    userHistory: UserHistory = {
+    userHistory: UserHistoryInfo = {
         auth: [],
         match: [],
         stats: {
@@ -38,6 +38,7 @@ export class UserEditPageComponent implements OnInit {
             averageGoodAnswersPercentage: 0,
             averageTime: 0,
         },
+        intensityGrid: Array(365).fill(0),
     };
 
     form = this.fb.group({
@@ -90,11 +91,12 @@ export class UserEditPageComponent implements OnInit {
                     averageGoodAnswersPercentage: 0,
                     averageTime: 0,
                 },
+                intensityGrid: Array(365).fill(0),
             };
             return;
         }
         this.historyService.getUserHistory(this.currentUser.uid).subscribe({
-            next: (userHistory: UserHistory) => {
+            next: (userHistory: UserHistoryInfo) => {
                 console.log(userHistory);
                 this.userHistory = userHistory;
             },
@@ -108,6 +110,7 @@ export class UserEditPageComponent implements OnInit {
                         averageGoodAnswersPercentage: 0,
                         averageTime: 0,
                     },
+                    intensityGrid: Array(365).fill(0),
                 };
             },
         });

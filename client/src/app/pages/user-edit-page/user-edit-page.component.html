@@ -93,6 +93,37 @@
                     <p>{{ userHistory.stats.averageTime }} s</p>
                 </div>
             </mat-card>
+            <h2>{{ t('history.grid-label') }}</h2>
+            <div class="grid-labels-container">
+                <div class="months">
+                    <p>{{ t('history.jan') }}</p>
+                    <p>{{ t('history.feb') }}</p>
+                    <p>{{ t('history.mar') }}</p>
+                    <p>{{ t('history.apr') }}</p>
+                    <p>{{ t('history.may') }}</p>
+                    <p>{{ t('history.jun') }}</p>
+                    <p>{{ t('history.jul') }}</p>
+                    <p>{{ t('history.aug') }}</p>
+                    <p>{{ t('history.sep') }}</p>
+                    <p>{{ t('history.oct') }}</p>
+                    <p>{{ t('history.nov') }}</p>
+                    <p>{{ t('history.dec') }}</p>
+                </div>
+                <div class="days">
+                    <p>{{ t('history.sun') }}</p>
+                    <p>{{ t('history.mon') }}</p>
+                    <p>{{ t('history.tue') }}</p>
+                    <p>{{ t('history.wed') }}</p>
+                    <p>{{ t('history.thu') }}</p>
+                    <p>{{ t('history.fri') }}</p>
+                    <p>{{ t('history.sat') }}</p>
+                </div>
+                <div class="grid-container">
+                    <div class="grid-squares" *ngFor="let level of userHistory.intensityGrid">
+                        <div class="square" [ngClass]="'square' + level.toString()"></div>
+                    </div>
+                </div>
+            </div>
             <h2>{{ t('history.match-history') }}</h2>
             <p *ngIf="userHistory.match.length === 0" class="no-item-to-display">{{ t('history.no-item') }}</p>
             <mat-card class="history-match-item header-card" *ngIf="userHistory.match.length !== 0">
@@ -109,6 +140,7 @@
                     <p>{{ item.hasGivenUp ? '✔' : '-' }}</p>
                 </mat-card>
             </div>
+
             <h2>{{ t('history.auth-history') }}</h2>
             <mat-card class="history-auth-item header-card" color="primary">
                 <p>{{ t('history.date') }}</p>
