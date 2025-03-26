@@ -1,16 +1,21 @@
 package com.example.polyquiz.match.domain
 import com.example.polyquiz.constants.MatchContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 object MatchContextService {
-    private var context: MatchContext = MatchContext.Null
-
+    private val _context = MutableStateFlow(MatchContext.Null)
+    val context = _context.asStateFlow()
     fun resetContext() {
-        context = MatchContext.Null
+        _context.value = MatchContext.Null
     }
 
     fun setContext(context: MatchContext) {
-        this.context = context
+        _context.value = context
     }
 
-    fun getContext(): MatchContext = context
+    fun getContext(): MatchContext {
+        return context.value
+    }
 }
+

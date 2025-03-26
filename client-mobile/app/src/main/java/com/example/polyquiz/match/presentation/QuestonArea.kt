@@ -1,6 +1,7 @@
 package com.example.polyquiz.match.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -34,6 +35,10 @@ import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.MatchStatus
 import com.example.polyquiz.constants.UserInfo
 import androidx.compose.foundation.layout.*
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AnswerCorrectness
 
 @Composable
@@ -49,6 +54,8 @@ fun QuestionArea(
 ) {
 
     var room by remember { mutableStateOf(matchRoomService.getRoomCode()) }
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
     var context by remember { mutableStateOf(matchContextService.getContext()) }
     val question by matchRoomService::currentQuestion
     val score by answerService::playerScore
@@ -66,16 +73,25 @@ fun QuestionArea(
                 MatchRoomService.hasBeenKickedOut = false
                 navigateToHome()
             }
+
             else -> Unit
         }
     }
     context = matchContextService.getContext()
 
-    fun routeToResultsPage(){
+    fun routeToResultsPage() {
         matchRoomService.routeToResultsPage()
     }
 
-    Row(modifier = Modifier.fillMaxSize()) {
+    Row(modifier = Modifier
+        .fillMaxSize()
+        .pointerInput(Unit) {
+            detectTapGestures(onTap = {
+                focusManager.clearFocus()
+                keyboardController?.hide()
+            })
+        }) {
+        ChatComponent(modifier = Modifier, authViewModel = authViewModel)
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -83,6 +99,8 @@ fun QuestionArea(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(24.dp))
+
+
 
             TimerComponent(
                 modifier = Modifier.fillMaxWidth(),
@@ -191,6 +209,7 @@ fun QuestionArea(
                             modifier = Modifier.fillMaxWidth(0.8f)
                         )
                     }
+
                     QuestionType.ESTIMATED_ANSWER.value -> {
                         EstimatedAnswerArea(
                             answerService,
@@ -224,55 +243,54 @@ fun QuestionArea(
                 }
             }
 
-            }
-        if(MatchRoomService.isMatchStarted)
-    {
-        PlayersListComponent(
-            matchRoomService = matchRoomService,
-            context = matchContextService,
-            players = matchRoomService.players,
-            modifier = Modifier
-                .width(250.dp)
-                .fillMaxHeight(),
-            extraContent = {
-                Column {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    println(context)
-                    if (context == MatchContext.HOSTVIEW && !matchRoomService.isCooldown  ) {
+        }
+        if (MatchRoomService.isMatchStarted) {
+            PlayersListComponent(
+                matchRoomService = matchRoomService,
+                context = matchContextService,
+                players = matchRoomService.players,
+                modifier = Modifier
+                    .width(250.dp)
+                    .fillMaxHeight(),
+                extraContent = {
+                    Column {
                         Spacer(modifier = Modifier.height(16.dp))
-                        if(!answerService.isEndGame) {
-                            Button(onClick = { matchRoomService.goToNextQuestion() }) {
-                                Text("QUESTION SUIVANTE")
+                        println(context)
+                        if (context == MatchContext.HOSTVIEW && !matchRoomService.isCooldown) {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            if (!answerService.isEndGame) {
+                                Button(onClick = { matchRoomService.goToNextQuestion() }) {
+                                    Text("QUESTION SUIVANTE")
+                                }
+                            } else {
+                                Button(
+                                    onClick = {
+                                        routeToResultsPage();
+                                        navigateToResultsPage()
+                                    },
+                                    modifier = Modifier.fillMaxWidth(0.8f),
+                                    shape = RoundedCornerShape(8.dp)
+                                ) {
+                                    Text("Présenter les résultats finaux")
+                                }
                             }
                         }
-                        else{
-                            Button(
-                                onClick = {
-                                    routeToResultsPage();
-                                    navigateToResultsPage()},
-                                modifier = Modifier.fillMaxWidth(0.8f),
-                                shape = RoundedCornerShape(8.dp)
-                            ) {
-                                Text("Présenter les résultats finaux")
-                            }
-                        }
-                    }
 
-                    Button(
-                        onClick = {
-                            matchRoomService.isQuitting = true
-                            matchRoomService.disconnectFromRoom()
-                            navigateToHome()
+                        Button(
+                            onClick = {
+                                matchRoomService.isQuitting = true
+                                matchRoomService.disconnectFromRoom()
+                                navigateToHome()
+                            }
+                        ) {
+                            Text("Quitter")
                         }
-                    ) {
-                        Text("Quitter")
                     }
                 }
-            }
-        )
-    }
+            )
         }
-
-
     }
+
+
+}
 
