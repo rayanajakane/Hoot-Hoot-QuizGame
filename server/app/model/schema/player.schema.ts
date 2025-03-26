@@ -11,6 +11,7 @@ export interface Player {
     score: number;
     answerCorrectness: AnswerCorrectness;
     bonusCount: number;
+    nGoodAnswers: number;
     isPlaying: boolean;
     isChatActive: boolean;
     socket: Socket;

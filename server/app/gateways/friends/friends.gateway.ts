@@ -1,14 +1,20 @@
 import { FriendsService } from '@app/services/friends/friends.service';
+import { HistoryService } from '@app/services/history/history.service';
 import { FriendsEvents } from '@common/events/friends.events';
 import { FriendsInfo } from '@common/interfaces/friends-info';
+import { HistoryAuthItem } from '@common/interfaces/history-items';
 import { OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { v4 as uuidv4 } from 'uuid';
 
 @WebSocketGateway({ cors: true })
 export class FriendsGateway implements OnGatewayDisconnect {
     @WebSocketServer() private server: Server;
     private userSockets: Map<string, string> = new Map(); // userId -> socketId
-    constructor(private friendsService: FriendsService) {}
+    constructor(
+        private friendsService: FriendsService,
+        private historyService: HistoryService,
+    ) {}
 
     @SubscribeMessage(FriendsEvents.UpdateData)
     async updateData(client: Socket) {
@@ -110,8 +116,26 @@ export class FriendsGateway implements OnGatewayDisconnect {
         this.server.emit(event, data);
     }
 
+    @SubscribeMessage(FriendsEvents.Connect)
+    handleConnect(client: Socket, userId: string): void {
+        this.userSockets.set(userId, client.id);
+        const historyAuthItem: HistoryAuthItem = {
+            id: uuidv4(),
+            isLogin: true,
+            date: new Date(),
+        };
+        this.historyService.addAuthHistoryItem(userId, historyAuthItem);
+    }
+
+    @SubscribeMessage('disconnect')
     handleDisconnect(client: Socket): void {
         const userId = Array.from(this.userSockets.entries()).find(([_, socketId]) => socketId === client.id)?.[0];
+        const historyAuthItem: HistoryAuthItem = {
+            id: uuidv4(),
+            isLogin: false,
+            date: new Date(),
+        };
+        this.historyService.addAuthHistoryItem(userId, historyAuthItem);
         if (userId) {
             this.userSockets.delete(userId);
         }
