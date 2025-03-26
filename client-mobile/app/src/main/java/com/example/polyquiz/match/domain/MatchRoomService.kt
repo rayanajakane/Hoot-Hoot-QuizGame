@@ -93,7 +93,7 @@ object MatchRoomService {
         socket.emit(MatchEvents.DISCONNECT.value)
         MatchContextService.resetContext()
         hostId=""
-      //  timeToGoToWaitPage = false
+        timeToGoToWaitPage = false
         hasBeenKickedOut = true
         Log.d("Disconnect from room WaitPage","Called disconnectFromRoom, hostId=$hostId" )
         isTimeToNavigateToResults= false
