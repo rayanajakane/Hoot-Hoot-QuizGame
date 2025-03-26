@@ -113,7 +113,7 @@ export class HistoryService {
         historyAuthItems.sort((a: HistoryAuthItem, b: HistoryAuthItem) => {
             return a.date.getTime() - b.date.getTime();
         });
-        return historyAuthItems;
+        return historyAuthItems.reverse();
     }
 
     async addAuthHistoryItem(userId: string, historyAuthItem: HistoryAuthItem) {
@@ -150,7 +150,7 @@ export class HistoryService {
         historyMatchItems.sort((a: HistoryMatchItem, b: HistoryMatchItem) => {
             return a.start.getTime() - b.start.getTime();
         });
-        return historyMatchItems;
+        return historyMatchItems.reverse();
     }
 
     async addMatchHistoryItem(userId: string, historyMatchItem: HistoryMatchItem) {

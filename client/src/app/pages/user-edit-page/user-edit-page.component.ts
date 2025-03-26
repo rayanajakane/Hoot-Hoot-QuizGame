@@ -97,11 +97,9 @@ export class UserEditPageComponent implements OnInit {
         }
         this.historyService.getUserHistory(this.currentUser.uid).subscribe({
             next: (userHistory: UserHistoryInfo) => {
-                console.log(userHistory);
                 this.userHistory = userHistory;
             },
             error: (error) => {
-                console.log(error);
                 this.userHistory = {
                     auth: [],
                     match: [],
