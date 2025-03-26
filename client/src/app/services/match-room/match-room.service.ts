@@ -40,6 +40,8 @@ export class MatchRoomService {
     partyConfig: PartyConfig;
 
     currentAnswers: string[] = [];
+    isCheaterMode: boolean;
+    cheaterPlayer: Player;
 
     private hostId: string;
     private matchRoomCode: string;
