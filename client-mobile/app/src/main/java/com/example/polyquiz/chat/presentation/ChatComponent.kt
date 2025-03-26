@@ -53,7 +53,7 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     // TODO : Update username when user changes username in userEditPage
     val username by authViewModel.username.collectAsState()
     val userId by remember { mutableStateOf(authViewModel.getUserId() )}
-    val messages by ChatService.messages.observeAsState()
+    val messages by ChatService.generalMessages.observeAsState()
     var newMessageText by remember{ mutableStateOf("") }
 
     Card(
