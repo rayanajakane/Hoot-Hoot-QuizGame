@@ -12,6 +12,7 @@ import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { MoneyService } from '@app/services/money/money.service';
 import { PartyService } from '@app/services/party/party.service';
 import { PlayerRoomService } from '@app/services/player-room/player-room.service';
+import { TimeService } from '@app/services/time/time.service';
 import { PlayerState } from '@common/constants/player-states';
 import { ChatEvents } from '@common/events/chat.events';
 import { MatchEvents } from '@common/events/match.events';
@@ -36,6 +37,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         private readonly matchBackupService: MatchBackupService,
         private readonly friendService: FriendsService,
         private readonly moneyService: MoneyService,
+        private readonly timeService: TimeService,
         // private readonly histogramService: HistogramService,
         // private readonly historyService: HistoryService,
         private readonly partyService: PartyService,
@@ -112,6 +114,7 @@ export class MatchGateway implements OnGatewayDisconnect {
 
         this.playerRoomService.setStateForAll(matchRoomCode, PlayerState.default);
         this.server.to(matchRoomCode).emit(MatchEvents.RouteToResultsPage);
+
         await this.moneyService.rewardPlayers(matchRoomCode);
         for (const player of this.matchRoomService.matchRooms[roomIndex].players) {
             const currPlayerBalance = await this.moneyService.getCurrentBalance(player.id);
@@ -218,10 +221,17 @@ export class MatchGateway implements OnGatewayDisconnect {
         }
         const room = this.matchRoomService.getRoom(roomCode);
         const isRoomEmpty = this.isRoomEmpty(room);
-        if (!room.isPlaying && !room.currentQuestionIndex && room.partyConfig.isEntryFeeRequired) {
-            await this.partyService.leaveParty(player.id, roomCode);
-            const currPlayerBalance = await this.moneyService.getCurrentBalance(player.id);
-            this.server.in(socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
+        const isOnePlayerLeft = this.isOnePlayerLeft(room);
+
+        if (room.partyConfig.isEntryFeeRequired) {
+            if (!room.isPlaying && !room.currentQuestionIndex) {
+                await this.partyService.leaveParty(player.id, roomCode);
+                const currPlayerBalance = await this.moneyService.getCurrentBalance(player.id);
+                this.server.in(socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
+            } else if (isOnePlayerLeft) {
+                this.timeService.expireTimer(roomCode, this.server, ExpiredTimerEvents.QuestionTimerExpired);
+                this.routeToResultsPage({} as Socket, roomCode);
+            }
         }
         socket.leave(roomCode);
         if (room.isPlaying && isRoomEmpty) {
@@ -254,5 +264,9 @@ export class MatchGateway implements OnGatewayDisconnect {
 
     private isRoomEmpty(room: MatchRoom) {
         return room.players.every((player) => !player.isPlaying);
+    }
+
+    private isOnePlayerLeft(room: MatchRoom) {
+        return room.players.filter((player) => player.isPlaying).length === 1;
     }
 }
