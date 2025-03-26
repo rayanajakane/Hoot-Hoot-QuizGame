@@ -155,5 +155,15 @@
         "fri": "Fri",
         "sat": "Sat",
         "grid-label": "Matches Throughout the Year"
+    },
+    "match-config": {
+        "title-label": "Match Configuration",
+        "friends-label": "Match with Friends",
+        "friends-description": "Only your friends can join this match.",
+        "fee-section-label": "Match with Entry Fee",
+        "fee-label": "Entry Fee",
+        "fee-description": "Players will have to pay this fee to join this match.",
+        "cancel": "Cancel",
+        "confirm": "Confirm"
     }
 }
