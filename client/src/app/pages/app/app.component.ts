@@ -19,6 +19,7 @@ export class AppComponent implements OnInit {
         public moneyService: MoneyService,
     ) {}
     ngOnInit(): void {
+        this.themeService.initLightTheme();
         this.authenticationService.authenticatedUser.subscribe(async (user) => {
             if (user) {
                 const currentLangugage = await this.translationService.getLanguageFromDB();
@@ -27,7 +28,7 @@ export class AppComponent implements OnInit {
                 this.themeService.setTheme(currentTheme);
             } else {
                 this.translationService.initLanguageFR();
-                this.themeService.initLightTheme();
+                // this.themeService.initLightTheme();
             }
         });
     }

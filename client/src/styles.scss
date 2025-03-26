@@ -43,15 +43,19 @@ $dark-theme: mat.define-dark-theme(
     @include mat.all-component-themes($main-theme);
 }
 
+// Dont know how to use palettes yet
 .dark-theme {
-    background-color: mat.get-theme-color($dark-theme, background, background);
+    background-color: #101114;
+    --mdc-elevated-card-container-color: #0b0c0f;
+    --mdc-elevated-card-container-elevation: #080808;
+    --mdc-filled-text-field-container-color: #323336;
+    --mdc-snackbar-supporting-text-color: black !important;
     color: white;
 }
-
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include mat.all-component-themes($main-theme);
+@include mat.all-component-themes($dark-theme);
 
 /* You can add global styles to this file, and also import other style files */
 

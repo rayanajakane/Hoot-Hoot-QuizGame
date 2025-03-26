@@ -26,7 +26,7 @@ export interface UserEditData {
 })
 export class UserEditPageComponent implements OnInit {
     currentUser: User | null;
-    isPresetAvatar = true; // TODO: Determine if we consider an existing avatar to be "preset"
+    isPresetAvatar = true;
     minUsernameLength = MIN_LENGTH;
     maxUsernameLength = MAX_LENGTH;
     loadedImageFile: File | null = null;
@@ -135,7 +135,7 @@ export class UserEditPageComponent implements OnInit {
     async save() {
         this.form.markAllAsTouched();
         if (this.form.valid) {
-            var url: string = this.avatar.value as string;
+            let url: string = this.avatar.value as string;
             if (!this.isPresetAvatar && (this.avatar.value as string) !== this.authenticationService.userAvatarUrl) {
                 const resultUrl = await this.authenticationService.uploadUserAvatar(this.authenticationService.userId, this.loadedImageFile);
                 url = resultUrl !== '' ? resultUrl : this.authenticationService.userAvatarUrl;
@@ -151,7 +151,6 @@ export class UserEditPageComponent implements OnInit {
         }
     }
 
-    // TODO: Consider refactoring later to avoid code repetition
     setCustomAvatar(event: Event): void {
         const eventTarget: HTMLInputElement | null = event.target as HTMLInputElement | null;
         if (eventTarget?.files?.[0]) {
