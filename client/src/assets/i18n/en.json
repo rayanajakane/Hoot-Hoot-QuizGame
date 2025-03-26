@@ -153,6 +153,7 @@
         "wed": "Wed",
         "thu": "Thu",
         "fri": "Fri",
-        "sat": "Sat"
+        "sat": "Sat",
+        "grid-label": "Matches Throughout the Year"
     }
 }

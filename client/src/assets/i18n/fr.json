@@ -153,6 +153,7 @@
         "wed": "Mer",
         "thu": "Jeu",
         "fri": "Ven",
-        "sat": "Sam"
+        "sat": "Sam",
+        "grid-label": "Parties au courant de l'année"
     }
 }
