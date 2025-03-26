@@ -95,6 +95,7 @@ object MatchRoomService {
         hostId=""
         timeToGoToWaitPage = false
         hasBeenKickedOut = true
+        Log.d("Disconnect from room WaitPage","Called disconnectFromRoom, hostId=$hostId" )
     }
 
     fun createRoom(gameId: String, hostId: String, hostUsername: String, isClassicMode: Boolean = true, isFriendsOnly: Boolean = false) {
