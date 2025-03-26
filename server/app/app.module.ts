@@ -79,6 +79,7 @@ import { PartyService } from './services/party/party.service';
         QrCodeService,
         MoneyService,
         MoneyGateway,
+        PartyService,
         HistoryService,
         PartyService,
     ],

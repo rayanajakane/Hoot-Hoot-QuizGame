@@ -11,11 +11,14 @@ import { HistoryService } from '@app/services/history/history.service';
 import { MatchBackupService } from '@app/services/match-backup/match-backup.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { MoneyService } from '@app/services/money/money.service';
+import { PartyService } from '@app/services/party/party.service';
 import { PlayerRoomService } from '@app/services/player-room/player-room.service';
+import { TimeService } from '@app/services/time/time.service';
 import { PlayerState } from '@common/constants/player-states';
 import { ChatEvents } from '@common/events/chat.events';
 import { MatchEvents } from '@common/events/match.events';
 import { MoneyEvents } from '@common/events/money.events';
+import { PartyConfig } from '@common/interfaces/party-config';
 import { UserInfo } from '@common/interfaces/user-info';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
@@ -36,9 +39,9 @@ export class MatchGateway implements OnGatewayDisconnect {
         private readonly matchBackupService: MatchBackupService,
         private readonly friendService: FriendsService,
         private readonly moneyService: MoneyService,
-        // private readonly histogramService: HistogramService,
-        // private readonly historyService: HistoryService,
+        private readonly timeService: TimeService,
         private historyService: HistoryService,
+        private readonly partyService: PartyService,
         private readonly eventEmitter: EventEmitter2,
     ) {}
 
@@ -48,17 +51,23 @@ export class MatchGateway implements OnGatewayDisconnect {
         const codeErrors = this.matchRoomService.getRoomCodeErrors(data.roomCode);
         const usernameErrors = this.playerRoomService.getUsernameErrors(data.roomCode, data.userId);
         let errorMessage = codeErrors + usernameErrors;
-        if (matchRoom.isFriendsOnly) {
-            const friendshipErrors = await this.friendService.getFriendshipErrors(matchRoom.hostId, false, data.userId);
-            if (friendshipErrors) {
-                errorMessage += friendshipErrors;
-            }
+        console.log('Joining room', matchRoom.partyConfig);
+        if (matchRoom.partyConfig.isFriendsOnly || matchRoom.partyConfig.isEntryFeeRequired) {
+            const partyErrors = await this.partyService.canJoinParty(data.userId, data.roomCode);
+            errorMessage += partyErrors;
         }
 
         if (errorMessage) {
             this.sendError(socket.id, errorMessage);
         } else {
             socket.join(data.roomCode);
+            if (matchRoom.partyConfig.isEntryFeeRequired) {
+                console.log('Joining party');
+                await this.partyService.joinParty(data.userId, data.roomCode);
+                const currPlayerBalance = await this.moneyService.getCurrentBalance(data.userId);
+                console.log('Returning balance', currPlayerBalance);
+                this.server.to(socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
+            }
             const newPlayer = this.playerRoomService.addPlayer(socket, data.roomCode, data.userId, data.username);
             this.returnAllMatches();
             return { code: data.roomCode, username: newPlayer.username, userId: newPlayer.id };
@@ -68,26 +77,29 @@ export class MatchGateway implements OnGatewayDisconnect {
     @SubscribeMessage(MatchEvents.CreateRoom)
     async createRoom(
         @ConnectedSocket() socket: Socket,
-        @MessageBody() data: { gameId: string; hostId: string; isClassicMode: boolean; isFriendsOnly: boolean },
+        @MessageBody() data: { gameId: string; hostId: string; isClassicMode: boolean; partyConfig: PartyConfig },
     ) {
         console.log('Creating room', data.hostId);
-        if (data.isFriendsOnly) {
-            const friendshipErrors = await this.friendService.getFriendshipErrors(data.hostId, true);
-            if (friendshipErrors) {
-                this.sendError(socket.id, friendshipErrors);
-                return;
+        if (data.partyConfig) {
+            if (data.partyConfig.isFriendsOnly) {
+                const friendshipErrors = await this.friendService.getFriendshipErrors(data.hostId, true);
+                if (friendshipErrors) {
+                    this.sendError(socket.id, friendshipErrors);
+                    return;
+                }
+            }
+            if (data.partyConfig.isEntryFeeRequired) {
+                const moneyErrors = await this.moneyService.getMoneyError(data.hostId, data.partyConfig.entryFeeAmount);
+                if (moneyErrors) {
+                    this.sendError(socket.id, moneyErrors);
+                    return;
+                }
             }
         }
 
         let selectedGame: Game = {} as Game;
         selectedGame = this.matchBackupService.getBackupGame(data.gameId);
-        const newMatchRoom: MatchRoom = await this.matchRoomService.addRoom(
-            selectedGame,
-            socket,
-            data.hostId,
-            data.isClassicMode,
-            data.isFriendsOnly,
-        );
+        const newMatchRoom: MatchRoom = await this.matchRoomService.addRoom(selectedGame, socket, data.hostId, data.partyConfig, data.isClassicMode);
 
         socket.join(newMatchRoom.code);
         this.returnAllMatches();
@@ -114,14 +126,12 @@ export class MatchGateway implements OnGatewayDisconnect {
 
         this.playerRoomService.setStateForAll(matchRoomCode, PlayerState.default);
         this.server.to(matchRoomCode).emit(MatchEvents.RouteToResultsPage);
-        // this.matchRoomService.declareWinner(matchRoomCode);
-        //end game money reward
+
         await this.moneyService.rewardPlayers(matchRoomCode);
         for (const player of this.matchRoomService.matchRooms[roomIndex].players) {
             const currPlayerBalance = await this.moneyService.getCurrentBalance(player.id);
             this.server.in(player.socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
         }
-        ////end game money reward
         this.matchBackupService.updateNMatchesPlayed(this.matchRoomService.matchRooms[roomIndex].game.originalId);
 
         this.matchRoomService.matchRooms[roomIndex].players.forEach((player: Player) => {
@@ -177,7 +187,6 @@ export class MatchGateway implements OnGatewayDisconnect {
     @OnEvent(ExpiredTimerEvents.CountdownTimerExpired)
     onCountdownTimerExpired(matchRoomCode: string) {
         this.matchRoomService.sendFirstQuestion(this.server, matchRoomCode);
-        // this.histogramService.sendEmptyHistogram(matchRoomCode);
     }
 
     @OnEvent(ExpiredTimerEvents.CooldownTimerExpired)
@@ -192,14 +201,14 @@ export class MatchGateway implements OnGatewayDisconnect {
     }
 
     @SubscribeMessage(MatchEvents.Disconnect)
-    handleDisconnectFromRoom(@ConnectedSocket() socket: Socket) {
+    async handleDisconnectFromRoom(@ConnectedSocket() socket: Socket) {
         const isHostDisconnected = this.handleHostDisconnect(socket);
-        if (!isHostDisconnected) this.handlePlayersDisconnect(socket);
+        if (!isHostDisconnected) await this.handlePlayersDisconnect(socket);
     }
 
     @SubscribeMessage('Disconnect')
-    handleDisconnect(@ConnectedSocket() socket: Socket) {
-        this.handleDisconnectFromRoom(socket);
+    async handleDisconnect(@ConnectedSocket() socket: Socket) {
+        await this.handleDisconnectFromRoom(socket);
     }
 
     handleHostDisconnect(@ConnectedSocket() socket: Socket): boolean {
@@ -235,15 +244,27 @@ export class MatchGateway implements OnGatewayDisconnect {
         return false;
     }
 
-    handlePlayersDisconnect(@ConnectedSocket() socket: Socket) {
+    async handlePlayersDisconnect(@ConnectedSocket() socket: Socket) {
         const player = this.playerRoomService.getPlayerBySocket(socket.id);
         const roomCode = this.playerRoomService.deletePlayerBySocket(socket.id);
-        socket.leave(roomCode);
         if (!roomCode || !player) {
             return;
         }
         const room = this.matchRoomService.getRoom(roomCode);
         const isRoomEmpty = this.isRoomEmpty(room);
+        const isOnePlayerLeft = this.isOnePlayerLeft(room);
+
+        if (room.partyConfig.isEntryFeeRequired) {
+            if (!room.isPlaying && !room.currentQuestionIndex) {
+                await this.partyService.leaveParty(player.id, roomCode);
+                const currPlayerBalance = await this.moneyService.getCurrentBalance(player.id);
+                this.server.in(socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
+            } else if (isOnePlayerLeft) {
+                this.timeService.expireTimer(roomCode, this.server, ExpiredTimerEvents.QuestionTimerExpired);
+                this.routeToResultsPage({} as Socket, roomCode);
+            }
+        }
+        socket.leave(roomCode);
         if (room.isPlaying && isRoomEmpty) {
             this.sendError(roomCode, NO_MORE_PLAYERS);
             this.deleteRoom(roomCode);
@@ -254,7 +275,6 @@ export class MatchGateway implements OnGatewayDisconnect {
             return;
         }
         this.handleSendPlayersData(roomCode);
-        // this.sendMessageOnDisconnect(roomCode, player.username);
         this.returnAllMatches();
     }
 
@@ -276,5 +296,9 @@ export class MatchGateway implements OnGatewayDisconnect {
 
     private isRoomEmpty(room: MatchRoom) {
         return room.players.every((player) => !player.isPlaying);
+    }
+
+    private isOnePlayerLeft(room: MatchRoom) {
+        return room.players.filter((player) => player.isPlaying).length === 1;
     }
 }

@@ -12,10 +12,12 @@ import { QrCodeService } from '@app/services/qr-code/qr-code.service';
 import { QuestionStrategyContext } from '@app/services/question-strategy-context/question-strategy-context.service';
 import { TimeService } from '@app/services/time/time.service';
 import { COOLDOWN_TIME, COUNTDOWN_TIME, FACTOR, MAXIMUM_CODE_LENGTH } from '@common/constants/match-constants';
+import { PlayerState } from '@common/constants/player-states';
 import { MatchEvents } from '@common/events/match.events';
 import { TimerEvents } from '@common/events/timer.events';
 import { GameInfo } from '@common/interfaces/game-info';
 import { MatchPageInfo } from '@common/interfaces/match-page-info';
+import { PartyConfig } from '@common/interfaces/party-config';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Server, Socket } from 'socket.io';
@@ -61,7 +63,7 @@ export class MatchRoomService {
 
     // allow more parameters to make method more reusable
     // eslint-disable-next-line max-params
-    async addRoom(selectedGame: Game, socket: Socket, hostId: string, isClassicMode: boolean = true, isFriendsOnly = false): Promise<MatchRoom> {
+    async addRoom(selectedGame: Game, socket: Socket, hostId: string, partyConfig: PartyConfig, isClassicMode: boolean = true): Promise<MatchRoom> {
         const isLocked = false;
         const isPlaying = false;
 
@@ -90,7 +92,7 @@ export class MatchRoomService {
             startTime: new Date(),
             qrCodeUrl,
             hostId,
-            isFriendsOnly,
+            partyConfig,
         };
         this.matchRooms.push(newRoom);
         this.setQuestionStrategy(newRoom);
@@ -232,10 +234,10 @@ export class MatchRoomService {
         return matchRoom.game.questions[matchRoom.currentQuestionIndex];
     }
 
-    declareWinner(matchRoomCode: string) {
+    declareWinner(matchRoomCode: string): Player[] {
         const matchRoom = this.getRoom(matchRoomCode);
         const players: Player[] = matchRoom.players;
-        const playingPlayers = players.filter((player) => player.isPlaying);
+        const playingPlayers = players.filter((player) => player.isPlaying && player.state !== PlayerState.exit);
         const maxScore = Math.max(...playingPlayers.map((player) => player.score));
         const playersWithMaxScore = playingPlayers.filter((player) => player.score === maxScore);
         playersWithMaxScore.forEach((player) => player.socket.emit(MatchEvents.Winner));
@@ -266,6 +268,7 @@ export class MatchRoomService {
                 hasGivenUp: false,
             });
         });
+        return playersWithMaxScore;
     }
 
     getAllMatchesInfo() {
