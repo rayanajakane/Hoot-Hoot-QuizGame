@@ -92,13 +92,19 @@ object MatchRoomService {
         hasBeenKickedOut = true
     }
 
-    fun createRoom(gameId: String, hostId: String, hostUsername: String, isClassicMode: Boolean = true, isFriendsOnly: Boolean = false) {
+    fun createRoom(gameId: String, hostId: String, hostUsername: String, isClassicMode: Boolean = true, partyConfigs: PartyConfig = PartyConfig(false, false)) {
+        val partyConfisObject = JSONObject().apply {
+            put("isFriendsOnly", partyConfigs.isFriendsOnly)
+            put("isEntryFeeRequired", partyConfigs.isEntryFeeRequired)
+            put("entryFeeAmount", partyConfigs.entryFeeAmount)
+        }
         val data = JSONObject().apply {
             put("gameId", gameId)
             put("hostId", hostId)
-            put("isFriendsOnly", isFriendsOnly)
+            put("partyConfig", partyConfisObject)
             put("isClassicMode", isClassicMode)
         }
+        println("data : $data")
 
         socket.emit(MatchEvents.CREATE_ROOM.value, data, Ack { args ->
             if (args.isNotEmpty()) {

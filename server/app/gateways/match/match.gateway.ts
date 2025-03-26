@@ -78,7 +78,6 @@ export class MatchGateway implements OnGatewayDisconnect {
         @ConnectedSocket() socket: Socket,
         @MessageBody() data: { gameId: string; hostId: string; isClassicMode: boolean; partyConfig: PartyConfig },
     ) {
-        console.log('Creating room', data.hostId);
         if (data.partyConfig.isFriendsOnly) {
             const friendshipErrors = await this.friendService.getFriendshipErrors(data.hostId, true);
             if (friendshipErrors) {
