@@ -98,14 +98,14 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                 ),
                 keyboardActions = KeyboardActions(onDone = {
                     // TODO: Change to actual user avatar
-                    ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value)
+                    ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, null)
                     newMessageText = ""
                 }),
                 trailingIcon = {
                     val image = Icons.AutoMirrored.Filled.Send;
                     IconButton(onClick = {
                         // TODO: Change to actual user avatar
-                        ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value)
+                        ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, null)
                         newMessageText = ""
                     }) {
                         Icon(imageVector = image, "send")
