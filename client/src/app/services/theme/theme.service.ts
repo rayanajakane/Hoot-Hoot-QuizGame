@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { DataSnapshot, get, update } from '@firebase/database';
-import { AuthError } from '../authentication/auth-error';
+import { AuthError } from '@app/services/authentication/auth-error';
 
 export enum Theme {
     DARK = 'dark-theme',
@@ -29,7 +29,7 @@ export class ThemeService {
         const user = this.authService.currentUser;
         if (user) {
             const userRef = this.authService.getUserDatabaseRef(user.uid + '/configs');
-            update(userRef, { theme: visualTheme });
+            update(userRef, { theme: this.themeToString(visualTheme) });
         } else {
             throw new AuthError('UserUndefined', 'user is undefined');
         }
@@ -42,11 +42,12 @@ export class ThemeService {
             return get(userRef)
                 .then((dataShapshot: DataSnapshot) => {
                     if (dataShapshot.exists()) {
-                        return dataShapshot.val() as Theme;
+                        return this.toTheme(dataShapshot.val());
                     }
                     return Theme.LIGHT;
                 })
                 .catch((error: unknown) => {
+                    // eslint-disable-next-line no-console
                     console.error(error);
                     return Theme.LIGHT;
                 });
@@ -69,5 +70,29 @@ export class ThemeService {
         this.renderer.addClass(this.document.body, theme);
         this.currentTheme = theme;
         this.saveThemeToDB(theme);
+    }
+
+    // Prevents unexpected behavior. Used instead of 'as Theme'
+    private toTheme(theme: string): Theme {
+        switch (theme) {
+            case 'DARK':
+                return Theme.DARK;
+            case 'LIGHT':
+                return Theme.LIGHT;
+            default:
+                return Theme.LIGHT;
+        }
+    }
+
+    // On android studio, themes are DARK, LIGHT
+    private themeToString(theme: string) {
+        switch (theme) {
+            case Theme.DARK:
+                return 'DARK';
+            case Theme.LIGHT:
+                return 'LIGHT';
+            default:
+                return 'LIGHT';
+        }
     }
 }
