@@ -10,7 +10,7 @@
                                 <img *ngIf="form.get('avatar')!.value" [src]="form.get('avatar')!.value" />
                             </div>
                             <input class="avatar" type="file" #avatar (change)="setCustomAvatar($event)" accept="image/png, image/jpeg" />
-                            <button mat-raised-button color="primary" (click)="avatar.click()">
+                            <button mat-raised-button type="button" color="primary" (click)="avatar.click()">
                                 <mat-icon>upload</mat-icon>{{ t('page.upload-avatar') }}
                             </button>
                         </div>
@@ -79,15 +79,24 @@
                             <mat-error *ngIf="form.get('password')?.hasError('maxlength')"
                                 >{{ t('auth.error.password-too-long', { length: passwordMaxLength }) }}
                             </mat-error>
-                            <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                            <button
+                                type="button"
+                                mat-icon-button
+                                matSuffix
+                                (click)="hide = !hide"
+                                [attr.aria-label]="'Hide password'"
+                                [attr.aria-pressed]="hide"
+                            >
                                 <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
                             </button>
                         </mat-form-field>
                     </div>
                 </div>
                 <div id="buttons-container">
-                    <button mat-raised-button routerLink="/login">{{ t('page.return-to-login') }}</button>
-                    <button mat-raised-button color="primary" (click)="signUp()" id="signup-button">{{ t('page.signup-action') }}</button>
+                    <button mat-raised-button type="button" routerLink="/login">{{ t('page.return-to-login') }}</button>
+                    <button mat-raised-button type="button" color="primary" (click)="signUp()" id="signup-button">
+                        {{ t('page.signup-action') }}
+                    </button>
                 </div>
             </form>
         </mat-card>
