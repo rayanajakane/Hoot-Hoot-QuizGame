@@ -13,7 +13,7 @@
                                 <img *ngIf="form.get('avatar')!.value" [src]="form.get('avatar')!.value" />
                             </div>
                             <input class="avatar" type="file" #avatar (change)="setCustomAvatar($event)" accept="image/png, image/jpeg" />
-                            <button mat-raised-button color="primary" (click)="avatar.click()">
+                            <button type="button" mat-raised-button color="primary" (click)="avatar.click()">
                                 <mat-icon>upload</mat-icon>{{ t('page.upload-avatar') }}
                             </button>
                         </div>
