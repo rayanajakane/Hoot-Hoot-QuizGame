@@ -21,7 +21,7 @@ export class SignupPageComponent implements OnInit {
     loadedImageFile: File | null = null;
 
     form = this.fb.group({
-        email: ['', { validators: [Validators.required, Validators.email], updateOn: 'blur' }],
+        email: ['', { validators: [Validators.required, Validators.email] }],
         username: [
             '',
             { validators: [Validators.required, Validators.minLength(MIN_LENGTH), Validators.maxLength(MAX_LENGTH), this.usernameValidator()] },
