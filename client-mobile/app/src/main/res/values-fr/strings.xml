@@ -66,5 +66,6 @@
     <string name="all_games">"Tous les jeux"</string>
     <string name="return_to_user_edit">Retour à la modification du profil</string>
     <string name="save_canvas">Utiliser ce dessin</string>
+    <string name="clear_canvas">Réinitialiser le canvas</string>
 
 </resources>

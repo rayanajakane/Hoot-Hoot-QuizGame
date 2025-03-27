@@ -66,4 +66,5 @@
     <string name="all_games">"All Games"</string>
     <string name="return_to_user_edit">Return to user edit</string>
     <string name="save_canvas">Use this drawing</string>
+    <string name="clear_canvas">Clear canvas</string>
 </resources>
