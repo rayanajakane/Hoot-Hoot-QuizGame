@@ -71,6 +71,7 @@
     <string name="clear_canvas">Réinitialiser le canvas</string>
     <string name="return_to_user_edit">Retour à la modification du profil</string>
     <string name="save_canvas">Utiliser ce dessin</string>
+    <string name="clear_canvas">Réinitialiser le canvas</string>
     <string name="light_theme">Thème clair</string>
     <string name="dark_theme">Thème sombre</string>
     <string name="your_elo">Votre elo</string>

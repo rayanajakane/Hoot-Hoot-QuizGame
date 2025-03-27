@@ -82,6 +82,6 @@ fun ColumnScope.CanvasControls(
     Button(
         onClick = onClearCanvas
     ) {
-        Text("Clear Canvas")
+        Text(stringResource(R.string.clear_canvas))
     }
 }
