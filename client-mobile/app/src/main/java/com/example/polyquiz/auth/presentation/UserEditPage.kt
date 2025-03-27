@@ -39,6 +39,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -106,31 +107,44 @@ fun UserEditPage(
 
     val textFieldStateLang = rememberTextFieldState(currentLang)
 
-
-    DisposableEffect(Unit) {
-        onDispose {
-            authViewModel.resetUsername()
-            cameraViewModel.resetCapturedPhotoState()
-        }
-    }
-
     val avatarURL by authViewModel.avatarURL.collectAsState()
     val isPresetAvatar by cameraViewModel.isPresetAvatar.collectAsState()
     val temporaryAvatar by cameraViewModel.temporaryAvatar.collectAsState()
     val avatarToShow = temporaryAvatar ?: avatarURL
 
-    val initialAvatarURL = authViewModel.getAvatarURL()
-    var initialUsername = authViewModel.getUsername()
-    val initialLang = Locale.getDefault().language
+    var initialAvatarURL by remember { mutableStateOf(authViewModel.getAvatarURL()) }
+    var initialUsername by remember { mutableStateOf(authViewModel.getUsername()) }
+    val initialLang by remember { mutableStateOf(Locale.getDefault().language)}
+
+    // Flag that tells us if we updated something. Will open a snackbar after
+    val updatedFlag by authViewModel.profileUpdated.collectAsState()
 
 
     val onClickAvatar: (String) -> Unit = { url ->
         cameraViewModel.setPresetAvatar(authViewModel, url)
+        Log.d("Save UserProfile", "Initial URL : $initialAvatarURL, new url: $url")
     }
 
     val onClickTheme: (Theme) -> Unit = { selectedTheme ->
         theme = selectedTheme
         Log.d("Theme changer", "Selected $theme")
+    }
+
+//    LaunchedEffect(updatedFlag) {
+//        Log.d("Save", "in launched effect with $updatedFlag")
+//        if(updatedFlag) {
+//            Log.d("Save", "Launched effect called snackbar")
+//            authViewModel.sendUpdateProfileSnackbar()
+//        }
+//    }
+
+
+    DisposableEffect(Unit) {
+        onDispose {
+            authViewModel.setProfileUpdated(false)
+            authViewModel.resetUsername()
+            cameraViewModel.resetCapturedPhotoState()
+        }
     }
 
     fun deleteUser() {
@@ -139,9 +153,13 @@ fun UserEditPage(
         navigateToLogin()
     }
 
-    fun saveUserProfile() {
+    fun saveUserProfile() : Boolean {
         var usernameUpdate : String = ""
         var avatarURLUpdate: String = ""
+
+        // Flag used to tell us if something was updated or not
+        var isUpdated: Boolean = false
+
         // To hide the keyboard in case it's open
         keyboardController?.hide()
 
@@ -149,11 +167,12 @@ fun UserEditPage(
         if (initialUsername != username) {
             usernameUpdate = username
             initialUsername = username
+            isUpdated = true
         } else {
-            Log.e("Save UserProfile", "Username has not changed.")
+            Log.d("Save UserProfile", "Username has not changed.")
         }
 
-        // Save avatar image + username
+        // Save avatar image
         val capturedImage = cameraViewModel.state.value.capturedImage
         if (!isPresetAvatar && capturedImage != null) {
             Log.d("UserEditPage", "Saving new stuff")
@@ -164,36 +183,48 @@ fun UserEditPage(
             ) { newAvatarUrl ->
                 if (newAvatarUrl != null) {
                     avatarURLUpdate = newAvatarUrl
-//                    authViewModel.updateUserProfile(newAvatarUrl, usernameUpdate)
+                    initialAvatarURL = newAvatarUrl
+                    isUpdated = true
                 } else {
                     Log.e("Save UserProfile", "Failed to save image. URL was null")
                 }
             }
         } else if(initialAvatarURL != authViewModel.getAvatarURL()) {
             Log.d("Save UserProfile", "Using preset avatar")
-            avatarURLUpdate = authViewModel.getAvatarURL()
-//            authViewModel.updateUserProfile(newAvatarUrl, usernameUpdate)
+            val newAvatarUrl = authViewModel.getAvatarURL()
+            avatarURLUpdate = newAvatarUrl
+            initialAvatarURL = newAvatarUrl
+            isUpdated = true
         } else {
-            Log.e("Save UserProfile", "Avatar has not changed")
+            Log.d("Save UserProfile", "Avatar has not changed")
         }
 
+        // Saves both avatar and or username in one go
         authViewModel.updateUserProfile(avatarURLUpdate, usernameUpdate)
 
         // Change app theme
         if (currentTheme != theme) {
+            isUpdated = true
             onThemeUpdated(theme)
             ThemeService.saveThemeToDB(theme, authViewModel.getUserConfigsDatabaseRef())
         } else {
-            Log.e("Save UserProfile", "Theme was not changed")
+            Log.d("Save UserProfile", "Theme was not changed")
         }
 
         // Change app language
         if(initialLang != currentLang) {
+            isUpdated = true
             translationService.setLanguage(currentLang)
             translationService.saveLanguageToDB(currentLang, authViewModel.getUserConfigsDatabaseRef())
         } else {
-            Log.e("Save UserProfile", "Lang was not changed")
+            Log.d("Save UserProfile", "Lang was not changed")
         }
+
+        // Send snackbar if updated
+        if(isUpdated) {
+            authViewModel.setProfileUpdated(isUpdated)
+        }
+        return isUpdated
     }
 
     Button(
@@ -332,12 +363,13 @@ fun UserEditPage(
                                 Text(text = usernameError, color = Color.Red)
                             }
                             Spacer(modifier = Modifier.height(8.dp))
-                            // REF : https://composables.com/material3/exposeddropdownmenubox
+
                             // Visual themes menu
                             ThemeDropdown(context, availableThemes, currentTheme, onClickTheme)
+
                             Spacer(modifier = Modifier.height(8.dp))
+
                             // Languages
-                            // REF : https://github.com/android/user-interface-samples/blob/main/PerAppLanguages/compose_app/app/src/main/java/com/example/perapplanguages/MainActivity.kt
                             ExposedDropdownMenuBox(
                                 expanded = expandedLang,
                                 onExpandedChange = { expandedLang = it },

@@ -70,6 +70,18 @@ class AuthViewModel : ViewModel() {
     private val _theme = MutableStateFlow(Theme.LIGHT)
     val theme: StateFlow<Theme> get() = _theme
 
+    private val _profileUpdated = MutableStateFlow(false)
+    val profileUpdated: StateFlow<Boolean> get() = _profileUpdated
+
+    fun setProfileUpdated(updated: Boolean) {
+        _profileUpdated.value = updated
+        sendUpdateProfileSnackbar()
+    }
+
+    fun getProfileUpdated(): Boolean {
+        return _profileUpdated.value
+    }
+
     fun setTheme(theme: Theme) {
         _theme.value = theme
     }
@@ -257,15 +269,6 @@ class AuthViewModel : ViewModel() {
 
         user!!.updateProfile(profileUpdates).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                viewModelScope.launch {
-                    SnackbarController.sendEvent(
-                        event = SnackbarEvent(
-                            message = StringValue.StringResource(
-                                R.string.edited_feedback
-                            )
-                        )
-                    )
-                }
                 SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
                 Log.d(
                     "Profile update",
@@ -274,6 +277,19 @@ class AuthViewModel : ViewModel() {
             } else {
                 Log.e("Profile update", "An error occured...")
             }
+        }
+    }
+
+    fun sendUpdateProfileSnackbar() {
+        Log.d("Save", "Called snackbar method")
+        viewModelScope.launch {
+            SnackbarController.sendEvent(
+                event = SnackbarEvent(
+                    message = StringValue.StringResource(
+                        R.string.edited_feedback
+                    )
+                )
+            )
         }
     }
 
@@ -303,26 +319,6 @@ class AuthViewModel : ViewModel() {
                 }
             } else {
                 usernameIsValid = true
-//                val oldUsernameRef = getUsernameDatabaseRef(oldUsername.lowercase())
-//                val displayNameUpdate = UserProfileChangeRequest.Builder()
-//                    .setDisplayName(username)
-//                    .build()
-//
-//                user?.updateProfile(displayNameUpdate)
-//                    ?.addOnCompleteListener { updateTask ->
-//                        if (updateTask.isSuccessful) {
-//                            usernameRef.setValue(username.lowercase())
-//                            oldUsernameRef.removeValue()
-//                            _username.value = user?.displayName ?: ""
-//                            viewModelScope.launch {
-//                                SnackbarController.sendEvent(
-//                                    event = SnackbarEvent(
-//                                        message = StringValue.StringResource(R.string.edited_feedback)
-//                                    )
-//                                )
-//                            }
-//                        }
-//                    }
             }
         }
         return usernameIsValid
