@@ -390,9 +390,7 @@ export class AuthenticationService {
         const storageRef = firebaseStorageRef(this.storage, path);
         deleteObject(storageRef)
             .then(() => {})
-            .catch((error: Error) => {
-                console.log(error);
-            });
+            .catch((error: Error) => {});
     }
 
     async getImageDownloadUrl(path: string) {
