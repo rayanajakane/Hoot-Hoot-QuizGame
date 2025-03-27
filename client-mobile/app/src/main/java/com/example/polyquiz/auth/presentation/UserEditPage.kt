@@ -116,10 +116,6 @@ fun UserEditPage(
     var initialUsername by remember { mutableStateOf(authViewModel.getUsername()) }
     val initialLang by remember { mutableStateOf(Locale.getDefault().language)}
 
-    // Flag that tells us if we updated something. Will open a snackbar after
-    val updatedFlag by authViewModel.profileUpdated.collectAsState()
-
-
     val onClickAvatar: (String) -> Unit = { url ->
         cameraViewModel.setPresetAvatar(authViewModel, url)
         Log.d("Save UserProfile", "Initial URL : $initialAvatarURL, new url: $url")
@@ -129,15 +125,6 @@ fun UserEditPage(
         theme = selectedTheme
         Log.d("Theme changer", "Selected $theme")
     }
-
-//    LaunchedEffect(updatedFlag) {
-//        Log.d("Save", "in launched effect with $updatedFlag")
-//        if(updatedFlag) {
-//            Log.d("Save", "Launched effect called snackbar")
-//            authViewModel.sendUpdateProfileSnackbar()
-//        }
-//    }
-
 
     DisposableEffect(Unit) {
         onDispose {
