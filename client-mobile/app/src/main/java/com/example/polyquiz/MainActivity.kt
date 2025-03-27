@@ -14,6 +14,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,9 +43,9 @@ class MainActivity : AppCompatActivity() {
         val cameraViewModel: CameraViewModel by viewModels()
 
         setContent {
-            var currentTheme by remember{ mutableStateOf(Theme.LIGHT)}
+            val currentTheme by authViewModel.theme.collectAsState()
             val setTheme: (Theme) -> Unit = { selectedTheme ->
-                currentTheme = selectedTheme
+                authViewModel.setTheme(selectedTheme)
             }
             PolyQuizTheme(currentTheme) {
                 val snackbarHostState = remember {

@@ -39,7 +39,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -65,7 +64,6 @@ import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.core.ThemeService
-import com.example.polyquiz.core.storage.ImageStorage
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.core.TranslationService
 import com.example.polyquiz.ui.theme.Theme
@@ -109,17 +107,22 @@ fun UserEditPage(
     val textFieldStateLang = rememberTextFieldState(currentLang)
 
 
-   DisposableEffect(Unit) {
-       onDispose {
-           authViewModel.resetUsername()
-           cameraViewModel.resetCapturedPhotoState()
-       }
-   }
+    DisposableEffect(Unit) {
+        onDispose {
+            authViewModel.resetUsername()
+            cameraViewModel.resetCapturedPhotoState()
+        }
+    }
 
     val avatarURL by authViewModel.avatarURL.collectAsState()
     val isPresetAvatar by cameraViewModel.isPresetAvatar.collectAsState()
     val temporaryAvatar by cameraViewModel.temporaryAvatar.collectAsState()
     val avatarToShow = temporaryAvatar ?: avatarURL
+
+    val initialAvatarURL = authViewModel.getAvatarURL()
+    var initialUsername = authViewModel.getUsername()
+    val initialLang = Locale.getDefault().language
+
 
     val onClickAvatar: (String) -> Unit = { url ->
         cameraViewModel.setPresetAvatar(authViewModel, url)
@@ -137,19 +140,20 @@ fun UserEditPage(
     }
 
     fun saveUserProfile() {
+        var usernameUpdate : String = ""
+        var avatarURLUpdate: String = ""
         // To hide the keyboard in case it's open
         keyboardController?.hide()
 
         // Change username
-        if (authViewModel.getUsername() != username) {
-            authViewModel.changeUsername(
-                username, authViewModel.getUsername()
-            )
+        if (initialUsername != username) {
+            usernameUpdate = username
+            initialUsername = username
         } else {
-            Log.e("save profile", "Username has not changed.")
+            Log.e("Save UserProfile", "Username has not changed.")
         }
 
-        // Save avatar image + url
+        // Save avatar image + username
         val capturedImage = cameraViewModel.state.value.capturedImage
         if (!isPresetAvatar && capturedImage != null) {
             Log.d("UserEditPage", "Saving new stuff")
@@ -159,29 +163,37 @@ fun UserEditPage(
                 authViewModel
             ) { newAvatarUrl ->
                 if (newAvatarUrl != null) {
-                    authViewModel.updateUserProfile(newAvatarUrl)
+                    avatarURLUpdate = newAvatarUrl
+//                    authViewModel.updateUserProfile(newAvatarUrl, usernameUpdate)
                 } else {
-                    Log.e("Save user profile", "Failed to save image. URL was null")
+                    Log.e("Save UserProfile", "Failed to save image. URL was null")
                 }
             }
-
-
+        } else if(initialAvatarURL != authViewModel.getAvatarURL()) {
+            Log.d("Save UserProfile", "Using preset avatar")
+            avatarURLUpdate = authViewModel.getAvatarURL()
+//            authViewModel.updateUserProfile(newAvatarUrl, usernameUpdate)
         } else {
-            Log.d("UserEditPage", "Setting preset avatar instead")
-            val newAvatarUrl = authViewModel.getAvatarURL()
-            authViewModel.updateUserProfile(newAvatarUrl)
-
-//            ImageStorage.deleteAvatar(authViewModel.getUserId())
+            Log.e("Save UserProfile", "Avatar has not changed")
         }
 
+        authViewModel.updateUserProfile(avatarURLUpdate, usernameUpdate)
+
         // Change app theme
-        onThemeUpdated(theme)
-        ThemeService.saveThemeToDB(theme, authViewModel.getUserConfigsDatabaseRef())
+        if (currentTheme != theme) {
+            onThemeUpdated(theme)
+            ThemeService.saveThemeToDB(theme, authViewModel.getUserConfigsDatabaseRef())
+        } else {
+            Log.e("Save UserProfile", "Theme was not changed")
+        }
 
         // Change app language
-        translationService.setLanguage(currentLang)
-        translationService.saveLanguageToDB(currentLang, authViewModel.getUserConfigsDatabaseRef())
-
+        if(initialLang != currentLang) {
+            translationService.setLanguage(currentLang)
+            translationService.saveLanguageToDB(currentLang, authViewModel.getUserConfigsDatabaseRef())
+        } else {
+            Log.e("Save UserProfile", "Lang was not changed")
+        }
     }
 
     Button(

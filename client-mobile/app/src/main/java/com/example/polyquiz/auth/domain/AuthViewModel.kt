@@ -17,6 +17,7 @@ import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.constants.FriendsEvents
 import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.core.storage.ImageStorage
+import com.example.polyquiz.ui.theme.Theme
 import com.example.vanillaprototype.socket.SocketHandler
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
@@ -65,6 +66,17 @@ class AuthViewModel : ViewModel() {
 
     private val _avatarURL = MutableStateFlow(PresetAvatar.DEFAULT.value)
     val avatarURL: StateFlow<String> get() = _avatarURL
+
+    private val _theme = MutableStateFlow(Theme.LIGHT)
+    val theme: StateFlow<Theme> get() = _theme
+
+    fun setTheme(theme: Theme) {
+        _theme.value = theme
+    }
+
+    fun getTheme(): Theme {
+        return _theme.value
+    }
 
     init {
         checkAuthStatus()
@@ -227,8 +239,47 @@ class AuthViewModel : ViewModel() {
         resetAuthState()
     }
 
+    fun updateUserProfile(url: String, username: String) {
+        if(url.isEmpty() && username.isEmpty()) {
+            Log.e("Save UserProfile", "Nothing to update")
+            return
+        }
 
-    fun changeUsername(username: String, oldUsername: String) {
+        Log.d("Save UserProfile", "Called update profile")
+        val profileUpdates = userProfileChangeRequest {
+            if(url.isNotEmpty()) {
+                photoUri = Uri.parse(url)
+            }
+            if (username.isNotEmpty() && checkUsernameValidity(username)) {
+                displayName = username
+            }
+        }
+
+        user!!.updateProfile(profileUpdates).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                viewModelScope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.StringResource(
+                                R.string.edited_feedback
+                            )
+                        )
+                    )
+                }
+                SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
+                Log.d(
+                    "Profile update",
+                    "Used ${avatarURL.value}"
+                )
+            } else {
+                Log.e("Profile update", "An error occured...")
+            }
+        }
+    }
+
+
+    private fun checkUsernameValidity(username: String): Boolean {
+        var usernameIsValid: Boolean = false
         if (username.isEmpty() || usernameError.value.isNotEmpty()) {
             viewModelScope.launch {
                 SnackbarController.sendEvent(
@@ -237,11 +288,12 @@ class AuthViewModel : ViewModel() {
                     )
                 )
             }
-            return
+            return false
         }
         val usernameRef = getUsernameDatabaseRef(username.lowercase())
         usernameRef.get().addOnSuccessListener { databaseSnapshot: DataSnapshot ->
             if (databaseSnapshot.exists()) {
+                usernameIsValid = false
                 viewModelScope.launch {
                     SnackbarController.sendEvent(
                         event = SnackbarEvent(
@@ -250,28 +302,30 @@ class AuthViewModel : ViewModel() {
                     )
                 }
             } else {
-                val oldUsernameRef = getUsernameDatabaseRef(oldUsername.lowercase())
-                val displayNameUpdate = UserProfileChangeRequest.Builder()
-                    .setDisplayName(username)
-                    .build()
-
-                user?.updateProfile(displayNameUpdate)
-                    ?.addOnCompleteListener { updateTask ->
-                        if (updateTask.isSuccessful) {
-                            usernameRef.setValue(username.lowercase())
-                            oldUsernameRef.removeValue()
-                            _username.value = user?.displayName ?: ""
-                            viewModelScope.launch {
-                                SnackbarController.sendEvent(
-                                    event = SnackbarEvent(
-                                        message = StringValue.StringResource(R.string.edited_feedback)
-                                    )
-                                )
-                            }
-                        }
-                    }
+                usernameIsValid = true
+//                val oldUsernameRef = getUsernameDatabaseRef(oldUsername.lowercase())
+//                val displayNameUpdate = UserProfileChangeRequest.Builder()
+//                    .setDisplayName(username)
+//                    .build()
+//
+//                user?.updateProfile(displayNameUpdate)
+//                    ?.addOnCompleteListener { updateTask ->
+//                        if (updateTask.isSuccessful) {
+//                            usernameRef.setValue(username.lowercase())
+//                            oldUsernameRef.removeValue()
+//                            _username.value = user?.displayName ?: ""
+//                            viewModelScope.launch {
+//                                SnackbarController.sendEvent(
+//                                    event = SnackbarEvent(
+//                                        message = StringValue.StringResource(R.string.edited_feedback)
+//                                    )
+//                                )
+//                            }
+//                        }
+//                    }
             }
         }
+        return usernameIsValid
     }
 
     fun signIn(email: String, password: String, context: Context) {
@@ -423,34 +477,6 @@ class AuthViewModel : ViewModel() {
         _authState.value = AuthState.Unauthenticated
     }
 
-    fun updateUserProfile(url: String) {
-        Log.d("Profile Update", "Called update profile")
-        val profileUpdates = userProfileChangeRequest {
-            // MR31 : Update user display name
-            photoUri = Uri.parse(url)
-        }
-
-        user!!.updateProfile(profileUpdates).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                viewModelScope.launch {
-                    SnackbarController.sendEvent(
-                        event = SnackbarEvent(
-                            message = StringValue.StringResource(
-                                R.string.edited_feedback
-                            )
-                        )
-                    )
-                }
-                SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
-                Log.d(
-                    "Profile update",
-                    "Used ${avatarURL.value}"
-                )
-            } else {
-                Log.e("Profile update", "An error occured...")
-            }
-        }
-    }
 
     private fun handleAuthError(task: Task<AuthResult>, context: Context) {
         val errorMessage = try {
