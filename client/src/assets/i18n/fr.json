@@ -53,7 +53,11 @@
         "forgot-password": "Mot de passe oublié ?",
         "reset-password": "Réinitialiser le mot de passe",
         "sent-email": "Courriel envoyé !",
-        "sent-email-extra-info": "Si vous avez déjà un compte, vous recevrez un courriel pour réinitialiser votre mot de passe."
+        "sent-email-extra-info": "Si vous avez déjà un compte, vous recevrez un courriel pour réinitialiser votre mot de passe.",
+        "dark-theme": "Thème sombre",
+        "light-theme": "Thème clair",
+        "fr": "Français",
+        "en": "Anglais"
     },
     "nav": {
         "main-page": "Accueil"

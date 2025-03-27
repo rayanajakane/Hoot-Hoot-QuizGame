@@ -43,14 +43,13 @@ $dark-theme: mat.define-dark-theme(
     @include mat.all-component-themes($main-theme);
 }
 
-// Dont know how to use palettes yet
 .dark-theme {
     background-color: #101114;
     --mdc-elevated-card-container-color: #0b0c0f;
     --mdc-elevated-card-container-elevation: #080808;
     --mdc-filled-text-field-container-color: #323336;
     --mdc-snackbar-supporting-text-color: black !important;
-    --mdc-protected-button-container-color: mat.get-color-from-palette($warn-dark);
+    // --mat-expansion-container-text-color: ;
     color: white;
 }
 // Include theme styles for core and each component used in your app.
@@ -163,7 +162,6 @@ body {
     align-items: center;
     justify-content: space-between;
     box-sizing: border-box;
-    background: white;
     font-size: 14px;
     cursor: move;
 }

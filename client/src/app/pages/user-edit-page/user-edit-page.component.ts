@@ -12,7 +12,7 @@ import { NotificationService } from '@app/services/notification/notification.ser
 import { Theme, ThemeService } from '@app/services/theme/theme.service';
 import { TranslationService } from '@app/translation/translation.service';
 import { UserHistoryInfo } from '@common/interfaces/history-items';
-import { TranslocoService } from '@jsverse/transloco';
+import { translate, TranslocoService } from '@jsverse/transloco';
 
 export interface UserEditData {
     email: string;
@@ -31,8 +31,16 @@ export class UserEditPageComponent implements OnInit {
     maxUsernameLength = MAX_LENGTH;
     loadedImageFile: File | null = null;
 
-    availableLangs: string[];
-    availableThemes: Theme[];
+    availableLangs: Language[];
+    availableThemes = Object.values(Theme);
+    themeLabels = {
+        [Theme.DARK]: translate('page.dark-theme'),
+        [Theme.LIGHT]: translate('page.light-theme'),
+    };
+    langLabels = {
+        ['fr']: translate('page.fr'),
+        ['en']: translate('page.en'),
+    };
     userHistory: UserHistoryInfo = {
         auth: [],
         match: [],
@@ -67,7 +75,7 @@ export class UserEditPageComponent implements OnInit {
         private historyService: HistoryService,
         public dialog: MatDialog,
     ) {
-        this.availableLangs = this.translocoService.getAvailableLangs() as string[];
+        this.availableLangs = this.translationService.getAllLanguages();
         this.availableThemes = this.themeService.getAvailableThemes() as Theme[];
 
         this.currentUser = this.authenticationService.currentUser;
@@ -93,6 +101,13 @@ export class UserEditPageComponent implements OnInit {
         return PresetAvatar;
     }
 
+    getThemeLabel(theme: Theme): string {
+        return this.themeLabels[theme];
+    }
+
+    getLangLabel(lang: 'fr' | 'en'): string {
+        return this.langLabels[lang];
+    }
     async ngOnInit() {
         if (!this.currentUser) {
             this.userHistory = {
@@ -146,6 +161,16 @@ export class UserEditPageComponent implements OnInit {
             this.themeService.setTheme(this.currentTheme.value as Theme);
             this.translationService.setLanguage(this.currentLang.value as string);
 
+            // Reset labels to new language
+            this.themeLabels = {
+                [Theme.DARK]: translate('page.dark-theme'),
+                [Theme.LIGHT]: translate('page.light-theme'),
+            };
+
+            this.langLabels = {
+                ['fr']: translate('page.fr'),
+                ['en']: translate('page.en'),
+            };
             this.authenticationService.editUserProfile(this.username.value as string, url);
             this.form.markAsPristine();
         }
