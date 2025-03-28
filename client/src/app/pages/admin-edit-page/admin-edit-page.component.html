@@ -1,4 +1,4 @@
-<div id="main-container">
+<div id="main-container" *transloco="let t">
     <mat-sidenav-container class="sidenav-container" [hasBackdrop]="false">
         <mat-sidenav #sidenav [mode]="'over'" [position]="'end'">
             <div class="sidenav-close">
@@ -33,7 +33,9 @@
 
         <mat-sidenav-content>
             <div id="header-bar">
-                <h1 class="page-title">{{ state === managementState.GameModify ? 'Modification' : 'Création' }} du jeu</h1>
+                <h1 class="page-title">
+                    {{ state === managementState.GameModify ? t('admin-edit-page.creation-title') : t('admin-edit-page.modification-title') }}
+                </h1>
 
                 <div class="buttons-container">
                     <button
@@ -42,7 +44,8 @@
                         (click)="gameModificationService.handleSubmit()"
                         [disabled]="gameModificationService.gameForm.invalid || game.questions.length === 0"
                     >
-                        <mat-icon>done</mat-icon> {{ state === managementState.GameModify ? 'Appliquer les modifications' : 'Créer le jeu' }}
+                        <mat-icon>done</mat-icon>
+                        {{ state === managementState.GameModify ? t('admin-edit-page.apply-changes') : t('admin-edit-page.create-game') }}
                     </button>
 
                     <button
@@ -52,11 +55,11 @@
                         (click)="gameModificationService.openCreateQuestionDialog()"
                         id="admin-question-creation-form-button"
                     >
-                        <mat-icon>add</mat-icon>Ajouter une nouvelle question
+                        <mat-icon>add</mat-icon>{{ t('admin-edit-page.add-question') }}
                     </button>
 
                     <button class="question-bank-button" mat-raised-button color="primary" (click)="sidenav.toggle()">
-                        <mat-icon>question_mark</mat-icon>Banque de questions
+                        <mat-icon>question_mark</mat-icon>{{ t('admin-main-page.question-bank') }}
                     </button>
 
                     <button class="cancel-button" mat-raised-button routerLink="/admin/games">
