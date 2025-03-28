@@ -60,7 +60,8 @@
         "en": "Anglais"
     },
     "nav": {
-        "main-page": "Accueil"
+        "main-page": "Page principale",
+        "quit": "Quitter"
     },
     "main-page": {
         "home": "Accueil",
@@ -74,12 +75,14 @@
         "logout": "Se déconnecter"
     },
     "match-creation-page": {
-        "games-list-label": "Liste des jeux",
-        "game-details-label": "Détails du jeu ",
-        "select-game-label": "Sélectionner un jeu dans la liste des jeux",
+        "games-list": "Liste des jeux",
+        "game-details": "Détails du jeu ",
+        "select-game": "Sélectionner un jeu dans la liste des jeux",
         "time-per-QCM": "Temps par QCM:",
         "popular-games": "Jeux populaires",
-        "n-matches-played": "Parties jouées:"
+        "n-matches-played": "Parties jouées:",
+        "all-games": "Tous les jeux",
+        "custom-match": "Partie personnalisée"
     },
     "admin-main-page": {
         "admin-games": "Administration des jeux",
@@ -92,6 +95,9 @@
     "common": {
         "cancel": "Annuler",
         "play": "Jouer",
+        "title": "Titre",
+        "desc": "Description",
+        "secs": "secondes",
         "yes": "Oui",
         "no": "Non",
         "warning": "Avertissement"
@@ -104,6 +110,40 @@
         "playing-matches": "Parties en cours",
         "no-match": "Aucune partie à afficher",
         "join-action": "Joindre"
+    },
+    "wait-page": {
+        "start-soon": "La partie va bientôt commencer...",
+        "locked-match": "Partie déverrouillée",
+        "unlocked-match": "Partie verrouillée",
+        "start-match": "Commencer la partie",
+        "starting": "Le jeu \"{{title}}\" commence dans.."
+    },
+    "admin-edit-page": {
+        "cancel": "Annuler la {{state}} du jeu",
+        "creation": "création",
+        "modification": "modification",
+        "creation-title": "Création du jeu",
+        "modification-title": "Modification du jeu",
+        "create-game": "Créer le jeu",
+        "apply-changes": "Appliquer les modifications",
+        "add-question": "Ajouter une nouvelle question",
+        "notice": "Le jeu doit contenir au moins 1 question. Cliquez sur \"Ajouter une nouvelle question\" ou importez une question de la banque."
+    },
+    "question-creation-form": {
+        "question": "Question",
+        "question-text": "Texte de la question",
+        "question-type": "Type de Question",
+        "upload-image": "Téléverser une image",
+        "remove-image": "Retirer l'image",
+        "add-bank": "Ajouter à la banque",
+        "add-question-bank": "Ajouter la question à la banque",
+        "verify-question": "Vérifier si la question est valide",
+        "modify-question": "Modifier la question",
+        "question-choice": "Choix de réponse",
+        "delete-choice": "Supprimer le choix",
+        "tooltip-answer-true": "Cocher pour rendre le choix vrai",
+        "add-answer-choice": "Ajouter un choix de réponse",
+        "boundary-low": "Borne inférieure"
     },
     "friends-search": {
         "search-friend": "Rechercher un ami",

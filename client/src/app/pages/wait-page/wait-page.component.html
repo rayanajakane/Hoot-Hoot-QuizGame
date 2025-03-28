@@ -1,7 +1,7 @@
-<div id="main-container">
+<div id="main-container" *transloco="let t">
     <div class="centered-container" *ngIf="matchRoomService.isMatchStarted">
         <div id="game-starting">
-            <h1>Le jeu {{ this.matchRoomService.gameTitle }} commence dans..</h1>
+            <h1>{{ t('wait-page.starting', { title: this.matchRoomService.gameTitle }) }}</h1>
             <div id="timer">
                 <mat-progress-spinner [value]="timeService.computeTimerProgress()" mode="determinate" diameter="350"> </mat-progress-spinner>
                 <h2 id="time-left">
@@ -11,17 +11,17 @@
         </div>
     </div>
     <div id="waiting-for-players" *ngIf="!matchRoomService.isMatchStarted">
-        <h1>La partie va bientôt commencer...</h1>
+        <h1>{{ t('wait-page.start-soon') }}</h1>
         <div id="host-options-container">
             <div id="code-container">
                 <div>
-                    <h2>Code d'accès</h2>
+                    <h2>{{ t('main-page.access-code') }}</h2>
                     <p id="code">{{ matchRoomService.getRoomCode() }}</p>
                 </div>
                 <img src="{{ qrCodeUrl }}" alt="" />
             </div>
             <mat-slide-toggle *ngIf="isHost" [checked]="isLocked" (click)="toggleLock()">{{
-                isLocked ? 'Partie verrouillée' : 'Partie déverrouillée'
+                isLocked ? t('wait-page.locked-match') : t('wait-page.unlocked-match')
             }}</mat-slide-toggle>
             <button
                 *ngIf="isHost"
@@ -31,12 +31,12 @@
                 (click)="startMatch()"
                 [disabled]="!isLocked || matchRoomService.players.length === 0"
             >
-                Commencer la partie
+                {{ t('wait-page.start-match') }}
             </button>
         </div>
         <div id="exit-button-container">
             <button mat-raised-button id="exit-button" routerLink="/home" (click)="quitGame()">
-                <p>QUITTER</p>
+                <p>{{ t('nav.quit') }}</p>
                 <i class="material-icons">logout</i>
             </button>
         </div>

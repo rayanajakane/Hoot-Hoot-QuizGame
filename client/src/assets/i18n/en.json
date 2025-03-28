@@ -60,7 +60,8 @@
         "en": "English"
     },
     "nav": {
-        "main-page": "Home"
+        "main-page": "Main page",
+        "quit": "Exit"
     },
     "main-page": {
         "home": "Home",
@@ -79,7 +80,9 @@
         "select-game": "Select a game from the games list",
         "time-per-QCM": "Time per QCM:",
         "popular-games": "Popular Games",
-        "n-matches-played": "Played Matches:"
+        "n-matches-played": "Matches Played:",
+        "all-games": "All Games",
+        "custom-match": "Custom match"
     },
     "admin-main-page": {
         "admin-games": "Manage games",
@@ -92,6 +95,9 @@
     "common": {
         "cancel": "Cancel",
         "play": "Play",
+        "title": "Title",
+        "desc": "Description",
+        "secs": "seconds",
         "yes": "Yes",
         "no": "No",
         "warning": "Warning"
@@ -104,6 +110,42 @@
         "playing-matches": "Playing Matches",
         "no-match": "No Match to Display",
         "join-action": "Join"
+    },
+    "wait-page": {
+        "start-soon": "The match will start soon...",
+        "locked-match": "Match unlocked",
+        "unlocked-match": "Match locked",
+        "start-match": "Start Match",
+        "creation": "creation",
+        "modification": "modification",
+        "starting": "Game \"{{title}}\" starts in.."
+    },
+    "admin-edit-page": {
+        "cancel": "Cancel game {{state}}",
+        "creation": "creation",
+        "modification": "modification",
+        "creation-title": "Game creation",
+        "modification-title": "Game modification",
+        "create-game": "Create game",
+        "apply-changes": "Apply changes",
+        "add-question": "Add new question",
+        "notice": "The game must contain at least 1 question. Click on \"Add new question\" or import a question from the bank."
+    },
+    "question-creation-form": {
+        "question": "Question",
+        "question-text": "Question text",
+        "question-type": "Question Type",
+        "upload-image": "Upload an image",
+        "remove-image": "Remove an image",
+        "add-bank": "Add to bank",
+        "add-question-bank": "Add question to bank",
+        "verify-question": "Check if question is valid",
+        "modify-question": "Modify the question",
+        "question-choice": "Answer choice",
+        "delete-choice": "Delete choice",
+        "tooltip-answer-correct": "Check to make answer correct",
+        "add-answer-choice": "Add an answer choice",
+        "boundary-low": "Lower boundary"
     },
     "friends-search": {
         "search-friend": "Search Friend",
