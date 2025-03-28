@@ -49,7 +49,7 @@
                             matTooltipClass="tooltip-multiline"
                             matTooltipPosition="above"
                             (click)="reactToMessage(message.id, emoji.LIKE)"
-                            [color]="isOwnReaction(message.userLikes) ? 'primary' : ''"
+                            [color]="isOwnReaction(message.userLikes) ? 'accent' : ''"
                         >
                             👍{{ message.userLikes.length }}
                         </button>

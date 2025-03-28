@@ -12,7 +12,6 @@
 .alert {
     font-size: 30vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: mat.get-color-from-palette(styles.$primary);
     animation: growAndFade 1s ease forwards;
 }
 

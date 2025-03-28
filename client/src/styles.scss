@@ -1,7 +1,6 @@
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming¸¸
 @use '@angular/material' as mat;
-@use './styles/light.scss' as light-palettes;
 @use './styles/dark.scss' as dark-palettes;
 
 // Plus imports for other components in your app.
@@ -11,9 +10,9 @@
 // Be sure that you only ever include this mixin once!
 @include mat.core();
 
-$primary: mat.define-palette(light-palettes.$m2-primary);
-$accent: mat.define-palette(light-palettes.$m2-accent, A200, A100, A400);
-$warn: mat.define-palette(light-palettes.$m2-error);
+$primary: mat.define-palette(mat.$indigo-palette);
+$accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+$warn: mat.define-palette(mat.$red-palette);
 
 $primary-dark: mat.define-palette(dark-palettes.$m2-primary);
 $accent-dark: mat.define-palette(dark-palettes.$m2-accent, A200, A100, A400);
@@ -41,6 +40,18 @@ $dark-theme: mat.define-dark-theme(
 
 .light-theme {
     @include mat.all-component-themes($main-theme);
+    #header-bar {
+        background-color: #fafafa;
+    }
+    .alert {
+        color: mat.get-color-from-palette($primary);
+    }
+
+    .own-message {
+        background-color: mat.get-color-from-palette($primary);
+        color: #fff;
+        border-radius: 1em 1em 0.15em 1em;
+    }
 }
 
 .dark-theme {
@@ -50,6 +61,7 @@ $dark-theme: mat.define-dark-theme(
     --mdc-filled-text-field-container-color: #323336;
     --mdc-snackbar-supporting-text-color: black !important;
     --mat-expansion-container-background-color: #0b0c0f;
+    --mdc-protected-button-container-color: mat.get-color-from-palette($primary-dark, 800);
     --mat-sidenav-container-background-color: black;
 
     color: white;
@@ -61,8 +73,28 @@ $dark-theme: mat.define-dark-theme(
         color: mat.get-color-from-palette($primary-dark, 900) !important;
     }
 
+    .alert {
+        color: mat.get-color-from-palette($primary-dark);
+    }
+
+    // Emoji button color : #323336
+
+    .own-message {
+        background-color: mat.get-color-from-palette($primary-dark);
+        color: black;
+        border-radius: 1em 1em 0.15em 1em;
+    }
+
     .sidenav-container {
         background-color: #101114 !important;
+    }
+
+    #header-bar {
+        background-color: #101114;
+    }
+
+    #game-header-card {
+        background-color: #080808 !important;
     }
 }
 // Include theme styles for core and each component used in your app.
