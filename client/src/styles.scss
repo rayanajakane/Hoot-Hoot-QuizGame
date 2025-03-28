@@ -48,7 +48,7 @@ $dark-theme: mat.define-dark-theme(
     }
 
     .own-message {
-        background-color: mat.get-color-from-palette($primary);
+        background-color: #5b6feb;
         color: #fff;
         border-radius: 1em 1em 0.15em 1em;
     }
@@ -77,10 +77,15 @@ $dark-theme: mat.define-dark-theme(
         color: mat.get-color-from-palette($primary-dark);
     }
 
-    // Emoji button color : #323336
+    // TODO: When button is disabled, give color pl0x
+    // .mat-mdc-raised-button:not(:disabled) {
+    //     background-color: #323336;
+    // }
+
+    // TODO : Fix focus colors in chat component text field
 
     .own-message {
-        background-color: mat.get-color-from-palette($primary-dark);
+        background-color: #5b6feb;
         color: black;
         border-radius: 1em 1em 0.15em 1em;
     }

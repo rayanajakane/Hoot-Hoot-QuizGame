@@ -48,8 +48,9 @@
                             [matTooltip]="getReactionsToolTip(message.userLikes)"
                             matTooltipClass="tooltip-multiline"
                             matTooltipPosition="above"
+                            class="emoji-button"
                             (click)="reactToMessage(message.id, emoji.LIKE)"
-                            [color]="isOwnReaction(message.userLikes) ? 'accent' : ''"
+                            [color]="isOwnReaction(message.userLikes) ? 'primary' : ''"
                         >
                             👍{{ message.userLikes.length }}
                         </button>
@@ -58,6 +59,7 @@
                             [matTooltip]="getReactionsToolTip(message.userLoves)"
                             matTooltipClass="tooltip-multiline"
                             matTooltipPosition="above"
+                            class="emoji-button"
                             (click)="reactToMessage(message.id, emoji.LOVE)"
                             [color]="isOwnReaction(message.userLoves) ? 'primary' : ''"
                         >
@@ -68,6 +70,7 @@
                             [matTooltip]="getReactionsToolTip(message.userDislikes)"
                             tooltipClass="tooltip-multiline"
                             matTooltipPosition="above"
+                            class="emoji-button"
                             (click)="reactToMessage(message.id, emoji.DISLIKE)"
                             [color]="isOwnReaction(message.userDislikes) ? 'primary' : ''"
                         >
