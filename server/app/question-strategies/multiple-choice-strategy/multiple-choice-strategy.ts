@@ -31,6 +31,7 @@ export class MultipleChoiceStrategy extends QuestionStrategy {
             if (this.isCorrectAnswer(player.answer as MultipleChoiceAnswer, correctAnswer)) {
                 player.answerCorrectness = AnswerCorrectness.GOOD;
                 player.score += currentQuestionPoints;
+                player.nGoodAnswers++;
                 correctPlayers.push(player);
                 if ((!fastestTime || player.answer.timestamp < fastestTime) && player.answer.timestamp !== Infinity)
                     fastestTime = player.answer.timestamp;

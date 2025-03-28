@@ -30,4 +30,5 @@ export interface MatchRoom {
     startTime: Date;
     qrCodeUrl: string;
     partyConfig: PartyConfig;
+    end?: Date;
 }

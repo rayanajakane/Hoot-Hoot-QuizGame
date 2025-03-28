@@ -7,6 +7,7 @@ import { Player } from '@app/model/schema/player.schema';
 // import { HistogramService } from '@app/services/histogram/histogram.service';
 // import { HistoryService } from '@app/services/history/history.service';
 import { FriendsService } from '@app/services/friends/friends.service';
+import { HistoryService } from '@app/services/history/history.service';
 import { MatchBackupService } from '@app/services/match-backup/match-backup.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { MoneyService } from '@app/services/money/money.service';
@@ -23,6 +24,7 @@ import { Injectable } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { ConnectedSocket, MessageBody, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { v4 as uuidv4 } from 'uuid';
 
 @WebSocketGateway({ cors: true })
 @Injectable()
@@ -38,8 +40,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         private readonly friendService: FriendsService,
         private readonly moneyService: MoneyService,
         private readonly timeService: TimeService,
-        // private readonly histogramService: HistogramService,
-        // private readonly historyService: HistoryService,
+        private historyService: HistoryService,
         private readonly partyService: PartyService,
         private readonly eventEmitter: EventEmitter2,
     ) {}
@@ -78,11 +79,21 @@ export class MatchGateway implements OnGatewayDisconnect {
         @ConnectedSocket() socket: Socket,
         @MessageBody() data: { gameId: string; hostId: string; isClassicMode: boolean; partyConfig: PartyConfig },
     ) {
-        if (data.partyConfig.isFriendsOnly) {
-            const friendshipErrors = await this.friendService.getFriendshipErrors(data.hostId, true);
-            if (friendshipErrors) {
-                this.sendError(socket.id, friendshipErrors);
-                return;
+        console.log('Creating room', data.hostId);
+        if (data.partyConfig) {
+            if (data.partyConfig.isFriendsOnly) {
+                const friendshipErrors = await this.friendService.getFriendshipErrors(data.hostId, true);
+                if (friendshipErrors) {
+                    this.sendError(socket.id, friendshipErrors);
+                    return;
+                }
+            }
+            if (data.partyConfig.isEntryFeeRequired) {
+                const moneyErrors = await this.moneyService.getMoneyError(data.hostId, data.partyConfig.entryFeeAmount);
+                if (moneyErrors) {
+                    this.sendError(socket.id, moneyErrors);
+                    return;
+                }
             }
         }
 
@@ -110,6 +121,8 @@ export class MatchGateway implements OnGatewayDisconnect {
     async routeToResultsPage(@ConnectedSocket() socket: Socket, @MessageBody() matchRoomCode: string) {
         const roomIndex = this.matchRoomService.getRoomIndex(matchRoomCode);
         this.matchRoomService.matchRooms[roomIndex].isPlaying = false;
+
+        this.matchRoomService.matchRooms[roomIndex].end = new Date();
 
         this.playerRoomService.setStateForAll(matchRoomCode, PlayerState.default);
         this.server.to(matchRoomCode).emit(MatchEvents.RouteToResultsPage);
@@ -143,6 +156,7 @@ export class MatchGateway implements OnGatewayDisconnect {
             this.playerRoomService.deletePlayer(data.roomCode, data.userId);
             this.sendError(playerToBan.socket.id, BAN_PLAYER);
             this.server.in(playerToBan.socket.id).emit(MatchEvents.KickPlayer);
+            playerToBan.socket.leave(data.roomCode);
             // this.server.in(playerToBan.socket.id).disconnectSockets();
         }
         this.sendPlayersData(socket, data.roomCode);
@@ -191,6 +205,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         if (!isHostDisconnected) await this.handlePlayersDisconnect(socket);
     }
 
+    @SubscribeMessage('Disconnect')
     async handleDisconnect(@ConnectedSocket() socket: Socket) {
         await this.handleDisconnectFromRoom(socket);
     }
@@ -200,8 +215,24 @@ export class MatchGateway implements OnGatewayDisconnect {
         if (!hostRoomCode) return false;
         const hostRoom = this.matchRoomService.getRoom(hostRoomCode);
         socket.leave(hostRoomCode);
+
+        // !hostRoom.currentQuestionIndex is true when in wait page (=== 0)
         if (hostRoom.isPlaying || !hostRoom.currentQuestionIndex) {
             this.sendError(hostRoomCode, NO_MORE_HOST);
+            const endDate = new Date();
+            if (hostRoom.players) {
+                hostRoom.players.forEach((player) => {
+                    this.historyService.addMatchHistoryItem(player.id, {
+                        id: uuidv4(),
+                        start: hostRoom.startTime,
+                        end: endDate,
+                        nGoodAnswers: player.nGoodAnswers,
+                        nTotalQuestions: hostRoom.gameLength,
+                        hasWon: false,
+                        hasGivenUp: false,
+                    });
+                });
+            }
             this.deleteRoom(hostRoomCode);
             return true;
         }
@@ -248,8 +279,9 @@ export class MatchGateway implements OnGatewayDisconnect {
 
     deleteRoom(matchRoomCode: string) {
         this.server.to(matchRoomCode).emit(MatchEvents.HostQuitMatch);
-        // this.server.in(matchRoomCode).disconnectSockets(); // TODO: Check if we need to manually remove from room instead.
+        this.server.in(matchRoomCode).socketsLeave(matchRoomCode);
         this.matchRoomService.deleteRoom(matchRoomCode);
+        console.log(`Deleting room ${matchRoomCode}`); // For debugging purposes
         this.returnAllMatches();
     }
 

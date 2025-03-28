@@ -190,6 +190,8 @@ class AuthViewModel : ViewModel() {
         // Delete avatar from storage
         ImageStorage.deleteAvatar(user.uid)
 
+        val userId = user.uid;
+
         // Delete user from auth
         user.delete().addOnCompleteListener { task ->
             if(task.isSuccessful) {
@@ -200,8 +202,8 @@ class AuthViewModel : ViewModel() {
                         )
                     )
                 }
-                SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
-                
+                SocketHandler.getSocket().emit(FriendsEvents.USER_DELETED.value, userId)
+
                 // Disconnect socket
                 SocketHandler.disconnect()
 

@@ -1,12 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { User } from '@angular/fire/auth';
 import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MAX_LENGTH, MIN_LENGTH } from '@app/constants/authentication';
 import { IMAGE_MAX_FILE_SIZE, PresetAvatar } from '@app/constants/image-constants';
 import { Language } from '@app/interfaces/language';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
+import { HistoryService } from '@app/services/history/history.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { TranslationService } from '@app/translation/translation.service';
+import { UserHistoryInfo } from '@common/interfaces/history-items';
 import { TranslocoService } from '@jsverse/transloco';
 
 export interface UserEditData {
@@ -19,7 +21,7 @@ export interface UserEditData {
     templateUrl: './user-edit-page.component.html',
     styleUrl: './user-edit-page.component.scss',
 })
-export class UserEditPageComponent {
+export class UserEditPageComponent implements OnInit {
     currentUser: User | null;
     isPresetAvatar = true; // TODO: Determine if we consider an existing avatar to be "preset"
     minUsernameLength = MIN_LENGTH;
@@ -27,6 +29,17 @@ export class UserEditPageComponent {
     loadedImageFile: File | null = null;
 
     availableLangs: string[];
+    userHistory: UserHistoryInfo = {
+        auth: [],
+        match: [],
+        stats: {
+            nMatchesPlayed: 0,
+            nMatchesWon: 0,
+            averageGoodAnswersPercentage: 0,
+            averageTime: 0,
+        },
+        intensityGrid: Array(365).fill(0),
+    };
 
     form = this.fb.group({
         email: [{ value: this.authenticationService.userEmail, disabled: true }],
@@ -45,6 +58,7 @@ export class UserEditPageComponent {
         public notificationService: NotificationService,
         private translocoService: TranslocoService,
         private translationService: TranslationService,
+        private historyService: HistoryService,
     ) {
         this.availableLangs = this.translocoService.getAvailableLangs() as string[];
         this.currentUser = this.authenticationService.currentUser;
@@ -64,6 +78,41 @@ export class UserEditPageComponent {
 
     get presetAvatar() {
         return PresetAvatar;
+    }
+
+    async ngOnInit() {
+        if (!this.currentUser) {
+            this.userHistory = {
+                auth: [],
+                match: [],
+                stats: {
+                    nMatchesPlayed: 0,
+                    nMatchesWon: 0,
+                    averageGoodAnswersPercentage: 0,
+                    averageTime: 0,
+                },
+                intensityGrid: Array(365).fill(0),
+            };
+            return;
+        }
+        this.historyService.getUserHistory(this.currentUser.uid).subscribe({
+            next: (userHistory: UserHistoryInfo) => {
+                this.userHistory = userHistory;
+            },
+            error: (error) => {
+                this.userHistory = {
+                    auth: [],
+                    match: [],
+                    stats: {
+                        nMatchesPlayed: 0,
+                        nMatchesWon: 0,
+                        averageGoodAnswersPercentage: 0,
+                        averageTime: 0,
+                    },
+                    intensityGrid: Array(365).fill(0),
+                };
+            },
+        });
     }
 
     static isEmptyData(userEditData: UserEditData | undefined): boolean {
