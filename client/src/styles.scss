@@ -50,7 +50,8 @@ $dark-theme: mat.define-dark-theme(
     --mdc-filled-text-field-container-color: #323336;
     --mdc-snackbar-supporting-text-color: black !important;
     --mat-expansion-container-background-color: #0b0c0f;
-    // --mat-expansion-container-text-color: ;
+    --mat-sidenav-container-background-color: black;
+
     color: white;
     .color-variant {
         color: mat.get-color-from-palette($accent-dark, 900) !important;
