@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Inject, Input, OnChanges, OnInit, Optional, Output, SimpleChanges } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -10,6 +11,7 @@ import { Question } from '@app/interfaces/question';
 import { BankService } from '@app/services/bank/bank.service';
 import { QuestionService } from '@app/services/question/question.service';
 import { QuestionType } from '@common/constants/question-types';
+import { translate } from '@jsverse/transloco';
 
 export interface DialogManagement {
     modificationState: ManagementState;
@@ -143,13 +145,13 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
     getButtonText() {
         switch (this.modificationState) {
             case ManagementState.BankCreate:
-                return 'Ajouter la question à la banque';
+                return translate('question-creation-form.add-question-bank');
             case ManagementState.GameCreate:
-                return 'Vérifier si la question est valide';
+                return translate('question-creation-form.verify-question');
             case ManagementState.BankModify:
-                return 'Modifier la question';
+                return translate('question-creation-form.modify-question');
             case ManagementState.GameModify:
-                return 'Modifier la question';
+                return translate('question-creation-form.modify-question');
         }
     }
 
@@ -159,8 +161,33 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         // return this.modificationState !== ManagementState.GameModify && this.modificationState !== ManagementState.BankModify;
     }
 
-    public toggleBank() {
+    toggleBank() {
         this.bankService.addToBank = this.bankService.addToBank ? false : true;
+    }
+
+    setPicture(event: Event) {
+        const eventTarget: HTMLInputElement | null = event.target as HTMLInputElement | null;
+        if (eventTarget?.files?.[0]) {
+            const file: File = eventTarget.files[0];
+            if (file.size > IMAGE_MAX_FILE_SIZE) {
+                // TODO: Transloco
+                this.openSnackBar('Le fichier est trop grand.', SNACK_BAR_DISPLAY_TIME);
+                return;
+            }
+            const reader = new FileReader();
+            reader.addEventListener('load', () => {
+                this.questionForm.get('pictureUrl')?.setValue(reader.result as null);
+                this.questionForm.get('pictureFile')?.setValue(file);
+                this.loadedImageFile = file;
+            });
+            reader.readAsDataURL(file);
+        }
+    }
+
+    removePicture() {
+        this.questionForm.get('pictureUrl')?.setValue('');
+        this.questionForm.get('pictureFile')?.setValue(null);
+        this.loadedImageFile = null;
     }
 
     private initializeForm(): void {
@@ -354,30 +381,5 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
                 margin: this.question.estimatedParameters?.margin,
             });
         }
-    }
-
-    public setPicture(event: Event) {
-        const eventTarget: HTMLInputElement | null = event.target as HTMLInputElement | null;
-        if (eventTarget?.files?.[0]) {
-            const file: File = eventTarget.files[0];
-            if (file.size > IMAGE_MAX_FILE_SIZE) {
-                // TODO: Transloco
-                this.openSnackBar('Le fichier est trop grand.', SNACK_BAR_DISPLAY_TIME);
-                return;
-            }
-            const reader = new FileReader();
-            reader.addEventListener('load', () => {
-                this.questionForm.get('pictureUrl')?.setValue(reader.result as null);
-                this.questionForm.get('pictureFile')?.setValue(file);
-                this.loadedImageFile = file;
-            });
-            reader.readAsDataURL(file);
-        }
-    }
-
-    public removePicture() {
-        this.questionForm.get('pictureUrl')?.setValue('');
-        this.questionForm.get('pictureFile')?.setValue(null);
-        this.loadedImageFile = null;
     }
 }

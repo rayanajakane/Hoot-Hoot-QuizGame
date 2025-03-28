@@ -143,7 +143,14 @@
         "delete-choice": "Supprimer le choix",
         "tooltip-answer-true": "Cocher pour rendre le choix vrai",
         "add-answer-choice": "Ajouter un choix de réponse",
-        "boundary-low": "Borne inférieure"
+        "boundary-low": "Borne inférieure",
+        "boundary-low-placeholder": "Valeur de la borne inférieure",
+        "boundary-high": "Borne supérieure",
+        "boundary-high-placeholder": "Valeur de la borne supérieure",
+        "good-answer": "Bonne réponse",
+        "good-answer-placeholder": "Valeur de la bonne réponse à la question",
+        "tolerance-margin": "Marge de tolérance",
+        "tolerance-margin-placeholder": "Valeur de la marge de tolérance"
     },
     "friends-search": {
         "search-friend": "Rechercher un ami",

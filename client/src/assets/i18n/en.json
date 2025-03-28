@@ -143,9 +143,16 @@
         "modify-question": "Modify the question",
         "question-choice": "Answer choice",
         "delete-choice": "Delete choice",
-        "tooltip-answer-correct": "Check to make answer correct",
+        "tooltip-answer-true": "Check to make answer correct",
         "add-answer-choice": "Add an answer choice",
-        "boundary-low": "Lower boundary"
+        "boundary-low": "Lower boundary",
+        "boundary-low-placeholder": "Lower boundary value",
+        "boundary-high": "Higher boundary",
+        "boundary-high-placeholder": "Higher boundary value",
+        "good-answer": "Good answer",
+        "good-answer-placeholder": "Good answer value",
+        "tolerance-margin": "Tolerance margin",
+        "tolerance-margin-placeholder": "Tolerance margin value"
     },
     "friends-search": {
         "search-friend": "Search Friend",
