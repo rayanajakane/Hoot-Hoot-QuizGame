@@ -49,6 +49,7 @@
         "avatar-choices": "Avatars prédéfinis",
         "delete-user": "Supprimer le profil",
         "danger-zone": "Zone dangereuse",
+        "delete-warning": "Cette opération est irréversible. Voulez-vous VRAIMENT supprimer votre compte ?",
         "forgot-password": "Mot de passe oublié ?",
         "reset-password": "Réinitialiser le mot de passe",
         "sent-email": "Courriel envoyé !",
@@ -84,7 +85,10 @@
     },
     "common": {
         "cancel": "Annuler",
-        "play": "Jouer"
+        "play": "Jouer",
+        "yes": "Oui",
+        "no": "Non",
+        "warning": "Avertissement"
     },
     "join": {
         "room-code": "Code de la partie",

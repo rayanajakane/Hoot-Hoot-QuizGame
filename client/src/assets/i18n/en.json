@@ -48,6 +48,7 @@
         "upload-avatar": "Upload Avatar",
         "avatar-choices": "Predefined avatars",
         "delete-user": "Delete Profile",
+        "delete-warning": "This operation is irreversible. Do you REALLY want to delete your account?",
         "danger-zone": "Danger Zone",
         "forgot-password": "Forgot Password?",
         "reset-password": "Reset password",
@@ -84,7 +85,10 @@
     },
     "common": {
         "cancel": "Cancel",
-        "play": "Play"
+        "play": "Play",
+        "yes": "Yes",
+        "no": "No",
+        "warning": "Warning"
     },
     "join": {
         "room-code": "Room Code",

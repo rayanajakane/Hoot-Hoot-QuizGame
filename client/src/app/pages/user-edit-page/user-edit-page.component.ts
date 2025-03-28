@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from '@angular/fire/auth';
 import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '@app/components/confirm-dialog/confirm-dialog.component';
 import { MAX_LENGTH, MIN_LENGTH } from '@app/constants/authentication';
 import { IMAGE_MAX_FILE_SIZE, PresetAvatar } from '@app/constants/image-constants';
 import { Language } from '@app/interfaces/language';
@@ -59,6 +61,7 @@ export class UserEditPageComponent implements OnInit {
         private translocoService: TranslocoService,
         private translationService: TranslationService,
         private historyService: HistoryService,
+        public dialog: MatDialog,
     ) {
         this.availableLangs = this.translocoService.getAvailableLangs() as string[];
         this.currentUser = this.authenticationService.currentUser;
@@ -160,6 +163,22 @@ export class UserEditPageComponent implements OnInit {
     setPresetAvatar(presetAvatar: PresetAvatar) {
         this.isPresetAvatar = true;
         this.form.get('avatar')?.setValue(presetAvatar);
+    }
+
+    openDeleteDialog() {
+        const data = {
+            icon: 'warning',
+            title: 'common.warning',
+            text: 'page.delete-warning',
+        };
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data,
+        });
+        dialogRef.afterClosed().subscribe((confirm) => {
+            if (confirm) {
+                this.deleteUser();
+            }
+        });
     }
 
     deleteUser() {
