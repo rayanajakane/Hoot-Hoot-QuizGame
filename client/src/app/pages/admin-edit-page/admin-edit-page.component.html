@@ -65,7 +65,11 @@
                     <button class="cancel-button" mat-raised-button routerLink="/admin/games">
                         <mat-icon *ngIf="!this.gameModificationService.isPendingChanges">clear</mat-icon>
                         <mat-icon class="pending-changes" *ngIf="this.gameModificationService.isPendingChanges">pending</mat-icon>
-                        Annuler la {{ state === managementState.GameModify ? 'modification' : 'création' }} du jeu
+                        {{
+                            t('admin-edit-page.cancel', {
+                                state: state === managementState.GameModify ? t('admin-edit-page.modification') : t('admin-edit-page.creation')
+                            })
+                        }}
                     </button>
                 </div>
             </div>
@@ -74,23 +78,23 @@
                 <form [formGroup]="gameModificationService.gameForm">
                     <div class="game-form-details item-container">
                         <mat-form-field class="game-title">
-                            <mat-label>Titre</mat-label>
+                            <mat-label>{{ t('common.title') }}</mat-label>
                             <input matInput id="text" type="text" formControlName="title" />
                         </mat-form-field>
 
                         <mat-form-field class="game-description">
-                            <mat-label>Description</mat-label>
+                            <mat-label>{{ t('common.desc') }}</mat-label>
                             <textarea matInput id="description" type="text" formControlName="description"> </textarea>
                         </mat-form-field>
                     </div>
 
                     <mat-card class="duration-card">
                         <mat-card-content class="duration-slider">
-                            <p>Temps par QCM</p>
+                            <p>{{ t('match-creation-page.time-per-QCM') }}</p>
                             <mat-slider min="10" max="60" step="5" discrete="thumblabel">
                                 <input matSliderThumb [value]="game.duration" formControlName="duration" />
                             </mat-slider>
-                            <p>{{ game.duration }} secondes</p>
+                            <p>{{ game.duration }} {{ t('common.secs') }}</p>
                         </mat-card-content>
                     </mat-card>
                 </form>
@@ -109,8 +113,7 @@
                 >
                     <mat-accordion>
                         <p *ngIf="game.questions.length === 0" class="create-notice">
-                            Le jeu doit contenir au moins 1 question. Cliquez sur "Ajouter une nouvelle question" ou importez une question de la
-                            banque.
+                            {{ t('admin-edit-page.notice') }}
                         </p>
 
                         <app-question-list-item
