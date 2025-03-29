@@ -17,15 +17,8 @@
                     <p>{{ t('match-creation-page.n-matches-played') }} {{ game.nMatchesPlayed }}</p>
                 </mat-card>
             </div>
-            <cdk-virtual-scroll-viewport class="virtual-scroll" itemSize="50">
-                <h3>Tous les jeux</h3>
-                <app-game-list-item
-                    *cdkVirtualFor="let game of games"
-                    [game]="game"
-                    [isAdminMode]="false"
-                    (click)="loadSelectedGame(game)"
-                ></app-game-list-item>
-            </cdk-virtual-scroll-viewport>
+            <h3>Tous les jeux</h3>
+            <app-game-list-item *ngFor="let game of games" [game]="game" [isAdminMode]="false" (click)="loadSelectedGame(game)"></app-game-list-item>
         </div>
 
         <div id="game-details-container">
@@ -54,6 +47,7 @@
                     </button>
                 </div>
             </div>
+
             <cdk-virtual-scroll-viewport class="virtual-scroll" itemSize="50">
                 <div id="game-details" *ngIf="gameIsValid && !isLoadingSelectedGame; else elseBlock">
                     <div>
