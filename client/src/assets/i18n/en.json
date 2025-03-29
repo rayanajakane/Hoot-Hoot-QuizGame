@@ -104,10 +104,10 @@
     },
     "join": {
         "room-code": "Room Code",
-        "waiting-matches": "Waiting Matches",
+        "waiting-matches": "Pending Matches",
         "unlocked-matches": "Unlocked Matches",
         "locked-matches": "Locked Matches",
-        "playing-matches": "Playing Matches",
+        "playing-matches": "Matches in progress",
         "no-match": "No Match to Display",
         "join-action": "Join"
     },
@@ -147,13 +147,13 @@
         "add-answer-choice": "Add an answer choice",
         "boundary-low": "Lower boundary",
         "boundary-low-placeholder": "Lower boundary value",
-        "boundary-high": "Higher boundary",
-        "boundary-high-placeholder": "Higher boundary value",
+        "boundary-high": "Upper boundary",
+        "boundary-high-placeholder": "Upper boundary value",
         "good-answer": "Good answer",
         "good-answer-placeholder": "Good answer value",
         "tolerance-margin": "Tolerance margin",
         "tolerance-margin-placeholder": "Tolerance margin value",
-        "invalid-bounds": "Lower bound must be smaller than higher bound!",
+        "invalid-bounds": "Lower bound must be smaller than the upper bound!",
         "invalid-margin": "Margin too big! It should only account for 25% of the interval!",
         "invalid-type": "Parameters must be integers!",
         "negative-margin": "The margin can't be negative!",
@@ -271,5 +271,32 @@
         "modification-error": "The game could not be modified. 😿 ",
         "creation-success": "Game created successfully! 😺",
         "modification-success": "Game modified successfully! 😺"
+    },
+    "admin-question-bank": {
+        "back-page": "Back",
+        "empty-bank": "The question bank is empty!",
+        "click-on": "Click on",
+        "to-add": "to add your first question!",
+        "filter-by": "Filter by",
+        "all": "All"
+    },
+    "question-area": {
+        "wrong-answer": "😔 Wrong answer 😔",
+        "partial-answer": "🆗 Partial answer! You get",
+        "good-answer": "👏 Correct Answer! You get",
+        "bonus-message": "✨ You got a bonus of",
+        "submit": "SUBMIT",
+        "show-final-results": "Show final results",
+        "next-question": "NEXT QUESTION",
+        "pause-timer": "PAUSE TIMER",
+        "start-timer": "START TIMER",
+        "panic-mode": "PANIC MODE",
+        "good-answer-qre": "Correct answer : {{answer}}. Margin is +/- {{margin}}",
+        "choose-estimated": "Chose an estimated value. Margin is +/- {{margin}}",
+        "answer": "Answer",
+        "out-of-bounds": "Value is out of bounds! Must be between {{lowerBound}} and {{upperBound}}"
+    },
+    "players-list": {
+        "players": "Players"
     }
 }

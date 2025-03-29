@@ -269,5 +269,32 @@
         "modification-error": "Le jeu n'a pas pu être modifié. 😿 ",
         "creation-success": "Jeu créé' avec succès! 😺",
         "modification-success": "Jeu modifié avec succès! 😺"
+    },
+    "admin-question-bank": {
+        "back-page": "Page précédente",
+        "empty-bank": "La banque de question est vide !",
+        "click-on": "Cliquez sur",
+        "to-add": "pour ajouter votre première question !",
+        "filter-by": "Filtrer par:",
+        "all": "Tout"
+    },
+    "question-area": {
+        "wrong-answer": "😔 Mauvaise Réponse 😔",
+        "partial-answer": "🆗 Réponse partielle! Vous avez obtenu",
+        "good-answer": "👏 Bonne Réponse! Vous avez obtenu",
+        "bonus-message": "✨ Vous avez obtenu un bonus de",
+        "submit": "SOUMETTRE",
+        "show-final-results": "Présenter les résultats finaux",
+        "next-question": "QUESTION SUIVANTE",
+        "pause-timer": "SUSPENDRE LA MINUTERIE",
+        "start-timer": "PARTIR LA MINUTERIE",
+        "panic-mode": "MODE PANIQUE",
+        "good-answer-qre": "Réponse correcte : {{answer}}. La marge est de +/- {{margin}}",
+        "choose-estimated": "Choisissez une valeur estimée. La marge est de +/- {{margin}}",
+        "answer": "Réponse",
+        "out-of-bounds": "Valeur hors limites ! Doit être entre {{lowerBound}} et {{upperBound}}"
+    },
+    "players-list": {
+        "players": "Joueurs"
     }
 }
