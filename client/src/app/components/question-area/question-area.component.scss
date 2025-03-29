@@ -212,12 +212,20 @@ img {
     object-fit: contain;
 }
 
-.one-column {
+.one-row {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
 }
+.two-rows {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 .two-columns {
     display: flex;
     flex-direction: row;
