@@ -3,31 +3,34 @@
         <i class="material-icons" id="game-logo">flutter_dash</i>
         <h1 class="header-item">Hoot Hoot</h1>
     </div>
+    <div class="menu-options">
+        <div class="match-buttons">
+            <button mat-raised-button routerLink="/join-match" color="primary" class="match-button" id="join-button">
+                <mat-icon>play_circle</mat-icon>
+                {{ t('join-match') }}
+            </button>
+            <button mat-raised-button color="primary" routerLink="/host" class="match-button" id="host-button">
+                <mat-icon>add_circle</mat-icon>
+                {{ t('host-match') }}
+            </button>
+            <button mat-raised-button color="basic" color="accent" routerLink="/admin/games" class="match-button" id="admin-button">
+                <mat-icon>library_books</mat-icon>
+                {{ t('admin-game') }}
+            </button>
+        </div>
 
-    <div class="match-buttons">
-        <button mat-raised-button routerLink="/join-match" color="primary" class="match-button" id="join-button">
-            <mat-icon>play_circle</mat-icon>
-            {{ t('join-match') }}
-        </button>
-        <button mat-raised-button color="primary" routerLink="/host" class="match-button" id="host-button">
-            <mat-icon>add_circle</mat-icon>
-            {{ t('host-match') }}
-        </button>
+        <div class="match-buttons">
+            <button mat-raised-button color="basic" routerLink="/edit-profile" class="match-button" id="profile-button">
+                <mat-icon>person</mat-icon>
+                {{ t('edit-profile') }}
+            </button>
+
+            <button mat-raised-button color="basic" routerLink="/friends-search" class="match-button" id="friends-button">
+                <mat-icon>group</mat-icon>
+                {{ t('friends') }}
+            </button>
+        </div>
     </div>
-
-    <button mat-raised-button color="basic" routerLink="/admin/games" class="match-button" id="admin-button">
-        <mat-icon>library_books</mat-icon>
-        {{ t('admin-game') }}
-    </button>
-    <button mat-raised-button color="basic" routerLink="/edit-profile" class="match-button" id="profile-button">
-        <mat-icon>person</mat-icon>
-        {{ t('edit-profile') }}
-    </button>
-
-    <button mat-raised-button color="basic" routerLink="/friends-search" class="match-button" id="friends-button">
-        <mat-icon>group</mat-icon>
-        {{ t('friends') }}
-    </button>
 
     <footer class="footer-container">
         <h4 class="team-name">{{ t('team-name') }}</h4>
