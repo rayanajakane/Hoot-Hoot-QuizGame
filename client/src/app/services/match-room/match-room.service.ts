@@ -11,8 +11,8 @@ import { NotificationService } from '@app/services/notification/notification.ser
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { ChatEvents } from '@common/events/chat.events';
 import { MatchEvents } from '@common/events/match.events';
+import { PartyConfig } from '@common/interfaces/party-config';
 import { UserInfo } from '@common/interfaces/user-info';
-
 @Injectable({
     providedIn: 'root',
 })
@@ -110,15 +110,23 @@ export class MatchRoomService {
         // this.socketService.socket.removeListener(MatchEvents.Disconnect);
     }
 
-    createRoom(gameId: string, hostId: string, hostUsername: string, isClassicMode: boolean = true, isFriendsOnly: boolean = false) {
-        this.socketService.send(MatchEvents.CreateRoom, { gameId, hostId, isClassicMode, isFriendsOnly }, (res: { code: string }) => {
-            this.matchRoomCode = res.code;
-            this.username = hostUsername;
-            this.hostId = hostId;
-            this.userId = hostId;
+    createRoom(
+        gameId: string,
+        hostId: string,
+        hostUsername: string,
+        isClassicMode: boolean = true,
+        partyConfig: PartyConfig = { isFriendsOnly: false, isEntryFeeRequired: false },
+    ) {
+        this.socketService.send(MatchEvents.CreateRoom, { gameId, hostId, isClassicMode, partyConfig }, (res: { code: string }) => {
+            if (res) {
+                this.matchRoomCode = res.code;
+                this.username = hostUsername;
+                this.hostId = hostId;
+                this.userId = hostId;
 
-            this.sendPlayersData(this.matchRoomCode);
-            this.router.navigateByUrl('/match-room');
+                this.sendPlayersData(this.matchRoomCode);
+                this.router.navigateByUrl('/match-room');
+            }
         });
     }
     onSelectedCheater() {

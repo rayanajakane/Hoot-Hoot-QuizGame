@@ -1,5 +1,5 @@
-<ng-container *transloco="let t"
-    ><div class="nav">
+<ng-container *transloco="let t">
+    <div class="nav">
         <h1 class="page-title">{{ t('main-page.host-match') }}</h1>
         <div class="navigation-buttons">
             <button mat-raised-button routerLink="/home"><mat-icon>home</mat-icon>{{ t('nav.main-page') }}</button>
@@ -35,20 +35,22 @@
                     <button
                         mat-raised-button
                         color="primary"
-                        (click)="isFriendsOnly = false; createMatch(matchContext.HostView)"
+                        (click)="createStandardMatch()"
                         *ngIf="gameIsValid && !isRandomGame"
                         [disabled]="buttonClicked"
                     >
                         {{ t('common.play') }}
                     </button>
+
                     <button
                         mat-raised-button
-                        color="primary"
-                        (click)="isFriendsOnly = true; createMatch(matchContext.HostView)"
+                        color="accent"
+                        (click)="openPartyConfigDialog()"
                         *ngIf="gameIsValid && !isRandomGame"
                         [disabled]="buttonClicked"
                     >
-                        Jouer avec des amis
+                        <mat-icon>settings</mat-icon>
+                        Partie personnalisée
                     </button>
                     <button
                     mat-raised-button
@@ -85,5 +87,6 @@
 
                 <app-pulse-loader *ngIf="isLoadingSelectedGame"></app-pulse-loader>
             </cdk-virtual-scroll-viewport>
-        </div></div
-></ng-container>
+        </div>
+    </div>
+</ng-container>

@@ -22,6 +22,8 @@ export class MoneyGateway {
 
     @SubscribeMessage(MoneyEvents.DonateMoney)
     async donateMoney(client: Socket, data: TransferInfo) {
+        const roundedAmount = Math.round(data.amount * 100) / 100;
+        data.amount = Number.isInteger(roundedAmount) ? Math.trunc(roundedAmount) : roundedAmount;
         console.log('Donating money:', data);
         const moneyErrors = await this.moneyService.getMoneyError(data.user, data.amount, true);
         if (moneyErrors) {
@@ -47,9 +49,6 @@ export class MoneyGateway {
                 newBalance: await this.moneyService.getCurrentBalance(data.friend),
             });
         }
-        console.log('Donation successful');
-        console.log('User balance:', await this.moneyService.getCurrentBalance(data.user));
-        console.log('Friend balance:', await this.moneyService.getCurrentBalance(data.friend));
     }
 
     handleDisconnect(client: Socket) {

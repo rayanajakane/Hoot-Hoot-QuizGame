@@ -26,6 +26,14 @@ fun ResultsPage(
         MatchRoomService.isResults = false
     }
 
+    LaunchedEffect(MatchRoomService.hasBeenKickedOut) {
+        if (MatchRoomService.hasBeenKickedOut) {
+            MatchRoomService.hasBeenKickedOut = false
+            navigateToHome()
+        }
+    }
+
+
     val username = matchRoomService.retrieveUsername()
 
     var sortBy by remember { mutableStateOf("score") }
@@ -62,7 +70,6 @@ fun ResultsPage(
         onClick = {
             matchRoomService.isQuitting = true
             matchRoomService.disconnectFromRoom()
-            navigateToHome()
         }
     ) {
         Text("Quitter")

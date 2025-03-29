@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
+import { MoneyService } from '@app/services/money/money.service';
 import { TranslationService } from '@app/translation/translation.service';
 
 @Component({
@@ -11,6 +12,7 @@ export class AppComponent implements OnInit {
     constructor(
         private translationService: TranslationService,
         public authenticationService: AuthenticationService,
+        public moneyService: MoneyService,
     ) {}
     ngOnInit(): void {
         this.authenticationService.authenticatedUser.subscribe(async (user) => {
@@ -18,7 +20,6 @@ export class AppComponent implements OnInit {
                 const currentLangugage = await this.translationService.getLanguageFromDB();
                 this.translationService.setLanguage(currentLangugage);
             } else {
-                // Fallback language in case user is not authenticated
                 this.translationService.initLanguageFR();
             }
         });

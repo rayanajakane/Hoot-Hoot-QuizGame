@@ -74,6 +74,86 @@
             </form>
             <h2>{{ t('page.danger-zone') }}</h2>
             <button mat-raised-button color="accent" (click)="deleteUser()" id="delete-button">{{ t('page.delete-user') }}</button>
+            <h2>{{ t('history.stats-header') }}</h2>
+            <mat-card class="stats-card">
+                <div class="stat">
+                    <p>{{ t('history.nMatchesPlayed') }}</p>
+                    <p>{{ userHistory.stats.nMatchesPlayed }}</p>
+                </div>
+                <div class="stat">
+                    <p>{{ t('history.nMatchesWon') }}</p>
+                    <p>{{ userHistory.stats.nMatchesWon }}</p>
+                </div>
+                <div class="stat">
+                    <p>{{ t('history.averageGoodAnswersPercentage') }}</p>
+                    <p>{{ userHistory.stats.averageGoodAnswersPercentage }} %</p>
+                </div>
+                <div class="stat">
+                    <p>{{ t('history.averageTime') }}</p>
+                    <p>{{ userHistory.stats.averageTime }} s</p>
+                </div>
+            </mat-card>
+            <h2>{{ t('history.grid-label') }}</h2>
+            <div class="grid-labels-container">
+                <div class="months">
+                    <p>{{ t('history.jan') }}</p>
+                    <p>{{ t('history.feb') }}</p>
+                    <p>{{ t('history.mar') }}</p>
+                    <p>{{ t('history.apr') }}</p>
+                    <p>{{ t('history.may') }}</p>
+                    <p>{{ t('history.jun') }}</p>
+                    <p>{{ t('history.jul') }}</p>
+                    <p>{{ t('history.aug') }}</p>
+                    <p>{{ t('history.sep') }}</p>
+                    <p>{{ t('history.oct') }}</p>
+                    <p>{{ t('history.nov') }}</p>
+                    <p>{{ t('history.dec') }}</p>
+                </div>
+                <div class="days">
+                    <p>{{ t('history.sun') }}</p>
+                    <p>{{ t('history.mon') }}</p>
+                    <p>{{ t('history.tue') }}</p>
+                    <p>{{ t('history.wed') }}</p>
+                    <p>{{ t('history.thu') }}</p>
+                    <p>{{ t('history.fri') }}</p>
+                    <p>{{ t('history.sat') }}</p>
+                </div>
+                <div class="grid-container">
+                    <div class="grid-squares" *ngFor="let level of userHistory.intensityGrid">
+                        <div class="square" [ngClass]="'square' + level.toString()"></div>
+                    </div>
+                </div>
+            </div>
+            <h2>{{ t('history.match-history') }}</h2>
+            <p *ngIf="userHistory.match.length === 0" class="no-item-to-display">{{ t('history.no-item') }}</p>
+            <mat-card class="history-match-item header-card" *ngIf="userHistory.match.length !== 0">
+                <p>{{ t('history.start') }}</p>
+                <p>{{ t('history.end') }}</p>
+                <p>{{ t('history.result') }}</p>
+                <p>{{ t('history.gave-up-label') }}</p>
+            </mat-card>
+            <div *ngFor="let item of userHistory.match">
+                <mat-card class="history-match-item" color="primary">
+                    <p>{{ item.start | date: 'YYYY-MM-dd HH:mm' }}</p>
+                    <p>{{ item.end | date: 'YYYY-MM-dd HH:mm' }}</p>
+                    <p>{{ item.hasWon ? t('history.victory') : t('history.defeat') }}</p>
+                    <p>{{ item.hasGivenUp ? '✔' : '-' }}</p>
+                </mat-card>
+            </div>
+
+            <h2>{{ t('history.auth-history') }}</h2>
+            <mat-card class="history-auth-item header-card" color="primary">
+                <p>{{ t('history.date') }}</p>
+                <p>{{ t('history.action') }}</p>
+            </mat-card>
+            <div *ngFor="let item of userHistory.auth">
+                <mat-card class="history-auth-item">
+                    <p>{{ item.date | date: 'YYYY-MM-dd HH:mm' }}</p>
+                    <p *ngIf="item.isLogin">{{ t('history.signin') }}</p>
+                    <p *ngIf="!item.isLogin">{{ t('history.signout') }}</p>
+                </mat-card>
+            </div>
         </div>
+        <div></div>
     </div>
 </ng-container>

@@ -12,4 +12,5 @@ enum class FriendsEvents(val value: String) {
     RETURN_ALL_SENT_REQUESTS("returnAllSentRequests"),
     RETURN_ALL_DATA("returnAllData"),
     UPDATE_DATA("updateData"),
+    USER_DELETED("userDeleted"),
 }

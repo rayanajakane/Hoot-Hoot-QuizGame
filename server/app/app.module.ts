@@ -30,9 +30,12 @@ import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MongooseModule } from '@nestjs/mongoose';
+import { HistoryController } from './controllers/history/history.controller';
 import { FriendsGateway } from './gateways/friends/friends.gateway';
 import { MoneyGateway } from './gateways/money/money.gateway';
+import { HistoryService } from './services/history/history.service';
 import { MoneyService } from './services/money/money.service';
+import { PartyService } from './services/party/party.service';
 
 @Module({
     imports: [
@@ -49,7 +52,7 @@ import { MoneyService } from './services/money/money.service';
         EventEmitterModule.forRoot(),
         FirebaseModule,
     ],
-    controllers: [GameController, QuestionController, MatchController, BackupController],
+    controllers: [GameController, QuestionController, MatchController, BackupController, HistoryController],
     providers: [
         Logger,
         ChatService,
@@ -76,6 +79,8 @@ import { MoneyService } from './services/money/money.service';
         QrCodeService,
         MoneyService,
         MoneyGateway,
+        PartyService,
+        HistoryService,
     ],
 })
 export class AppModule {}

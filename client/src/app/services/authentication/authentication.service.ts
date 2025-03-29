@@ -137,8 +137,8 @@ export class AuthenticationService {
             set(usernameRef, username.toLowerCase());
 
             this.connectToSocket();
+            this.socketHandler.send(FriendsEvents.Connect, this.userId);
             this.socketHandler.send(FriendsEvents.UpdateData);
-            this.setUser(userCredential.user);
             this.router.navigateByUrl('/home');
             this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-up'));
         });
@@ -240,6 +240,8 @@ export class AuthenticationService {
                     isOnline: false,
                 });
                 this.connectToSocket();
+                this.setUser(userCredential.user);
+                this.socketHandler.send(FriendsEvents.Connect, this.userId);
                 this.router.navigateByUrl('/home');
                 this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.sign-in'));
             })
@@ -301,8 +303,9 @@ export class AuthenticationService {
             remove(usernameRef);
         }
         this.deleteUserAvatar(user.uid);
+        const id = user.uid;
         user.delete().then(() => {
-            this.socketHandler.send(FriendsEvents.UpdateData);
+            this.socketHandler.send(FriendsEvents.UserDeleted, id);
             this.setUser(null);
             this.disconnectSocket();
             this.router.navigateByUrl('/login');

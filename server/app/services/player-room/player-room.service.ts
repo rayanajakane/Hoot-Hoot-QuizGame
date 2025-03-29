@@ -2,12 +2,14 @@ import { BANNED_PLAYER } from '@app/constants/match-login-errors';
 import { MultipleChoiceAnswer } from '@app/model/answer-types/multiple-choice-answer/multiple-choice-answer';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
 import { Player } from '@app/model/schema/player.schema';
+import { HistoryService } from '@app/services/history/history.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { AnswerCorrectness } from '@common/constants/answer-correctness';
 import { PlayerState } from '@common/constants/player-states';
 import { MatchEvents } from '@common/events/match.events';
 import { Injectable } from '@nestjs/common';
 import { Socket } from 'socket.io';
+import { v4 as uuidv4 } from 'uuid';
 
 const INDEX_NOT_FOUND = -1;
 // const HOST_USERNAME = 'ORGANISATEUR';
@@ -15,7 +17,8 @@ const INDEX_NOT_FOUND = -1;
 @Injectable()
 export class PlayerRoomService {
     constructor(
-        private readonly matchRoomService: MatchRoomService, // private readonly firebaseAuthService: FirebaseAuthService,
+        private readonly matchRoomService: MatchRoomService,
+        private historyService: HistoryService,
     ) {}
 
     getPlayers(code: string): Player[] {
@@ -42,6 +45,7 @@ export class PlayerRoomService {
             answer: new MultipleChoiceAnswer(),
             score: 0,
             answerCorrectness: AnswerCorrectness.WRONG,
+            nGoodAnswers: 0,
             bonusCount: 0,
             isPlaying: true,
             isChatActive: true,
@@ -68,7 +72,17 @@ export class PlayerRoomService {
         if (foundPlayer && foundMatchRoom && !foundMatchRoom.isPlaying) {
             this.deletePlayer(foundMatchRoom.code, foundPlayer.id);
         } else if (foundPlayer && foundMatchRoom && foundMatchRoom.isPlaying) {
+            // foundMatchRoom.isPlaying should be false when in results page
             this.makePlayerInactive(foundMatchRoom.code, foundPlayer.id);
+            this.historyService.addMatchHistoryItem(foundPlayer.id, {
+                id: uuidv4(),
+                start: foundMatchRoom.startTime,
+                end: new Date(),
+                nGoodAnswers: foundPlayer.nGoodAnswers,
+                nTotalQuestions: foundMatchRoom.gameLength,
+                hasWon: false,
+                hasGivenUp: true,
+            });
         }
         return foundMatchRoom ? foundMatchRoom.code : undefined;
     }
@@ -113,6 +127,12 @@ export class PlayerRoomService {
 
     getBannedPlayers(matchRoomCode: string): string[] {
         return this.matchRoomService.getRoom(matchRoomCode).bannedIds;
+    }
+
+    getActivePlayers(matchRoomCode: string): Player[] {
+        return this.getPlayers(matchRoomCode).filter((player: Player) => {
+            return player.state !== PlayerState.exit;
+        });
     }
 
     addBannedPlayers(matchRoomCode: string, userId: string) {
