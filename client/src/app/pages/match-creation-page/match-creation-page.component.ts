@@ -2,7 +2,7 @@ import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PartyConfigDialogComponent } from '@app/components/party-config-dialog/party-config-dialog.component';
-import { RandomModeStatus, SnackBarAction } from '@app/constants/feedback-messages';
+import { RandomModeStatus } from '@app/constants/feedback-messages';
 import { RANDOM_MODE_GAME } from '@app/constants/question-creation';
 import { MatchContext } from '@app/constants/states';
 import { Game } from '@app/interfaces/game';
@@ -109,7 +109,7 @@ export class MatchCreationPageComponent implements OnInit {
             error: () => {
                 const snackBarRef = this.notificationService.displayErrorMessageAction(
                     translate('feedback-messages.deleted'),
-                    SnackBarAction.REFRESH,
+                    translate('feedback-messages.refresh'),
                 );
                 snackBarRef.onAction().subscribe(() => this.reloadAllGames());
             },
@@ -126,7 +126,7 @@ export class MatchCreationPageComponent implements OnInit {
             error: () => {
                 const snackBarRef = this.notificationService.displayErrorMessageAction(
                     translate('feedback-messages.deleted'),
-                    SnackBarAction.REFRESH,
+                    translate('feedback-messages.refresh'),
                 );
                 snackBarRef.onAction().subscribe(() => this.reloadAllGames());
             },
@@ -137,7 +137,10 @@ export class MatchCreationPageComponent implements OnInit {
         if (selectedGame.isVisible) {
             this.gameIsValid = true;
         } else {
-            const snackBarRef = this.notificationService.displayErrorMessageAction(translate('feedback-messages.invisible'), SnackBarAction.REFRESH);
+            const snackBarRef = this.notificationService.displayErrorMessageAction(
+                translate('feedback-messages.invisible'),
+                translate('feedback-messages.refresh'),
+            );
             snackBarRef.onAction().subscribe(() => this.reloadAllGames());
         }
     }
@@ -154,7 +157,10 @@ export class MatchCreationPageComponent implements OnInit {
                 }
             });
         } else {
-            const snackBarRef = this.notificationService.displayErrorMessageAction(translate('feedback-messages.invisible'), SnackBarAction.REFRESH);
+            const snackBarRef = this.notificationService.displayErrorMessageAction(
+                translate('feedback-messages.invisible'),
+                translate('feedback-messages.refresh'),
+            );
             snackBarRef.onAction().subscribe(() => this.reloadAllGames());
         }
     }

@@ -52,11 +52,18 @@ $dark-theme: mat.define-dark-theme(
         color: #fff;
         border-radius: 1em 1em 0.15em 1em;
     }
+
+    .friends-section {
+        background: #f9f9f9;
+        h3 {
+            color: #333;
+        }
+    }
 }
 
 .dark-theme {
     background-color: #101114 !important;
-    --mdc-elevated-card-container-color: #0b0c0f;
+    --mdc-elevated-card-container-color: #1a1c22;
     --mdc-elevated-card-container-elevation: #080808;
     --mdc-filled-text-field-container-color: #323336;
     --mdc-snackbar-supporting-text-color: black !important;
@@ -67,6 +74,13 @@ $dark-theme: mat.define-dark-theme(
     color: white;
     .color-variant {
         color: mat.get-color-from-palette($accent-dark, 900) !important;
+    }
+
+    .friends-section {
+        background: #1a1c22;
+        h3 {
+            color: white;
+        }
     }
 
     .color-variant-2 {

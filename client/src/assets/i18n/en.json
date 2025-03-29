@@ -153,12 +153,12 @@
         "good-answer-placeholder": "Good answer value",
         "tolerance-margin": "Tolerance margin",
         "tolerance-margin-placeholder": "Tolerance margin value",
-        "invalid-bounds": "Lower bound must be smaller than higher bound !",
-        "invalid-margin": "Margin too big ! It should only account for 25% of the interval !",
-        "invalid-type": "Parameters must be integers !",
-        "negative-margin": "The margin can't be negative !",
-        "correct-answer-out-of-bounds": "The correct answer must be included in the bounds !",
-        "invalid-choices-length-error": "You need at least one correct and one incorrect answer !",
+        "invalid-bounds": "Lower bound must be smaller than higher bound!",
+        "invalid-margin": "Margin too big! It should only account for 25% of the interval!",
+        "invalid-type": "Parameters must be integers!",
+        "negative-margin": "The margin can't be negative!",
+        "correct-answer-out-of-bounds": "The correct answer must be included in the bounds!",
+        "invalid-choices-length-error": "You need at least one correct and one incorrect answer!",
         "required-error": "The question field is required!",
         "file-big-error": "File too big.",
         "choices-min-error": "Cannot have less than 2 choices.",
@@ -234,5 +234,42 @@
         "fee-description": "Players will have to pay this fee to join this match.",
         "cancel": "Cancel",
         "confirm": "Confirm"
+    },
+    "bank-status": {
+        "unavailable": "👀 No other valid bank questions are available! 👀",
+        "available": "🖐 Drag and drop a question from the bank into the game! 🖐",
+        "success": "Question successfully added to the bank! 😺",
+        "failure": "The question could not be added. 😿",
+        "duplicate": "This question is already part of the bank! 😾",
+        "modified": "Question modified successfully! 😺",
+        "deleted": "Question deleted successfully! 😺",
+        "unmodified": "Question could not be modified. 😿",
+        "unretrieved": "Failed to get questions 😿",
+        "still": "Failed to delete question 😿"
+    },
+    "question-status": {
+        "verified": "Question verified successfully! 😺",
+        "unverified": "Question not verified 😿",
+        "duplicate": "This question is already part of the game! 😾"
+    },
+    "game-status": {
+        "verified": "Question verified successfully! 😺",
+        "archived": "Question successfully verified and added to the bank! 😺",
+        "duplicate": "This question is already part of the list of questions for this game! 😾",
+        "failure": "Failure to get the game 😿"
+    },
+    "feedback-messages": {
+        "prepare": "Get ready for the next question! ⏳",
+        "pending": "You have unsaved changes. Are you sure you want to quit?",
+        "quit": "You're about to quit the game. Are you sure you want to quit?",
+        "deleted": "The selected game no longer exists 😿",
+        "invisible": "The selected game is no longer visible 😿",
+        "refresh": "Refresh"
+    },
+    "game-modification": {
+        "creation-error": "The game could not be created. 😿 ",
+        "modification-error": "The game could not be modified. 😿 ",
+        "creation-success": "Game created successfully! 😺",
+        "modification-success": "Game modified successfully! 😺"
     }
 }
