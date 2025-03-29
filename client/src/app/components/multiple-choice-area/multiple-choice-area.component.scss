@@ -43,3 +43,13 @@ button.answer.selected {
     left: 30vw;
     right: 30vw;
 }
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+.blinking-text {
+    animation: blink 2s step-end infinite;
+}

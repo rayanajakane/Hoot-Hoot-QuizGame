@@ -8,7 +8,7 @@
         [class.incorrect]="answerService.showFeedback && !isCorrectAnswer(choice) && isSelected(choice)"
         (click)="selectChoice(choice)"
         [ngClass]="{
-            'fas fa-lightbulb lightbulb-icon':
+            'blinking-text':
                 matchContextService.getContext() === contextOptions.CheaterView && choice.isCorrect && !isSelected(choice)
         }"
     >

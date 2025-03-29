@@ -23,6 +23,7 @@
             <div class="player-performance">
                 <p>{{ player.score }} pts</p>
                 <p>({{ player.bonusCount }}✨)</p>
+                <span *ngIf="player.username === this.matchRoomService.cheaterPlayer?.username" class="cheater-tag">Tricheur</span>
             </div>
             <!-- <mat-slide-toggle [(ngModel)]="player.isChatActive" (click)="toggleChat(player)"></mat-slide-toggle>-->
         </div>
