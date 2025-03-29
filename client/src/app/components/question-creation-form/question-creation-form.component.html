@@ -27,7 +27,12 @@
                     <button mat-raised-button color="primary" (click)="pictureUrl.click()">
                         <mat-icon>upload</mat-icon>{{ t('question-creation-form.upload-image') }}
                     </button>
-                    <button mat-raised-button [disabled]="!questionForm.get('pictureUrl')!.value" (click)="removePicture()">
+                    <button
+                        mat-raised-button
+                        class="raised-menu-button"
+                        [disabled]="!questionForm.get('pictureUrl')!.value"
+                        (click)="removePicture()"
+                    >
                         {{ t('question-creation-form.remove-image') }}
                     </button>
                     <div class="main-image">

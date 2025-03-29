@@ -6,7 +6,7 @@
     <ng-container [ngSwitch]="true">
         <ng-container *ngSwitchCase="isFriend">
             <div class="action-buttons">
-                <button mat-raised-button color="basic" disabled>{{ t('is-friend') }}</button>
+                <button mat-raised-button class="raised-menu-button" disabled>{{ t('is-friend') }}</button>
                 <button mat-raised-button color="warn" (click)="onRemove()">{{ t('remove-friend') }}</button>
                 <button mat-raised-button color="accent" (click)="onDonate()">{{ t('donate-money') }}</button>
             </div>

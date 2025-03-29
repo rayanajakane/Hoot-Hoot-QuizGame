@@ -39,7 +39,7 @@
 
                 <div class="buttons-container">
                     <button
-                        class="submit-button"
+                        class="submit-button raised-menu-button"
                         mat-raised-button
                         (click)="gameModificationService.handleSubmit()"
                         [disabled]="gameModificationService.gameForm.invalid || game.questions.length === 0"
@@ -62,7 +62,7 @@
                         <mat-icon>question_mark</mat-icon>{{ t('admin-main-page.question-bank') }}
                     </button>
 
-                    <button class="cancel-button" mat-raised-button routerLink="/admin/games">
+                    <button class="cancel-button raised-menu-button" mat-raised-button routerLink="/admin/games">
                         <mat-icon *ngIf="!this.gameModificationService.isPendingChanges">clear</mat-icon>
                         <mat-icon class="pending-changes" *ngIf="this.gameModificationService.isPendingChanges">pending</mat-icon>
                         {{

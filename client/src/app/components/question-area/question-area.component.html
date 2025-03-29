@@ -90,7 +90,14 @@
             <p>QUESTION SUIVANTE</p>
         </button>
         <div id="timer-controls" *ngIf="!answerService.showFeedback && !answerService.gradeAnswers">
-            <button mat-raised-button id="pause-button" (click)="pauseTimer()" (click)="timeService.togglePauseStatus()" [disabled]="time === 0">
+            <button
+                mat-raised-button
+                id="pause-button"
+                class="raised-menu-button"
+                (click)="pauseTimer()"
+                (click)="timeService.togglePauseStatus()"
+                [disabled]="time === 0"
+            >
                 <div class="timer-button-description">
                     <mat-icon *ngIf="!timeService.isTimerPaused">pause</mat-icon>
                     <p *ngIf="!timeService.isTimerPaused">SUSPENDRE LA MINUTERIE</p>

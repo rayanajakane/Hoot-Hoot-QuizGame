@@ -75,6 +75,14 @@ $dark-theme: mat.define-dark-theme(
     .balance-text {
         color: #1a237e;
     }
+
+    .raised-menu-button {
+        background-color: white;
+    }
+
+    .signup-button {
+        background-color: white;
+    }
 }
 
 .dark-theme {
@@ -91,6 +99,10 @@ $dark-theme: mat.define-dark-theme(
     color: white;
     .color-variant {
         color: mat.get-color-from-palette($accent-dark, 900) !important;
+    }
+
+    .signup-button {
+        background-color: #23252d !important;
     }
 
     .friends-section {
@@ -147,7 +159,7 @@ $dark-theme: mat.define-dark-theme(
     }
 
     .player-card {
-        background-color: #212121;
+        background-color: #212121 !important;
     }
 
     .balance-container {
@@ -160,6 +172,10 @@ $dark-theme: mat.define-dark-theme(
 
     .balance-text {
         color: white;
+    }
+
+    .raised-menu-button {
+        background-color: #1a1c22 !important;
     }
 }
 // Include theme styles for core and each component used in your app.
