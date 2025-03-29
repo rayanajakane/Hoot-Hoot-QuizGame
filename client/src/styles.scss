@@ -59,6 +59,10 @@ $dark-theme: mat.define-dark-theme(
             color: #333;
         }
     }
+
+    .clickable-item:hover {
+        background-color: #dddddd;
+    }
 }
 
 .dark-theme {
@@ -67,6 +71,7 @@ $dark-theme: mat.define-dark-theme(
     --mdc-elevated-card-container-elevation: #080808;
     --mdc-filled-text-field-container-color: #323336;
     --mdc-snackbar-supporting-text-color: black !important;
+    --mdc-dialog-supporting-text-color: #d0d0d0;
     --mat-expansion-container-background-color: #0b0c0f;
     --mdc-protected-button-container-color: mat.get-color-from-palette($primary-dark, 800);
     --mat-sidenav-container-background-color: black;
@@ -114,6 +119,14 @@ $dark-theme: mat.define-dark-theme(
 
     #game-header-card {
         background-color: #080808 !important;
+    }
+
+    #game-details-container {
+        background-color: #1a1c22;
+    }
+
+    .clickable-item:hover {
+        background-color: #303030 !important;
     }
 }
 // Include theme styles for core and each component used in your app.
