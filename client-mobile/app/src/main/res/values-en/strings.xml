@@ -50,7 +50,9 @@
     <string name="french">French</string>
     <string name="invalid_username">❌ Username is invalid</string>
     <string name="error_delete_user">❌ Error when deleting account</string>
-    <string name="delete_feedback">✅  Deleted profile sucessfully!</string>
+    <string name="delete_feedback">✅  Deleted profile successfully!</string>
+    <string name="light_theme">Light theme</string>
+    <string name="dark_theme">Dark theme</string>
     <string name="popular_games">Popular Games</string>
     <string name="games_list">Games List</string>
     <string name="no_games_available">There are no games available </string>

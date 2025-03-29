@@ -34,6 +34,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -63,9 +64,10 @@ import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.PresetAvatar
-import com.example.polyquiz.core.storage.ImageStorage
+import com.example.polyquiz.core.ThemeService
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.core.TranslationService
+import com.example.polyquiz.ui.theme.Theme
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,43 +79,59 @@ fun UserEditPage(
     navigateToLogin: () -> Unit,
     authViewModel: AuthViewModel,
     context: Context,
-    cameraViewModel: CameraViewModel
+    cameraViewModel: CameraViewModel,
+    currentTheme: Theme,
+    onThemeUpdated: (Theme) -> Unit
 ) {
 
     val focusManager = LocalFocusManager.current
     val translationService = TranslationService
 
     var currentLang by remember { mutableStateOf(Locale.getDefault().language) }
+    var theme by remember { mutableStateOf(currentTheme) }
 
     val email by authViewModel.email.collectAsState()
     var username by remember { mutableStateOf(authViewModel.getUsername()) }
     val usernameError by authViewModel.usernameError.collectAsState()
 
-    var expandedTheme by remember { mutableStateOf(false) }
     var expandedLang by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
+
+    val availableThemes = mapOf(
+        Theme.LIGHT to stringResource(R.string.light_theme),
+        Theme.DARK to stringResource(R.string.dark_theme)
+    )
 
     val availableLangs =
         mapOf("en" to stringResource(R.string.english), "fr" to stringResource(R.string.french))
 
-    val themes = listOf("light theme", "dark theme")
     val textFieldStateLang = rememberTextFieldState(currentLang)
-    val textFieldStateTheme = rememberTextFieldState(themes[0])
-
-   DisposableEffect(Unit) {
-       onDispose {
-           authViewModel.resetUsername()
-           cameraViewModel.resetCapturedPhotoState()
-       }
-   }
 
     val avatarURL by authViewModel.avatarURL.collectAsState()
     val isPresetAvatar by cameraViewModel.isPresetAvatar.collectAsState()
     val temporaryAvatar by cameraViewModel.temporaryAvatar.collectAsState()
     val avatarToShow = temporaryAvatar ?: avatarURL
 
+    var initialAvatarURL by remember { mutableStateOf(authViewModel.getAvatarURL()) }
+    var initialUsername by remember { mutableStateOf(authViewModel.getUsername()) }
+    val initialLang by remember { mutableStateOf(Locale.getDefault().language)}
+
     val onClickAvatar: (String) -> Unit = { url ->
         cameraViewModel.setPresetAvatar(authViewModel, url)
+        Log.d("Save UserProfile", "Initial URL : $initialAvatarURL, new url: $url")
+    }
+
+    val onClickTheme: (Theme) -> Unit = { selectedTheme ->
+        theme = selectedTheme
+        Log.d("Theme changer", "Selected $theme")
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            authViewModel.setProfileUpdated(false)
+            authViewModel.resetUsername()
+            cameraViewModel.resetCapturedPhotoState()
+        }
     }
 
     fun deleteUser() {
@@ -122,26 +140,26 @@ fun UserEditPage(
         navigateToLogin()
     }
 
-    fun saveUserProfile() {
-        // TODO : save themes
+    fun saveUserProfile() : Boolean {
+        var usernameUpdate : String = ""
+        var avatarURLUpdate: String = ""
+
+        // Flag used to tell us if something was updated or not
+        var isUpdated: Boolean = false
 
         // To hide the keyboard in case it's open
         keyboardController?.hide()
 
-        // Change app language
-        translationService.setLanguage(currentLang)
-        translationService.saveLanguageToDB(currentLang, authViewModel.getUserConfigsDatabaseRef())
-
         // Change username
-        if (authViewModel.getUsername() != username) {
-            authViewModel.changeUsername(
-                username, authViewModel.getUsername()
-            )
+        if (initialUsername != username) {
+            usernameUpdate = username
+            initialUsername = username
+            isUpdated = true
         } else {
-            Log.e("save profile", "Username has not changed.")
+            Log.d("Save UserProfile", "Username has not changed.")
         }
 
-        // Save avatar image + url
+        // Save avatar image
         val capturedImage = cameraViewModel.state.value.capturedImage
         if (!isPresetAvatar && capturedImage != null) {
             Log.d("UserEditPage", "Saving new stuff")
@@ -151,20 +169,49 @@ fun UserEditPage(
                 authViewModel
             ) { newAvatarUrl ->
                 if (newAvatarUrl != null) {
-                    authViewModel.updateUserProfile(newAvatarUrl)
+                    avatarURLUpdate = newAvatarUrl
+                    initialAvatarURL = newAvatarUrl
+                    isUpdated = true
                 } else {
-                    Log.e("Save user profile", "Failed to save image. URL was null")
+                    Log.e("Save UserProfile", "Failed to save image. URL was null")
                 }
             }
-
-
-        } else {
-            Log.d("UserEditPage", "Setting preset avatar instead")
+        } else if(initialAvatarURL != authViewModel.getAvatarURL()) {
+            Log.d("Save UserProfile", "Using preset avatar")
             val newAvatarUrl = authViewModel.getAvatarURL()
-            authViewModel.updateUserProfile(newAvatarUrl)
-
-            ImageStorage.deleteAvatar(authViewModel.getUserId())
+            avatarURLUpdate = newAvatarUrl
+            initialAvatarURL = newAvatarUrl
+            isUpdated = true
+        } else {
+            Log.d("Save UserProfile", "Avatar has not changed")
         }
+
+        // Saves both avatar and or username in one go
+        authViewModel.updateUserProfile(avatarURLUpdate, usernameUpdate)
+
+        // Change app theme
+        if (currentTheme != theme) {
+            isUpdated = true
+            onThemeUpdated(theme)
+            ThemeService.saveThemeToDB(theme, authViewModel.getUserConfigsDatabaseRef())
+        } else {
+            Log.d("Save UserProfile", "Theme was not changed")
+        }
+
+        // Change app language
+        if(initialLang != currentLang) {
+            isUpdated = true
+            translationService.setLanguage(currentLang)
+            translationService.saveLanguageToDB(currentLang, authViewModel.getUserConfigsDatabaseRef())
+        } else {
+            Log.d("Save UserProfile", "Lang was not changed")
+        }
+
+        // Send snackbar if updated
+        if(isUpdated) {
+            authViewModel.setProfileUpdated(isUpdated)
+        }
+        return isUpdated
     }
 
     Button(
@@ -196,7 +243,7 @@ fun UserEditPage(
                 .fillMaxSize()
                 .imePadding()
         ) {
-            Column() {
+            Column {
                 Button(
                     onClick = {
                         navigateToHome()
@@ -276,7 +323,7 @@ fun UserEditPage(
 
                         }
                         // Form stuff column
-                        Column() {
+                        Column {
                             TextField(
                                 value = email,
                                 onValueChange = {
@@ -303,53 +350,13 @@ fun UserEditPage(
                                 Text(text = usernameError, color = Color.Red)
                             }
                             Spacer(modifier = Modifier.height(8.dp))
-                            // REF : https://composables.com/material3/exposeddropdownmenubox
-                            // Visual themes menu
-                            ExposedDropdownMenuBox(
-                                expanded = expandedTheme,
-                                onExpandedChange = { expandedTheme = it },
-                            ) {
-                                TextField(
-                                    value = "",
-                                    modifier = Modifier
-                                        .menuAnchor()
-                                        .fillMaxWidth(),
-                                    label = { Text(stringResource(R.string.visual_themes)) },
-                                    onValueChange = {
-                                        // TODO
-                                    },
-                                    readOnly = true,
-                                    trailingIcon = {
-                                        ExposedDropdownMenuDefaults.TrailingIcon(
-                                            expanded = expandedTheme
-                                        )
-                                    },
-                                    colors = ExposedDropdownMenuDefaults.textFieldColors(),
 
-                                    )
-                                ExposedDropdownMenu(
-                                    expanded = expandedTheme,
-                                    onDismissRequest = { expandedTheme = false }) {
-                                    themes.forEach { theme ->
-                                        DropdownMenuItem(
-                                            text = {
-                                                Text(
-                                                    theme,
-                                                    style = MaterialTheme.typography.bodyLarge
-                                                )
-                                            },
-                                            onClick = {
-                                                textFieldStateTheme.setTextAndPlaceCursorAtEnd(theme)
-                                                expandedTheme = false
-                                            },
-                                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                                        )
-                                    }
-                                }
-                            }
+                            // Visual themes menu
+                            ThemeDropdown(context, availableThemes, currentTheme, onClickTheme)
+
                             Spacer(modifier = Modifier.height(8.dp))
+
                             // Languages
-                            // REF : https://github.com/android/user-interface-samples/blob/main/PerAppLanguages/compose_app/app/src/main/java/com/example/perapplanguages/MainActivity.kt
                             ExposedDropdownMenuBox(
                                 expanded = expandedLang,
                                 onExpandedChange = { expandedLang = it },
@@ -357,7 +364,7 @@ fun UserEditPage(
                                 TextField(
                                     value = availableLangs[currentLang].toString(),
                                     modifier = Modifier
-                                        .menuAnchor()
+                                        .menuAnchor(MenuAnchorType.PrimaryNotEditable)
                                         .fillMaxWidth(),
                                     label = { Text(stringResource(R.string.language)) },
                                     onValueChange = {
@@ -441,6 +448,68 @@ fun UserEditPage(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ThemeDropdown(
+    context: Context,
+    themes: Map<Theme, String>,
+    currentTheme: Theme,
+    onClick: (Theme) -> Unit
+) {
+    var expandedTheme by remember { mutableStateOf(false) }
+    var selectedTheme by remember { mutableStateOf(currentTheme) }
+    val textFieldStateTheme = rememberTextFieldState(currentTheme.toString())
+
+    ExposedDropdownMenuBox(
+        expanded = expandedTheme,
+        onExpandedChange = { expandedTheme = it },
+    ) {
+        TextField(
+            value = themes[selectedTheme].toString(),
+            modifier = Modifier
+                .menuAnchor(MenuAnchorType.PrimaryNotEditable)
+                .fillMaxWidth(),
+            label = { Text(stringResource(R.string.visual_themes)) },
+            onValueChange = {
+                // TODO
+            },
+            readOnly = true,
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(
+                    expanded = expandedTheme
+                )
+            },
+            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+
+            )
+        ExposedDropdownMenu(
+            expanded = expandedTheme,
+            onDismissRequest = { expandedTheme = false }) {
+            themes.keys.forEach { theme ->
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            theme.displayName.asString(context),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    },
+                    onClick = {
+                        onClick(theme)
+                        selectedTheme = theme
+                        textFieldStateTheme.setTextAndPlaceCursorAtEnd(
+                            theme.displayName.asString(
+                                context
+                            )
+                        )
+                        expandedTheme = false
+                    },
+                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                )
+            }
+        }
+    }
+}
+
 @Composable
 fun TemporaryAvatar(avatarSize: Dp, bitmap: Bitmap?) {
     Box(
@@ -469,7 +538,7 @@ fun TemporaryAvatar(avatarSize: Dp, bitmap: Bitmap?) {
 }
 
 
-@Composable()
+@Composable
 fun ClickableAvatarPlaceholder(avatarSize: Dp, imageUrl: String, onClickAvatar: (String) -> Unit) {
     Box(
         contentAlignment = Alignment.Center,

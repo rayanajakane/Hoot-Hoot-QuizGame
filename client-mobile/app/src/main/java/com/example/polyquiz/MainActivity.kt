@@ -14,8 +14,12 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.ui.theme.PolyQuizTheme
+import com.example.polyquiz.ui.theme.Theme
 
 import com.example.vanillaprototype.socket.SocketHandler
 
@@ -36,8 +41,13 @@ class MainActivity : AppCompatActivity() {
         SocketHandler.setSocket()
         val authViewModel : AuthViewModel by viewModels()
         val cameraViewModel: CameraViewModel by viewModels()
+
         setContent {
-            PolyQuizTheme {
+            val currentTheme by authViewModel.theme.collectAsState()
+            val setTheme: (Theme) -> Unit = { selectedTheme ->
+                authViewModel.setTheme(selectedTheme)
+            }
+            PolyQuizTheme(currentTheme) {
                 val snackbarHostState = remember {
                     SnackbarHostState()
                 }
@@ -70,7 +80,9 @@ class MainActivity : AppCompatActivity() {
                         modifier = Modifier.padding(innerPadding),
                         authViewModel = authViewModel,
                         cameraViewModel = cameraViewModel,
-                        context = applicationContext
+                        context = applicationContext,
+                        currentTheme = currentTheme,
+                        onThemeUpdated = setTheme
                     )
                 }
             }
@@ -81,7 +93,7 @@ class MainActivity : AppCompatActivity() {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    PolyQuizTheme {
+    PolyQuizTheme(currentTheme = Theme.DARK) {
         // Can be used to preview composable
     }
 }
