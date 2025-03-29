@@ -125,8 +125,17 @@ $dark-theme: mat.define-dark-theme(
         background-color: #1a1c22;
     }
 
+    #timer-area {
+        background-color: #323336 !important;
+        color: white !important;
+    }
+
     .clickable-item:hover {
         background-color: #303030 !important;
+    }
+
+    .player-card {
+        background-color: #212121 !important;
     }
 }
 // Include theme styles for core and each component used in your app.
