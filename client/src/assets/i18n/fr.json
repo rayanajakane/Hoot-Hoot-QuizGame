@@ -150,7 +150,17 @@
         "good-answer": "Bonne réponse",
         "good-answer-placeholder": "Valeur de la bonne réponse à la question",
         "tolerance-margin": "Marge de tolérance",
-        "tolerance-margin-placeholder": "Valeur de la marge de tolérance"
+        "tolerance-margin-placeholder": "Valeur de la marge de tolérance",
+        "invalid-bounds": "La borne inférieure doit être inférieure à la borne supérieure !",
+        "invalid-margin": "La marge est trop grande ! Elle ne doit représenter que 25% de l`intervalle !",
+        "invalid-type": "Les paramètres doivent être des nombres entiers !",
+        "negative-margin": "La marge ne peut pas être négative !",
+        "correct-answer-out-of-bounds": "La réponse correcte doit être entre les bornes !",
+        "invalid-choices-length-error": "Il faut au moins une réponse correcte et une incorrecte !",
+        "required-error": "Le champ de la question est requis !",
+        "file-big-error": "Le fichier est trop grand.",
+        "choices-min-error": "Il ne peut pas y avoir moins de 2 choix",
+        "choices-max-error": "Il ne peut pas y avoir plus de 4 choix."
     },
     "friends-search": {
         "search-friend": "Rechercher un ami",
@@ -222,5 +232,42 @@
         "fee-description": "Les joueurs devront payer ce montant pour rejoindre la partie.",
         "cancel": "Annuler",
         "confirm": "Confirmer"
+    },
+    "bank-status": {
+        "unavailable": "👀 Aucune autre question valide de la banque n'est disponible! 👀",
+        "available": "🖐 Glissez et déposez une question de la banque dans le jeu! 🖐",
+        "success": "Question ajoutée à la banque avec succès! 😺",
+        "failure": "La question n'a pas pu être ajoutée. 😿",
+        "duplicate": "Cette question fait déjà partie de la banque! 😾",
+        "modified": "Question modifiée avec succès! 😺",
+        "deleted": "Question supprimée avec succès! 😺",
+        "unmodified": "La question n'a pas pu être modifiée. 😿",
+        "unretrieved": "Échec d'obtention des questions 😿",
+        "still": "Échec de supression de la question 😿"
+    },
+    "question-status": {
+        "verified": "Question vérifiée avec succès! 😺",
+        "unverified": "Question non vérifiée 😿",
+        "duplicate": "Cette question fait déjà partie du jeu! 😾"
+    },
+    "game-status": {
+        "verified": "Question vérifiée avec succès! 😺",
+        "archived": "Question vérifiée et ajoutée à la banque avec succès! 😺",
+        "duplicate": "Cette question fait déjà partie de la liste des questions de ce jeu! 😾",
+        "failure": "Échec d'obtention du jeu 😿"
+    },
+    "feedback-messages": {
+        "prepare": "Préparez vous pour la prochaine question! ⏳",
+        "pending": "Vous avez des modifications non sauvegardés. Êtes-vous certain de vouloir quitter?",
+        "quit": "Vous êtes sur le point de quitter la partie. Êtes-vous certain de vouloir quitter?",
+        "deleted": "Le jeu sélectionné n'existe plus 😿",
+        "invisible": "Le jeu sélectionné n'est plus visible 😿",
+        "refresh": "Actualiser"
+    },
+    "game-modification": {
+        "creation-error": "Le jeu n'a pas pu être créé. 😿 ",
+        "modification-error": "Le jeu n'a pas pu être modifié. 😿 ",
+        "creation-success": "Jeu créé' avec succès! 😺",
+        "modification-success": "Jeu modifié avec succès! 😺"
     }
 }

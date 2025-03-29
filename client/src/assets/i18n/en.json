@@ -152,7 +152,17 @@
         "good-answer": "Good answer",
         "good-answer-placeholder": "Good answer value",
         "tolerance-margin": "Tolerance margin",
-        "tolerance-margin-placeholder": "Tolerance margin value"
+        "tolerance-margin-placeholder": "Tolerance margin value",
+        "invalid-bounds": "Lower bound must be smaller than higher bound !",
+        "invalid-margin": "Margin too big ! It should only account for 25% of the interval !",
+        "invalid-type": "Parameters must be integers !",
+        "negative-margin": "The margin can't be negative !",
+        "correct-answer-out-of-bounds": "The correct answer must be included in the bounds !",
+        "invalid-choices-length-error": "You need at least one correct and one incorrect answer !",
+        "required-error": "The question field is required!",
+        "file-big-error": "File too big.",
+        "choices-min-error": "Cannot have less than 2 choices.",
+        "choices-max-error": "Cannot have more than 4 choices."
     },
     "friends-search": {
         "search-friend": "Search Friend",

@@ -17,7 +17,6 @@ import { CdkDragDrop, CdkDragEnd } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { BankStatus, QuestionStatus } from '@app/constants/feedback-messages';
 import { getMockGame } from '@app/constants/game-mocks';
 import { getMockQuestion } from '@app/constants/question-mocks';
 import { ManagementState } from '@app/constants/states';
@@ -26,6 +25,7 @@ import { Question } from '@app/interfaces/question';
 import { BankService } from '@app/services/bank/bank.service';
 import { GameModificationService } from '@app/services/game-modification/game-modification.service';
 import { getTranslocoModule } from '@app/transloco-testing.module';
+import { translate } from '@jsverse/transloco';
 import { AuthenticationService } from '../authentication/authentication.service';
 
 describe('GameModificationService', () => {
@@ -216,16 +216,18 @@ describe('GameModificationService', () => {
         expect(notificationServiceSpy.displayErrorMessage).toHaveBeenCalled();
     });
 
+    // TODO : Set test lang
     it('should set bank message to UNAVAILABLE when bankQuestions is empty', () => {
         service.bankQuestions = [];
         service['setBankMessage']();
-        expect(service.currentBankMessage).toEqual(BankStatus.UNAVAILABLE);
+        expect(service.currentBankMessage).toEqual(translate('bank-status.unavailable'));
     });
 
+    // TODO : Set test lang
     it('should set bank message to AVAILABLE when bankQuestions is not empty', () => {
         service.bankQuestions = [getMockQuestion()];
         service['setBankMessage']();
-        expect(service.currentBankMessage).toEqual(BankStatus.AVAILABLE);
+        expect(service.currentBankMessage).toEqual(translate('bank-status.available'));
     });
 
     it('should filter questions correctly', () => {
@@ -388,7 +390,8 @@ describe('GameModificationService', () => {
 
         service['addQuestionToGame'](newQuestion);
 
-        expect(notificationServiceSpy.displaySuccessMessage).toHaveBeenCalledWith(QuestionStatus.VERIFIED);
+        // TODO : set test lang
+        expect(notificationServiceSpy.displaySuccessMessage).toHaveBeenCalledWith(translate('question-status.verified'));
         expect(service.game.questions).toContain(newQuestion);
         expect(changesSpy).toHaveBeenCalled();
     });
@@ -407,11 +410,12 @@ describe('GameModificationService', () => {
         expect(service.originalBankQuestions.length).toEqual(previousBankLength + 1);
     });
 
+    // TODO : set test lang
     it('should display error message when verification fails', () => {
         const errorMessage = 'Question should contain at least 1 wrong and 1 right answer';
         questionServiceSpy.verifyQuestion.and.returnValue(throwError(() => new Error(errorMessage)));
         service['addQuestionToGame'](getMockQuestion());
-        expect(notificationServiceSpy.displayErrorMessage).toHaveBeenCalledWith(`${QuestionStatus.UNVERIFIED} \n ${errorMessage}`);
+        expect(notificationServiceSpy.displayErrorMessage).toHaveBeenCalledWith(`${translate('question-status.unverified')} \n ${errorMessage}`);
     });
 
     it('handleDialog() should add question if applicable and close dialog', () => {

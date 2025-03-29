@@ -27,12 +27,12 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { GameStatus } from '@app/constants/feedback-messages';
 import { getMockGame } from '@app/constants/game-mocks';
 import { getMockQuestion } from '@app/constants/question-mocks';
 import { AdminEditPageComponent } from '@app/pages/admin-edit-page/admin-edit-page.component';
 import { GameModificationService } from '@app/services/game-modification/game-modification.service';
 import { of, throwError } from 'rxjs';
+import { translate } from '@jsverse/transloco';
 
 describe('AdminEditPageComponent', () => {
     let component: AdminEditPageComponent;
@@ -138,10 +138,11 @@ describe('AdminEditPageComponent', () => {
         expect(gameModificationSpy.setNewGame).toHaveBeenCalled();
     });
 
+    // TODO : set test lang
     it('should display error message on error', () => {
         const error = new HttpErrorResponse({ error: 'Test Error', status: 404 });
         activatedRouteSpy.params = throwError(() => error);
         component['getGameIdFromUrl']();
-        expect(notificationServiceSpy.displayErrorMessage).toHaveBeenCalledWith(`${GameStatus.FAILURE}\n${error.message}`);
+        expect(notificationServiceSpy.displayErrorMessage).toHaveBeenCalledWith(`${translate('game-status.failure')}\n${error.message}`);
     });
 });
