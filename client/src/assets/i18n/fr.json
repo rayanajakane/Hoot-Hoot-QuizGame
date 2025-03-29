@@ -59,13 +59,15 @@
         "main-page": "Page principale"
     },
     "main-page": {
+        "home": "Accueil",
         "join-match": "Joindre une partie",
         "host-match": "Créer une partie",
-        "admin-game": "Administrer les jeux",
-        "edit-profile": "Modifier le profil",
+        "admin-game": "Gérer les jeux",
+        "edit-profile": "Mon profil",
         "team-name": "Équipe 201",
         "access-code": "Code d'accès",
-        "friends": "Amis"
+        "friends": "Amis",
+        "logout": "Se déconnecter"
     },
     "match-creation-page": {
         "games-list-label": "Liste des jeux",

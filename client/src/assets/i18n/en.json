@@ -59,13 +59,15 @@
         "main-page": "Main page"
     },
     "main-page": {
+        "home": "Home",
         "join-match": "Join a match",
         "host-match": "Host a match",
         "admin-game": "Manage games",
-        "edit-profile": "Edit profile",
+        "edit-profile": "My profile",
         "team-name": "Team 201",
         "access-code": "Access code",
-        "friends": "Friends"
+        "friends": "Friends",
+        "logout": "Logout"
     },
     "match-creation-page": {
         "games-list": "Games list",
