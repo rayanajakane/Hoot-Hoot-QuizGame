@@ -15,7 +15,7 @@ export class PartyConfigDialogComponent {
         private readonly dialogRef: MatDialogRef<PartyConfigDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: PartyConfig,
     ) {
-        dialogRef.disableClose = true;
+        // dialogRef.disableClose = true; // Deactivated for UX purpose.
         this.partyConfig = { ...data };
     }
 
