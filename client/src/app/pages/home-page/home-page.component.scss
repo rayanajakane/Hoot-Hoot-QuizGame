@@ -54,6 +54,8 @@
     gap: 1rem;
 }
 
-#friends-button {
-    margin-top: 1rem;
+.menu-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
 }
