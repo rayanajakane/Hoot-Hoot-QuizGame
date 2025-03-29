@@ -182,7 +182,6 @@ describe('MatchCreationPageComponent', () => {
         flush();
     }));
 
-    // TODO : Set test lang
     it('should open a snackbar when selecting an invisible game', fakeAsync(() => {
         notificationSpy.displayErrorMessageAction.and.returnValue(snackBarMock);
         component.validateGame(invisibleGame);
@@ -191,7 +190,6 @@ describe('MatchCreationPageComponent', () => {
         flush();
     }));
 
-    // TODO : Set test lang
     it('should open a snackbar when revalidating an invisible game', fakeAsync(() => {
         notificationSpy.displayErrorMessageAction.and.returnValue(snackBarMock);
         component.selectedGame = invisibleGame;
@@ -201,7 +199,6 @@ describe('MatchCreationPageComponent', () => {
         flush();
     }));
 
-    // TODO : Set test lang
     it('should open a snackbar when selecting a deleted game', fakeAsync(() => {
         notificationSpy.displayErrorMessageAction.and.returnValue(snackBarMock);
         spyOn(gameService, 'getGameById').and.returnValue(throwError(() => new Error('error')));
@@ -210,7 +207,6 @@ describe('MatchCreationPageComponent', () => {
         flush();
     }));
 
-    // TODO : Set test lang
     it('should open a snackbar when revalidating a deleted game', fakeAsync(() => {
         component.selectedGame = { id: '' } as Game;
         notificationSpy.displayErrorMessageAction.and.returnValue(snackBarMock);

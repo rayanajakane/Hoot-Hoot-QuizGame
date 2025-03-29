@@ -127,7 +127,6 @@ describe('BankService', () => {
         expect(service.questions.length).toBe(expectedLength);
     });
 
-    // TODO : set test lang
     it('should add a question coming from game management page', () => {
         service.questions = mockQuestions;
         const expectedLength = mockQuestions.length + 1;

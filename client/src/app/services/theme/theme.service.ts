@@ -21,7 +21,6 @@ export class ThemeService {
         rendererFactory: RendererFactory2,
         @Inject(DOCUMENT) private document: Document,
     ) {
-        // TODO : Get and set current theme
         this.renderer = rendererFactory.createRenderer(null, null);
     }
 

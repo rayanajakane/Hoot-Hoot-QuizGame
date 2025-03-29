@@ -82,7 +82,7 @@ describe('NotificationService', () => {
 
         expect(afterOpenSpy).toHaveBeenCalled();
     });
-    // TODO : set test lang
+    
     it('should open a pending changes confirmation dialog', () => {
         const pendingChangesConfig: MatDialogConfig<ConfirmDialogData> = {
             data: {

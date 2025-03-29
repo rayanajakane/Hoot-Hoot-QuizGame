@@ -216,14 +216,12 @@ describe('GameModificationService', () => {
         expect(notificationServiceSpy.displayErrorMessage).toHaveBeenCalled();
     });
 
-    // TODO : Set test lang
     it('should set bank message to UNAVAILABLE when bankQuestions is empty', () => {
         service.bankQuestions = [];
         service['setBankMessage']();
         expect(service.currentBankMessage).toEqual(translate('bank-status.unavailable'));
     });
 
-    // TODO : Set test lang
     it('should set bank message to AVAILABLE when bankQuestions is not empty', () => {
         service.bankQuestions = [getMockQuestion()];
         service['setBankMessage']();
@@ -390,7 +388,6 @@ describe('GameModificationService', () => {
 
         service['addQuestionToGame'](newQuestion);
 
-        // TODO : set test lang
         expect(notificationServiceSpy.displaySuccessMessage).toHaveBeenCalledWith(translate('question-status.verified'));
         expect(service.game.questions).toContain(newQuestion);
         expect(changesSpy).toHaveBeenCalled();
@@ -410,7 +407,6 @@ describe('GameModificationService', () => {
         expect(service.originalBankQuestions.length).toEqual(previousBankLength + 1);
     });
 
-    // TODO : set test lang
     it('should display error message when verification fails', () => {
         const errorMessage = 'Question should contain at least 1 wrong and 1 right answer';
         questionServiceSpy.verifyQuestion.and.returnValue(throwError(() => new Error(errorMessage)));
