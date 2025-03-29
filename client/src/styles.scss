@@ -76,7 +76,7 @@ $dark-theme: mat.define-dark-theme(
         color: #1a237e;
     }
 
-    .raised-menu-button {
+    .mat-basic {
         background-color: white;
     }
 
@@ -176,10 +176,6 @@ $dark-theme: mat.define-dark-theme(
 
     .balance-text {
         color: white;
-    }
-
-    .raised-menu-button {
-        background-color: #1a1c22 !important;
     }
 }
 // Include theme styles for core and each component used in your app.
