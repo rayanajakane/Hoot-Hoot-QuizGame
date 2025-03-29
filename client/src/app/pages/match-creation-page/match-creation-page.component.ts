@@ -40,6 +40,8 @@ export class MatchCreationPageComponent implements OnInit {
         isFriendsOnly: false,
         isEntryFeeRequired: false,
         entryFeeAmount: 0,
+        isCheaterMode: false,
+        canPlayCheaterMode: false,
     };
 
     // Services are required to decouple logic
@@ -105,10 +107,14 @@ export class MatchCreationPageComponent implements OnInit {
         questions.forEach((element) => {
             if (element.type === 'QRL') {
                 this.gameIsValidCheaterMode = false;
+                this.partyConfig.canPlayCheaterMode =false;
+               // this.partyConfig.isCheaterMode = false;
 
                 return false;
             }
             this.gameIsValidCheaterMode = true;
+            this.partyConfig.canPlayCheaterMode =true;
+           // this.partyConfig.isCheaterMode = true;
             return true;
         });
         return false;
@@ -164,19 +170,29 @@ export class MatchCreationPageComponent implements OnInit {
     revalidateGame(): void {
         if (this.selectedGame.isVisible) {
             this.gameIsValid = true;
+           // this.partyConfig.isCheaterMode = true;
+           this.partyConfig.canPlayCheaterMode =true;
             this.hasCorrectType(this.selectedGame.questions);
             this.matchService.currentGame = this.selectedGame;
             this.matchService.saveBackupGame(this.selectedGame.id).subscribe((response: HttpResponse<string>) => {
                 if (response.body) {
                     const backupGame = JSON.parse(response.body);
                     this.matchService.currentGame = backupGame;
-                    if (this.matchRoomService.isCheaterMode && this.hasCorrectType(backupGame.questions)) {
+                    if (this.partyConfig.canPlayCheaterMode && this.hasCorrectType(backupGame.questions)) {
                         console.log(this.gameIsValidCheaterMode);
-                        this.matchService.createMatch(this.partyConfig);
+                        this.matchService.createMatch(
+                            (this.partyConfig = {
+                                isFriendsOnly: this.partyConfig.isFriendsOnly,
+                                isEntryFeeRequired: this.partyConfig.isEntryFeeRequired,
+                                entryFeeAmount: this.partyConfig.entryFeeAmount,
+                                isCheaterMode:this.partyConfig.isCheaterMode,
+                                canPlayCheaterMode: this.partyConfig.canPlayCheaterMode,
+                            }),
+                        );
                     } else {
                         this.matchService.createMatch(this.partyConfig, true);
                     }
-                  //  this.matchService.createMatch(this.partyConfig);
+                    //  this.matchService.createMatch(this.partyConfig);
                 }
             });
         } else {
@@ -198,7 +214,6 @@ export class MatchCreationPageComponent implements OnInit {
         this.reloadSelectedGame();
     }
 
-    questionTypeNotQRL() {}
     openPartyConfigDialog(): void {
         if (!this.gameIsValid) {
             return;
@@ -212,7 +227,11 @@ export class MatchCreationPageComponent implements OnInit {
         dialogRef.afterClosed().subscribe((result) => {
             if (result) {
                 this.partyConfig = result;
-                this.createMatch(this.matchContext.HostView);
+                console.log("match", this.partyConfig.isCheaterMode)
+                if(this.partyConfig.isCheaterMode){
+                    this.createMatchCheaterMode(this.matchContext.HostView);
+                }
+                else this.createMatch(this.matchContext.HostView);
             }
         });
     }
@@ -222,6 +241,8 @@ export class MatchCreationPageComponent implements OnInit {
             isFriendsOnly: false,
             isEntryFeeRequired: false,
             entryFeeAmount: 0,
+            isCheaterMode: false,
+            canPlayCheaterMode: false,
         };
         this.createMatch(this.matchContext.HostView);
     }
@@ -231,6 +252,8 @@ export class MatchCreationPageComponent implements OnInit {
             isFriendsOnly: true,
             isEntryFeeRequired: false,
             entryFeeAmount: 0,
+            isCheaterMode: false,
+            canPlayCheaterMode: false,
         };
         this.createMatch(this.matchContext.HostView);
     }

@@ -115,7 +115,7 @@ export class MatchRoomService {
         hostId: string,
         hostUsername: string,
         isClassicMode: boolean = true,
-        partyConfig: PartyConfig = { isFriendsOnly: false, isEntryFeeRequired: false },
+        partyConfig: PartyConfig = { isFriendsOnly: false, isEntryFeeRequired: false, isCheaterMode:false, canPlayCheaterMode: false },
     ) {
         this.socketService.send(MatchEvents.CreateRoom, { gameId, hostId, isClassicMode, partyConfig }, (res: { code: string }) => {
             if (res) {

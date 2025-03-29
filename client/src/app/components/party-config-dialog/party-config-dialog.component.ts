@@ -10,6 +10,7 @@ import { PartyConfig } from '@common/interfaces/party-config';
 })
 export class PartyConfigDialogComponent {
     partyConfig: PartyConfig;
+    showCheaterModeDescription: boolean;
 
     constructor(
         private readonly dialogRef: MatDialogRef<PartyConfigDialogComponent>,

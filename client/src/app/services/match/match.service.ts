@@ -49,17 +49,19 @@ export class MatchService extends CommunicationService<Game> {
         return this.delete(`backups/${id}`);
     }
 
-    createMatch(partyConfig: PartyConfig = { isFriendsOnly: false, isEntryFeeRequired: false }, isClassicMode: boolean = false) {
+    createMatch(
+        partyConfig: PartyConfig = { isFriendsOnly: false, isEntryFeeRequired: false, isCheaterMode: false , canPlayCheaterMode: false},
+        isClassicMode: boolean = false,
+    ) {
         const hostId = this.authenticationService.userId;
         const hostUsername = this.authenticationService.userDisplayName;
         this.matchRoomService.connect();
         console.log(isClassicMode);
         if (isClassicMode) {
             this.matchRoomService.createRoom(this.currentGame.id, hostId, hostUsername, isClassicMode, partyConfig);
+        } else {
+            this.matchRoomService.createRoom(this.currentGame.id, hostId, hostUsername, (isClassicMode = false), partyConfig);
         }
-        else {
-            this.matchRoomService.createRoom(this.currentGame.id, hostId, hostUsername, isClassicMode = false, partyConfig)
-        }
-      //  this.matchRoomService.createRoom(this.currentGame.id, hostId, hostUsername, isClassicMode, partyConfig);
+        //  this.matchRoomService.createRoom(this.currentGame.id, hostId, hostUsername, isClassicMode, partyConfig);
     }
 }
