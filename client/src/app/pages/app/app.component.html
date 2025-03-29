@@ -1,5 +1,5 @@
 <div *transloco="let t">
-    <div *ngIf="authenticationService.isUserAuthenticated()" class="right-panel">
+    <div *ngIf="authenticationService.isUserAuthenticated() && matchContextService.getContext() === 0" class="right-panel">
         <button mat-raised-button id="logout-button" (click)="authenticationService.signOut()">
             {{ t('page.logout-action') }}
         </button>
