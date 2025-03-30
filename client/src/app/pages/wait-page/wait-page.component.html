@@ -29,7 +29,11 @@
                 id="start-button"
                 color="primary"
                 (click)="startMatch()"
-                [disabled]="!isLocked || matchRoomService.players.length === 0"
+                [disabled]="
+                    !isLocked ||
+                    matchRoomService.players.length === 0 ||
+                    (matchRoomService.partyConfig.isEntryFeeRequired && matchRoomService.players.length <= 1)
+                "
             >
                 Commencer la partie
             </button>

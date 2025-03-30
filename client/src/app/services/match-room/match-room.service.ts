@@ -29,6 +29,7 @@ export class MatchRoomService {
     isHostPlaying: boolean;
     isCooldown: boolean;
     isQuitting: boolean;
+    partyConfig: PartyConfig;
 
     private hostId: string;
     private matchRoomCode: string;
@@ -119,6 +120,7 @@ export class MatchRoomService {
                 this.username = hostUsername;
                 this.hostId = hostId;
                 this.userId = hostId;
+                this.partyConfig = partyConfig;
 
                 this.sendPlayersData(this.matchRoomCode);
                 this.router.navigateByUrl('/match-room');

@@ -35,6 +35,7 @@ object MatchRoomService {
     var isLocked by mutableStateOf(false)
     var gameTitle: String = ""
     var gameDuration: Int = 0
+    var partyConfig by mutableStateOf(PartyConfig(false, false))
     var currentQuestion by mutableStateOf<Question?>(null)
     var isHostPlaying by mutableStateOf(true)
     var isCooldown by mutableStateOf(false)
@@ -119,6 +120,7 @@ object MatchRoomService {
                 matchRoomCode = response.getString("code")
                 username = hostUsername
                 userId = hostId
+                partyConfig = partyConfigs
                 this.hostId = hostId
                 sendPlayersData(matchRoomCode)
             }
