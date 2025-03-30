@@ -1,5 +1,14 @@
 <div id="main-container">
     <h1>Résultats</h1>
+    <div id="players-list">
+        <mat-card *ngFor="let player of this.players | sortPlayers: 'score' : 'descending'" class="player-card">
+            <p [ngClass]="[player.isPlaying ? '' : 'inactive-player']">{{ player.username }}</p>
+            <div class="player-performance">
+                <p>{{ player.score }} pts</p>
+                <p>({{ player.bonusCount }}✨)</p>
+            </div>
+        </mat-card>
+    </div>
     <div class="controls-container">
         <button mat-raised-button class="exit-button" color="primary" (click)="handleDisconnect()" routerLink="/home">
             <mat-icon class="material-icons">logout</mat-icon>
