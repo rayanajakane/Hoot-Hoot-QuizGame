@@ -2,6 +2,7 @@ import { BANNED_PLAYER, HOST_CONFLICT } from '@app/constants/match-login-errors'
 import { MOCK_MATCH_ROOM, MOCK_PLAYER, MOCK_PLAYER_ROOM, MOCK_ROOM_CODE, MOCK_USERID, MOCK_USERNAME } from '@app/constants/match-mocks';
 import { MultipleChoiceAnswer } from '@app/model/answer-types/multiple-choice-answer/multiple-choice-answer';
 import { Player } from '@app/model/schema/player.schema';
+import { FirebaseAuthService } from '@app/modules/firebase/firebase-auth/firebase-auth.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { AnswerCorrectness } from '@common/constants/answer-correctness';
 import { HOST_USERNAME } from '@common/constants/match-constants';
@@ -19,6 +20,7 @@ describe('PlayerRoomService', () => {
     let matchRoomSpy: SinonStubbedInstance<MatchRoomService>;
     let socket: SinonStubbedInstance<Socket>;
     let historyService: SinonStubbedInstance<HistoryService>;
+    let authService: SinonStubbedInstance<FirebaseAuthService>;
 
     beforeEach(async () => {
         emitMock = jest.fn();
@@ -32,11 +34,13 @@ describe('PlayerRoomService', () => {
         matchRoomSpy = createStubInstance(MatchRoomService);
         socket = createStubInstance<Socket>(Socket);
         historyService = createStubInstance(HistoryService);
+        authService = createStubInstance(FirebaseAuthService);
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 PlayerRoomService,
                 { provide: MatchRoomService, useValue: matchRoomSpy },
                 { provide: HistoryService, useValue: historyService },
+                { provide: FirebaseAuthService, useValue: authService },
             ],
         }).compile();
 
@@ -58,26 +62,29 @@ describe('PlayerRoomService', () => {
         // disable max lines since cant be split for string comparision
         // eslint-disable-next-line max-len
         const expectedResult =
-            '[{"username":"","id":"","answer":{"isSubmitted":false,"selectedChoices":{}},"score":0,"answerCorrectness":0,"bonusCount":0,"isPlaying":true,"isChatActive":true,"nGoodAnswers":0,"state":"default"}]';
+            '[{"username":"","id":"","photoUrl":"","answer":{"isSubmitted":false,"selectedChoices":{}},"score":0,"answerCorrectness":0,"bonusCount":0,"isPlaying":true,"isChatActive":true,"nGoodAnswers":0,"state":"default"}]';
         const result = service.getPlayersStringified('');
         expect(result).toEqual(expectedResult);
     });
 
-    it('addPlayer() should not add player if the username is invalid', () => {
+    it('addPlayer() should not add player if the username is invalid', async () => {
         const validateSpy = jest.spyOn(service, 'getUsernameErrors').mockReturnValue(HOST_CONFLICT);
-        const result = service.addPlayer(socket, '', '', '');
+        jest.spyOn(authService, 'getUserPhotoUrl').mockResolvedValue('');
+        const result = await service.addPlayer(socket, '', '', '');
         expect(result).toBeFalsy();
         expect(validateSpy).toHaveBeenCalled();
     });
 
-    it('addPlayer() should add the player if the username is valid', () => {
+    it('addPlayer() should add the player if the username is valid', async () => {
         const validateSpy = jest.spyOn(service, 'getUsernameErrors').mockReturnValue('');
+        jest.spyOn(authService, 'getUserPhotoUrl').mockResolvedValue('');
         const pushSpy = jest.spyOn(Array.prototype, 'push');
         const mockUsername = 'mock';
         const mockId = 'mockId';
         const expectedResult: Player = {
             username: mockUsername,
             id: mockId,
+            photoUrl: '',
             answer: { selectedChoices: new Map<string, boolean>(), isSubmitted: false } as MultipleChoiceAnswer,
             score: 0,
             answerCorrectness: AnswerCorrectness.WRONG,
@@ -88,7 +95,7 @@ describe('PlayerRoomService', () => {
             socket,
             state: PlayerState.default,
         };
-        const result = service.addPlayer(socket, '', mockId, mockUsername);
+        const result = await service.addPlayer(socket, '', mockId, mockUsername);
         expect(result).toEqual(expectedResult);
         expect(validateSpy).toHaveBeenCalled();
         expect(pushSpy).toHaveBeenCalled();
