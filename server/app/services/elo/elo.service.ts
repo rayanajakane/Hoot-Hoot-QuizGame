@@ -40,6 +40,8 @@ export class EloService {
             score: player.state === 'exit' ? 0 : player.score,
         }));
 
+        allPlayers.sort((a, b) => b.score - a.score);
+
         const eloPlayers: EloPlayer[] = await Promise.all(
             allPlayers.map(async (player) => {
                 const rating = await this.getPlayerElo(player.id);
@@ -49,8 +51,6 @@ export class EloService {
 
         const standings: Standing[] = [];
         let rank = 0;
-
-        allPlayers.sort((a, b) => b.score - a.score);
 
         for (let i = 0; i < allPlayers.length; i++) {
             if (i > 0 && allPlayers[i].score === allPlayers[i - 1].score) {

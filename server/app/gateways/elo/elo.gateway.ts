@@ -40,7 +40,6 @@ export class EloGateway {
     }
 
     private sendError(socketId: string, error: string) {
-        console.error('EloGateway Error:', error);
         this.server.to(socketId).emit(EloEvents.Error, error);
     }
 }
