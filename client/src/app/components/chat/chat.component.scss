@@ -29,6 +29,8 @@
     flex-direction: column;
     gap: 0.25rem;
     position: fixed;
+    display: flex;
+    align-items: center;
 }
 
 @keyframes slideUp {
@@ -45,8 +47,7 @@
 .message-container {
     position: relative;
     overflow-wrap: break-word;
-    margin: 0.5rem;
-    padding: 0.625rem 1.25rem;
+    padding: 0.25rem;
     border-radius: 1.125rem;
     animation: slideUp 0.15s;
 }
@@ -88,14 +89,6 @@
 .player-quit-message {
     background-color: transparent;
     font-size: 20px;
-}
-
-.right-message {
-    margin-right: -0.65vw;
-}
-
-.left-message {
-    margin-left: -0.75vw;
 }
 
 .disabled-send {
@@ -147,7 +140,7 @@ input[matInput] {
 
 .two-columns-container {
     display: flex;
-    gap: 1rem;
+    gap: 0.25rem;
 }
 
 img {
