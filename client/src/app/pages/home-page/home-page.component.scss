@@ -1,12 +1,13 @@
 .main-container {
-    min-height: 100vh;
+    height: 80vh;
+    margin-bottom: 0 !important;
 }
 
 .justified {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: center;
+    gap: 1rem;
 }
 
 #game-logo {
@@ -14,16 +15,15 @@
 }
 
 .header-container {
-    margin-top: 10vh;
+    margin-top: 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 3pt;
 }
 
 .match-buttons-container {
     display: flex;
-    gap: 15pt;
+    gap: 1rem;
 }
 
 .match-buttons {
@@ -34,11 +34,6 @@
 .match-button {
     padding: 2.5rem 4rem;
     font-size: 1.25rem;
-}
-
-.team-name {
-    margin-top: 0.25em;
-    margin-bottom: 0.25em;
 }
 
 .header-item {
