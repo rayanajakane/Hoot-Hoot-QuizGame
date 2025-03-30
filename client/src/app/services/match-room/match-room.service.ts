@@ -160,7 +160,6 @@ export class MatchRoomService {
     }
 
     banUser(userId: string) {
-        // TODO: Migrate the logic to server, use UserID instead (need to track Host User ID in match room)
         if (this.userId === this.hostId) {
             const sentInfo: UserInfo = { roomCode: this.matchRoomCode, userId };
             this.socketService.send(MatchEvents.BanUsername, sentInfo);

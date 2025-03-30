@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { PresetAvatar } from '@app/constants/image-constants';
 import { MatchContext } from '@app/constants/states';
 import { Player } from '@app/interfaces/player';
 import { ChatService } from '@app/services/chat/chat.service';
@@ -13,6 +14,8 @@ import { MatchRoomService } from '@app/services/match-room/match-room.service';
 export class PlayersListComponent {
     @Input() players: Player[];
     @Input() canHostToggleChatState: boolean = true;
+
+    defaultAvatar = PresetAvatar.Default;
 
     context = MatchContext;
     constructor(
