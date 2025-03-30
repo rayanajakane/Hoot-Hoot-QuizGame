@@ -1,6 +1,7 @@
 package com.example.polyquiz.match.presentation
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -11,8 +12,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import com.example.polyquiz.match.domain.PartyConfig
@@ -24,9 +25,13 @@ fun PartyConfigDialog(
     onCancel: () -> Unit
 ) {
     var partyConfig by remember { mutableStateOf(initialPartyConfig.copy()) }
+    var feeText by remember { mutableStateOf(partyConfig.entryFeeAmount?.toString() ?: "") }
+
+    val feeValue = feeText.toFloatOrNull() ?: -1f
+    val isValid = if (partyConfig.isEntryFeeRequired) feeValue >= 0f else true
 
     AlertDialog(
-        onDismissRequest = {  },
+        onDismissRequest = { },
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
@@ -72,14 +77,12 @@ fun PartyConfigDialog(
                 if (partyConfig.isEntryFeeRequired) {
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
-                        value = partyConfig.entryFeeAmount.toString(),
-                        onValueChange = { value ->
-                            val intValue = value.toIntOrNull() ?: 0
-                            partyConfig = partyConfig.copy(entryFeeAmount = intValue)
-                        },
+                        value = feeText,
+                        onValueChange = { feeText = it },
                         label = { Text("Frais d'entrée") },
                         singleLine = true,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                     )
                     Text(
                         text = "Les joueurs devront payer ce montant pour rejoindre la partie.",
@@ -90,12 +93,17 @@ fun PartyConfigDialog(
             }
         },
         confirmButton = {
-            Button(onClick = { onConfirm(partyConfig) }) {
+            Button(
+                onClick = {
+                    onConfirm(partyConfig.copy(entryFeeAmount = feeValue))
+                },
+                enabled = isValid
+            ) {
                 Text(text = "Confirmer")
             }
         },
         dismissButton = {
-            TextButton(onClick = { onCancel() }) {
+            TextButton(onClick = onCancel) {
                 Text(text = "Annuler")
             }
         }

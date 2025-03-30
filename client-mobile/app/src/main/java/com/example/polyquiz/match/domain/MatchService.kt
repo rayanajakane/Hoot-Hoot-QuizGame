@@ -37,6 +37,7 @@ object MatchService {
                     val gson = Gson()
                     val game = gson.fromJson(gson.toJson(response), Game::class.java)
                     currentGame = game
+                    println("Game saved")
                     createMatch(hostId, hostUsername, partyConfigs )
                 },
                 onError = { error -> println(error)

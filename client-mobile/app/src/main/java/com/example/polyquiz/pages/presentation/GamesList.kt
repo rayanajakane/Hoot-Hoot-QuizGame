@@ -112,6 +112,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
             val gson = Gson()
             val game = gson.fromJson(gson.toJson(response), Game::class.java)
             selectedGame = game
+//            println("Selected game: ${selectedGame!!.title}")
             revalidateGame(partyConfigs)
         }, onError = {})
 
@@ -253,10 +254,11 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
             PartyConfigDialog(
                 initialPartyConfig = partyConfigs,
                 onConfirm = { updatedConfigs ->
+                    createMatch(MatchContext.HOSTVIEW, updatedConfigs)
                     partyConfigs = updatedConfigs
-                    println("Party configs: $partyConfigs")
                     navigateToWaitPage()
                     showPartyConfigDialog = false
+
                 },
                 onCancel = {
                     showPartyConfigDialog = false
