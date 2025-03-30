@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { EloEvents } from '@common/events/elo.events';
 
@@ -9,7 +10,10 @@ export class EloService {
     currentRating: number;
     rankings: { username: string; rating: number }[];
 
-    constructor(private readonly socketHandler: SocketHandlerService) {}
+    constructor(
+        private readonly socketHandler: SocketHandlerService,
+        private notificationService: NotificationService,
+    ) {}
 
     listenForEloEvents() {
         // this.onRatingChange();
@@ -50,9 +54,4 @@ export class EloService {
         });
     }
 
-    // onRatingChange() {
-    //     this.socketHandler.on(EloEvents.EloUpdated, (data: any) => {
-    //         this.currentRating = Math.round(data.mu);
-    //     });
-    // }
 }
