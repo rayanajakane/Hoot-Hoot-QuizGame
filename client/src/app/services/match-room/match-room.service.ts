@@ -30,6 +30,8 @@ export class MatchRoomService {
     isCooldown: boolean;
     isQuitting: boolean;
 
+    currentAnswers: string[] = [];
+
     private hostId: string;
     private matchRoomCode: string;
     private username: string;
@@ -84,6 +86,7 @@ export class MatchRoomService {
             this.handleError();
             this.onPlayerChatStateToggle();
             this.onRouteToResultsPage();
+            this.onCurrentAnswers();
         }
     }
 
@@ -101,6 +104,7 @@ export class MatchRoomService {
         this.socketService.socket.removeListener(MatchEvents.KickPlayer);
         this.socketService.socket.removeListener(MatchEvents.Error);
         this.socketService.socket.removeListener(MatchEvents.RouteToResultsPage);
+        this.socketService.socket.removeListener(MatchEvents.CurrentAnswers);
         this.socketService.send(MatchEvents.Disconnect);
         this.matchContextService.resetContext();
         // this.socketService.socket.removeListener(MatchEvents.Disconnect);
@@ -269,7 +273,13 @@ export class MatchRoomService {
     }
 
     toggleLock() {
-        // TODO: Migrate the logic to server, use UserID instead (need to track Host User ID in match room)
         this.socketService.send(MatchEvents.ToggleLock, this.matchRoomCode);
+    }
+
+    onCurrentAnswers() {
+        this.socketService.on(MatchEvents.CurrentAnswers, (answer: string[]) => {
+            if (this.userId !== this.hostId) return;
+            this.currentAnswers = answer;
+        });
     }
 }
