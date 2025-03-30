@@ -1,9 +1,11 @@
 #main-container {
     margin-left: 20vw;
+    z-index: 1000;
 }
 
 .bank-container {
     background-color: white;
+    z-index: 1000;
 }
 
 .sidenav-active {
