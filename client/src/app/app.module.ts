@@ -49,6 +49,7 @@ import { SortHistoryPipe } from '@app/pipes/sort-history.pipe';
 import { SortPlayersPipe } from '@app/pipes/sort-players.pipe';
 import { TranslocoRootModule } from '@app/transloco-root.module';
 import { FIREBASE_CONFIG } from 'src/environments/firebase-config';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { FriendsListItemComponent } from './components/friends-list-item/friends-list-item.component';
 import { FriendsSearchComponent } from './components/friends-search/friends-search.component';
 import { PartyConfigDialogComponent } from './components/party-config-dialog/party-config-dialog.component';
@@ -103,6 +104,7 @@ import { JoinMatchPageComponent } from './pages/join-match-page/join-match-page.
         FriendsSearchComponent,
         FriendsListItemComponent,
         PartyConfigDialogComponent,
+        ConfirmDialogComponent,
     ],
     imports: [
         AppMaterialModule,

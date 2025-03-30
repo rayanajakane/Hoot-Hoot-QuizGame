@@ -14,6 +14,7 @@ const MOCK_MESSAGE_INFO = { roomCode: '', message: MOCK_MESSAGE };
 const MOCK_PLAYER: Player = {
     username: '',
     id: '',
+    photoUrl: '',
     answer: new MultipleChoiceAnswer(),
     score: 0,
     answerCorrectness: AnswerCorrectness.WRONG,

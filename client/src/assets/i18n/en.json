@@ -48,6 +48,7 @@
         "upload-avatar": "Upload Avatar",
         "avatar-choices": "Predefined avatars",
         "delete-user": "Delete Profile",
+        "delete-warning": "This operation is irreversible. Do you REALLY want to delete your account?",
         "danger-zone": "Danger Zone",
         "forgot-password": "Forgot Password?",
         "reset-password": "Reset password",
@@ -55,16 +56,18 @@
         "sent-email-extra-info": "If you already have an account, you will receive an email to reset your password."
     },
     "nav": {
-        "main-page": "Main page"
+        "main-page": "Home"
     },
     "main-page": {
+        "home": "Home",
         "join-match": "Join a match",
         "host-match": "Host a match",
         "admin-game": "Manage games",
-        "edit-profile": "Edit profile",
+        "edit-profile": "My profile",
         "team-name": "Team 201",
         "access-code": "Access code",
-        "friends": "Friends"
+        "friends": "Friends",
+        "logout": "Logout"
     },
     "match-creation-page": {
         "games-list": "Games list",
@@ -84,7 +87,10 @@
     },
     "common": {
         "cancel": "Cancel",
-        "play": "Play"
+        "play": "Play",
+        "yes": "Yes",
+        "no": "No",
+        "warning": "Warning"
     },
     "join": {
         "room-code": "Room Code",

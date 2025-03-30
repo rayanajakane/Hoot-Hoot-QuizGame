@@ -2,7 +2,6 @@
     <div id="main-container">
         <div class="nav">
             <h1>{{ t('page.user-edit') }}</h1>
-            <button mat-raised-button routerLink="/home"><mat-icon>home</mat-icon>Page principale</button>
         </div>
         <div class="content-container">
             <form id="form" [formGroup]="form">
@@ -13,7 +12,7 @@
                                 <img *ngIf="form.get('avatar')!.value" [src]="form.get('avatar')!.value" />
                             </div>
                             <input class="avatar" type="file" #avatar (change)="setCustomAvatar($event)" accept="image/png, image/jpeg" />
-                            <button mat-raised-button color="primary" (click)="avatar.click()">
+                            <button type="button" mat-raised-button color="primary" (click)="avatar.click()">
                                 <mat-icon>upload</mat-icon>{{ t('page.upload-avatar') }}
                             </button>
                         </div>
@@ -73,7 +72,7 @@
                 </mat-card>
             </form>
             <h2>{{ t('page.danger-zone') }}</h2>
-            <button mat-raised-button color="accent" (click)="deleteUser()" id="delete-button">{{ t('page.delete-user') }}</button>
+            <button mat-raised-button color="accent" (click)="openDeleteDialog()" id="delete-button">{{ t('page.delete-user') }}</button>
             <h2>{{ t('history.stats-header') }}</h2>
             <mat-card class="stats-card">
                 <div class="stat">
@@ -122,6 +121,16 @@
                     <div class="grid-squares" *ngFor="let level of userHistory.intensityGrid">
                         <div class="square" [ngClass]="'square' + level.toString()"></div>
                     </div>
+                </div>
+            </div>
+            <div id="grid-legend-container">
+                <div id="grid-legend">
+                    <p>-</p>
+                    <div class="square"></div>
+                    <div class="square square1"></div>
+                    <div class="square square2"></div>
+                    <div class="square square3"></div>
+                    <p>+</p>
                 </div>
             </div>
             <h2>{{ t('history.match-history') }}</h2>
