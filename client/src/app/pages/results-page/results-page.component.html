@@ -2,7 +2,14 @@
     <h1>Résultats</h1>
     <div id="players-list">
         <mat-card *ngFor="let player of this.players | sortPlayers: 'score' : 'descending'" class="player-card">
-            <p [ngClass]="[player.isPlaying ? '' : 'inactive-player']">{{ player.username }}</p>
+            <div class="username-avatar-container">
+                <div class="avatar-container">
+                    <div class="avatar">
+                        <img src="{{ player.photoUrl ? player.photoUrl : defaultAvatar }}" alt="" />
+                    </div>
+                </div>
+                <p [ngClass]="[player.isPlaying ? '' : 'inactive-player']">{{ player.username }}</p>
+            </div>
             <div class="player-performance">
                 <p>{{ player.score }} pts</p>
                 <p>({{ player.bonusCount }}✨)</p>

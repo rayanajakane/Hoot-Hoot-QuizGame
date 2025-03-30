@@ -48,3 +48,30 @@
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
 }
+
+.username-avatar-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+}
+
+.avatar-container {
+    display: flex;
+    align-items: flex-end;
+}
+
+.avatar {
+    background-color: grey;
+    border-radius: 100rem;
+    width: 3rem;
+    height: 3rem;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    border-radius: 100rem;
+}
