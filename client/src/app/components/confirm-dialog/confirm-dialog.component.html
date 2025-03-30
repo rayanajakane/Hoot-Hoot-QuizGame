@@ -5,6 +5,6 @@
     <div mat-dialog-content>{{ t(data.text) }}</div>
     <div mat-dialog-actions align="end">
         <button mat-button (click)="onCancel()">{{ t('common.cancel') }}</button>
-        <button mat-raised-button cdkFocusInitial color="primary" (click)="onConfirm()">{{ t('common.yes') }}</button>
+        <button mat-raised-button cdkFocusInitial color="warn" (click)="onConfirm()">{{ t('common.yes') }}</button>
     </div>
 </ng-container>
