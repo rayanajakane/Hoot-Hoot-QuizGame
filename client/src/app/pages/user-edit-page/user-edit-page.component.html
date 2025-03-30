@@ -123,6 +123,16 @@
                     </div>
                 </div>
             </div>
+            <div id="grid-legend-container">
+                <div id="grid-legend">
+                    <p>-</p>
+                    <div class="square"></div>
+                    <div class="square square1"></div>
+                    <div class="square square2"></div>
+                    <div class="square square3"></div>
+                    <p>+</p>
+                </div>
+            </div>
             <h2>{{ t('history.match-history') }}</h2>
             <p *ngIf="userHistory.match.length === 0" class="no-item-to-display">{{ t('history.no-item') }}</p>
             <mat-card class="history-match-item header-card" *ngIf="userHistory.match.length !== 0">
