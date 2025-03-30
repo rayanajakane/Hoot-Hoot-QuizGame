@@ -14,7 +14,6 @@ import com.example.polyquiz.auth.presentation.SignupPage
 import com.example.polyquiz.auth.presentation.UserEditPage
 import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.Route
-import com.example.polyquiz.friends.domain.FriendsService
 import com.example.polyquiz.match.domain.AnswerService
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
@@ -28,6 +27,7 @@ import com.example.polyquiz.friends.presentation.FriendsSearchScreen
 import com.example.polyquiz.money.domain.MoneyService
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.ui.features.camera.MainCameraScreen
+import com.example.polyquiz.ui.theme.Theme
 
 // References: https://youtu.be/AIC_OFQ1r3k  and  https://youtu.be/lv1raAvwcgI
 @Composable
@@ -35,7 +35,9 @@ fun Navigation(
     modifier: Modifier,
     authViewModel: AuthViewModel,
     cameraViewModel: CameraViewModel,
-    context: Context
+    context: Context,
+    currentTheme: Theme,
+    onThemeUpdated: (Theme) -> Unit
 ) {
     val navController = rememberNavController()
     NavHost(
@@ -66,7 +68,8 @@ fun Navigation(
                 navigateToForgotPassword = {
                     navController.navigate(Route.ForgotPassword)
                 },
-                authViewModel = authViewModel
+                authViewModel = authViewModel,
+                onThemeUpdated = onThemeUpdated
             )
         }
         composable<Route.Signup> {
@@ -196,7 +199,9 @@ fun Navigation(
                 },
                 authViewModel = authViewModel,
                 context = context,
-                cameraViewModel = cameraViewModel
+                cameraViewModel = cameraViewModel,
+                currentTheme = currentTheme,
+                onThemeUpdated = onThemeUpdated
             )
         }
         composable<Route.FriendsSearchScreen> {

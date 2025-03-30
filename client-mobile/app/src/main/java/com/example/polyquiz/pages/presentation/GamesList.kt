@@ -272,7 +272,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
 fun GameCard(game: Game, onClick: () -> Unit = {}) {
     Spacer(modifier = Modifier.padding(5.dp))
     Card(colors = CardDefaults.cardColors(
-        containerColor = Color.White),
+        containerColor = MaterialTheme.colorScheme.surfaceContainer),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 6.dp
         ),
