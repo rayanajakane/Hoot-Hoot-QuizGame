@@ -4,11 +4,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -130,10 +133,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
 
         Column(
             modifier = Modifier
-                .weight(1f)
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState())
-                .navigationBarsPadding()
+                .verticalScroll(rememberScrollState()),
         ) {
             Text(
                 text = stringResource(R.string.games_list),
@@ -178,7 +178,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                     ElevatedButton(
                         onClick = { selectedGame = game },
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .fillMaxWidth(0.42f)
                             .padding(1.dp),
                         shape = RoundedCornerShape(3.dp)
                     )
@@ -188,83 +188,105 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                 }
             }
         }
-        Column(
+
+
+        Card(
             modifier = Modifier
                 .weight(1f)
-                .padding(16.dp)
+                .padding(horizontal = 16.dp)
+                .fillMaxHeight()
+                .navigationBarsPadding()
         ) {
-            if (selectedGame != null) {
-                loadSelectedGame(selectedGame!!)
-                matchService.currentGame = selectedGame
-                Text(
-                    text = stringResource(R.string.game_title) + selectedGame!!.title,
-                    modifier = Modifier.padding(8.dp),
-                    fontWeight = FontWeight.Bold
-                )
-                Row(modifier = Modifier.padding(8.dp)) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                if (selectedGame != null) {
+                    loadSelectedGame(selectedGame!!)
+                    matchService.currentGame = selectedGame
                     Text(
-                        text = stringResource(R.string.games_description),
+                        text = stringResource(R.string.game_title) + selectedGame!!.title,
+                        modifier = Modifier.padding(8.dp),
                         fontWeight = FontWeight.Bold
                     )
-                    Text(
-                        text = selectedGame!!.description,
-                    )
-                }
+                    Row(modifier = Modifier.padding(8.dp)) {
+                        Text(
+                            text = stringResource(R.string.games_description),
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = selectedGame!!.description,
+                        )
+                    }
 
-                Row(modifier = Modifier.padding(8.dp)) {
+                    Row(modifier = Modifier.padding(8.dp)) {
+                        Text(
+                            text = stringResource(R.string.games_time),
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = "${selectedGame!!.duration} minutes",
+                            fontWeight = FontWeight.Normal
+                        )
+                    }
+
                     Text(
-                        text = stringResource(R.string.games_time),
+                        text = stringResource(R.string.questions),
+                        modifier = Modifier.padding(8.dp),
                         fontWeight = FontWeight.Bold
                     )
-                    Text(
-                        text = "${selectedGame!!.duration} minutes",
-                        fontWeight = FontWeight.Normal
-                    )
-                }
+                    selectedGame!!.questions?.forEachIndexed { index, question ->
+                        Text("${index + 1}. ${question.text}", modifier = Modifier.padding(8.dp))
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                Text(
-                    text = stringResource(R.string.questions),
-                    modifier = Modifier.padding(8.dp),
-                    fontWeight = FontWeight.Bold
-                )
-                selectedGame!!.questions?.forEachIndexed { index, question ->
-                    Text("${index + 1}. ${question.text}", modifier = Modifier.padding(8.dp))
+
+                    Row {
+                        Button(
+                            onClick = {
+                                createMatch(MatchContext.HOSTVIEW)
+                                navigateToWaitPage()
+                            },
+                            shape = RoundedCornerShape(3.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            ),
+                            modifier = Modifier
+                                .padding(16.dp)
+                        ) {
+                            Text(text = stringResource(R.string.play))
+
+                        }
+                        Button(
+                            onClick = {
+                                showPartyConfigDialog = true
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            ),
+                            shape = RoundedCornerShape(3.dp),
+                            modifier = Modifier
+                                .padding(16.dp)
+                        ) {
+                            Icon(
+                                Icons.Filled.Settings,
+                                contentDescription = stringResource(R.string.custom_match)
+                            )
+                            Text(text = stringResource(R.string.custom_match))
+
+                        }
+
+                    }
+
+
+                } else {
+                    Text(
+                        text = stringResource(R.string.select_game),
+                        modifier = Modifier.padding(8.dp)
+                    )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-
-
-                Row {
-                    Button(
-                        onClick = {
-                            createMatch(MatchContext.HOSTVIEW)
-                            navigateToWaitPage()
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary
-                        ),
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text(text = "Jouer")
-                    }
-                    Button(
-                        onClick = { showPartyConfigDialog = true },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary
-                        ),
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text(text = "Partie personnalisée")
-                    }
-
-                }
-
-
-            } else {
-                Text(text = stringResource(R.string.select_game), modifier = Modifier.padding(8.dp))
-            }
-            Spacer(modifier = Modifier.height(16.dp))
 
         }
         if (showPartyConfigDialog) {
@@ -302,10 +324,12 @@ fun GameCard(game: Game, onClick: () -> Unit = {}) {
             .padding()
             .shadow(4.dp, shape = RectangleShape)
             .width(130.dp)
-            .height(100.dp), onClick = onClick
+            .height(150.dp),
+        onClick = onClick
     ) {
-        Column(modifier = Modifier.padding(5.dp)) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Text(text = game.title, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = stringResource(R.string.matches_played) + game.nMatchesPlayed.toInt())
             }

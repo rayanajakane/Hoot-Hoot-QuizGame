@@ -75,6 +75,7 @@
     <string name="no_match">Aucune partie à afficher</string>
     <string name="playing_matches">Parties en cours</string>
     <string name="join_action">Joindre</string>
+    <string name="custom_match">Partie personnalisée</string>
 
     <string name="matches_won">Nombre de parties gagnées</string>
     <string name="avg_good_answers_percentage">Moyenne de questions bien répondues par partie</string>
