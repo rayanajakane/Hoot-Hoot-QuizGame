@@ -16,14 +16,12 @@ export class EloService {
     ) {}
 
     listenForEloEvents() {
-        this.onReturnElo();
-        this.onRatingChange();
+        // this.onRatingChange();
         this.handleError();
         this.onReturnRankings();
     }
     stopListeningForEloEvents() {
-        // this.socketHandler.socket.removeListener(EloEvents.ReturnElo);
-        this.socketHandler.socket.removeListener(EloEvents.EloUpdated);
+        // this.socketHandler.socket.removeListener(EloEvents.EloUpdated);
         this.socketHandler.socket.removeListener(EloEvents.Error);
         this.socketHandler.socket.removeListener(EloEvents.ReturnRankings);
     }
@@ -57,11 +55,11 @@ export class EloService {
         });
     }
 
-    onRatingChange() {
-        this.socketHandler.on(EloEvents.EloUpdated, (data: any) => {
-            this.currentRating = Math.round(data.mu);
-        });
-    }
+    // onRatingChange() {
+    //     this.socketHandler.on(EloEvents.EloUpdated, (data: any) => {
+    //         this.currentRating = Math.round(data.mu);
+    //     });
+    // }
 
     handleError() {
         this.socketHandler.on(EloEvents.Error, (error: string) => {
