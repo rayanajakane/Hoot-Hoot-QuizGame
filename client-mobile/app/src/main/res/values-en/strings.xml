@@ -65,6 +65,10 @@
     <string name="play">Play</string>
     <string name="matches_played">"Matches Played: "</string>
     <string name="all_games">"All Games"</string>
+    <string name="join_match">Join a match</string>
+    <string name="host_match">Host a match</string>
+    <string name="team_name">Team 201</string>
+    <string name="friends">Friends</string>
     <string name="matches_won">Number of Matches Won</string>
     <string name="avg_good_answers_percentage">Average Well Answered Questions</string>
     <string name="avg_time">"Average Time "</string>

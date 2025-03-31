@@ -25,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
 import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.constants.Route
+import com.example.polyquiz.match.domain.MatchRoomService.navController
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.ui.theme.PolyQuizTheme
 import com.example.polyquiz.ui.theme.Theme
@@ -39,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         SocketHandler.setSocket()
-        val authViewModel : AuthViewModel by viewModels()
+        val authViewModel: AuthViewModel by viewModels()
         val cameraViewModel: CameraViewModel by viewModels()
 
         setContent {

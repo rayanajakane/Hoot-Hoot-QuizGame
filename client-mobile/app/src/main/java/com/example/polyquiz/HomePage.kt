@@ -1,40 +1,55 @@
 package com.example.polyquiz
 
+import android.util.Log
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
+import com.example.polyquiz.constants.Route
 import com.example.polyquiz.match.domain.MatchRoomService
+import com.example.polyquiz.match.domain.MatchRoomService.navController
 import kotlinx.coroutines.launch
 
 @Composable
@@ -45,7 +60,7 @@ fun HomePage(
     navigateToCreate: () -> Unit,
     navigateToUserEdit: () -> Unit,
     navigateToWaitPage: () -> Unit,
-    navigateToFriendsPage : () -> Unit,
+    navigateToFriendsPage: () -> Unit,
     navigateToJoinRoom: () -> Unit,
     authViewModel: AuthViewModel,
 ) {
@@ -85,7 +100,7 @@ fun HomePage(
         }
         when (shouldNavigate.value) {
             true -> {
-                println("we are navigating again")
+                Log.d("Should navigate", "Navigating again")
                 MatchRoomService.timeToGoToWaitPage = false
                 navigateToWaitPage()
             }
@@ -104,8 +119,6 @@ fun HomePage(
             MatchRoomService.errorMsg = ""
         }
     }
-
-
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -118,68 +131,108 @@ fun HomePage(
             }
     ) {
         ChatComponent(modifier = modifier, authViewModel = authViewModel)
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxHeight()
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .fillMaxSize()
+                .imePadding()
         ) {
-//            Button(
-//                onClick = {joinGameDialog()},
-//                colors = ButtonDefaults.buttonColors(
-//                    containerColor = MaterialTheme.colorScheme.primary,
-//                    contentColor = MaterialTheme.colorScheme.onPrimary)
-//            ) {
-//                Text(text = "Joindre une partie")
-//            }
-            Button(onClick = { navigateToJoinRoom() }) {
-                Text("Joindre une partie")
-            }
-            Button(
+            ElevatedButton(
                 onClick = {
-                    navigateToCreate()
+                    authViewModel.signOut()
                 },
+                modifier = Modifier
+                    .padding(20.dp)
+                    .align(Alignment.TopEnd),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
+                    containerColor = MaterialTheme.colorScheme.surfaceBright,
+                    contentColor = MaterialTheme.colorScheme.onSurface
+                ),
+                shape = RoundedCornerShape(3.dp)
             ) {
-                Text(text = "Créer une partie")
+                Text(text = stringResource(R.string.logout_action))
             }
-            Button(
-                onClick = {
-                    navigateToUserEdit()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxHeight()
             ) {
-                Text(text = stringResource(R.string.edit_profile))
-            }
+                Icon(
+                    painter = painterResource(id = R.drawable.flutter_dash_24px),
+                    contentDescription = stringResource(R.string.hoot),
+                    modifier = Modifier.size(128.dp)
+                )
+                Text(
+                    stringResource(R.string.hoot),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 30.sp
+                )
+                Spacer(modifier = Modifier.height(32.dp))
+                Row {
+                    Column {
+                        Button(
+                            onClick = { navigateToJoinRoom() },
+                            shape = RoundedCornerShape(3.dp),
+                            modifier = Modifier
+                                .height(55.dp)
+                                .width(164.dp)
+                        ) {
+                            Text(stringResource(R.string.join_match))
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Button(
+                            onClick = {
+                                navigateToCreate()
+                            },
+                            shape = RoundedCornerShape(3.dp),
+                            modifier = Modifier
+                                .height(55.dp)
+                                .width(164.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            ),
 
-            Button(
-                onClick = {
-                    navigateToFriendsPage()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            ) {
-                Text(text = "FRIENDS")
+                            ) {
+                            Text(text = stringResource(R.string.host_match))
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Column {
+                        Button(
+                            onClick = {
+                                navigateToUserEdit()
+                            },
+                            shape = RoundedCornerShape(3.dp),
+                            modifier = Modifier
+                                .height(55.dp)
+                                .width(164.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            )
+                        ) {
+                            Text(text = stringResource(R.string.edit_profile))
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Button(
+                            onClick = {
+                                navigateToFriendsPage()
+                            },
+                            shape = RoundedCornerShape(3.dp),
+                            modifier = Modifier
+                                .height(55.dp)
+                                .width(164.dp),
+                        ) {
+                            Text(text = stringResource(R.string.friends))
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(stringResource(R.string.team_name), fontWeight = FontWeight.Bold)
             }
         }
-        ElevatedButton(
-            onClick = {
-                authViewModel.signOut()
-            },
-            modifier = Modifier.padding(20.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.surfaceBright,
-                contentColor = MaterialTheme.colorScheme.onSurface
-            )
-        ) {
-            Text(text = stringResource(R.string.logout_action))
-        }
+
+
     }
 }
