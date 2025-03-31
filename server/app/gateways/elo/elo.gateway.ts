@@ -17,7 +17,6 @@ export class EloGateway {
             const rating = await this.eloService.getPlayerElo(userId);
             client.emit(EloEvents.ReturnElo, {
                 mu: rating.mu,
-                sigma: rating.sig,
             });
         } catch (error) {
             this.sendError(client.id, 'Failed to retrieve Elo rating.');
@@ -31,6 +30,17 @@ export class EloGateway {
             this.server.emit(EloEvents.EloUpdated, { roomCode });
         } catch (error) {
             this.sendError(client.id, 'Failed to update Elo ratings for the match.');
+        }
+    }
+
+    @SubscribeMessage(EloEvents.GetRankings)
+    async handleGetRankings(client: Socket): Promise<void> {
+        try {
+            const rankings = await this.eloService.getAllUsersWithElo();
+            client.emit(EloEvents.ReturnRankings, rankings);
+        } catch (error) {
+            console.error('Failed to fetch Elo rankings:', error);
+            client.emit(EloEvents.Error, 'Unable to fetch Elo rankings.');
         }
     }
 

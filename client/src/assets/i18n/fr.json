@@ -75,6 +75,7 @@
         "team-name": "Équipe 201",
         "access-code": "Code d'accès",
         "friends": "Amis",
+        "rankings": "Classements",
         "shop": "Boutique",
         "logout": "Se déconnecter"
     },
@@ -246,6 +247,11 @@
         "fee-description": "Les joueurs devront payer ce montant pour rejoindre la partie.",
         "cancel": "Annuler",
         "confirm": "Confirmer"
+    },
+    "elo": {
+        "username": "Nom d'utilisateur",
+        "elo": "Elo",
+        "rank": "Rang"
     },
     "bank-status": {
         "unavailable": "👀 Aucune autre question valide de la banque n'est disponible! 👀",
