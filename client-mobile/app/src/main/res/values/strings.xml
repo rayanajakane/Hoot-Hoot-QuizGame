@@ -65,6 +65,11 @@
     <string name="all_games">"Tous les jeux"</string>
     <string name="light_theme">Thème clair</string>
     <string name="dark_theme">Thème sombre</string>
+    <string name="hoot" translatable="false">Hoot Hoot</string>
+    <string name="join_match">Joindre une partie</string>
+    <string name="host_match">Créer une partie</string>
+    <string name="team_name">Équipe 201</string>
+    <string name="friends">Amis</string>
     <string name="matches_won">"Nombre de parties gagnées  "</string>
     <string name="avg_good_answers_percentage">Moyenne de questions bien répondues par partie</string>
     <string name="avg_time">Temps moyen par partie</string>
