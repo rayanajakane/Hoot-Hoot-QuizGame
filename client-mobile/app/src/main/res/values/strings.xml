@@ -39,7 +39,7 @@
     <string name="username_already_exists">Ce nom d\'utilisateur est déjà pris.</string>
     <string name="visual_themes">Thèmes visuels</string>
     <string name="language">Langue</string>
-    <string name="edit_profile">Modifier le profil</string>
+    <string name="edit_profile">Mon profil</string>
     <string name="home_page">Page principale</string>
     <string name="user_edit">Modification du Profil</string>
     <string name="save">Enregistrer</string>
