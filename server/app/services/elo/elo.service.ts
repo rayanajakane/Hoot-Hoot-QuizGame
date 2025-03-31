@@ -1,3 +1,4 @@
+import { FirebaseAuthService } from '@app/modules/firebase/firebase-auth/firebase-auth.service';
 import { FirebaseRepositoryService } from '@app/modules/firebase/firebase-repository/firebase-repository.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { Injectable } from '@nestjs/common';
@@ -12,24 +13,63 @@ export class EloService {
     constructor(
         private readonly firebaseService: FirebaseRepositoryService,
         private readonly matchRoomService: MatchRoomService,
+        private readonly firebaseAuthService: FirebaseAuthService,
     ) {
         this.eloMmr = new EloMmr();
     }
 
-    async getPlayerElo(playerId: string): Promise<Rating> {
-        const snapshot = await this.firebaseService.database.ref(`users/${playerId}/elo`).once('value');
-        if (!snapshot.exists()) {
-            return new Rating(1500, 350);
+    async getAllUsersWithElo(): Promise<{ username: string; rating: number }[]> {
+        try {
+            const listUsersResult = await this.firebaseAuthService.getUsers();
+            const allUsers = listUsersResult.users.map((user) => ({
+                userId: user.uid,
+                username: user.displayName || 'Unknown User',
+            }));
+            const snapshot = await this.firebaseService.database.ref('users').once('value');
+            if (!snapshot.exists()) return [];
+            const users = snapshot.val();
+            const rankings = allUsers.map((user) => {
+                const userData = users[user.userId];
+                const elo = userData?.elo?.mu || 0;
+                return {
+                    username: user.username,
+                    rating: elo,
+                };
+            });
+
+            return rankings;
+        } catch (error) {
+            console.error('Failed to fetch Elo rankings:', error);
+            throw new Error('Unable to fetch Elo rankings.');
         }
-        const data = snapshot.val();
-        return new Rating(data.mu, data.sigma);
+    }
+
+    async getPlayerElo(playerId: string): Promise<Rating> {
+        try {
+            const snapshot = await this.firebaseService.database.ref(`users/${playerId}/elo`).once('value');
+            if (!snapshot.exists()) {
+                const defaultRating = new Rating(1500, 350);
+                await this.updatePlayerElo(playerId, defaultRating);
+                return defaultRating;
+            }
+            const data = snapshot.val();
+            return new Rating(data.mu, data.sigma);
+        } catch (error) {
+            console.error(`Failed to get Elo for player ${playerId}:`, error);
+            throw new Error('Unable to retrieve player Elo rating.');
+        }
     }
 
     async updatePlayerElo(playerId: string, newRating: Rating): Promise<void> {
-        await this.firebaseService.database.ref(`users/${playerId}/elo`).set({
-            mu: newRating.mu,
-            sigma: newRating.sig,
-        });
+        try {
+            await this.firebaseService.database.ref(`users/${playerId}/elo`).set({
+                mu: newRating.mu,
+                sigma: newRating.sig,
+            });
+        } catch (error) {
+            console.error(`Failed to update Elo for player ${playerId}:`, error);
+            throw new Error('Unable to update player Elo rating.');
+        }
     }
 
     async updateEloForMatch(roomCode: string): Promise<void> {
