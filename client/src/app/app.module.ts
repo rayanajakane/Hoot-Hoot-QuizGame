@@ -61,6 +61,7 @@ import { UsernameSuggestionDialogComponent } from './components/username-suggest
 import { JoinMatchPageComponent } from './pages/join-match-page/join-match-page.component';
 import { VotingDialogComponent } from './components/voting-dialog/voting-dialog.component';
 import { ShopPageComponent } from './pages/shop-page/shop-page.component';
+import { VotingDialogComponent } from './components/voting-dialog/voting-dialog.component';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.

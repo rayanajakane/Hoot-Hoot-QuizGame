@@ -31,8 +31,7 @@ export class MatchRoomService {
     votesCount: { [username: string]: number } = { ['']: 0 };
     isCheaterMode: boolean = false;
     // totalVotes: VotingData[];
-    // totalVotes: { [username: string]: number }[] = [];
-    totalVotes: VotingData[] = [{ username: '', numberOfVotes: 0, usersWhoVoted: [] }];
+    totalVotes: { [username: string]: number }[] = [];
 
     constructor(
         private readonly eventEmitter: EventEmitter2,
@@ -75,7 +74,7 @@ export class MatchRoomService {
 
         const roomCode = this.generateRoomCode();
         const qrCodeUrl = await this.qrCodeService.generateQrCode(roomCode);
-        this.votesCount = {};
+        this.votesCount ={};
         this.totalVotes = [];
 
         const newRoom: MatchRoom = {
@@ -188,8 +187,7 @@ export class MatchRoomService {
         }
 
         if (this.votesCount[username]) {
-            if (this.votesCount[username] / total < 0.5) {
-                //moins de moitie, stirctly minus
+            if (this.votesCount[username] / total <= 0.5) {
                 return true;
             } else return false;
         }
