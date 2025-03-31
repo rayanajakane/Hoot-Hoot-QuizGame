@@ -47,7 +47,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         private readonly timeService: TimeService,
         private historyService: HistoryService,
         private readonly partyService: PartyService,
-
+        private readonly playerService: PlayerRoomService,
         private readonly eventEmitter: EventEmitter2,
         private readonly eloService: EloService,
     ) {}
