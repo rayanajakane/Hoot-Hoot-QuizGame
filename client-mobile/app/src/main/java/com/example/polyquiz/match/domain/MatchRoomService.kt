@@ -12,17 +12,13 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.constants.ChatEvents
-import com.example.polyquiz.constants.Route
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @SuppressLint("StaticFieldLeak")
 object MatchRoomService {
-    var navController : NavController? = null
     var players by mutableStateOf<List<Player>>(emptyList())
     var messages by mutableStateOf<List<Message>>(emptyList())
     var isMatchStarted by mutableStateOf(false)

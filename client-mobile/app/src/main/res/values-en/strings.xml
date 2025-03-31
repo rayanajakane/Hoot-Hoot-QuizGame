@@ -69,6 +69,12 @@
     <string name="host_match">Host a match</string>
     <string name="team_name">Team 201</string>
     <string name="friends">Friends</string>
+    <string name="pending_matches">Pending matches</string>
+    <string name="unlocked_matches">Unlocked matches</string>
+    <string name="locked_matches">Locked matches</string>
+    <string name="no_match">No Match to Display</string>
+    <string name="playing_matches">Matches in progress</string>
+    <string name="join_action">Join</string>
     <string name="matches_won">Number of Matches Won</string>
     <string name="avg_good_answers_percentage">Average Well Answered Questions</string>
     <string name="avg_time">"Average Time "</string>

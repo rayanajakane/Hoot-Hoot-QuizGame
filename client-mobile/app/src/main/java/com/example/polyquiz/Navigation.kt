@@ -132,14 +132,24 @@ fun Navigation(
         composable<Route.MatchCreation> {
             MatchCreationPage(
                 modifier,
-                navigateToLogin = {
-                    navController.navigate(Route.Login)
-                },
+                authViewModel = authViewModel,
                 navigateToHome = {
                     navController.navigate(Route.Home)
                 },
-                authViewModel = authViewModel,
-                navigateToWaitPage = { navController.navigate(Route.WaitPage) }
+                navigateToCreate = {
+                    navController.navigate(Route.MatchCreation)
+                },
+                navigateToUserEdit = {
+                    navController.navigate(Route.UserEditPage)
+                },
+                navigateToWaitPage = {
+                    navController.navigate(Route.WaitPage)
+                },
+                navigateToFriendsPage = {
+                    navController.navigate(Route.FriendsSearchScreen)
+                },
+                navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
+                navigateToLogin = { navController.navigate(Route.Login) }
             )
         }
         composable<Route.ResultsPage> {
@@ -154,11 +164,26 @@ fun Navigation(
 
         composable<Route.JoinMatchPage> {
             JoinMatchPage(
-                modifier,
-                authViewModel,
-                navigateToHome = { navController.navigate(Route.Home) },
+                modifier = modifier,
+                authViewModel = authViewModel,
+                navigateToHome = {
+                    navController.navigate(Route.Home)
+                },
+                navigateToCreate = {
+                    navController.navigate(Route.MatchCreation)
+                },
+                navigateToUserEdit = {
+                    navController.navigate(Route.UserEditPage)
+                },
+                navigateToWaitPage = {
+                    navController.navigate(Route.WaitPage)
+                },
+                navigateToFriendsPage = {
+                    navController.navigate(Route.FriendsSearchScreen)
+                },
+                navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
                 navigateToMatchPage = { navController.navigate(Route.MatchRoom) },
-                navigateToWaitPage = { navController.navigate(Route.WaitPage) }
+                navigateToLogin = { navController.navigate(Route.Login) }
             )
         }
 

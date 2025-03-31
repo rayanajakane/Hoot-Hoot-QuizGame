@@ -69,6 +69,12 @@
     <string name="host_match">Créer une partie</string>
     <string name="team_name">Équipe 201</string>
     <string name="friends">Amis</string>
+    <string name="pending_matches">Parties en attente</string>
+    <string name="unlocked_matches">Parties déverrouillées</string>
+    <string name="locked_matches">Parties verrouillées</string>
+    <string name="no_match">Aucune partie à afficher</string>
+    <string name="playing_matches">Parties en cours</string>
+    <string name="join_action">Joindre</string>
 
     <string name="matches_won">Nombre de parties gagnées</string>
     <string name="avg_good_answers_percentage">Moyenne de questions bien répondues par partie</string>

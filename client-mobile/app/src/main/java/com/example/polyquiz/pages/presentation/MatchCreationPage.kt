@@ -3,11 +3,17 @@ package com.example.polyquiz.pages.presentation
 import android.util.Log
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
@@ -24,17 +30,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.polyquiz.R
 import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
+import com.example.polyquiz.ui.MenuButton
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateToHome: () -> Unit, authViewModel: AuthViewModel, navigateToWaitPage: () -> Unit) {
+fun MatchCreationPage(
+    modifier: Modifier,
+    authViewModel: AuthViewModel,
+    navigateToHome: () -> Unit,
+    navigateToCreate: () -> Unit,
+    navigateToUserEdit: () -> Unit,
+    navigateToWaitPage: () -> Unit,
+    navigateToFriendsPage: () -> Unit,
+    navigateToJoinRoom: () -> Unit,
+    navigateToLogin: () -> Unit
+) {
     val authState = authViewModel.authState.observeAsState()
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
@@ -66,43 +88,44 @@ fun MatchCreationPage(modifier: Modifier, navigateToLogin: () -> Unit, navigateT
                     keyboardController?.hide()
                 })
             }
+            .imePadding()
+            .statusBarsPadding()
     ) {
-        ChatComponent(modifier = modifier.weight(1f), authViewModel = authViewModel)
-
-        Column(
-           horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Bottom,
+        ChatComponent(modifier = modifier, authViewModel = authViewModel)
+        Box(
             modifier = Modifier
-                .weight(1f)
-                .padding(bottom = 10.dp)
+                .fillMaxSize()
         ) {
-
-            Surface(
-                modifier = Modifier.padding(10.dp)
-            ) {
-                Button(
-                    onClick = { navigateToHome() },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceBright,
-                        contentColor = MaterialTheme.colorScheme.onSurface
-                    ),
+            Column(modifier = Modifier.fillMaxSize()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 28.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Text(text = "Retourner à la page d'accueil")
+                    Text(
+                        text = stringResource(R.string.host_match),
+                        style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold)
+                    )
+                    MenuButton(
+                        modifier = Modifier,
+                        navigateToHome,
+                        navigateToCreate,
+                        navigateToUserEdit,
+                        navigateToFriendsPage,
+                        navigateToJoinRoom,
+                        signOut = {
+                            authViewModel.signOut()
+                            navigateToLogin()
+                        }
+                    )
                 }
-            }
-
-
-            ElevatedButton(
-                onClick = { authViewModel.signOut()
-                          navigateToLogin()},
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceBright,
-                    contentColor = MaterialTheme.colorScheme.onSurface
+                GameList(
+                    modifier = Modifier,
+                    navigateToWaitPage,
+                    authViewModel
                 )
-            ) {
-                Text(text = "Se déconnecter")
             }
-            GameList(modifier = modifier.weight(1f).fillMaxHeight(0.2f), navigateToWaitPage, authViewModel)
         }
     }
 }
