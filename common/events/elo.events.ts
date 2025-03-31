@@ -4,4 +4,6 @@ export enum EloEvents {
     UpdateEloForMatch = 'updateEloForMatch',
     EloUpdated = 'eloUpdated',
     Error = 'error',
+    GetRankings = 'getRankings',
+    ReturnRankings = 'returnRankings',
 }

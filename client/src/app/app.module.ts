@@ -6,6 +6,7 @@ import { getAuth, provideAuth } from '@angular/fire/auth';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatTableModule } from '@angular/material/table';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -51,6 +52,7 @@ import { SortPlayersPipe } from '@app/pipes/sort-players.pipe';
 import { TranslocoRootModule } from '@app/transloco-root.module';
 import { FIREBASE_CONFIG } from 'src/environments/firebase-config';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { EloRankingsComponent } from './components/elo-rankings/elo-rankings.component';
 import { FriendsListItemComponent } from './components/friends-list-item/friends-list-item.component';
 import { FriendsSearchComponent } from './components/friends-search/friends-search.component';
 import { PartyConfigDialogComponent } from './components/party-config-dialog/party-config-dialog.component';
@@ -109,6 +111,7 @@ import { ShopPageComponent } from './pages/shop-page/shop-page.component';
         FriendsListItemComponent,
         PartyConfigDialogComponent,
         VotingDialogComponent,
+        EloRankingsComponent,
         ConfirmDialogComponent,
         ShopPageComponent,
         UsernameSuggestionDialogComponent,
@@ -125,6 +128,7 @@ import { ShopPageComponent } from './pages/shop-page/shop-page.component';
         ReactiveFormsModule,
         TranslocoRootModule,
         MatSliderModule,
+        MatTableModule,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [

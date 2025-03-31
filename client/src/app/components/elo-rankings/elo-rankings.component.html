@@ -1,0 +1,30 @@
+<div *transloco="let t; read: 'elo'">
+    <div class="nav">
+        <h1 class="page-title">{{ 'main-page.rankings' | transloco }}</h1>
+        <div class="navigation-buttons">
+            <button mat-raised-button routerLink="/home"><mat-icon>home</mat-icon>{{ 'nav.main-page' | transloco }}</button>
+        </div>
+    </div>
+
+    <div class="elo-rankings-container">
+        <table mat-table [dataSource]="eloService.rankings" class="mat-elevation-z8">
+            <ng-container matColumnDef="rank">
+                <th mat-header-cell *matHeaderCellDef>{{ t('rank') }}</th>
+                <td mat-cell *matCellDef="let ranking; let i = index">{{ i + 1 }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="username">
+                <th mat-header-cell *matHeaderCellDef>{{ t('username') }}</th>
+                <td mat-cell *matCellDef="let ranking">{{ ranking.username }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="rating">
+                <th mat-header-cell *matHeaderCellDef>{{ t('elo') }}</th>
+                <td mat-cell *matCellDef="let ranking">{{ ranking.rating }}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+    </div>
+</div>
