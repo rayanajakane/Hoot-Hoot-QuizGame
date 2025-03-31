@@ -54,12 +54,6 @@ export class EloService {
         });
     }
 
-    onRatingChange() {
-        this.socketHandler.on(EloEvents.EloUpdated, (data: any) => {
-            this.currentRating = Math.round(data.mu);
-        });
-    }
-
     handleError() {
         this.socketHandler.on(EloEvents.Error, (error: string) => {
             this.notificationService.displayErrorMessage(error);
