@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 //import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { VotingDialogComponent } from '@app/components/voting-dialog/voting-dialog.component';
 import { ChatChannel } from '@app/constants/chat-channels';
 import { MatchContext } from '@app/constants/states';
 import { Player } from '@app/interfaces/player';
