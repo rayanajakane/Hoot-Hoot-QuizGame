@@ -72,9 +72,8 @@ import java.util.Locale
 
 @Composable
 fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
-    val username by remember { mutableStateOf(authViewModel.getUsername() )}
-    val userId by remember { mutableStateOf(authViewModel.getUserId() )}
-//    var selectedChat by remember { mutableStateOf("General") }
+    val username by remember { mutableStateOf(authViewModel.getUsername()) }
+    val userId by remember { mutableStateOf(authViewModel.getUserId()) }
     var selectedChat by remember {
         mutableStateOf(if (MatchRoomService.getRoomCode().isNotEmpty()) "Match" else "General")
     }
@@ -91,7 +90,7 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
         "Match" -> ChatService.matchRoomMessages.observeAsState().value
         else -> ChatService.generalMessages.observeAsState().value
     }
-    var newMessageText by remember{ mutableStateOf("") }
+    var newMessageText by remember { mutableStateOf("") }
 
     LaunchedEffect(messages?.size) {
         messages?.let { list ->
@@ -106,19 +105,29 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         ),
         shape = RoundedCornerShape(0.dp),
-        modifier = Modifier.size(width = 300.dp, height = 1000.dp).fillMaxHeight().imePadding()
+        modifier = Modifier
+            .size(width = 300.dp, height = 1000.dp)
+            .fillMaxHeight()
+            .imePadding()
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceAround,
         ) {
-            Text(text = username, fontSize = 30.sp, fontWeight = FontWeight(800), modifier = Modifier.padding(20.dp, 20.dp, 20.dp, 0.dp))
+            Text(
+                text = username,
+                fontSize = 30.sp,
+                fontWeight = FontWeight(800),
+                modifier = Modifier.padding(20.dp, 20.dp, 20.dp, 0.dp)
+            )
             ChatSelectionMenu(selectedChat) { newChat -> selectedChat = newChat }
             // REFERENCE: https://youtu.be/P3xQdINdrWY
             // To handle the situation where there would be no message to display.
             messages?.let {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
-                    modifier = Modifier.weight(1f).padding(20.dp, 20.dp, 20.dp, 0.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(20.dp, 20.dp, 20.dp, 0.dp),
                 ) {
                     itemsIndexed(it) { _: Int, message: Message ->
                         MessageContainer(message, userId, username)
@@ -126,14 +135,20 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                 }
             } ?: LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
-                modifier = Modifier.weight(1f).padding(20.dp, 20.dp, 20.dp, 0.dp)
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(20.dp, 20.dp, 20.dp, 0.dp)
             ) {
 
             }
             TextField(
-                modifier = Modifier.fillMaxWidth().padding(0.dp, 10.dp, 0.dp, 70.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(0.dp, 10.dp, 0.dp, 70.dp),
                 value = newMessageText,
-                onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) newMessageText = it },
+                onValueChange = {
+                    if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) newMessageText = it
+                },
                 label = { Text(text = stringResource(R.string.message_label)) },
                 singleLine = true,
                 shape = RoundedCornerShape(0.dp),
@@ -144,10 +159,21 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                 keyboardActions = KeyboardActions(onDone = {
                     // TODO: Change to actual user avatar
                     if (selectedChat == "General") {
-                        ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, null)
-                    }
-                    else {
-                        ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, MatchRoomService.getRoomCode())
+                        ChatService.sendMessage(
+                            newMessageText,
+                            userId,
+                            username,
+                            PresetAvatar.DEFAULT.value,
+                            null
+                        )
+                    } else {
+                        ChatService.sendMessage(
+                            newMessageText,
+                            userId,
+                            username,
+                            PresetAvatar.DEFAULT.value,
+                            MatchRoomService.getRoomCode()
+                        )
                     }
                     newMessageText = ""
                 }),
@@ -156,10 +182,21 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                     IconButton(onClick = {
                         // TODO: Change to actual user avatar
                         if (selectedChat == "General") {
-                            ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, null)
-                        }
-                        else {
-                            ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, MatchRoomService.getRoomCode())
+                            ChatService.sendMessage(
+                                newMessageText,
+                                userId,
+                                username,
+                                PresetAvatar.DEFAULT.value,
+                                null
+                            )
+                        } else {
+                            ChatService.sendMessage(
+                                newMessageText,
+                                userId,
+                                username,
+                                PresetAvatar.DEFAULT.value,
+                                MatchRoomService.getRoomCode()
+                            )
                         }
                         newMessageText = ""
                     }) {
@@ -182,11 +219,21 @@ fun MessageContainer(message: Message, currentUserId: String, username: String) 
     if (message.authorId != currentUserId) {
         containerColor = MaterialTheme.colorScheme.surfaceBright
         containerAlignment = Alignment.Start
-        containerCorner = RoundedCornerShape(topStart=10.dp, topEnd=10.dp, bottomEnd=10.dp, bottomStart=0.dp)
+        containerCorner = RoundedCornerShape(
+            topStart = 10.dp,
+            topEnd = 10.dp,
+            bottomEnd = 10.dp,
+            bottomStart = 0.dp
+        )
     } else {
         containerColor = MaterialTheme.colorScheme.primary
         containerAlignment = Alignment.End
-        containerCorner = RoundedCornerShape(topStart=10.dp, topEnd=10.dp, bottomEnd=0.dp, bottomStart=10.dp)
+        containerCorner = RoundedCornerShape(
+            topStart = 10.dp,
+            topEnd = 10.dp,
+            bottomEnd = 0.dp,
+            bottomStart = 10.dp
+        )
     }
     Column(
         horizontalAlignment = containerAlignment,
@@ -197,16 +244,23 @@ fun MessageContainer(message: Message, currentUserId: String, username: String) 
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.width(containerWidth)
             ) {
-                if(message.authorId != currentUserId) {
+                if (message.authorId != currentUserId) {
                     AvatarImage(message.photoUrl)
                 }
                 Text(text = message.authorUsername, fontWeight = FontWeight(600))
-                Text(text = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(message.date).toString())
-                if(message.authorId == currentUserId) {
+                Text(
+                    text = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(message.date)
+                        .toString()
+                )
+                if (message.authorId == currentUserId) {
                     AvatarImage(message.photoUrl)
                 }
             }
-            Column(modifier = Modifier.padding(top = 10.dp).align(alignment = AbsoluteAlignment.Left)) {
+            Column(
+                modifier = Modifier
+                    .padding(top = 10.dp)
+                    .align(alignment = AbsoluteAlignment.Left)
+            ) {
                 Card(
                     colors = CardDefaults.cardColors(containerColor = containerColor),
                     shape = containerCorner,
@@ -214,13 +268,17 @@ fun MessageContainer(message: Message, currentUserId: String, username: String) 
                 ) {
                     Text(text = message.text, modifier = Modifier.padding(10.dp))
                 }
-                ReactionsRow(message, currentUserId, username, MatchRoomService.getRoomCode(), modifier = Modifier.align(alignment = AbsoluteAlignment.Left))
+                ReactionsRow(
+                    message,
+                    currentUserId,
+                    username,
+                    MatchRoomService.getRoomCode(),
+                    modifier = Modifier.align(alignment = AbsoluteAlignment.Left)
+                )
             }
         }
     }
 }
-
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -256,41 +314,41 @@ fun ChatSelectionMenu(selectedChat: String, onChatSelected: (String) -> Unit) {
                 val isMatchRoomAvailable = MatchRoomService.getRoomCode().isNotEmpty()
 
                 // Enable Match only if the room is available, but still show it if selected
-                val isOptionDisabled = selectionOption == "Match" && !isMatchRoomAvailable && !isSelected
-
-                DropdownMenuItem(
-                    text = {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                text = selectionOption,
-                                color = if (isOptionDisabled) Color.Gray else LocalContentColor.current
-                            )
-                            if (isSelected) {
-                                Spacer(Modifier.width(8.dp))
-                                Icon(
-                                    imageVector = Icons.Default.Check,
-                                    contentDescription = "Selected",
-                                    tint = LocalContentColor.current
+                val isOptionDisabled =
+                    selectionOption == "Match" && !isMatchRoomAvailable && !isSelected
+                if (!isOptionDisabled) {
+                    DropdownMenuItem(
+                        text = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = selectionOption,
+                                    color = if (isOptionDisabled) Color.Gray else LocalContentColor.current
                                 )
+                                if (isSelected) {
+                                    Spacer(Modifier.width(8.dp))
+                                    Icon(
+                                        imageVector = Icons.Default.Check,
+                                        contentDescription = "Selected",
+                                        tint = LocalContentColor.current
+                                    )
+                                }
                             }
-                        }
-                    },
-                    onClick = {
-                        if (!isOptionDisabled) {
+                        },
+                        onClick = {
+
                             onChatSelected(selectionOption)
                             expanded = false
-                        }
-                        ChatService.channel = selectionOption
-                    },
-                    enabled = !isOptionDisabled,
-                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                )
+
+                            ChatService.channel = selectionOption
+                        },
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                    )
+                }
+
             }
         }
     }
 }
-
-
 
 
 @Composable
@@ -298,27 +356,54 @@ fun AvatarImage(photoUrl: String?) {
     Image(
         painter = rememberAsyncImagePainter(photoUrl ?: PresetAvatar.DEFAULT.value),
         contentDescription = "User Avatar",
-        modifier = Modifier.size(40.dp).clip(CircleShape)
+        modifier = Modifier
+            .size(40.dp)
+            .clip(CircleShape)
     )
 }
 
 @Composable
-fun ReactionsRow(message: Message, userId: String, username: String, roomCode: String?, modifier: Modifier) {
+fun ReactionsRow(
+    message: Message,
+    userId: String,
+    username: String,
+    roomCode: String?,
+    modifier: Modifier
+) {
     Row(
         modifier = Modifier.padding(top = 1.dp),
         horizontalArrangement = Arrangement.Absolute.Left,
     ) {
         ReactionButton("👍", message.userLikes.size) {
-            ChatService.reactToMessage(message.id, ChatEmoji.LIKE, userId, username, if(roomCode.isNullOrEmpty()) null else roomCode)
+            ChatService.reactToMessage(
+                message.id,
+                ChatEmoji.LIKE,
+                userId,
+                username,
+                if (roomCode.isNullOrEmpty()) null else roomCode
+            )
         }
         ReactionButton("❤️", message.userLoves.size) {
-            ChatService.reactToMessage(message.id, ChatEmoji.LOVE, userId, username, if(roomCode.isNullOrEmpty()) null else roomCode)
+            ChatService.reactToMessage(
+                message.id,
+                ChatEmoji.LOVE,
+                userId,
+                username,
+                if (roomCode.isNullOrEmpty()) null else roomCode
+            )
         }
         ReactionButton("👎", message.userDislikes.size) {
-            ChatService.reactToMessage(message.id, ChatEmoji.DISLIKE, userId, username, if(roomCode.isNullOrEmpty()) null else roomCode)
+            ChatService.reactToMessage(
+                message.id,
+                ChatEmoji.DISLIKE,
+                userId,
+                username,
+                if (roomCode.isNullOrEmpty()) null else roomCode
+            )
         }
     }
 }
+
 @Composable
 fun ReactionButton(emoji: String, count: Int, onClick: () -> Unit) {
     Button(
