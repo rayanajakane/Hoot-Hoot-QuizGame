@@ -64,7 +64,8 @@
         "edit-profile": "Edit profile",
         "team-name": "Team 201",
         "access-code": "Access code",
-        "friends": "Friends"
+        "friends": "Friends",
+        "rankings": "Rankings"
     },
     "match-creation-page": {
         "games-list": "Games list",
@@ -165,5 +166,10 @@
         "fee-description": "Players will have to pay this fee to join this match.",
         "cancel": "Cancel",
         "confirm": "Confirm"
+    },
+    "elo": {
+        "username": "Username",
+        "elo": "Elo",
+        "rank": "Rank"
     }
 }

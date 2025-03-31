@@ -8,6 +8,7 @@ import { EloEvents } from '@common/events/elo.events';
 })
 export class EloService {
     currentRating: number;
+    rankings: { username: string; rating: number }[];
 
     constructor(
         private readonly socketHandler: SocketHandlerService,
@@ -18,11 +19,28 @@ export class EloService {
         this.onReturnElo();
         this.onRatingChange();
         this.handleError();
+        this.onReturnRankings();
     }
     stopListeningForEloEvents() {
-        this.socketHandler.socket.removeListener(EloEvents.ReturnElo);
+        // this.socketHandler.socket.removeListener(EloEvents.ReturnElo);
         this.socketHandler.socket.removeListener(EloEvents.EloUpdated);
         this.socketHandler.socket.removeListener(EloEvents.Error);
+        this.socketHandler.socket.removeListener(EloEvents.ReturnRankings);
+    }
+
+    onReturnRankings() {
+        this.socketHandler.on(EloEvents.ReturnRankings, (data: { username: string; rating: number }[]) => {
+            this.rankings = data
+                .sort((a, b) => b.rating - a.rating)
+                .map((ranking) => ({
+                    ...ranking,
+                    rating: Math.round(ranking.rating),
+                }));
+        });
+    }
+
+    getRankings() {
+        this.socketHandler.send(EloEvents.GetRankings);
     }
 
     getElo(userId: string) {
@@ -34,15 +52,14 @@ export class EloService {
     }
 
     onReturnElo() {
-        this.socketHandler.on(EloEvents.ReturnElo, (data: number) => {
-            this.currentRating = data;
-            return data;
+        this.socketHandler.on(EloEvents.ReturnElo, (data: any) => {
+            this.currentRating = Math.round(data.mu);
         });
     }
 
     onRatingChange() {
-        this.socketHandler.on(EloEvents.EloUpdated, (data: number) => {
-            this.currentRating = data;
+        this.socketHandler.on(EloEvents.EloUpdated, (data: any) => {
+            this.currentRating = Math.round(data.mu);
         });
     }
 

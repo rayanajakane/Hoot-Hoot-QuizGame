@@ -4,6 +4,7 @@ import { BAN_PLAYER, NO_MORE_HOST, NO_MORE_PLAYERS } from '@app/constants/match-
 import { Game } from '@app/model/database/game';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
 import { Player } from '@app/model/schema/player.schema';
+import { EloService } from '@app/services/elo/elo.service';
 // import { HistogramService } from '@app/services/histogram/histogram.service';
 // import { HistoryService } from '@app/services/history/history.service';
 import { FriendsService } from '@app/services/friends/friends.service';
@@ -43,6 +44,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         private historyService: HistoryService,
         private readonly partyService: PartyService,
         private readonly eventEmitter: EventEmitter2,
+        private readonly eloService: EloService,
     ) {}
 
     @SubscribeMessage(MatchEvents.JoinRoom)
@@ -140,6 +142,12 @@ export class MatchGateway implements OnGatewayDisconnect {
                 this.server.in(player.socket.id).emit(ChatEvents.ChatReactivated, CHAT_REACTIVATED);
             }
         });
+        try {
+            await this.eloService.updateEloForMatch(matchRoomCode);
+            console.log(`Elo ratings updated for match: ${matchRoomCode}`);
+        } catch (error) {
+            console.error(`Failed to update Elo ratings for match: ${matchRoomCode}`, error);
+        }
     }
 
     @SubscribeMessage(MatchEvents.ToggleLock)

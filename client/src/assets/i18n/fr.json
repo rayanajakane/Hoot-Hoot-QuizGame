@@ -64,7 +64,8 @@
         "edit-profile": "Modifier le profil",
         "team-name": "Équipe 201",
         "access-code": "Code d'accès",
-        "friends": "Amis"
+        "friends": "Amis",
+        "rankings": "Classements"
     },
     "match-creation-page": {
         "games-list-label": "Liste des jeux",
@@ -165,5 +166,10 @@
         "fee-description": "Les joueurs devront payer ce montant pour rejoindre la partie.",
         "cancel": "Annuler",
         "confirm": "Confirmer"
+    },
+    "elo": {
+        "username": "Nom d'utilisateur",
+        "elo": "Elo",
+        "rank": "Rang"
     }
 }

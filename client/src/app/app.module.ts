@@ -5,6 +5,7 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatTableModule } from '@angular/material/table';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -49,6 +50,7 @@ import { SortHistoryPipe } from '@app/pipes/sort-history.pipe';
 import { SortPlayersPipe } from '@app/pipes/sort-players.pipe';
 import { TranslocoRootModule } from '@app/transloco-root.module';
 import { FIREBASE_CONFIG } from 'src/environments/firebase-config';
+import { EloRankingsComponent } from './components/elo-rankings/elo-rankings.component';
 import { FriendsListItemComponent } from './components/friends-list-item/friends-list-item.component';
 import { FriendsSearchComponent } from './components/friends-search/friends-search.component';
 import { PartyConfigDialogComponent } from './components/party-config-dialog/party-config-dialog.component';
@@ -103,6 +105,7 @@ import { JoinMatchPageComponent } from './pages/join-match-page/join-match-page.
         FriendsSearchComponent,
         FriendsListItemComponent,
         PartyConfigDialogComponent,
+        EloRankingsComponent,
     ],
     imports: [
         AppMaterialModule,
@@ -115,6 +118,7 @@ import { JoinMatchPageComponent } from './pages/join-match-page/join-match-page.
         ReactiveFormsModule,
         TranslocoRootModule,
         MatSliderModule,
+        MatTableModule,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [
