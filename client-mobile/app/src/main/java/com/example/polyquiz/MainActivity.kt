@@ -16,17 +16,13 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 
 import androidx.compose.ui.tooling.preview.Preview
 
 import com.example.polyquiz.auth.domain.AuthViewModel
-import com.example.polyquiz.constants.Route
-import com.example.polyquiz.match.domain.MatchRoomService.navController
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.ui.theme.PolyQuizTheme
 import com.example.polyquiz.ui.theme.Theme
