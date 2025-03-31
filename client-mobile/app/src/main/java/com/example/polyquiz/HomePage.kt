@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
@@ -133,7 +134,8 @@ fun HomePage(
             MenuButton(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .imePadding(),
+                    .imePadding()
+                    .statusBarsPadding(),
                 navigateToHome,
                 navigateToCreate,
                 navigateToUserEdit,

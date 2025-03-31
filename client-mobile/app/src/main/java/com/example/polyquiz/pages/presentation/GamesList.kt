@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.match.domain.Game
@@ -137,6 +138,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
             Text(
                 text = stringResource(R.string.games_list),
                 modifier = Modifier.padding(8.dp),
+                fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
             )
             Column {

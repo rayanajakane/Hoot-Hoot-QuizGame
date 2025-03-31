@@ -199,12 +199,12 @@ fun JoinMatchPage(
             Column(modifier = modifier.verticalScroll(rememberScrollState())) {
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(26.dp, 1.dp),
+                        .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
                         text = stringResource(R.string.join_match),
+                        modifier = Modifier.padding(horizontal = 26.dp),
                         style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold)
                     )
                     MenuButton(

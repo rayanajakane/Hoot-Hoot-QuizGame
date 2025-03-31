@@ -99,11 +99,11 @@ fun MatchCreationPage(
             Column(modifier = Modifier.fillMaxSize()) {
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 28.dp),
+                        .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
+                        modifier = Modifier.padding(horizontal = 36.dp),
                         text = stringResource(R.string.host_match),
                         style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold)
                     )
