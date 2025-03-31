@@ -42,6 +42,8 @@ export class MatchRoomService {
     currentAnswers: string[] = [];
     isCheaterMode: boolean;
     cheaterPlayer: Player;
+    votesData: VotingData;
+    totalVotes: VotingData[];
 
     private hostId: string;
     private matchRoomCode: string;
@@ -103,6 +105,7 @@ export class MatchRoomService {
             this.onVoting();
             this.onVotingResults();
             this.onCurrentAnswers();
+            this.onVoting();
         }
     }
 
