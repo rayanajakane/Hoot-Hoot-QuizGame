@@ -118,6 +118,24 @@ export class AnswerService {
     onBonusPoints() {
         this.socketService.on(AnswerEvents.Bonus, (bonus: number) => {
             this.bonusPoints = bonus;
+            console.log("this",this.bonusPoints);
+        });
+    }
+
+    cheaterGetsBonus() {
+        const totalVotes = this.matchRoomService.totalVotes.reduce((total, voteData) => total + voteData.numberOfVotes, 0);
+        if (this.matchRoomService.cheaterPlayer.username === this.matchRoomService.votesData.username) {
+            if (this.matchRoomService.votesData.numberOfVotes / totalVotes <= 0.5) {
+                console.log(this.matchRoomService.votesData.numberOfVotes / totalVotes);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    onCheaterFinalScores() {
+        this.socketService.on(MatchEvents.VoteOnCheater, (bonus: number) => {
+            this.bonusPoints += this.bonusPoints * 0.3;
         });
     }
 

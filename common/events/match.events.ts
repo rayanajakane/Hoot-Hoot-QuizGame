@@ -23,4 +23,9 @@ export enum MatchEvents {
     ReturnAllMatches = 'returnAllMatches',
     StartMatchCheaterMode = 'startMatchCheaterMode',
     SendCheater = 'sendCheater',
+    VoteOnCheater = 'voteOnCheater',
+    ShowVotingDialog = 'showVotingDialog',
+    SendVotesResults  = 'sendVotesResults',
+    SendBackVotesResults = 'sendBackVotesResults',
+    SendUpdatedScores = 'sendUpdatedScores'
 }

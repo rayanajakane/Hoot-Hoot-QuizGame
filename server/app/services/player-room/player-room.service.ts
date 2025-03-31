@@ -105,6 +105,14 @@ export class PlayerRoomService {
         return foundPlayer;
     }
 
+    getPlayerByUsername(matchRoomCode: string, username: string): Player | undefined {
+        const matchRoom = this.matchRoomService.getRoom(matchRoomCode);
+        if (matchRoom) {
+            return matchRoom.players.find((player: Player) => player.username === username);
+        }
+        return undefined;
+    }
+
     makePlayerInactive(matchRoomCode: string, userId: string): void {
         const roomIndex = this.matchRoomService.getRoomIndex(matchRoomCode);
         const playerIndex = this.matchRoomService.getRoom(matchRoomCode).players.findIndex((player: Player) => {
