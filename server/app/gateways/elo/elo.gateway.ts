@@ -27,7 +27,7 @@ export class EloGateway {
     async updateEloForMatch(client: Socket, roomCode: string) {
         try {
             await this.eloService.updateEloForMatch(roomCode);
-            this.server.emit(EloEvents.EloUpdated, { roomCode });
+            this.server.emit(EloEvents.ReturnElo, { roomCode });
         } catch (error) {
             this.sendError(client.id, 'Failed to update Elo ratings for the match.');
         }
