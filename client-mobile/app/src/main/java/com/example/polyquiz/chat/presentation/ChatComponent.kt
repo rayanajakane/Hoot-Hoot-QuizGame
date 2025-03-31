@@ -1,5 +1,6 @@
 package com.example.polyquiz.chat.presentation
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -74,10 +75,12 @@ import java.util.Locale
 fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     val username by remember { mutableStateOf(authViewModel.getUsername()) }
     val userId by remember { mutableStateOf(authViewModel.getUserId()) }
+    val roomCode by MatchRoomService.matchRoomCode.collectAsState()
     var selectedChat by remember {
-        mutableStateOf(if (MatchRoomService.getRoomCode().isNotEmpty()) "Match" else "General")
+        mutableStateOf(if (roomCode.isNotEmpty()) "Match" else "General")
     }
     LaunchedEffect(selectedChat) {
+        Log.d("Chat", "Selected chat: $selectedChat with room code: $roomCode")
         if (selectedChat == "Match") {
             ChatService.channel = ChatChannel.ROOM.value
         } else {
@@ -311,11 +314,12 @@ fun ChatSelectionMenu(selectedChat: String, onChatSelected: (String) -> Unit) {
         ) {
             options.forEach { selectionOption ->
                 val isSelected = selectedChat == selectionOption
+                val roomCode by MatchRoomService.matchRoomCode.collectAsState()
                 val isMatchRoomAvailable = MatchRoomService.getRoomCode().isNotEmpty()
 
                 // Enable Match only if the room is available, but still show it if selected
                 val isOptionDisabled =
-                    selectionOption == "Match" && !isMatchRoomAvailable && !isSelected
+                    selectionOption == "Match" && roomCode.isEmpty() && !isSelected
                 if (!isOptionDisabled) {
                     DropdownMenuItem(
                         text = {
