@@ -3,6 +3,7 @@ package com.example.polyquiz.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
@@ -41,7 +42,7 @@ fun MenuButton(
 ) {
     var expanded by remember { mutableStateOf(false) }
     Box(
-        modifier = modifier
+        modifier = modifier.padding(horizontal = 26.dp)
     ) {
         ElevatedButton(
             onClick = {
