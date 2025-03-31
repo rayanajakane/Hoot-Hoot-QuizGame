@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
@@ -50,6 +52,7 @@ import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.Route
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.MatchRoomService.navController
+import com.example.polyquiz.ui.MenuButton
 import kotlinx.coroutines.launch
 
 @Composable
@@ -135,23 +138,21 @@ fun HomePage(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxSize()
+                // TODO : Top and right padding
                 .imePadding()
         ) {
-            ElevatedButton(
-                onClick = {
-                    authViewModel.signOut()
-                },
+            MenuButton(
                 modifier = Modifier
-                    .padding(20.dp)
-                    .align(Alignment.TopEnd),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceBright,
-                    contentColor = MaterialTheme.colorScheme.onSurface
-                ),
-                shape = RoundedCornerShape(3.dp)
-            ) {
-                Text(text = stringResource(R.string.logout_action))
-            }
+                    .align(Alignment.TopEnd)
+                    .imePadding(),
+                navigateToHome,
+                navigateToCreate,
+                navigateToUserEdit,
+                navigateToFriendsPage,
+                navigateToJoinRoom,
+                signOut = { authViewModel.signOut() }
+
+            )
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
@@ -170,17 +171,21 @@ fun HomePage(
                 Spacer(modifier = Modifier.height(32.dp))
                 Row {
                     Column {
-                        Button(
+                        ElevatedButton(
                             onClick = { navigateToJoinRoom() },
                             shape = RoundedCornerShape(3.dp),
                             modifier = Modifier
                                 .height(55.dp)
-                                .width(164.dp)
+                                .width(164.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            ),
                         ) {
                             Text(stringResource(R.string.join_match))
                         }
                         Spacer(modifier = Modifier.height(8.dp))
-                        Button(
+                        ElevatedButton(
                             onClick = {
                                 navigateToCreate()
                             },
@@ -199,7 +204,7 @@ fun HomePage(
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     Column {
-                        Button(
+                        ElevatedButton(
                             onClick = {
                                 navigateToUserEdit()
                             },
@@ -208,14 +213,14 @@ fun HomePage(
                                 .height(55.dp)
                                 .width(164.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                contentColor = MaterialTheme.colorScheme.onPrimary
+                                containerColor = MaterialTheme.colorScheme.surfaceBright,
+                                contentColor = MaterialTheme.colorScheme.onSurface
                             )
                         ) {
                             Text(text = stringResource(R.string.edit_profile))
                         }
                         Spacer(modifier = Modifier.height(8.dp))
-                        Button(
+                        ElevatedButton(
                             onClick = {
                                 navigateToFriendsPage()
                             },
@@ -223,6 +228,10 @@ fun HomePage(
                             modifier = Modifier
                                 .height(55.dp)
                                 .width(164.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceBright,
+                                contentColor = MaterialTheme.colorScheme.onSurface
+                            )
                         ) {
                             Text(text = stringResource(R.string.friends))
                         }
@@ -232,7 +241,5 @@ fun HomePage(
                 Text(stringResource(R.string.team_name), fontWeight = FontWeight.Bold)
             }
         }
-
-
     }
 }
