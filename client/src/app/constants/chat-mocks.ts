@@ -34,6 +34,7 @@ export const MOCK_USERNAME = MOCK_MESSAGE.authorUsername;
 export const PLAYER_MOCK: Player = {
     id: ' ',
     username: '',
+    photoUrl: '',
     score: 0,
     bonusCount: 0,
     isPlaying: true,

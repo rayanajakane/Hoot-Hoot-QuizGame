@@ -80,7 +80,7 @@
             <p>Présenter les résultats finaux</p>
         </button>
         <button
-            *ngIf="!this.answerService.isEndGame"
+            *ngIf="!this.answerService.isEndGame && this.answerService.isNextQuestionButtonEnabled"
             mat-raised-button
             color="primary"
             (click)="goToNextQuestion()"

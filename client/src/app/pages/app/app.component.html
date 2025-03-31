@@ -1,11 +1,20 @@
-<div *transloco="let t">
-    <div *ngIf="authenticationService.isUserAuthenticated()" class="right-panel">
-        <button mat-raised-button id="logout-button" (click)="authenticationService.signOut()">
-            {{ t('page.logout-action') }}
-        </button>
-        <div class="balance-container">
-            <mat-icon class="balance-icon">account_balance_wallet</mat-icon>
-            <span class="balance-text"> {{ moneyService.currentBalance | currency: 'USD' : 'symbol' }} </span>
+<div *transloco="let t; read: 'main-page'">
+    <div *ngIf="authenticationService.isUserAuthenticated() && matchContextService.getContext() === 0" class="right-panel">
+        <div class="sticky">
+            <button mat-raised-button [matMenuTriggerFor]="menu"><mat-icon>menu</mat-icon>Menu</button>
+            <mat-menu #menu="matMenu" yPosition="below" xPosition="after">
+                <button mat-menu-item routerLink="home"><mat-icon>home</mat-icon>{{ t('home') }}</button>
+                <button mat-menu-item routerLink="join-match"><mat-icon>play_circle</mat-icon>{{ t('join-match') }}</button>
+                <button mat-menu-item routerLink="host"><mat-icon>add_circle</mat-icon>{{ t('host-match') }}</button>
+                <button mat-menu-item routerLink="admin/games"><mat-icon>library_books</mat-icon>{{ t('admin-game') }}</button>
+                <button mat-menu-item routerLink="edit-profile"><mat-icon>person</mat-icon>{{ t('edit-profile') }}</button>
+                <button mat-menu-item routerLink="friends-search"><mat-icon>group</mat-icon>{{ t('friends') }}</button>
+                <button mat-menu-item (click)="authenticationService.signOut()"><mat-icon>logout</mat-icon>{{ t('logout') }}</button>
+            </mat-menu>
+            <div class="balance-container">
+                <mat-icon class="balance-icon">account_balance_wallet</mat-icon>
+                <span class="balance-text"> {{ moneyService.currentBalance | currency: 'USD' : 'symbol' }} </span>
+            </div>
         </div>
     </div>
 </div>
