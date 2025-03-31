@@ -351,6 +351,8 @@ class AuthViewModel : ViewModel() {
                             setAvatarUrl(user?.photoUrl.toString())
                             _authState.value = AuthState.Authenticated
                             SocketHandler.connect()
+                            SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
+                            SocketHandler.getSocket().emit(FriendsEvents.CONNECT.value)
                             Log.d(TAG, "signInWithEmail:success")
                         }
                     userRef?.child("isOnline")?.get()
@@ -435,6 +437,7 @@ class AuthViewModel : ViewModel() {
                                         _authState.value = AuthState.Authenticated
                                         SocketHandler.connect()
                                         SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
+                                        SocketHandler.getSocket().emit(FriendsEvents.CONNECT.value)
                                     }
                                     Log.d(TAG, "createUserWithEmail:success")
                                 }
