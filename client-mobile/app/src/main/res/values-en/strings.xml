@@ -75,6 +75,7 @@
     <string name="no_match">No Match to Display</string>
     <string name="playing_matches">Matches in progress</string>
     <string name="join_action">Join</string>
+    <string name="custom_match">Custom match</string>
     <string name="matches_won">Number of Matches Won</string>
     <string name="avg_good_answers_percentage">Average Well Answered Questions</string>
     <string name="avg_time">"Average Time "</string>
