@@ -17,6 +17,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.constants.ChatEvents
 import com.example.polyquiz.constants.Route
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @SuppressLint("StaticFieldLeak")
 object MatchRoomService {
@@ -45,8 +47,11 @@ object MatchRoomService {
     var hostId by mutableStateOf("")
     var errorMsg by mutableStateOf("")
 
-    private var matchRoomCode: String = ""
+//    private var matchRoomCode: String = ""
     private var hasEnteredRoom = false
+
+    private val _matchRoomCode = MutableStateFlow("")
+    val matchRoomCode: StateFlow<String> get() = _matchRoomCode
 
      val socket = SocketHandler.getSocket()
 
@@ -55,7 +60,7 @@ object MatchRoomService {
     val socketId: String
         get() = socket.id() ?: ""
 
-    fun getRoomCode(): String = matchRoomCode
+    fun getRoomCode(): String = _matchRoomCode.value
     fun retrieveUsername(): String = username
 
     fun connect() {
@@ -96,6 +101,7 @@ object MatchRoomService {
         hostId=""
         timeToGoToWaitPage = false
         hasBeenKickedOut = true
+        resetMatchValues()
         Log.d("Disconnect from room WaitPage","Called disconnectFromRoom, hostId=$hostId" )
         isTimeToNavigateToResults= false
     }
@@ -117,12 +123,12 @@ object MatchRoomService {
         socket.emit(MatchEvents.CREATE_ROOM.value, data, Ack { args ->
             if (args.isNotEmpty()) {
                 val response = args[0] as JSONObject
-                matchRoomCode = response.getString("code")
+                _matchRoomCode.value = response.getString("code")
                 username = hostUsername
                 userId = hostId
                 partyConfig = partyConfigs
                 this.hostId = hostId
-                sendPlayersData(matchRoomCode)
+                sendPlayersData(_matchRoomCode.value)
             }
         })
     }
@@ -142,7 +148,7 @@ object MatchRoomService {
             if (args.isNotEmpty()) {
                 ChatService.handleRoomMessage()
                 val response = args[0] as JSONObject
-                matchRoomCode = response.getString("code")
+                _matchRoomCode.value = response.getString("code")
                 this.username = response.getString("username")
                 this.userId = response.getString("userId")
                 sendPlayersData(roomCode)
@@ -265,7 +271,7 @@ object MatchRoomService {
     }
 
     fun resetMatchValues() {
-        matchRoomCode = ""
+        _matchRoomCode.value = ""
         username = ""
         players = emptyList()
         messages = emptyList()
