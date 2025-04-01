@@ -11,6 +11,7 @@ export class HistoryController {
         // This could have been done with Firebase client-side.
         // Doing it server-side allows us to reduce logic from client and eventually extend the code if we need to display history for other users.
         try {
+            console.log('Fetching user history for ID:', id);
             const userHistory = await this.historyService.getHistory(id);
             response.status(HttpStatus.OK).json(userHistory);
         } catch (error) {
