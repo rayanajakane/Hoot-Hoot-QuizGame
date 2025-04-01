@@ -46,5 +46,8 @@ object Route {
     object JoinMatchPage
 
     @Serializable
+    object RankingsPage
+
+    @Serializable
     object Drawing
 }
