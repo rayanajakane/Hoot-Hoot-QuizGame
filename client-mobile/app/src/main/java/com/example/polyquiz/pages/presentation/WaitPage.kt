@@ -26,6 +26,9 @@ import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -174,19 +177,24 @@ fun WaitPage(
         ChatComponent(modifier = Modifier, authViewModel = authViewModel)
 
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             if (MatchRoomService.isMatchStarted) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = "Le jeu $gameTitle commence dans..",
-                        style = MaterialTheme.typography.headlineMedium
+                        text = stringResource(R.string.start_soon, gameTitle),
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontSize = 36.sp,
+                        fontWeight = FontWeight.Bold
                     )
+                    Spacer(modifier = Modifier.height(8.dp))
                     TimerComponent(
                         modifier = Modifier.fillMaxWidth(),
-                        timeService = timeService
+                        timeService = timeService,
+                        size = 200.dp,
+                        fontSize = 36.sp
                     )
                 }
             } else {
@@ -197,7 +205,7 @@ fun WaitPage(
                         fontWeight = FontWeight.ExtraBold
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = stringResource(R.string.access_code), fontSize = 28.sp)
+                    Text(text = stringResource(R.string.access_code), fontSize = 28.sp, fontWeight = FontWeight.SemiBold)
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = MatchRoomService.getRoomCode(),
@@ -208,18 +216,17 @@ fun WaitPage(
                         LockMatchToggle(onToggleLock)
                         val disabled  = !matchRoomService.isLocked || players.isEmpty() ||  (matchRoomService.partyConfig.isEntryFeeRequired && matchRoomService.players.size <= 1)
                         Button(
-                            modifier = Modifier.fillMaxWidth(0.8f),
                             onClick = {
                                 startMatch()
                             },
-                            shape = RoundedCornerShape(3.dp),
                             enabled = !disabled
 
-                            ) {
-                            Text(stringResource(R.string.start_match))
+                        ) {
+                            Text(MatchButtonActions.START_MATCH.value)
                         }
+
                     }
-                    Button(
+                    ElevatedButton(
                         onClick = { quitMatch() },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.surfaceBright,
@@ -279,7 +286,12 @@ fun PlayerCard(player: Player, isHost: Boolean, onClick: (String) -> Unit) {
         }
     }
     var painter: AsyncImagePainter
-    Card {
+    ElevatedCard(colors = CardColors(
+        containerColor = MaterialTheme.colorScheme.surface,
+        disabledContainerColor = MaterialTheme.colorScheme.background,
+        disabledContentColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+    )) {
         Row(
             modifier = Modifier
                 .fillMaxWidth(0.8f)

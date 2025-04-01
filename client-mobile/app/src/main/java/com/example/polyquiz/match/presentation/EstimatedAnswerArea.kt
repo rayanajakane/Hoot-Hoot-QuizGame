@@ -6,9 +6,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.polyquiz.R
 import com.example.polyquiz.constants.EstimatedQuestionFeedback
 import com.example.polyquiz.match.domain.AnswerService
 import com.example.polyquiz.match.domain.MatchRoomService
@@ -42,13 +44,16 @@ fun EstimatedAnswerArea(
         if (matchContext != MatchContext.HOSTVIEW) {
             Text(
                 text = if (isDisabled) {
-                    EstimatedQuestionFeedback.CORRECT_ANSWER
-                        .withPoints(answerService.feedback.correctAnswer!!.get(0).toInt()) + estimatedParams?.margin
+                    stringResource(
+                        R.string.good_answer,
+                        answerService.feedback.correctAnswer!![0].toInt()
+                            + estimatedParams?.margin!!
+                    )
                 } else {
-                    EstimatedQuestionFeedback.CHOOSE_VALUE.withPoints(estimatedParams!!.margin)
+                    stringResource(R.string.choose_estimated, estimatedParams!!.margin)
                 },
                 fontSize = 18.sp,
-                color = if (isDisabled) AndroidGreen else Color.Black,
+                color = if (isDisabled) AndroidGreen else MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -83,7 +88,7 @@ fun EstimatedAnswerArea(
                         }
                     }
                 },
-                label = { Text(MatchDisplayText.ANSWER.value) },
+                label = { Text(stringResource(R.string.answer)) },
                 modifier = Modifier
                     .width(180.dp)
                     .padding(vertical = 8.dp)
@@ -95,7 +100,8 @@ fun EstimatedAnswerArea(
 
             if (isOutOfBounds) {
                 Text(
-                    text = EstimatedQuestionFeedback.ANSWER_OUT_OF_BOUNDS.value,
+                    text = stringResource(R.string.out_of_bounds),
+                    // TODO : Check hardcoded value
                     color = BrightRed,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(start = 4.dp)

@@ -241,15 +241,15 @@ fun JoinMatchPage(
                         ) {
                             Text(text = stringResource(R.string.join_action))
                         }
-//                        Spacer(modifier = Modifier.width(8.dp))
-//                        Button(
-//                            onClick = {
-////                                cameraViewModel.setCameraContent(true)
-////                                navigateToCamera()
-//                            }, shape = RoundedCornerShape(3.dp), modifier = Modifier.height(55.dp)
-//                        ) {
-//                            Text(text = stringResource(R.string.scan_qr))
-//                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Button(
+                            enabled = false,
+                            onClick = {
+                                TODO()
+                            }, shape = RoundedCornerShape(3.dp), modifier = Modifier.height(55.dp)
+                        ) {
+                            Text(text = stringResource(R.string.scan_qr))
+                        }
                     }
 
                 }
@@ -330,13 +330,13 @@ fun MatchCard(match: MatchPageInfo, onClick: () -> Unit = {}) {
         modifier = Modifier
             .padding(5.dp)
             .width(140.dp)
-            .height(180.dp)
+            .height(220.dp)
             .shadow(4.dp, shape = RectangleShape)
             .background(Color.White)
     ) {
         Column(
             modifier = Modifier.padding(15.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
                 text = match.gameTitle,
@@ -360,13 +360,14 @@ fun MatchCard(match: MatchPageInfo, onClick: () -> Unit = {}) {
                         Icon(
                             imageVector = Icons.Filled.Group,
                             contentDescription = "Friends Only",
+                            // TODO : Remove hardcoded color here
                             tint = Color(0xFF1976d2),
 
                             modifier = Modifier.requiredSize(18.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text = "Amis",
+                            text = stringResource(R.string.friends),
                             style = MaterialTheme.typography.bodySmall
                         )
                     }
@@ -381,6 +382,7 @@ fun MatchCard(match: MatchPageInfo, onClick: () -> Unit = {}) {
                         Icon(
                             imageVector = Icons.Filled.AttachMoney,
                             contentDescription = "Entry Fee",
+                            // TODO : Remove hardcoded color
                             tint = Color(0xFF2e7d32),
                             modifier = Modifier.requiredSize(18.dp)
                         )
@@ -390,19 +392,17 @@ fun MatchCard(match: MatchPageInfo, onClick: () -> Unit = {}) {
                             style = MaterialTheme.typography.bodySmall
                         )
                     }
-                } else {
-                    Spacer(modifier = Modifier.height(24.dp))
                 }
             }
             if (onClick != {} && !match.isLocked) {
-                Button(onClick = onClick, modifier = Modifier.padding(top = 10.dp)) {
-                    Text(text = "Joindre")
+                Button(
+                    onClick = onClick,
+                    modifier = Modifier.padding(top = 10.dp),
+                    shape = RoundedCornerShape(3.dp)
+                ) {
+                    Text(text = stringResource(R.string.join_action))
                 }
             }
-
-            else {
-                    Spacer(modifier = Modifier.height(36.dp))
-                }
-            }
+        }
     }
 }
