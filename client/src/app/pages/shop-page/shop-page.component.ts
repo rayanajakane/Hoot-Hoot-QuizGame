@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PremiumAvatar } from '@app/constants/image-constants';
+import { AVATAR_PRICE, PremiumAvatar } from '@app/constants/avatar-constants';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { AvatarService } from '@app/services/avatar/avatar.service';
 import { MoneyService } from '@app/services/money/money.service';
@@ -15,7 +15,6 @@ import { TranslocoService } from '@jsverse/transloco';
     styleUrl: './shop-page.component.scss',
 })
 export class ShopPageComponent implements OnInit {
-    readonly AVATAR_PRICE = 10;
     avatarItems: ShopItem[] = [];
 
     constructor(
@@ -57,7 +56,7 @@ export class ShopPageComponent implements OnInit {
         this.avatarItems = Object.entries(PremiumAvatar).map(([key, value]) => ({
             id: key,
             imageUrl: value,
-            price: this.AVATAR_PRICE,
+            price: AVATAR_PRICE,
             owned: purchasedAvatars.includes(key),
         }));
     }
