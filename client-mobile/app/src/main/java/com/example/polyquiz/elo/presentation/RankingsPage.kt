@@ -31,7 +31,6 @@ import com.example.polyquiz.constants.FriendsDisplayText
 import com.example.polyquiz.elo.domain.EloService
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RankingsPage(
     modifier: Modifier,
