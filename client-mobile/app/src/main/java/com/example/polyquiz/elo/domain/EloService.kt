@@ -43,14 +43,6 @@ object EloService {
     }
 
     fun getElo(userId: String) {
-
-        // Create a proper JSON object
-//        val userIdJsonObject = JSONObject().apply {
-//            put(userId) // Correctly adds it as {"userId": "12345"}
-//        }
-
-        // Send the JSON object to the server
-//        Log.d("EloService", "Sending JSON object: $userIdJsonObject")
         mSocket.emit(EloEvents.GETELO.value, userId)
         Log.d("EloService", "Sending userId: $userId")
 
@@ -62,39 +54,16 @@ object EloService {
         mSocket.emit(EloEvents.UPDATEELOFORMATCH.value, roomCodeJsonObject)
     }
 
-//    fun returnElo() {
-//        mSocket.on(EloEvents.RETURNELO.value) { args ->
-//            if (args[0] != null) {
-////                val rating = Gson().fromJson(args[0].toString(), Double::class.java)
-////                currentRating.postValue(args[0].roundToInt())
-//                Log.d("rating: ${args[0]}")
-//            }
-//        }
-//fun returnElo() {
-//    mSocket.on(EloEvents.RETURNELO.value) { args ->
-//        Log.d("returnElo", "Raw response: ${args[0]}")
-//        if (args[0] != null) {
-//            val rating = Gson().fromJson(args[0].toString(), Double::class.java)
-//            Log.d("rating","rating: ${rating}")
-//            currentRating.postValue(rating.roundToInt())
-//        }
-//    }
-//}
 fun returnElo() {
     mSocket.on(EloEvents.RETURNELO.value) { args ->
         Log.d("returnElo", "Raw response: ${args[0]}")
 
         if (args[0] != null) {
             try {
-                // Log the string version of the argument before parsing
                 val jsonString = args[0].toString()
-                Log.d("returnElo", "Received JSON string: $jsonString")
 
-                // Parse the response into the EloResponse data class
                 val response = Gson().fromJson(jsonString, EloResponse::class.java)
-                Log.d("returnElo", "Parsed response: $response")
 
-                // Extract the 'mu' value and update the rating
                 val rating = response.mu
                 currentRating.postValue(rating.roundToInt())
 

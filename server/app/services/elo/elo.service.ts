@@ -53,7 +53,6 @@ export class EloService {
                 return defaultRating;
             }
             const data = snapshot.val();
-            console.log('Elo data:', data);
             return new Rating(data.mu, data.sigma);
         } catch (error) {
             console.error(`Failed to get Elo for player ${playerId}:`, error);
