@@ -25,6 +25,25 @@
                                 </div>
                             </div>
                         </div>
+                        <div id="avatar-choices-container">
+                            <p *ngIf="(purchasedPremiumAvatars | keyvalue).length > 0">{{ t('page.avatar-premium') }}</p>
+                            <div id="avatar-choices">
+                                <div
+                                    class="avatar-mini"
+                                    *ngFor="let enum of purchasedPremiumAvatars | keyvalue"
+                                    (click)="setPremiumAvatar(enum.value)"
+                                >
+                                    <img [src]="enum.value" alt="" />
+                                </div>
+                            </div>
+                            <p *ngIf="(purchasedPremiumAvatars | keyvalue).length === 0" class="no-avatars">
+                                {{ t('page.no-premium-avatars') }}
+                            </p>
+                            <button mat-raised-button color="primary" routerLink="/shop">
+                                <mat-icon>shopping_cart</mat-icon>
+                                {{ t('page.buy-avatars') }}
+                            </button>
+                        </div>
                     </div>
                     <div id="form-fields">
                         <mat-form-field id="email">

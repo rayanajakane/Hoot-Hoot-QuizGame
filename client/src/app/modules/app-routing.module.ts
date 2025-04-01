@@ -15,6 +15,7 @@ import { JoinMatchPageComponent } from '@app/pages/join-match-page/join-match-pa
 import { LoginPageComponent } from '@app/pages/login-page/login-page.component';
 import { MatchCreationPageComponent } from '@app/pages/match-creation-page/match-creation-page.component';
 import { ResultsPageComponent } from '@app/pages/results-page/results-page.component';
+import { ShopPageComponent } from '@app/pages/shop-page/shop-page.component';
 import { SignupPageComponent } from '@app/pages/signup-page/signup-page.component';
 import { UserEditPageComponent } from '@app/pages/user-edit-page/user-edit-page.component';
 import { WaitPageComponent } from '@app/pages/wait-page/wait-page.component';
@@ -51,6 +52,7 @@ const routes: Routes = [
     { path: 'edit-profile', component: UserEditPageComponent, canActivate: [authenticationGuard] },
     { path: 'reset-password-email-sent', component: ForgotPasswordFeedbackPageComponent },
     { path: 'friends-search', component: FriendsSearchComponent, canActivate: [authenticationGuard] },
+    { path: 'shop', component: ShopPageComponent, canActivate: [authenticationGuard] },
 ];
 
 @NgModule({
