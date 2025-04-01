@@ -50,6 +50,7 @@ export class QuestionService extends CommunicationService<Question> {
             },
             height: '50%',
             width: '100%',
+            panelClass: 'centered-dialog',
         };
         return this.dialog.open(QuestionCreationFormComponent, manageConfig);
     }

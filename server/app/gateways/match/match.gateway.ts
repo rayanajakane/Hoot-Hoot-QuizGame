@@ -260,7 +260,7 @@ export class MatchGateway implements OnGatewayDisconnect {
                 this.server.in(socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
             } else if (isOnePlayerLeft) {
                 this.timeService.expireTimer(roomCode, this.server, ExpiredTimerEvents.QuestionTimerExpired);
-                this.routeToResultsPage({} as Socket, roomCode);
+                await this.routeToResultsPage({} as Socket, roomCode);
             }
         }
         socket.leave(roomCode);

@@ -8,21 +8,21 @@
             <div class="action-buttons">
                 <button mat-raised-button color="basic" disabled>{{ t('is-friend') }}</button>
                 <button mat-raised-button color="warn" (click)="onRemove()">{{ t('remove-friend') }}</button>
-                <button mat-raised-button color="accent" (click)="onDonate()">{{ t('donate-money') }}</button>
+                <button mat-raised-button color="primary" (click)="onDonate()">{{ t('donate-money') }}</button>
             </div>
         </ng-container>
 
         <ng-container *ngSwitchCase="isRequestPending">
             <div class="action-buttons">
-                <button mat-raised-button color="accent" (click)="onAccept()">{{ t('accept-request') }}</button>
                 <button mat-raised-button color="warn" (click)="onReject()">{{ t('decline-request') }}</button>
+                <button mat-raised-button color="primary" (click)="onAccept()">{{ t('accept-request') }}</button>
             </div>
         </ng-container>
 
         <ng-container *ngSwitchCase="isRequestSent">
             <div class="action-buttons">
-                <button mat-raised-button color="warn" disabled>{{ t('request-sent') }}</button>
-                <button mat-raised-button color="accent" (click)="onCancel()">{{ t('cancel-request') }}</button>
+                <button mat-raised-button color="primary" disabled>{{ t('request-sent') }}</button>
+                <button mat-raised-button color="warn" (click)="onCancel()">{{ t('cancel-request') }}</button>
             </div>
         </ng-container>
 

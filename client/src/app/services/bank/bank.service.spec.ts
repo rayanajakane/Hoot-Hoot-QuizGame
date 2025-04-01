@@ -7,7 +7,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { QuestionListItemComponent } from '@app/components/question-list-item/question-list-item.component';
-import { GameStatus } from '@app/constants/feedback-messages';
 import { getMockQuestion } from '@app/constants/question-mocks';
 import { ManagementState } from '@app/constants/states';
 import { Question } from '@app/interfaces/question';
@@ -17,6 +16,7 @@ import { BankService } from '@app/services/bank/bank.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { QuestionService } from '@app/services/question/question.service';
 import { getTranslocoModule } from '@app/transloco-testing.module';
+import { translate } from '@jsverse/transloco';
 import { of, throwError } from 'rxjs';
 
 describe('BankService', () => {
@@ -132,7 +132,7 @@ describe('BankService', () => {
         const expectedLength = mockQuestions.length + 1;
         service.addQuestion(newQuestionMock, true);
         expect(questionSpy.createQuestion).toHaveBeenCalledWith(newQuestionMock);
-        expect(notificationSpy.displaySuccessMessage).toHaveBeenCalledWith(GameStatus.ARCHIVED);
+        expect(notificationSpy.displaySuccessMessage).toHaveBeenCalledWith(translate('game-status.archived'));
         expect(service.questions.length).toBe(expectedLength);
     });
 

@@ -1,12 +1,22 @@
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming¸¸
 @use '@angular/material' as mat;
+@use './styles/dark.scss' as dark-palettes;
+
 // Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
 @include mat.core();
+
+$primary: mat.define-palette(mat.$indigo-palette);
+$accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+$warn: mat.define-palette(mat.$red-palette);
+
+$primary-dark: mat.define-palette(dark-palettes.$m2-primary);
+$accent-dark: mat.define-palette(dark-palettes.$m2-accent, A200, A100, A400);
+$warn-dark: mat.define-palette(dark-palettes.$m2-error);
 
 $main-theme: mat.define-light-theme(
     (
@@ -18,10 +28,164 @@ $main-theme: mat.define-light-theme(
     )
 );
 
+$dark-theme: mat.define-dark-theme(
+    (
+        color: (
+            primary: $primary-dark,
+            accent: $accent-dark,
+            warn: $warn-dark,
+        ),
+    )
+);
+
+.light-theme {
+    @include mat.all-component-themes($main-theme);
+    #header-bar {
+        background-color: #fafafa;
+    }
+    .alert {
+        color: mat.get-color-from-palette($primary);
+    }
+
+    .own-message {
+        background-color: #5b6feb;
+        color: #fff;
+        border-radius: 1em 1em 0.15em 1em;
+    }
+
+    .friends-section {
+        background: #f9f9f9;
+        h3 {
+            color: #333;
+        }
+    }
+
+    .clickable-item:hover {
+        background-color: #dddddd;
+    }
+
+    .balance-container {
+        background-color: #e8eaf6;
+    }
+
+    .balance-icon {
+        color: #ff4081;
+    }
+
+    .balance-text {
+        color: #1a237e;
+    }
+
+    .mat-basic {
+        background-color: white;
+    }
+
+    .signup-button {
+        background-color: white;
+    }
+}
+
+.dark-theme {
+    background-color: #101114 !important;
+    --mdc-elevated-card-container-color: #1a1c22;
+    --mdc-elevated-card-container-elevation: #080808;
+    --mdc-filled-text-field-container-color: #323336;
+    --mdc-snackbar-supporting-text-color: black !important;
+    --mdc-dialog-supporting-text-color: #d0d0d0;
+    --mat-expansion-container-background-color: #0b0c0f;
+    --mdc-protected-button-container-color: mat.get-color-from-palette($primary-dark, 800);
+    --mat-sidenav-container-background-color: black;
+
+    color: white;
+    .color-variant {
+        color: mat.get-color-from-palette($accent-dark, 900) !important;
+    }
+
+    .mdc-snackbar__label {
+        color: white !important;
+    }
+
+    .signup-button {
+        background-color: #323336 !important;
+    }
+
+    .mat-basic {
+        background-color: #323336 !important;
+    }
+
+    .friends-section {
+        background: #1a1c22;
+        h3 {
+            color: white;
+        }
+    }
+
+    .color-variant-2 {
+        color: mat.get-color-from-palette($primary-dark, 900) !important;
+    }
+
+    .alert {
+        color: mat.get-color-from-palette($primary-dark);
+    }
+
+    // TODO: When button is disabled, give color pl0x
+    // .mat-mdc-raised-button:not(:disabled) {
+    //     background-color: #323336;
+    // }
+
+    // TODO : Fix focus colors in chat component text field
+
+    .own-message {
+        background-color: #5b6feb;
+        color: black;
+        border-radius: 1em 1em 0.15em 1em;
+    }
+
+    .sidenav-container {
+        background-color: #101114 !important;
+    }
+
+    #header-bar {
+        background-color: #101114;
+    }
+
+    #game-header-card {
+        background-color: #080808 !important;
+    }
+
+    #game-details-container {
+        background-color: #1a1c22;
+    }
+
+    #timer-area {
+        background-color: #323336 !important;
+        color: white !important;
+    }
+
+    .clickable-item:hover {
+        background-color: #303030 !important;
+    }
+
+    .player-card {
+        background-color: #212121 !important;
+    }
+
+    .balance-container {
+        background-color: #37383a;
+    }
+
+    .balance-icon {
+        color: mat.get-color-from-palette($accent-dark);
+    }
+
+    .balance-text {
+        color: white;
+    }
+}
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include mat.all-component-themes($main-theme);
+@include mat.all-component-themes($dark-theme);
 
 /* You can add global styles to this file, and also import other style files */
 
@@ -36,6 +200,10 @@ body {
 
 .top-page {
     display: flex;
+}
+
+.cdk-global-overlay-wrapper {
+    justify-content: center !important;
 }
 
 .add-button-container {
@@ -122,13 +290,11 @@ body {
 
 .question {
     width: 100%;
-    color: rgba(0, 0, 0, 0.87);
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     box-sizing: border-box;
-    background: white;
     font-size: 14px;
     cursor: move;
 }
@@ -176,14 +342,6 @@ body {
     flex-direction: row;
     align-items: center;
     gap: 1rem;
-}
-
-.color-variant {
-    background-color: rgb(247, 246, 255) !important;
-}
-
-.color-variant-2 {
-    background-color: rgb(226, 235, 255) !important;
 }
 
 .controls-container {

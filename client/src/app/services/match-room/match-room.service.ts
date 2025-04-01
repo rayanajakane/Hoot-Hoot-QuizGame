@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ChatChannel } from '@app/constants/chat-channels';
-import { MatchStatus } from '@app/constants/feedback-messages';
 import { MatchContext } from '@app/constants/states';
 import { Player } from '@app/interfaces/player';
 import { Question } from '@app/interfaces/question';
@@ -13,6 +12,7 @@ import { ChatEvents } from '@common/events/chat.events';
 import { MatchEvents } from '@common/events/match.events';
 import { PartyConfig } from '@common/interfaces/party-config';
 import { UserInfo } from '@common/interfaces/user-info';
+import { translate } from '@jsverse/transloco';
 @Injectable({
     providedIn: 'root',
 })
@@ -29,6 +29,7 @@ export class MatchRoomService {
     isHostPlaying: boolean;
     isCooldown: boolean;
     isQuitting: boolean;
+    partyConfig: PartyConfig;
 
     currentAnswers: string[] = [];
 
@@ -123,6 +124,7 @@ export class MatchRoomService {
                 this.username = hostUsername;
                 this.hostId = hostId;
                 this.userId = hostId;
+                this.partyConfig = partyConfig;
 
                 this.sendPlayersData(this.matchRoomCode);
                 this.router.navigateByUrl('/match-room');
@@ -211,7 +213,7 @@ export class MatchRoomService {
             this.isCooldown = true;
             const context = this.matchContextService.getContext();
             if (this.isCooldown && context !== MatchContext.TestPage && context !== MatchContext.RandomMode) {
-                this.currentQuestion.text = MatchStatus.PREPARE;
+                this.currentQuestion.text = translate('feedback-messages.prepare');
             }
         });
     }

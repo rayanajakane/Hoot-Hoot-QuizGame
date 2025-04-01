@@ -3,6 +3,7 @@
         mat-raised-button
         *ngFor="let choice of matchRoomService.currentQuestion.choices; let i = index"
         class="answer"
+        color="basic"
         [class.selected]="isSelected(choice) && !answerService.showFeedback"
         [class.correct]="answerService.showFeedback && isCorrectAnswer(choice)"
         [class.incorrect]="answerService.showFeedback && !isCorrectAnswer(choice) && isSelected(choice)"

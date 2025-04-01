@@ -9,9 +9,10 @@ import { Language } from '@app/interfaces/language';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { HistoryService } from '@app/services/history/history.service';
 import { NotificationService } from '@app/services/notification/notification.service';
+import { Theme, ThemeService } from '@app/services/theme/theme.service';
 import { TranslationService } from '@app/translation/translation.service';
 import { UserHistoryInfo } from '@common/interfaces/history-items';
-import { TranslocoService } from '@jsverse/transloco';
+import { translate, TranslocoService } from '@jsverse/transloco';
 
 export interface UserEditData {
     email: string;
@@ -25,12 +26,21 @@ export interface UserEditData {
 })
 export class UserEditPageComponent implements OnInit {
     currentUser: User | null;
-    isPresetAvatar = true; // TODO: Determine if we consider an existing avatar to be "preset"
+    isPresetAvatar = true;
     minUsernameLength = MIN_LENGTH;
     maxUsernameLength = MAX_LENGTH;
     loadedImageFile: File | null = null;
 
-    availableLangs: string[];
+    availableLangs: Language[];
+    availableThemes = Object.values(Theme);
+    themeLabels = {
+        [Theme.DARK]: translate('page.dark-theme'),
+        [Theme.LIGHT]: translate('page.light-theme'),
+    };
+    langLabels = {
+        ['fr']: translate('page.fr'),
+        ['en']: translate('page.en'),
+    };
     userHistory: UserHistoryInfo = {
         auth: [],
         match: [],
@@ -51,6 +61,7 @@ export class UserEditPageComponent implements OnInit {
         ],
         avatar: [this.authenticationService.userAvatarUrl ? this.authenticationService.userAvatarUrl : PresetAvatar.Default],
         currentLang: [this.translationService.currentLangugage],
+        currentTheme: [this.themeService.currentTheme],
     });
 
     // eslint-disable-next-line max-params
@@ -60,11 +71,18 @@ export class UserEditPageComponent implements OnInit {
         public notificationService: NotificationService,
         private translocoService: TranslocoService,
         private translationService: TranslationService,
+        private themeService: ThemeService,
         private historyService: HistoryService,
         public dialog: MatDialog,
     ) {
-        this.availableLangs = this.translocoService.getAvailableLangs() as string[];
+        this.availableLangs = this.translationService.getAllLanguages();
+        this.availableThemes = this.themeService.getAvailableThemes() as Theme[];
+
         this.currentUser = this.authenticationService.currentUser;
+    }
+
+    get currentTheme() {
+        return this.form.controls['currentTheme'];
     }
 
     get username() {
@@ -83,6 +101,13 @@ export class UserEditPageComponent implements OnInit {
         return PresetAvatar;
     }
 
+    getThemeLabel(theme: Theme): string {
+        return this.themeLabels[theme];
+    }
+
+    getLangLabel(lang: 'fr' | 'en'): string {
+        return this.langLabels[lang];
+    }
     async ngOnInit() {
         if (!this.currentUser) {
             this.userHistory = {
@@ -125,7 +150,7 @@ export class UserEditPageComponent implements OnInit {
     async save() {
         this.form.markAllAsTouched();
         if (this.form.valid) {
-            var url: string = this.avatar.value as string;
+            let url: string = this.avatar.value as string;
             if (!this.isPresetAvatar && (this.avatar.value as string) !== this.authenticationService.userAvatarUrl) {
                 const resultUrl = await this.authenticationService.uploadUserAvatar(this.authenticationService.userId, this.loadedImageFile);
                 url = resultUrl !== '' ? resultUrl : this.authenticationService.userAvatarUrl;
@@ -133,15 +158,24 @@ export class UserEditPageComponent implements OnInit {
                 // Frees Firebase Storage space if user no longer needs uploaded avatar.
                 this.authenticationService.deleteUserAvatar(this.authenticationService.userId);
             }
-            // TODO: Consider adding the themes
+            this.themeService.setTheme(this.currentTheme.value as Theme);
             this.translationService.setLanguage(this.currentLang.value as string);
 
+            // Reset labels to new language
+            this.themeLabels = {
+                [Theme.DARK]: translate('page.dark-theme'),
+                [Theme.LIGHT]: translate('page.light-theme'),
+            };
+
+            this.langLabels = {
+                ['fr']: translate('page.fr'),
+                ['en']: translate('page.en'),
+            };
             this.authenticationService.editUserProfile(this.username.value as string, url);
             this.form.markAsPristine();
         }
     }
 
-    // TODO: Consider refactoring later to avoid code repetition
     setCustomAvatar(event: Event): void {
         const eventTarget: HTMLInputElement | null = event.target as HTMLInputElement | null;
         if (eventTarget?.files?.[0]) {
