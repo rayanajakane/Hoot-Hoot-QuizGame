@@ -47,6 +47,9 @@
         "language": "Language",
         "upload-avatar": "Upload Avatar",
         "avatar-choices": "Predefined avatars",
+        "avatar-premium": "Premium avatars",
+        "no-premium-avatars": "No available premium avatars",
+        "buy-avatars": "Buy avatars",
         "delete-user": "Delete Profile",
         "delete-warning": "This operation is irreversible. Do you REALLY want to delete your account?",
         "danger-zone": "Danger Zone",
@@ -72,6 +75,7 @@
         "team-name": "Team 201",
         "access-code": "Access code",
         "friends": "Friends",
+        "shop": "Shop",
         "logout": "Logout"
     },
     "match-creation-page": {
@@ -163,6 +167,12 @@
         "file-big-error": "File too big.",
         "choices-min-error": "Cannot have less than 2 choices.",
         "choices-max-error": "Cannot have more than 4 choices."
+    },
+    "shop": {
+        "owned": "✅ Owned",
+        "buy": "Buy",
+        "insufficient-funds": "Insufficient funds",
+        "buy-successfully": "Bought successfully!"
     },
     "friends-search": {
         "search-friend": "Search Friend",

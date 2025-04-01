@@ -47,6 +47,9 @@
         "language": "Langue",
         "upload-avatar": "Téléverser un avatar",
         "avatar-choices": "Avatars prédéfinis",
+        "avatar-premium": "Avatars premium",
+        "no-premium-avatars": "Aucun avatar premium disponible",
+        "buy-avatars": "Acheter des avatars",
         "delete-user": "Supprimer le profil",
         "danger-zone": "Zone dangereuse",
         "delete-warning": "Cette opération est irréversible. Voulez-vous VRAIMENT supprimer votre compte ?",
@@ -72,6 +75,7 @@
         "team-name": "Équipe 201",
         "access-code": "Code d'accès",
         "friends": "Amis",
+        "shop": "Boutique",
         "logout": "Se déconnecter"
     },
     "match-creation-page": {
@@ -161,6 +165,12 @@
         "file-big-error": "Le fichier est trop grand.",
         "choices-min-error": "Il ne peut pas y avoir moins de 2 choix",
         "choices-max-error": "Il ne peut pas y avoir plus de 4 choix."
+    },
+    "shop": {
+        "owned": "✅ Possédé",
+        "buy": "Acheter",
+        "insufficient-funds": "Fonds insuffisants",
+        "buy-successfully": "Acheté avec succès!"
     },
     "friends-search": {
         "search-friend": "Rechercher un ami",
