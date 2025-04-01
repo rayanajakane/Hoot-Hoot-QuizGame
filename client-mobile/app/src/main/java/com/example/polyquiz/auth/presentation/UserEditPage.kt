@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -27,7 +28,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
@@ -40,10 +43,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,6 +57,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
@@ -75,6 +79,7 @@ import com.example.polyquiz.constants.UserHistoryInfo
 import com.example.polyquiz.core.ThemeService
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.core.TranslationService
+import com.example.polyquiz.ui.MenuButton
 import com.example.polyquiz.ui.theme.Theme
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -84,14 +89,18 @@ import java.util.Locale
 @Composable
 fun UserEditPage(
     modifier: Modifier,
-    navigateToHome: () -> Unit,
-    navigateToCamera: () -> Unit,
-    navigateToLogin: () -> Unit,
+    context: Context,
     authViewModel: AuthViewModel,
-    context: android.content.Context,
     cameraViewModel: CameraViewModel,
     currentTheme: Theme,
-    onThemeUpdated: (Theme) -> Unit
+    onThemeUpdated: (Theme) -> Unit,
+    navigateToHome: () -> Unit,
+    navigateToCreate: () -> Unit,
+    navigateToUserEdit: () -> Unit,
+    navigateToFriendsPage: () -> Unit,
+    navigateToJoinRoom: () -> Unit,
+    navigateToLogin: () -> Unit,
+    navigateToCamera: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     val translationService = TranslationService
@@ -137,6 +146,9 @@ fun UserEditPage(
     var initialAvatarURL by remember { mutableStateOf(authViewModel.getAvatarURL()) }
     var initialUsername by remember { mutableStateOf(authViewModel.getUsername()) }
     val initialLang by remember { mutableStateOf(Locale.getDefault().language) }
+
+    val openDeleteDialog = remember { mutableStateOf(false) }
+
     val onClickAvatar: (String) -> Unit = { url ->
         cameraViewModel.setPresetAvatar(authViewModel, url)
         Log.d("Save UserProfile", "Initial URL : $initialAvatarURL, new url: $url")
@@ -153,8 +165,8 @@ fun UserEditPage(
         }
     }
     fun deleteUser() {
-        authViewModel.deleteUser()
         authViewModel.resetSignUpFields()
+        authViewModel.deleteUser()
         navigateToLogin()
     }
     fun saveUserProfile(): Boolean {
@@ -205,7 +217,10 @@ fun UserEditPage(
         if (initialLang != currentLang) {
             isUpdated = true
             translationService.setLanguage(currentLang)
-            translationService.saveLanguageToDB(currentLang, authViewModel.getUserConfigsDatabaseRef())
+            translationService.saveLanguageToDB(
+                currentLang,
+                authViewModel.getUserConfigsDatabaseRef()
+            )
         } else {
             Log.d("Save UserProfile", "Lang was not changed")
         }
@@ -223,6 +238,19 @@ fun UserEditPage(
         )
     ) {
         Text(text = stringResource(R.string.home_page))
+
+    // Delete dialog
+    when {
+        openDeleteDialog.value -> {
+            DeleteDialog(
+                onDismissRequest = { openDeleteDialog.value = false },
+                onConfirmation = { deleteUser() },
+                dialogTitle = stringResource(R.string.warning),
+                dialogText = stringResource(R.string.dialog_warning),
+                icon = Icons.Default.Warning,
+                contentDescription = stringResource(R.string.delete_user)
+            )
+        }
     }
     Row(
         horizontalArrangement = Arrangement.spacedBy(26.dp),
@@ -234,41 +262,50 @@ fun UserEditPage(
                     keyboardController?.hide()
                 })
             }
+            .statusBarsPadding()
     ) {
         ChatComponent(modifier = modifier, authViewModel = authViewModel)
         Box(
+            // TODO : Check alignment
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxSize()
                 .imePadding()
         ) {
-            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                Button(
-                    onClick = { navigateToHome() },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
-                    )
+            Column {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Icon(imageVector = Icons.Default.Home, contentDescription = "Home")
-                    Text(text = stringResource(R.string.home_page))
+                    Text(
+                        stringResource(R.string.edit_profile),
+                        fontSize = 35.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    MenuButton(
+                        modifier = Modifier,
+                        navigateToHome,
+                        navigateToCreate,
+                        navigateToUserEdit,
+                        navigateToFriendsPage,
+                        navigateToJoinRoom,
+                        signOut = {
+                            authViewModel.signOut()
+                            navigateToLogin()
+                        }
+                    )
                 }
-                Text(
-                    stringResource(R.string.edit_profile),
-                    fontSize = 35.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-                ElevatedCard(
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
-                    )
-                ) {
+
+                ElevatedCard(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest)) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(32.dp),
                         modifier = Modifier
                             .fillMaxWidth(0.8f)
-                            .padding(start = 40.dp, top = 24.dp, end = 40.dp, bottom = 16.dp)
+                            .padding(
+                                start = 40.dp, top = 24.dp, end = 40.dp, bottom = 16.dp
+                            )
                     ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -286,15 +323,37 @@ fun UserEditPage(
                                 }
                             }
                             Button(
-                                onClick = { navigateToCamera() }
+                                onClick = {
+                                    navigateToCamera()
+                                },
                             ) { Text(stringResource(R.string.upload_avatar)) }
                             Text(stringResource(R.string.preset_avatars))
                             Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                                ClickableAvatarPlaceholder(32.dp, PresetAvatar.A.value, onClickAvatar)
-                                ClickableAvatarPlaceholder(32.dp, PresetAvatar.B.value, onClickAvatar)
-                                ClickableAvatarPlaceholder(32.dp, PresetAvatar.C.value, onClickAvatar)
-                                ClickableAvatarPlaceholder(32.dp, PresetAvatar.D.value, onClickAvatar)
-                                ClickableAvatarPlaceholder(32.dp, PresetAvatar.DEFAULT.value, onClickAvatar)
+                                ClickableAvatarPlaceholder(
+                                    32.dp,
+                                    PresetAvatar.A.value,
+                                    onClickAvatar
+                                )
+                                ClickableAvatarPlaceholder(
+                                    32.dp,
+                                    PresetAvatar.B.value,
+                                    onClickAvatar
+                                )
+                                ClickableAvatarPlaceholder(
+                                    32.dp,
+                                    PresetAvatar.C.value,
+                                    onClickAvatar
+                                )
+                                ClickableAvatarPlaceholder(
+                                    32.dp,
+                                    PresetAvatar.D.value,
+                                    onClickAvatar
+                                )
+                                ClickableAvatarPlaceholder(
+                                    32.dp,
+                                    PresetAvatar.DEFAULT.value,
+                                    onClickAvatar
+                                )
                             }
                         }
                         Column {
@@ -385,7 +444,10 @@ fun UserEditPage(
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Button(
-                    onClick = { deleteUser() },
+                    onClick = {
+                        openDeleteDialog.value = !openDeleteDialog.value
+//                        deleteUser()
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.errorContainer,
                         contentColor = MaterialTheme.colorScheme.onErrorContainer
@@ -649,7 +711,11 @@ fun ThemeDropdown(
                     onClick = {
                         onClick(theme)
                         selectedTheme = theme
-                        textFieldStateTheme.setTextAndPlaceCursorAtEnd(theme.displayName.asString(context))
+                        textFieldStateTheme.setTextAndPlaceCursorAtEnd(
+                            theme.displayName.asString(
+                                context
+                            )
+                        )
                         expandedTheme = false
                     },
                     contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
@@ -665,13 +731,19 @@ fun TemporaryAvatar(avatarSize: Dp, bitmap: Bitmap?) {
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .size(avatarSize)
-            .border(width = 2.dp, color = MaterialTheme.colorScheme.primary, shape = CircleShape)
+            .border(
+                width = 2.dp,
+                color = MaterialTheme.colorScheme.primary,
+                shape = CircleShape
+            )
     ) {
         if (bitmap != null) {
             Image(
                 bitmap = bitmap.asImageBitmap(),
                 contentDescription = "placeholder avatar",
-                modifier = Modifier.fillMaxSize().clip(CircleShape),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
         }
@@ -684,8 +756,14 @@ fun ClickableAvatarPlaceholder(avatarSize: Dp, imageUrl: String, onClickAvatar: 
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .size(avatarSize)
-            .border(width = 2.dp, color = MaterialTheme.colorScheme.primary, shape = CircleShape)
-            .clickable { onClickAvatar(imageUrl) }
+            .border(
+                width = 2.dp,
+                color = MaterialTheme.colorScheme.primary,
+                shape = CircleShape
+            )
+            .clickable {
+                onClickAvatar(imageUrl)
+            }
     ) {
         AsyncImage(
             model = imageUrl,
@@ -701,3 +779,47 @@ fun formatDateTime(timestamp: Date): String {
     return sdf.format(timestamp)
 }
 
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DeleteDialog(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+    dialogTitle: String,
+    dialogText: String,
+    icon: ImageVector,
+    contentDescription: String
+) {
+    AlertDialog(
+        icon = {
+            Icon(icon, contentDescription, tint = MaterialTheme.colorScheme.error)
+        },
+        title = {
+            Text(text = dialogTitle)
+        },
+        text = {
+            Text(text = dialogText)
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirmation()
+                }
+            ) {
+                Text(stringResource(R.string.confirm))
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                }
+            ) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    )
+}

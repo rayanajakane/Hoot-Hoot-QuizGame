@@ -39,7 +39,7 @@
     <string name="username_already_exists">Username is already taken.</string>
     <string name="visual_themes">Visual themes</string>
     <string name="language">Language</string>
-    <string name="edit_profile">My profile</string>
+    <string name="edit_profile">Edit profile</string>
     <string name="home_page">Home page</string>
     <string name="user_edit">Edit profile</string>
     <string name="save">Save</string>
@@ -76,6 +76,11 @@
     <string name="playing_matches">Matches in progress</string>
     <string name="join_action">Join</string>
     <string name="custom_match">Custom match</string>
+    <string name="my_profile">My profile</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="warning">Warning</string>
+    <string name="dialog_warning">This operation is irreversible. Do you REALLY want to delete your account?</string>
     <string name="matches_won">Number of Matches Won</string>
     <string name="avg_good_answers_percentage">Average Well Answered Questions</string>
     <string name="avg_time">"Average Time "</string>
