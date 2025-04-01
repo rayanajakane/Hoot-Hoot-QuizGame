@@ -129,4 +129,5 @@
     <string name="players_to_grade">Il reste des joueurs à évaluer</string>
     <string name="grade_players">Veuillez noter les réponses des joueurs!</string>
     <string name="submit_grading">SOUMETTRE CORRECTION</string>
+    <string name="players">Joueurs</string>
 </resources>

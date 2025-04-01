@@ -109,6 +109,7 @@
     <string name="players_to_grade">Il reste des joueurs à évaluer</string>
     <string name="grade_players">Veuillez noter les réponses des joueurs!</string>
     <string name="submit_grading">SOUMETTRE CORRECTION</string>
+    <string name="players">Joueurs</string>
 
     <string name="matches_won">Nombre de parties gagnées</string>
     <string name="avg_good_answers_percentage">Moyenne de questions bien répondues par partie</string>

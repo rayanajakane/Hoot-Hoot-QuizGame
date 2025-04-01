@@ -99,7 +99,7 @@ fun QuestionArea(
         matchRoomService.routeToResultsPage()
     }
 
-    Row(modifier = Modifier
+    Row(modifier = Modifier.statusBarsPadding()
         .fillMaxSize()
         .pointerInput(Unit) {
             detectTapGestures(onTap = {
@@ -123,6 +123,7 @@ fun QuestionArea(
                 timeService = timeService,
                 size = 90.dp,
                 fontSize = 22.sp,
+                stroke = 8.dp
             )
 
             Box(

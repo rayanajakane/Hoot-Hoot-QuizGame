@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.TimeService
 import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -34,7 +35,8 @@ fun TimerComponent(
     modifier: Modifier = Modifier,
     timeService: TimeService,
     size: Dp,
-    fontSize: TextUnit
+    fontSize: TextUnit,
+    stroke: Dp
 ) {
     val timer = remember { mutableIntStateOf(timeService.time) }
     val progress = timeService.computeTimerProgress() / 100f
@@ -50,7 +52,7 @@ fun TimerComponent(
         CircularProgressIndicator(
             progress = { progress },
             modifier = Modifier.size(size),
-            strokeWidth = 8.dp,
+            strokeWidth = stroke,
         )
 
         Text(

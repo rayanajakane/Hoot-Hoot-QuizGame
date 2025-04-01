@@ -194,7 +194,8 @@ fun WaitPage(
                         modifier = Modifier.fillMaxWidth(),
                         timeService = timeService,
                         size = 200.dp,
-                        fontSize = 36.sp
+                        fontSize = 36.sp,
+                        stroke = 25.dp
                     )
                 }
             } else {
