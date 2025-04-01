@@ -11,10 +11,7 @@ export class EloService {
     currentRating: number;
     rankings: { username: string; rating: number }[];
 
-    constructor(
-        private readonly socketHandler: SocketHandlerService,
-        private notificationService: NotificationService,
-    ) {}
+    constructor(private readonly socketHandler: SocketHandlerService) {}
 
     listenForEloEvents() {
         // this.onRatingChange();

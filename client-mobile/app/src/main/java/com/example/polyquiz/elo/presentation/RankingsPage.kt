@@ -26,6 +26,7 @@ import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.elo.domain.EloService
 import com.example.polyquiz.ui.MenuButton
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RankingsPage(
     modifier: Modifier,
@@ -87,7 +88,7 @@ fun RankingsPage(
                 Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(text = "${index + 1}", modifier = Modifier.weight(1f))
                     Text(text = ranking.username, modifier = Modifier.weight(2f))
-                    Text(text = ranking.rating.roundToInt().toString(), modifier = Modifier.weight(1f))
+                    Text(text = ranking.rating.toString(), modifier = Modifier.weight(1f))
                 }
             }
         }
