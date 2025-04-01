@@ -225,7 +225,7 @@ fun UserEditPage(
         Text(text = stringResource(R.string.home_page))
     }
     Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.spacedBy(26.dp),
         modifier = Modifier
             .fillMaxSize()
             .pointerInput(Unit) {
@@ -405,34 +405,55 @@ fun UserEditPage(
                         containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
                     ),
                     modifier = Modifier
+                        .width(700.dp)
                         .fillMaxWidth()
                         .padding(8.dp) ,
 
                 ) {
-                    Column(modifier = Modifier.padding(8.dp)) {
+                    Column(modifier = Modifier.padding(20.dp)) {
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .padding(
+                                    start = 20.dp,
+                                    end = 250.dp
+                                )
+                                .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(text = stringResource(R.string.matches_played))
                             Text(text = historyData.stats.nMatchesPlayed.toString())
                         }
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .padding(
+                                    start = 20.dp,
+                                    end = 250.dp
+                                )
+                                .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(text = stringResource(R.string.matches_won))
                             Text(text = historyData.stats.nMatchesWon.toString())
                         }
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .padding(
+                                    start = 20.dp,
+                                    end = 250.dp
+                                )
+                                .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(text = stringResource(R.string.avg_good_answers_percentage) )
                             Text(text = "${historyData.stats.averageGoodAnswersPercentage} %")
                         }
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .padding(
+                                    start = 20.dp,
+                                    end = 250.dp
+                                )
+                                .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(text = stringResource(R.string.avg_time))
@@ -531,7 +552,10 @@ fun UserEditPage(
                 ) {
                     Row(
                         modifier = Modifier
-                            .padding(8.dp)
+                            .padding(
+                                start = 20.dp,
+                                end = 250.dp
+                            )
                             .fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
@@ -553,7 +577,10 @@ fun UserEditPage(
                     ) {
                         Row(
                             modifier = Modifier
-                                .padding(8.dp)
+                                .padding(
+                                start = 20.dp,
+                                end = 250.dp
+                            )
                                 .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
