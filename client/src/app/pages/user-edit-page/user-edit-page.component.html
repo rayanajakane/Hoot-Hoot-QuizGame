@@ -45,6 +45,9 @@
                                 placeholder=""
                                 id="username-input"
                             />
+                            <button type="button" mat-icon-button matSuffix (click)="openUsernameDialog()">
+                                <mat-icon>auto_fix_high</mat-icon>
+                            </button>
                             <mat-error *ngIf="form.get('username')?.hasError('containsSpecialChar')"
                                 >{{ t('auth.error.username-special-char') }}
                             </mat-error>

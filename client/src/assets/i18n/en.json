@@ -298,5 +298,10 @@
     },
     "players-list": {
         "players": "Players"
+    },
+    "username-suggestion": {
+        "title": "Usernames Suggestions",
+        "regenerate": "Generate other usernames",
+        "ok": "OK"
     }
 }
