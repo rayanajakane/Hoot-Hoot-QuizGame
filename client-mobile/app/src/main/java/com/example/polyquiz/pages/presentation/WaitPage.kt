@@ -134,7 +134,7 @@ fun WaitPage(
         timeService.listenToTimerEvents()
     }
 
-    val onToggleLock: () -> Unit ={
+    val onToggleLock: () -> Unit = {
         MatchRoomService.toggleLock()
     }
 
@@ -201,13 +201,15 @@ fun WaitPage(
                         LockMatchToggle(onToggleLock)
                         val disabled  = !matchRoomService.isLocked || players.isEmpty() ||  (matchRoomService.partyConfig.isEntryFeeRequired && matchRoomService.players.size <= 1)
                         Button(
+                            modifier = Modifier.fillMaxWidth(0.8f),
                             onClick = {
                                 startMatch()
                             },
+                            shape = RoundedCornerShape(3.dp),
                             enabled = !disabled
 
-                        ) {
-                            Text(MatchButtonActions.START_MATCH.value)
+                            ) {
+                            Text(stringResource(R.string.start_match))
                         }
                     }
                     Button(
@@ -242,7 +244,7 @@ fun WaitPage(
 @Composable
 fun LockMatchToggle(onToggleLock: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        if(isLocked) {
+        if (isLocked) {
             Text(stringResource(R.string.locked_match))
             Spacer(modifier = Modifier.width(8.dp))
             Switch(
