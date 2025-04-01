@@ -1,8 +1,6 @@
 package com.example.polyquiz.pages.presentation
 
 import android.annotation.SuppressLint
-import android.graphics.Paint.Join
-import android.graphics.drawable.Icon
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll

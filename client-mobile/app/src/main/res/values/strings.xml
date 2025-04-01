@@ -100,4 +100,10 @@
     <string name="matches_year">Parties au courant de l\'année</string>
     <string name="match_history">Historique des parties jouées</string>
     <string name="auth_history">Historique d\'authentification</string>
+    <string name="waiting_to_start">La partie va bientôt commencer...</string>
+    <string name="access_code">Code d\'accès</string>
+    <string name="leave">Quitter</string>
+    <string name="ban_player">Bannir joueur</string>
+    <string name="unlocked_match">Partie déverrouillée</string>
+    <string name="locked_match">Partie Verrouillée</string>
 </resources>

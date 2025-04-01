@@ -12,13 +12,22 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -35,9 +44,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
+import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.MatchButtonActions
@@ -67,11 +80,8 @@ fun WaitPage(
     authViewModel: AuthViewModel,
     navigateToMatchRoom: () -> Unit
 ) {
-    // var isLocked: Boolean = false
     val matchService = MatchService
     val timeService = TimeService
-    // var isLocked by mutableStateOf(false)
-
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
@@ -126,7 +136,7 @@ fun WaitPage(
         timeService.listenToTimerEvents()
     }
 
-    fun toggleLock() {
+    val onToggleLock: () -> Unit ={
         MatchRoomService.toggleLock()
     }
 
@@ -150,6 +160,7 @@ fun WaitPage(
     }
 
     Row(
+        horizontalArrangement = Arrangement.spacedBy(26.dp),
         modifier = Modifier
             .fillMaxSize()
             .pointerInput(Unit) {
@@ -158,6 +169,7 @@ fun WaitPage(
                     keyboardController?.hide()
                 })
             }
+            .statusBarsPadding()
     ) {
         ChatComponent(modifier = Modifier, authViewModel = authViewModel)
 
@@ -180,19 +192,20 @@ fun WaitPage(
             } else {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = StartMatchFeedback.WAITING_TO_START.value,
-                        style = MaterialTheme.typography.headlineMedium
+                        text = stringResource(R.string.waiting_to_start),
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.ExtraBold
                     )
-
-                    Text(text = "Code d'accès: ${MatchRoomService.getRoomCode()}")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = stringResource(R.string.access_code), fontSize = 28.sp)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = MatchRoomService.getRoomCode(),
+                        fontSize = 36.sp,
+                        fontWeight = FontWeight.ExtraBold
+                    )
                     if (isHost()) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(StartMatchFeedback.LOCK_MATCH.value)
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Switch(
-                                checked = matchRoomService.isLocked,
-                                onCheckedChange = { toggleLock() })
-                        }
+                        LockMatchToggle(onToggleLock)
                         val disabled  = !matchRoomService.isLocked || players.isEmpty() ||  (matchRoomService.partyConfig.isEntryFeeRequired && matchRoomService.players.size <= 1)
                         Button(
                             onClick = {
@@ -206,16 +219,51 @@ fun WaitPage(
                     }
                     Button(
                         onClick = { quitMatch() },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceBright,
+                            contentColor = MaterialTheme.colorScheme.onSurface
+                        ),
+                        shape = RoundedCornerShape(3.dp),
                     ) {
-                        Text(MatchButtonActions.LEAVE_MATCH.value)
+                        Icon(
+                            Icons.AutoMirrored.Filled.Logout,
+                            contentDescription = stringResource(R.string.leave)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(stringResource(R.string.leave))
                     }
+                    Spacer(modifier = Modifier.height(24.dp))
                     players.forEach { player ->
-                        PlayerCard(player, (isHost() && player.id != matchRoomService.hostId), banPlayerUsername)
+                        PlayerCard(
+                            player,
+                            (isHost() && player.id != matchRoomService.hostId),
+                            banPlayerUsername
+                        )
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun LockMatchToggle(onToggleLock: () -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        if(isLocked) {
+            Text(stringResource(R.string.locked_match))
+            Spacer(modifier = Modifier.width(8.dp))
+            Switch(
+                checked = isLocked,
+                onCheckedChange = { onToggleLock() })
+        } else {
+            Text(stringResource(R.string.unlocked_match))
+            Spacer(modifier = Modifier.width(8.dp))
+            Switch(
+                checked = isLocked,
+                onCheckedChange = { onToggleLock() })
+
+        }
+
     }
 }
 
@@ -231,15 +279,17 @@ fun PlayerCard(player: Player, isHost: Boolean, onClick: (String) -> Unit) {
     var painter: AsyncImagePainter
     Card {
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             painter = if (playerAvatarUrL.isEmpty()) {
                 rememberAsyncImagePainter(model = PresetAvatar.DEFAULT.value)
             } else {
                 rememberAsyncImagePainter(model = playerAvatarUrL)
             }
-            Spacer(modifier = Modifier.width(8.dp))
             Image(
                 painter = painter,
                 contentDescription = "Avatar",
@@ -247,12 +297,21 @@ fun PlayerCard(player: Player, isHost: Boolean, onClick: (String) -> Unit) {
                     .size(40.dp)
                     .clip(CircleShape)
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(text = player.username)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = player.username)
 
-            if (isHost) {
-                Button(onClick = { onClick(player.id) }) {
-                    Text(MatchButtonActions.BAN_PLAYER.value)
+                if (isHost) {
+                    IconButton(onClick = { onClick(player.id) }) {
+                        Icon(
+                            Icons.Filled.Delete,
+                            tint = MaterialTheme.colorScheme.error,
+                            contentDescription = stringResource(R.string.ban_player)
+                        )
+                    }
                 }
             }
         }
