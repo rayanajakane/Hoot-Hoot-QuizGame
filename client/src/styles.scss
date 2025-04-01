@@ -101,6 +101,10 @@ $dark-theme: mat.define-dark-theme(
         color: mat.get-color-from-palette($accent-dark, 900) !important;
     }
 
+    .mdc-snackbar__label {
+        color: white !important;
+    }
+
     .signup-button {
         background-color: #323336 !important;
     }
