@@ -91,8 +91,8 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
         }
     }
 
-    fun revalidateGame(partyConfigs: PartyConfig = PartyConfig(false, false)){
-        if(selectedGame?.isVisible!!){
+    fun revalidateGame(partyConfigs: PartyConfig = PartyConfig(false, false)) {
+        if (selectedGame?.isVisible!!) {
             gamesIsValid = true
             matchService.currentGame = selectedGame
             matchService.saveBackupGame(selectedGame!!.id!!, userId, username, partyConfigs)
@@ -109,9 +109,8 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
         }, onError = {})
     }
 
-    fun reloadSelectedGame(partyConfigs: PartyConfig = PartyConfig(false, false)){
-        gameService.getGameById(selectedGame?.id!!, onSuccess = {
-            response ->
+    fun reloadSelectedGame(partyConfigs: PartyConfig = PartyConfig(false, false)) {
+        gameService.getGameById(selectedGame?.id!!, onSuccess = { response ->
             val gson = Gson()
             val game = gson.fromJson(gson.toJson(response), Game::class.java)
             selectedGame = game
@@ -120,7 +119,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
 
     }
 
-    fun createMatch(context: MatchContext, partyConfigs: PartyConfig = PartyConfig(false, false)){
+    fun createMatch(context: MatchContext, partyConfigs: PartyConfig = PartyConfig(false, false)) {
         contextService.setContext(context)
         reloadSelectedGame(partyConfigs)
     }
@@ -288,23 +287,24 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
-        }
-        if (showPartyConfigDialog) {
-            PartyConfigDialog(
-                initialPartyConfig = partyConfigs,
-                onConfirm = { updatedConfigs ->
-                    createMatch(MatchContext.HOSTVIEW, updatedConfigs)
-                    partyConfigs = updatedConfigs
-                    navigateToWaitPage()
-                    showPartyConfigDialog = false
+            }
+            if (showPartyConfigDialog) {
+                PartyConfigDialog(
+                    initialPartyConfig = partyConfigs,
+                    onConfirm = { updatedConfigs ->
+                        createMatch(MatchContext.HOSTVIEW, updatedConfigs)
+                        partyConfigs = updatedConfigs
+                        navigateToWaitPage()
+                        showPartyConfigDialog = false
 
-                },
-                onCancel = {
-                    showPartyConfigDialog = false
-                }
-            )
-        }
+                    },
+                    onCancel = {
+                        showPartyConfigDialog = false
+                    }
+                )
+            }
 
+        }
     }
 }
 
@@ -336,3 +336,4 @@ fun GameCard(game: Game, onClick: () -> Unit = {}) {
         }
     }
 }
+
