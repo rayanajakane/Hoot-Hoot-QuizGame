@@ -61,6 +61,7 @@ fun HomePage(
     navigateToFriendsPage: () -> Unit,
     navigateToJoinRoom: () -> Unit,
     authViewModel: AuthViewModel,
+    navigateToRankingsPage: () -> Unit,
 ) {
     val authState = authViewModel.authState.observeAsState()
     val scope = rememberCoroutineScope()
@@ -98,7 +99,7 @@ fun HomePage(
         }
         when (shouldNavigate.value) {
             true -> {
-                Log.d("Should navigate", "Navigating again")
+                println("we are navigating again")
                 MatchRoomService.timeToGoToWaitPage = false
                 navigateToWaitPage()
             }
