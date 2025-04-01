@@ -54,6 +54,7 @@ import { FriendsListItemComponent } from './components/friends-list-item/friends
 import { FriendsSearchComponent } from './components/friends-search/friends-search.component';
 import { PartyConfigDialogComponent } from './components/party-config-dialog/party-config-dialog.component';
 import { JoinMatchPageComponent } from './pages/join-match-page/join-match-page.component';
+import { ShopPageComponent } from './pages/shop-page/shop-page.component';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -105,6 +106,7 @@ import { JoinMatchPageComponent } from './pages/join-match-page/join-match-page.
         FriendsListItemComponent,
         PartyConfigDialogComponent,
         ConfirmDialogComponent,
+        ShopPageComponent,
     ],
     imports: [
         AppMaterialModule,
