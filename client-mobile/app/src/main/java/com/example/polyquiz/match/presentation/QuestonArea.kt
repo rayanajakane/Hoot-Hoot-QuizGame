@@ -38,6 +38,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.sp
+import com.example.polyquiz.R
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AnswerCorrectness
 
@@ -110,6 +113,8 @@ fun QuestionArea(
             TimerComponent(
                 modifier = Modifier.fillMaxWidth(),
                 timeService = timeService,
+                size = 90.dp,
+                fontSize = 22.sp,
             )
 
             Box(
@@ -124,7 +129,7 @@ fun QuestionArea(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     val questionText =
-                        if (matchRoomService.isCooldown) MatchStatus.PREPARE.value else question?.text
+                        if (matchRoomService.isCooldown) stringResource(R.string.match_prepare) else question?.text
                             ?: ""
 
                     Text(
@@ -153,38 +158,35 @@ fun QuestionArea(
 
                 if (answerService.showFeedback && context === MatchContext.PLAYERVIEW && !matchRoomService.isCooldown) {
                     val (feedbackText, feedbackColor) = when (answerService.answerCorrectness) {
-                        AnswerCorrectness.WRONG -> "\uD83D\uDE14 Mauvaise Réponse \uD83D\uDE14" to Color(
+                        AnswerCorrectness.WRONG -> stringResource(R.string.wrong_answer) to Color(
                             0xFFe91b0c
                         )
 
                         AnswerCorrectness.OK -> {
-                            "\uD83C\uDD97 Réponse partielle! Vous avez obtenu ${(question?.points ?: 0) / 2} points \uD83C\uDD97" to Color(
+                            stringResource(R.string.partial_answer) + " points \uD83C\uDD97" to Color(
                                 0xFFf6c811
                             )
                         }
 
                         AnswerCorrectness.GOOD -> {
-                            "\uD83C\uDD97 Réponse correcte! Vous avez obtenu ${question?.points} points \uD83C\uDD97" to Color(
+                            stringResource(R.string.good_answer) + "${question?.points} points \uD83C\uDD97" to Color(
                                 0xFF4caf50
                             )
                         }
 
-                        else -> null to null
                     }
 
-                    if (feedbackText != null && feedbackColor != null) {
-                        Text(
-                            text = feedbackText,
-                            style = MaterialTheme.typography.titleMedium,
-                            color = feedbackColor
-                        )
-                    }
+                    Text(
+                        text = feedbackText,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = feedbackColor
+                    )
 
 
                     if (answerService.bonusPoints > 0) {
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = "✨ Vous avez obtenu un bonus de ${answerService.bonusPoints} points!✨",
+                            text = stringResource(R.string.bonus_message, answerService.bonusPoints),
                             style = MaterialTheme.typography.titleMedium,
                             color = Color.Green
                         )
@@ -243,7 +245,7 @@ fun QuestionArea(
                             )
                         }
                     ) {
-                        Text("Soumettre")
+                        Text(stringResource(R.string.submit))
                     }
                 }
             }
@@ -260,12 +262,11 @@ fun QuestionArea(
                 extraContent = {
                     Column {
                         Spacer(modifier = Modifier.height(16.dp))
-                        println(context)
                         if (context == MatchContext.HOSTVIEW && !matchRoomService.isCooldown) {
                             Spacer(modifier = Modifier.height(16.dp))
                             if (!answerService.isEndGame) {
                                 Button(onClick = { matchRoomService.goToNextQuestion() }) {
-                                    Text("QUESTION SUIVANTE")
+                                    Text(stringResource(R.string.next_question))
                                 }
                             } else {
                                 Button(
@@ -276,7 +277,7 @@ fun QuestionArea(
                                     modifier = Modifier.fillMaxWidth(0.8f),
                                     shape = RoundedCornerShape(8.dp)
                                 ) {
-                                    Text("Présenter les résultats finaux")
+                                    Text(stringResource(R.string.show_final))
                                 }
                             }
                         }
@@ -288,7 +289,7 @@ fun QuestionArea(
                                 navigateToHome()
                             }
                         ) {
-                            Text("Quitter")
+                            Text(stringResource(R.string.leave))
                         }
                     }
                 }
