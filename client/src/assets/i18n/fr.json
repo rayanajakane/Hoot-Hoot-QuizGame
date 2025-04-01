@@ -301,5 +301,10 @@
         "title": "Suggestions de noms d'utilisateurs",
         "regenerate": "Générer d'autres noms",
         "ok": "OK"
+    },
+    "games-search": {
+        "label": "Rechercher des jeux",
+        "title": "Titre",
+        "author": "Auteur"
     }
 }

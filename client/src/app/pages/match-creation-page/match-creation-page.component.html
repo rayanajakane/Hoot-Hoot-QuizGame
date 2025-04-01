@@ -15,7 +15,22 @@
                 </mat-card>
             </div>
             <h3>Tous les jeux</h3>
-            <app-game-list-item *ngFor="let game of games" [game]="game" [isAdminMode]="false" (click)="loadSelectedGame(game)"></app-game-list-item>
+            <!-- TODO: Improve UI -->
+            <mat-form-field appearance="outline" class="search-field">
+                <mat-label>{{ t('games-search.title') }}</mat-label>
+                <input matInput [formControl]="titleSearchControl" [placeholder]="t('games-search.title')" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="search-field">
+                <mat-label>{{ t('games-search.author') }}</mat-label>
+                <input matInput [formControl]="authorSearchControl" [placeholder]="t('games-search.author')" />
+            </mat-form-field>
+            <!-- TODO: Add author attribute -->
+            <app-game-list-item
+                *ngFor="let game of searchResults"
+                [game]="game"
+                [isAdminMode]="false"
+                (click)="loadSelectedGame(game)"
+            ></app-game-list-item>
         </div>
 
         <div id="game-details-container">

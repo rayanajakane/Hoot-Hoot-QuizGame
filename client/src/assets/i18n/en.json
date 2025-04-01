@@ -303,5 +303,10 @@
         "title": "Usernames Suggestions",
         "regenerate": "Generate other usernames",
         "ok": "OK"
+    },
+    "games-search": {
+        "label": "Search Games",
+        "title": "Title",
+        "author": "Author"
     }
 }
