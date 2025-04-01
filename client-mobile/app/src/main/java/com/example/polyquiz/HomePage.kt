@@ -15,6 +15,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Group
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PlayCircleFilled
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
@@ -172,6 +177,11 @@ fun HomePage(
                                 contentColor = MaterialTheme.colorScheme.onPrimary
                             ),
                         ) {
+                            Icon(
+                                Icons.Filled.PlayCircleFilled,
+                                contentDescription = stringResource(R.string.join_match)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
                             Text(stringResource(R.string.join_match))
                         }
                         Spacer(modifier = Modifier.height(8.dp))
@@ -189,6 +199,11 @@ fun HomePage(
                             ),
 
                             ) {
+                            Icon(
+                                Icons.Filled.AddCircle,
+                                contentDescription = stringResource(R.string.host_match)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
                             Text(text = stringResource(R.string.host_match))
                         }
                     }
@@ -207,7 +222,12 @@ fun HomePage(
                                 contentColor = MaterialTheme.colorScheme.onSurface
                             )
                         ) {
-                            Text(text = stringResource(R.string.edit_profile))
+                            Icon(
+                                Icons.Filled.Person,
+                                contentDescription = stringResource(R.string.my_profile)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(text = stringResource(R.string.my_profile))
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                         ElevatedButton(
@@ -223,6 +243,11 @@ fun HomePage(
                                 contentColor = MaterialTheme.colorScheme.onSurface
                             )
                         ) {
+                            Icon(
+                                Icons.Filled.Group,
+                                contentDescription = stringResource(R.string.friends)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
                             Text(text = stringResource(R.string.friends))
                         }
                     }
