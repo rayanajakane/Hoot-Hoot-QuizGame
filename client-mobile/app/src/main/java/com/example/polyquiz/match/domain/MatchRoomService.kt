@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.constants.ChatEvents
 import com.example.polyquiz.constants.Route
+import com.example.polyquiz.elo.domain.EloService
 
 @SuppressLint("StaticFieldLeak")
 object MatchRoomService {
@@ -268,6 +269,7 @@ object MatchRoomService {
     }
 
     fun routeToResultsPage() {
+        EloService.updateEloForMatch(matchRoomCode)
         socket.emit(MatchEvents.ROUTE_TO_RESULTS_PAGE.value, matchRoomCode)
     }
 //    private fun navigateToResultsPage() {
