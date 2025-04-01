@@ -15,6 +15,8 @@ import com.example.polyquiz.auth.presentation.SignupPage
 import com.example.polyquiz.auth.presentation.UserEditPage
 import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.Route
+import com.example.polyquiz.elo.presentation.RankingsPage
+import com.example.polyquiz.friends.domain.FriendsService
 import com.example.polyquiz.core.avatarDrawing.DrawingScreen
 import com.example.polyquiz.friends.domain.FriendsService
 import com.example.polyquiz.match.domain.AnswerService
@@ -129,6 +131,9 @@ fun Navigation(
                 },
                 navigateToFriendsPage = {
                     navController.navigate(Route.FriendsSearchScreen)
+                },
+                navigateToRankingsPage = {
+                    navController.navigate(Route.RankingsPage)
                 }
             )
         }
@@ -258,6 +263,16 @@ fun Navigation(
                 cameraViewModel,
                 navigateToUserEdit = { navController.navigate(Route.UserEditPage) },
                 navigateToSignup = { navController.navigate(Route.Signup) }
+            )
+        }
+
+        composable<Route.RankingsPage> {
+            RankingsPage(
+                modifier = modifier,
+                authViewModel = authViewModel,
+                navigateToHome = {
+                    navController.navigate(Route.Home)
+                },
             )
         }
         composable<Route.Drawing> {

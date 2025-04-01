@@ -4,6 +4,8 @@ import android.util.Log
 import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.constants.ChatEvents
 import com.example.polyquiz.constants.Environment
+import com.example.polyquiz.elo.domain.EloEvents
+import com.example.polyquiz.elo.domain.EloService
 import io.socket.client.IO
 import io.socket.client.Socket
 
@@ -31,6 +33,8 @@ object SocketHandler {
             mSocket.connect()
             ChatService.deleteMessages()
             ChatService.handleReceivedMessage()
+            EloService.returnElo()
+
         }
     }
 
@@ -38,6 +42,7 @@ object SocketHandler {
     fun disconnect() {
         mSocket.off(ChatEvents.SENT_GENERAL_MESSAGE.value)
         ChatService.deleteMessages()
+        mSocket.off(EloEvents.RETURNELO.value)
         mSocket.disconnect()
     }
 }
