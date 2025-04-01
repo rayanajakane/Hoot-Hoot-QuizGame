@@ -149,6 +149,7 @@ export class HistoryService {
         historyMatchItems.sort((a: HistoryMatchItem, b: HistoryMatchItem) => {
             return a.start.getTime() - b.start.getTime();
         });
+        console.log('historyMatchItems', historyMatchItems);
         return historyMatchItems.reverse();
     }
 
