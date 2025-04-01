@@ -87,6 +87,7 @@
     <string name="ban_player">Bannir joueur</string>
     <string name="unlocked_match">Partie déverrouillée</string>
     <string name="locked_match">Partie Verrouillée</string>
+    <string name="start_match">Commencer la partie</string>
 
     <string name="matches_won">Nombre de parties gagnées</string>
     <string name="avg_good_answers_percentage">Moyenne de questions bien répondues par partie</string>
