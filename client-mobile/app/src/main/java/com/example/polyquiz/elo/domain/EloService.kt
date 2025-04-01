@@ -49,9 +49,7 @@ object EloService {
     }
 
     fun updateEloForMatch(roomCode: String) {
-        val roomCodeStringified = Gson().toJson(roomCode)
-        val roomCodeJsonObject = JSONObject(roomCodeStringified)
-        mSocket.emit(EloEvents.UPDATEELOFORMATCH.value, roomCodeJsonObject)
+        mSocket.emit(EloEvents.UPDATEELOFORMATCH.value, roomCode)
     }
 
 fun returnElo() {
