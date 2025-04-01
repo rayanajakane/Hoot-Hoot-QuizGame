@@ -5,11 +5,11 @@
     <div id="match-creation-page">
         <div id="popular-game-list-container"></div>
         <div id="game-list-container">
-            <h2>{{ t('match-creation-page.games-list-label') }}</h2>
+            <h2>{{ t('match-creation-page.games-list') }}</h2>
             <app-pulse-loader *ngIf="isLoadingGames"></app-pulse-loader>
             <h3>{{ t('match-creation-page.popular-games') }}</h3>
             <div class="popular-games-container">
-                <mat-card *ngFor="let game of mostPopularGames" (click)="loadSelectedGame(game)" class="popular-game-card">
+                <mat-card *ngFor="let game of mostPopularGames" (click)="loadSelectedGame(game)" class="popular-game-card clickable-item">
                     <h4>{{ game.title }}</h4>
                     <p>{{ t('match-creation-page.n-matches-played') }} {{ game.nMatchesPlayed }}</p>
                 </mat-card>
@@ -20,7 +20,7 @@
 
         <div id="game-details-container">
             <div id="game-details-header">
-                <h2>{{ t('match-creation-page.game-details-label') }}{{ selectedGame ? '"' + selectedGame.title + '"' : '' }}</h2>
+                <h2>{{ t('match-creation-page.game-details') }}{{ selectedGame ? '"' + selectedGame.title + '"' : '' }}</h2>
                 <div id="buttons-container">
                     <button
                         mat-raised-button
@@ -40,7 +40,7 @@
                         [disabled]="buttonClicked"
                     >
                         <mat-icon>settings</mat-icon>
-                        Partie personnalisée
+                        {{ t('match-creation-page.custom-match') }}
                     </button>
                 </div>
             </div>
@@ -64,7 +64,7 @@
                 </div>
 
                 <ng-template #elseBlock>
-                    <span *ngIf="!isLoadingSelectedGame">{{ t('match-creation-page.select-game-label') }}</span>
+                    <span *ngIf="!isLoadingSelectedGame">{{ t('match-creation-page.select-game') }}</span>
                 </ng-template>
 
                 <app-pulse-loader *ngIf="isLoadingSelectedGame"></app-pulse-loader>

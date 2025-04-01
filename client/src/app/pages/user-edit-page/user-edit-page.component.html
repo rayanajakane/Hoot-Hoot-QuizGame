@@ -2,6 +2,7 @@
     <div id="main-container">
         <div class="nav">
             <h1>{{ t('page.user-edit') }}</h1>
+            <button mat-raised-button routerLink="/home" color="basic"><mat-icon>home</mat-icon>{{ t('nav.main-page') }}</button>
         </div>
         <div class="content-container">
             <form id="form" [formGroup]="form">
@@ -56,15 +57,14 @@
                         </mat-form-field>
                         <mat-form-field id="theme">
                             <mat-label>{{ t('page.theme') }}</mat-label>
-                            <mat-select>
-                                <mat-option value="option1">Option 1</mat-option>
-                                <mat-option value="option2">Option 2</mat-option>
+                            <mat-select formControlName="currentTheme" data-testid="theme-select-test-id">
+                                <mat-option *ngFor="let theme of availableThemes" [value]="theme">{{ getThemeLabel(theme) }}</mat-option>
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field id="language">
                             <mat-label>{{ t('page.language') }}</mat-label>
                             <mat-select formControlName="currentLang" data-testid="language-select-test-id">
-                                <mat-option *ngFor="let lang of availableLangs" [value]="lang">{{ lang }}</mat-option>
+                                <mat-option *ngFor="let lang of availableLangs" [value]="lang">{{ getLangLabel(lang) }}</mat-option>
                             </mat-select>
                         </mat-form-field>
                         <button mat-raised-button color="primary" (click)="save()" id="save-button">{{ t('page.save') }}</button>
@@ -72,7 +72,7 @@
                 </mat-card>
             </form>
             <h2>{{ t('page.danger-zone') }}</h2>
-            <button mat-raised-button color="accent" (click)="openDeleteDialog()" id="delete-button">{{ t('page.delete-user') }}</button>
+            <button mat-raised-button color="warn" (click)="deleteUser()" id="delete-button">{{ t('page.delete-user') }}</button>
             <h2>{{ t('history.stats-header') }}</h2>
             <mat-card class="stats-card">
                 <div class="stat">

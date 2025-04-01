@@ -80,6 +80,7 @@ describe('QuestionService', () => {
             },
             height: '50%',
             width: '100%',
+            panelClass: 'centered-dialog',
         };
         spyOn(dialog, 'open').and.callThrough();
         questionService.openCreateQuestionModal(0);

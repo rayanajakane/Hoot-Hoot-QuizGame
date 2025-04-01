@@ -1,11 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { GameStatus } from '@app/constants/feedback-messages';
 import { ManagementState } from '@app/constants/states';
 import { Question } from '@app/interfaces/question';
 import { GameModificationService } from '@app/services/game-modification/game-modification.service';
 import { NotificationService } from '@app/services/notification/notification.service';
+import { translate } from '@jsverse/transloco';
 
 @Component({
     selector: 'app-admin-edit-page',
@@ -48,7 +48,7 @@ export class AdminEditPageComponent implements OnInit {
                 }
             },
             error: (error: HttpErrorResponse) => {
-                this.notificationService.displayErrorMessage(`${GameStatus.FAILURE}\n${error.message}`);
+                this.notificationService.displayErrorMessage(`${translate('game-status.failure')}\n${error.message}`);
             },
         });
     }

@@ -1,27 +1,30 @@
-<div class="main-container">
+<div class="main-container" *transloco="let t">
     <div class="nav">
-        <h1 class="page-title">Banque de questions</h1>
+        <h1 class="page-title">{{ t('admin-main-page.question-bank') }}</h1>
         <div class="navigation-buttons buttons-container">
-            <button mat-raised-button routerLink="/admin/games"><mat-icon>arrow_back</mat-icon>Page précédente</button>
+            <button mat-raised-button routerLink="/admin/games" color="basic">
+                <mat-icon>arrow_back</mat-icon>{{ t('admin-question-bank.back-page') }}
+            </button>
+            <button mat-raised-button routerLink="/home" color="basic"><mat-icon>home</mat-icon>{{ t('nav.main-page') }}</button>
         </div>
     </div>
     <div class="buttons-container">
         <button id="add-question-button" mat-raised-button color="primary" (click)="openDialog()">
-            <mat-icon>add</mat-icon>Ajouter une nouvelle question
+            <mat-icon>add</mat-icon>{{ t('admin-edit-page.add-question') }}
         </button>
     </div>
     <div class="question-container container">
         <mat-card *ngIf="!bankService.isLoadingBank && bankService.questions.length === 0" class="empty-list-card">
             <mat-card-content class="empty-list-card">
-                <p><mat-icon>catching_pokemon</mat-icon> La banque de question est vide! <mat-icon>catching_pokemon</mat-icon></p>
-                <p>Cliquez sur <mat-icon>add</mat-icon> pour ajouter votre première question!</p>
+                <p><mat-icon>catching_pokemon</mat-icon> {{ t('admin-question-bank.empty-bank') }} <mat-icon>catching_pokemon</mat-icon></p>
+                <p>{{ t('admin-question-bank.click-on') }} <mat-icon>add</mat-icon> {{ t('admin-question-bank.to-add') }}</p>
             </mat-card-content>
         </mat-card>
 
         <div id="sort-questions">
-            <p>Filtrer par:</p>
+            <p>{{ t('admin-question-bank.filter-by') }}</p>
             <mat-button-toggle-group #filterType="matButtonToggleGroup" name="filterType" value="">
-                <mat-button-toggle value="">Tout</mat-button-toggle>
+                <mat-button-toggle value="">{{ t('admin-question-bank.all') }}</mat-button-toggle>
                 <mat-button-toggle value="QCM">QCM</mat-button-toggle>
                 <mat-button-toggle value="QRL">QRL</mat-button-toggle>
                 <mat-button-toggle value="QRE">QRE</mat-button-toggle>
