@@ -124,6 +124,7 @@ export class FriendsGateway implements OnGatewayDisconnect {
 
     @SubscribeMessage(FriendsEvents.Connect)
     handleConnect(client: Socket, userId: string): void {
+        console.log(`User ${userId} connected with socket ID: ${client.id}`);
         this.userSockets.set(userId, client.id);
         const historyAuthItem: HistoryAuthItem = {
             id: uuidv4(),
