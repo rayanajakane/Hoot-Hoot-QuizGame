@@ -4,7 +4,7 @@ enum class EloEvents (val value: String) {
     GETELO("getElo"),
     RETURNELO("returnElo"),
     UPDATEELOFORMATCH("updateEloForMatch"),
-    ERROR("error"),
+    ERROR("eloError"),
     GETRANKINGS("getRankings"),
     RETURNRANKINGS("returnRankings"),
 }
