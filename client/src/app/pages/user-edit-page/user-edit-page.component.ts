@@ -4,9 +4,10 @@ import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '@app/components/confirm-dialog/confirm-dialog.component';
 import { MAX_LENGTH, MIN_LENGTH } from '@app/constants/authentication';
-import { IMAGE_MAX_FILE_SIZE, PresetAvatar } from '@app/constants/image-constants';
+import { AvatarState, IMAGE_MAX_FILE_SIZE, PremiumAvatar, PresetAvatar } from '@app/constants/image-constants';
 import { Language } from '@app/interfaces/language';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
+import { AvatarService } from '@app/services/avatar/avatar.service';
 import { HistoryService } from '@app/services/history/history.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { Theme, ThemeService } from '@app/services/theme/theme.service';
@@ -26,10 +27,12 @@ export interface UserEditData {
 })
 export class UserEditPageComponent implements OnInit {
     currentUser: User | null;
-    isPresetAvatar = true;
+    avatarState: AvatarState;
+    oldAvatarState: AvatarState;
     minUsernameLength = MIN_LENGTH;
     maxUsernameLength = MAX_LENGTH;
     loadedImageFile: File | null = null;
+    purchasedPremiumAvatars: { [key: string]: PremiumAvatar } = {};
 
     availableLangs: Language[];
     availableThemes = Object.values(Theme);
@@ -73,12 +76,16 @@ export class UserEditPageComponent implements OnInit {
         private translationService: TranslationService,
         private themeService: ThemeService,
         private historyService: HistoryService,
+        private readonly avatarService: AvatarService,
         public dialog: MatDialog,
     ) {
         this.availableLangs = this.translationService.getAllLanguages();
         this.availableThemes = this.themeService.getAvailableThemes() as Theme[];
 
         this.currentUser = this.authenticationService.currentUser;
+
+        this.oldAvatarState = this.getAvatarState(this.authenticationService.userAvatarUrl);
+        this.avatarState = this.oldAvatarState;
     }
 
     get currentTheme() {
@@ -99,6 +106,10 @@ export class UserEditPageComponent implements OnInit {
 
     get presetAvatar() {
         return PresetAvatar;
+    }
+
+    get premiumAvatar() {
+        return PremiumAvatar;
     }
 
     getThemeLabel(theme: Theme): string {
@@ -123,6 +134,7 @@ export class UserEditPageComponent implements OnInit {
             };
             return;
         }
+        this.fetchPurchasedAvatars();
         this.historyService.getUserHistory(this.currentUser.uid).subscribe({
             next: (userHistory: UserHistoryInfo) => {
                 this.userHistory = userHistory;
@@ -143,6 +155,23 @@ export class UserEditPageComponent implements OnInit {
         });
     }
 
+    async fetchPurchasedAvatars() {
+        const purchasedAvatars = await this.avatarService.getPurchasedAvatars();
+        this.purchasedPremiumAvatars = Object.entries(PremiumAvatar)
+            .filter(([key]) => purchasedAvatars.includes(key))
+            .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
+    }
+
+    getAvatarState(avatar: string): AvatarState {
+        if (Object.values(PresetAvatar).includes(avatar as PresetAvatar)) {
+            return AvatarState.Preset;
+        } else if (Object.values(PremiumAvatar).includes(avatar as PremiumAvatar)) {
+            return AvatarState.Premium;
+        } else {
+            return AvatarState.Custom;
+        }
+    }
+
     static isEmptyData(userEditData: UserEditData | undefined): boolean {
         return userEditData?.email === '' && userEditData.username === '' && userEditData.currentLang === null;
     }
@@ -151,11 +180,12 @@ export class UserEditPageComponent implements OnInit {
         this.form.markAllAsTouched();
         if (this.form.valid) {
             let url: string = this.avatar.value as string;
-            if (!this.isPresetAvatar && (this.avatar.value as string) !== this.authenticationService.userAvatarUrl) {
+            if (this.avatarState === AvatarState.Custom && (this.avatar.value as string) !== this.authenticationService.userAvatarUrl) {
                 const resultUrl = await this.authenticationService.uploadUserAvatar(this.authenticationService.userId, this.loadedImageFile);
                 url = resultUrl !== '' ? resultUrl : this.authenticationService.userAvatarUrl;
-            } else if (this.isPresetAvatar) {
-                // Frees Firebase Storage space if user no longer needs uploaded avatar.
+            } else if (this.avatarState !== AvatarState.Custom && this.oldAvatarState === AvatarState.Custom) {
+                // If the user changes from custom avatar to preset or premium avatar, we need to delete the custom avatar
+                // from Firebase Storage to free up space.
                 this.authenticationService.deleteUserAvatar(this.authenticationService.userId);
             }
             this.themeService.setTheme(this.currentTheme.value as Theme);
@@ -190,13 +220,18 @@ export class UserEditPageComponent implements OnInit {
                 this.loadedImageFile = file;
             });
             reader.readAsDataURL(file);
-            this.isPresetAvatar = false;
+            this.avatarState = AvatarState.Custom;
         }
     }
 
     setPresetAvatar(presetAvatar: PresetAvatar) {
-        this.isPresetAvatar = true;
+        this.avatarState = AvatarState.Preset;
         this.form.get('avatar')?.setValue(presetAvatar);
+    }
+
+    setPremiumAvatar(premiumAvatar: PremiumAvatar) {
+        this.avatarState = AvatarState.Premium;
+        this.form.get('avatar')?.setValue(premiumAvatar);
     }
 
     openDeleteDialog() {
