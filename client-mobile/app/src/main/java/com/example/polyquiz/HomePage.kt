@@ -48,6 +48,7 @@ fun HomePage(
     navigateToFriendsPage : () -> Unit,
     navigateToJoinRoom: () -> Unit,
     authViewModel: AuthViewModel,
+    navigateToRankingsPage: () -> Unit,
 ) {
     val authState = authViewModel.authState.observeAsState()
     val scope = rememberCoroutineScope()
@@ -123,14 +124,7 @@ fun HomePage(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxHeight()
         ) {
-//            Button(
-//                onClick = {joinGameDialog()},
-//                colors = ButtonDefaults.buttonColors(
-//                    containerColor = MaterialTheme.colorScheme.primary,
-//                    contentColor = MaterialTheme.colorScheme.onPrimary)
-//            ) {
-//                Text(text = "Joindre une partie")
-//            }
+
             Button(onClick = { navigateToJoinRoom() }) {
                 Text("Joindre une partie")
             }
@@ -167,6 +161,17 @@ fun HomePage(
                 )
             ) {
                 Text(text = "FRIENDS")
+            }
+            Button(
+                onClick = {
+                    navigateToRankingsPage()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            ) {
+                Text(text = "Rankings")
             }
         }
         ElevatedButton(

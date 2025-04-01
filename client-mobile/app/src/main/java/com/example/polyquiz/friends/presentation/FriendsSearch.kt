@@ -106,7 +106,8 @@ fun FriendsSearchScreen(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Retourner à la page d'accueil"
                         )
-                    }}
+                    }
+                }
             )
         },
         content = { paddingValues ->

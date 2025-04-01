@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { EloEvents } from '@common/events/elo.events';
 
@@ -10,19 +9,15 @@ export class EloService {
     currentRating: number;
     rankings: { username: string; rating: number }[];
 
-    constructor(
-        private readonly socketHandler: SocketHandlerService,
-        private notificationService: NotificationService,
-    ) {}
+    constructor(private readonly socketHandler: SocketHandlerService) {}
 
     listenForEloEvents() {
         // this.onRatingChange();
-        this.handleError();
         this.onReturnRankings();
     }
     stopListeningForEloEvents() {
         // this.socketHandler.socket.removeListener(EloEvents.EloUpdated);
-        this.socketHandler.socket.removeListener(EloEvents.Error);
+        // this.socketHandler.socket.removeListener(EloEvents.Error);
         this.socketHandler.socket.removeListener(EloEvents.ReturnRankings);
     }
 
@@ -60,10 +55,4 @@ export class EloService {
     //         this.currentRating = Math.round(data.mu);
     //     });
     // }
-
-    handleError() {
-        this.socketHandler.on(EloEvents.Error, (error: string) => {
-            this.notificationService.displayErrorMessage(error);
-        });
-    }
 }
