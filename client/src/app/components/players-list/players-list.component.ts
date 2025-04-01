@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { PresetAvatar } from '@app/constants/image-constants';
+import { PresetAvatar } from '@app/constants/avatar-constants';
 import { MatchContext } from '@app/constants/states';
 import { Player } from '@app/interfaces/player';
 import { ChatService } from '@app/services/chat/chat.service';

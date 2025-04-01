@@ -4,7 +4,8 @@ import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '@app/components/confirm-dialog/confirm-dialog.component';
 import { MAX_LENGTH, MIN_LENGTH } from '@app/constants/authentication';
-import { AvatarState, IMAGE_MAX_FILE_SIZE, PremiumAvatar, PresetAvatar } from '@app/constants/image-constants';
+import { AvatarState, PremiumAvatar, PresetAvatar } from '@app/constants/avatar-constants';
+import { IMAGE_MAX_FILE_SIZE } from '@app/constants/image-constants';
 import { Language } from '@app/interfaces/language';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { AvatarService } from '@app/services/avatar/avatar.service';

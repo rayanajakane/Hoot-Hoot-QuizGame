@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { PresetAvatar } from '@app/constants/image-constants';
+import { PresetAvatar } from '@app/constants/avatar-constants';
 import { UserIdName } from '@common/interfaces/user-id-name';
 
 @Component({

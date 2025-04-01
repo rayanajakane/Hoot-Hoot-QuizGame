@@ -2,8 +2,8 @@ import { AfterViewChecked, ChangeDetectorRef, Component, ElementRef, ViewChild }
 
 import { Message } from '@common/interfaces/message';
 
+import { PresetAvatar } from '@app/constants/avatar-constants';
 import { ChatChannel } from '@app/constants/chat-channels';
-import { PresetAvatar } from '@app/constants/image-constants';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { ChatService } from '@app/services/chat/chat.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
@@ -73,7 +73,7 @@ export class ChatComponent implements AfterViewChecked {
         this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
     }
 
-    public reactToMessage(messageId: string, chatEmoji: ChatEmoji) {
+    reactToMessage(messageId: string, chatEmoji: ChatEmoji) {
         this.chatService.reactToMessage(
             messageId,
             chatEmoji,
@@ -84,7 +84,7 @@ export class ChatComponent implements AfterViewChecked {
     }
 
     // REFERENCE: https://stackoverflow.com/questions/67600158/how-to-display-multiple-values-in-angular-material-tool-tip
-    public getReactionsToolTip(userReactions: UserIdName[]) {
+    getReactionsToolTip(userReactions: UserIdName[]) {
         let toolTip = '';
         for (let i = 0; i < userReactions.length; i++) {
             toolTip = toolTip + '\n' + userReactions[i].name;
@@ -92,7 +92,7 @@ export class ChatComponent implements AfterViewChecked {
         return toolTip;
     }
 
-    public isOwnReaction(userReactions: UserIdName[]) {
+    isOwnReaction(userReactions: UserIdName[]) {
         return userReactions.find((it: UserIdName) => it.id === this.authenticationService.userId) ? true : false;
     }
 }
