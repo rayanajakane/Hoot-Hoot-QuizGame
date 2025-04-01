@@ -4,6 +4,8 @@ import { getRandomNumber, getRandomString } from './test-utils';
 export const getMockGame = (): Game => ({
     id: getRandomString(),
     title: getRandomString(),
+    authorId: '',
+    authorName: '',
     description: getRandomString(),
     lastModification: new Date().toString(),
     duration: 30,

@@ -84,6 +84,8 @@ describe('WaitPageComponent', () => {
         const mockGame: Game = {
             id: '1',
             title: 'test',
+            authorId: '',
+            authorName: '',
             description: 'test',
             lastModification: '2021-10-10T10:10:10.000Z',
             duration: 100,
