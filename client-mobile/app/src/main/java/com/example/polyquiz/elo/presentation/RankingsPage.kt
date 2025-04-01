@@ -26,7 +26,6 @@ import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.elo.domain.EloService
 import com.example.polyquiz.ui.MenuButton
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RankingsPage(
     modifier: Modifier,
