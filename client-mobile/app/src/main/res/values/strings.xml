@@ -65,4 +65,22 @@
     <string name="all_games">"Tous les jeux"</string>
     <string name="light_theme">Thème clair</string>
     <string name="dark_theme">Thème sombre</string>
+    <string name="matches_won">"Nombre de parties gagnées  "</string>
+    <string name="avg_good_answers_percentage">Moyenne de questions bien répondues par partie</string>
+    <string name="avg_time">Temps moyen par partie</string>
+    <string name="start">"Début de la partie  "</string>
+    <string name="end">Fin de la partie</string>
+    <string name="result">Résultat</string>
+    <string name="gave_up">"Abandon ?  "</string>
+    <string name="defeat">Défaite</string>
+    <string name="victory">Victoire</string>
+    <string name="no_items_to_display">Aucun élément à afficher</string>
+    <string name="date">Date</string>
+    <string name="action">Action</string>
+    <string name="sign_in">Connexion</string>
+    <string name="sign_out">Déconnexion</string>
+    <string name="statistics">Statistiques</string>
+    <string name="matches_year">Parties au courant de l\'année</string>
+    <string name="match_history">Historique des parties jouées</string>
+    <string name="auth_history">Historique d\'authentification</string>
 </resources>

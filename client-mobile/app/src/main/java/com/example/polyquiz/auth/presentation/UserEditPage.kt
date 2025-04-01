@@ -395,132 +395,171 @@ fun UserEditPage(
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "History Stats",
+                    text = stringResource(R.string.statistics),
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(vertical = 8.dp)
+                    modifier = Modifier.padding(vertical = 8.dp),
                 )
                 ElevatedCard(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
+                    ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp)
+                        .padding(8.dp) ,
+
                 ) {
                     Column(modifier = Modifier.padding(8.dp)) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(text = "Matches Played")
+                            Text(text = stringResource(R.string.matches_played))
                             Text(text = historyData.stats.nMatchesPlayed.toString())
                         }
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(text = "Matches Won")
+                            Text(text = stringResource(R.string.matches_won))
                             Text(text = historyData.stats.nMatchesWon.toString())
                         }
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(text = "Avg Good Answers %")
+                            Text(text = stringResource(R.string.avg_good_answers_percentage) )
                             Text(text = "${historyData.stats.averageGoodAnswersPercentage} %")
                         }
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(text = "Avg Time")
+                            Text(text = stringResource(R.string.avg_time))
                             Text(text = "${historyData.stats.averageTime} s")
                         }
                     }
                 }
                 Log.d("UserEditPage", "intensityGrid = ${userHistory.intensityGrid}")
                 Text(
-                    text = "History Grid",
+                    text = stringResource(R.string.matches_year),
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
                 IntensityGrid(historyData.intensityGrid)
                 Text(
-                    text = "Match History",
+                    text = stringResource(R.string.match_history),
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
                 if (historyData.match.isEmpty()) {
                     Text(
-                        text = "No items to display",
+                        text = stringResource(R.string.no_items_to_display),
                         fontStyle = FontStyle.Italic,
                         modifier = Modifier.padding(8.dp)
                     )
                 } else {
                     ElevatedCard(
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color(0xFFEBEDF0)
+                        ),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
+                            .height(40.dp)
+
                     ) {
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(text = "Start")
-                            Text(text = "End")
-                            Text(text = "Result")
-                            Text(text = "Gave Up")
+                            Text(text = stringResource(R.string.start))
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Text(text = stringResource(R.string.end))
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Text(text = stringResource(R.string.result))
+                            Text(text = stringResource(R.string.gave_up))
                         }
                     }
                     historyData.match.forEach { item ->
                         ElevatedCard(
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
+                            ),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(8.dp)
+                                .height(40.dp)
+
                         ) {
                             Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                modifier = Modifier
+                                    .padding(8.dp)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+
                             ) {
                                 Text(text = formatDateTime(item.start))
                                 Text(text = formatDateTime(item.end))
-                                Text(text = if (item.hasWon) "Victory" else "Defeat")
+                                Text(text = if (item.hasWon) stringResource(R.string.victory) else stringResource(R.string.defeat))
                                 Text(text = if (item.hasGivenUp) "✔" else "-")
                             }
                         }
                     }
                 }
                 Text(
-                    text = "Auth History",
+                    text = stringResource(R.string.auth_history),
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
                 ElevatedCard(
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFEBEDF0)
+                    ),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
+                        .height(40.dp)
+
                 ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+
                     ) {
-                        Text(text = "Date")
-                        Text(text = "Action")
+                        Text(text = stringResource(R.string.date))
+                        Text(text = stringResource(R.string.action))
                     }
                 }
                 historyData.auth.forEach { item ->
                     ElevatedCard(
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
+                        ),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
+                            .height(40.dp)
                     ) {
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(text = formatDateTime(item.date))
-                            Text(text = if (item.isLogin) "Sign In" else "Sign Out")
+                            Text(text = if (item.isLogin) stringResource(R.string.sign_in) else stringResource(R.string.sign_out))
                         }
                     }
                 }
@@ -624,95 +663,3 @@ fun formatDateTime(timestamp: Date): String {
     return sdf.format(timestamp)
 }
 
-@Composable
-fun IntensityGrid(intensityGrid: List<Number>) {
-    if (intensityGrid.isEmpty()) return
-
-    val chunkedData = intensityGrid.chunked(7)
-    val scrollState = rememberScrollState()
-
-    val calendar = java.util.Calendar.getInstance()
-    calendar.set(java.util.Calendar.DAY_OF_YEAR, 1)
-    val startDate = calendar.time
-
-    BoxWithConstraints(Modifier.fillMaxWidth()) {
-        val totalColumns = chunkedData.size
-        val spacing = 2.dp
-        val totalSpacing = spacing * (totalColumns - 1)
-        val columnWidth = (maxWidth - totalSpacing) / totalColumns
-        val monthShort = java.text.DateFormatSymbols.getInstance(Locale.getDefault()).shortMonths
-
-        val columnMonths = List(totalColumns) { index ->
-            val colCal = java.util.Calendar.getInstance()
-            colCal.time = startDate
-            colCal.add(java.util.Calendar.DAY_OF_YEAR, index * 7)
-            colCal.get(java.util.Calendar.MONTH)
-        }
-
-        Column {
-            Row(
-                modifier = Modifier
-                    .horizontalScroll(scrollState)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(spacing)
-            ) {
-                var prevMonth = -1
-                columnMonths.forEach { currentMonth ->
-                    if (currentMonth != prevMonth) {
-                        Text(
-                            text = monthShort[currentMonth].replaceFirstChar { it.uppercaseChar() },
-                            fontSize = 12.sp,
-                            maxLines = 1,
-                            softWrap = false,
-                        )
-                        prevMonth = currentMonth
-                    } else {
-                        Spacer(Modifier.width(columnWidth-3.dp))
-                    }
-                }
-            }
-            Spacer(Modifier.height(4.dp))
-            Row(
-                modifier = Modifier
-                    .horizontalScroll(scrollState)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(spacing)
-            ) {
-                chunkedData.forEach { columnData ->
-                    Column {
-                        columnData.forEach { level ->
-                            Box(
-                                modifier = Modifier
-                                    .size(columnWidth)
-                                    .background(
-                                        when (level.toInt()) {
-                                            0 -> Color(0xFFEBEDF0)
-                                            1 -> Color(0xFFC6E48B)
-                                            2 -> Color(0xFF7BC96F)
-                                            3 -> Color(0xFF196127)
-                                            else -> Color.Gray
-                                        }
-                                    )
-                            )
-                            Spacer(Modifier.height(2.dp))
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    Spacer(Modifier.height(8.dp))
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.padding(horizontal = 8.dp)
-    ) {
-        Text("-")
-        Box(Modifier.size(20.dp).background(Color(0xFFEBEDF0)))
-        Box(Modifier.size(20.dp).background(Color(0xFFC6E48B)))
-        Box(Modifier.size(20.dp).background(Color(0xFF7BC96F)))
-        Box(Modifier.size(20.dp).background(Color(0xFF196127)))
-        Text("+")
-    }
-}
