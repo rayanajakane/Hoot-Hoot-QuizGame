@@ -15,6 +15,7 @@ export class EloGateway {
         try {
             this.userSockets.set(userId, client.id);
             const rating = await this.eloService.getPlayerElo(userId);
+            console.log('Sending elo to the player:', rating.mu);
             client.emit(EloEvents.ReturnElo, {
                 mu: rating.mu,
             });
