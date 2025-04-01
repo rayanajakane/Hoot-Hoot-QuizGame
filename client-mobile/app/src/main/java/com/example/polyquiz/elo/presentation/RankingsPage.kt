@@ -87,7 +87,7 @@ fun RankingsPage(
                 Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(text = "${index + 1}", modifier = Modifier.weight(1f))
                     Text(text = ranking.username, modifier = Modifier.weight(2f))
-                    Text(text = ranking.score.toString(), modifier = Modifier.weight(1f))
+                    Text(text = ranking.rating.roundToInt().toString(), modifier = Modifier.weight(1f))
                 }
             }
         }
