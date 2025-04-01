@@ -5,7 +5,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { QuestionCreationFormComponent } from '@app/components/question-creation-form/question-creation-form.component';
-import { BankStatus, QuestionStatus } from '@app/constants/feedback-messages';
 import { ManagementState } from '@app/constants/states';
 import { Game } from '@app/interfaces/game';
 import { PictureUploadData } from '@app/interfaces/picture-upload-data';
@@ -15,6 +14,7 @@ import { BankService } from '@app/services/bank/bank.service';
 import { GameService } from '@app/services/game/game.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { QuestionService } from '@app/services/question/question.service';
+import { translate } from '@jsverse/transloco';
 import { lastValueFrom } from 'rxjs/internal/lastValueFrom';
 
 @Injectable({
@@ -106,7 +106,7 @@ export class GameModificationService {
 
     async updatePictureUploads(game: Game, pictureUploads: PictureUploadData[]) {
         this.game = game;
-        for (let pictureUpload of pictureUploads) {
+        for (const pictureUpload of pictureUploads) {
             const pictureUrl = await this.authenticationService.uploadQuestionPicture(
                 this.game.questions[pictureUpload.index].id,
                 pictureUpload.pictureFile,
@@ -119,9 +119,12 @@ export class GameModificationService {
                 this.resetPendingChanges();
                 this.router.navigate(['/admin/games/']);
             },
+            // TODO : test this line pl0x
             error: (error: HttpErrorResponse) =>
                 this.notificationService.displayErrorMessage(
-                    `Le jeu n'a pas pu être ${this.state === ManagementState.GameModify ? 'modifié' : 'créé'}. 😿 \n ${error.message}`,
+                    this.state === ManagementState.GameModify
+                        ? translate('game-modification.modification-error')
+                        : translate('game-modification.creation-error') + `\n ${error.message}`,
                 ),
         });
     }
@@ -134,13 +137,17 @@ export class GameModificationService {
                     if (!response.body) return;
                     const updatedGame = JSON.parse(response.body);
                     this.notificationService.displaySuccessMessage(
-                        `Jeu ${this.state === ManagementState.GameModify ? 'modifié' : 'créé'} avec succès! 😺`,
+                        this.state === ManagementState.GameModify
+                            ? translate('game-modification.modification-success')
+                            : translate('game-modification.creation-success'),
                     );
                     this.updatePictureUploads(updatedGame, pictureUploads);
                 },
                 error: (error: HttpErrorResponse) =>
                     this.notificationService.displayErrorMessage(
-                        `Le jeu n'a pas pu être ${this.state === ManagementState.GameModify ? 'modifié' : 'créé'}. 😿 \n ${error.message}`,
+                        this.state === ManagementState.GameModify
+                            ? translate('game-modification.modification-error')
+                            : translate('game-modification.creation-error') + `\n ${error.message}`,
                     ),
             });
         }
@@ -158,7 +165,7 @@ export class GameModificationService {
             this.setBankMessage();
             this.markPendingChanges();
         } else {
-            this.notificationService.displayErrorMessage(QuestionStatus.DUPLICATE);
+            this.notificationService.displayErrorMessage(translate('question-status.duplicate'));
         }
     }
 
@@ -217,7 +224,9 @@ export class GameModificationService {
                 this.setBankMessage();
                 this.isLoadingBank = false;
             },
-            error: (error: HttpErrorResponse) => this.notificationService.displayErrorMessage(`${BankStatus.UNRETRIEVED}\n ${error.message}`),
+            // TODO : Server sends transloco code
+            error: (error: HttpErrorResponse) =>
+                this.notificationService.displayErrorMessage(`${translate('bank-status.unretrieved')}\n ${error.message}`),
         });
     }
 
@@ -282,7 +291,7 @@ export class GameModificationService {
             next: () => {
                 newQuestion.pictureUrl = pictureUrl;
                 newQuestion.pictureFile = pictureFile;
-                if (!this.bankService.addToBank) this.notificationService.displaySuccessMessage(QuestionStatus.VERIFIED);
+                if (!this.bankService.addToBank) this.notificationService.displaySuccessMessage(translate('question-status.verified'));
                 const questionCopy: Question = { ...newQuestion };
                 this.game.questions.push(questionCopy);
                 this.markPendingChanges();
@@ -290,12 +299,13 @@ export class GameModificationService {
                     this.addQuestionToBank(newQuestion);
                 }
             },
-            error: (error: HttpErrorResponse) => this.notificationService.displayErrorMessage(`${QuestionStatus.UNVERIFIED} \n ${error.message}`),
+            error: (error: HttpErrorResponse) =>
+                this.notificationService.displayErrorMessage(`${translate('question-status.unverified')} \n ${error.message}`),
         });
     }
 
     private setBankMessage() {
-        this.currentBankMessage = this.bankQuestions.length === 0 ? BankStatus.UNAVAILABLE : BankStatus.AVAILABLE;
+        this.currentBankMessage = this.bankQuestions.length === 0 ? translate('bank-status.unavailable') : translate('bank-status.available');
     }
 
     private isDuplicateQuestion(newQuestion: Question, questionList: Question[]): boolean {

@@ -2,7 +2,7 @@ import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PartyConfigDialogComponent } from '@app/components/party-config-dialog/party-config-dialog.component';
-import { RandomModeStatus, SnackBarAction, SnackBarError } from '@app/constants/feedback-messages';
+import { RandomModeStatus } from '@app/constants/feedback-messages';
 import { RANDOM_MODE_GAME } from '@app/constants/question-creation';
 import { MatchContext } from '@app/constants/states';
 import { Game } from '@app/interfaces/game';
@@ -15,6 +15,7 @@ import { QuestionService } from '@app/services/question/question.service';
 import { MINIMUM_QUESTIONS } from '@common/constants/match-constants';
 import { QuestionType } from '@common/constants/question-types';
 import { PartyConfig } from '@common/interfaces/party-config';
+import { translate } from '@jsverse/transloco';
 
 const N_POPULAR_GAMES = 3;
 
@@ -106,7 +107,10 @@ export class MatchCreationPageComponent implements OnInit {
                 this.isLoadingSelectedGame = false;
             },
             error: () => {
-                const snackBarRef = this.notificationService.displayErrorMessageAction(SnackBarError.DELETED, SnackBarAction.REFRESH);
+                const snackBarRef = this.notificationService.displayErrorMessageAction(
+                    translate('feedback-messages.deleted'),
+                    translate('feedback-messages.refresh'),
+                );
                 snackBarRef.onAction().subscribe(() => this.reloadAllGames());
             },
         });
@@ -120,7 +124,10 @@ export class MatchCreationPageComponent implements OnInit {
                 this.revalidateGame();
             },
             error: () => {
-                const snackBarRef = this.notificationService.displayErrorMessageAction(SnackBarError.DELETED, SnackBarAction.REFRESH);
+                const snackBarRef = this.notificationService.displayErrorMessageAction(
+                    translate('feedback-messages.deleted'),
+                    translate('feedback-messages.refresh'),
+                );
                 snackBarRef.onAction().subscribe(() => this.reloadAllGames());
             },
         });
@@ -130,7 +137,10 @@ export class MatchCreationPageComponent implements OnInit {
         if (selectedGame.isVisible) {
             this.gameIsValid = true;
         } else {
-            const snackBarRef = this.notificationService.displayErrorMessageAction(SnackBarError.INVISIBLE, SnackBarAction.REFRESH);
+            const snackBarRef = this.notificationService.displayErrorMessageAction(
+                translate('feedback-messages.invisible'),
+                translate('feedback-messages.refresh'),
+            );
             snackBarRef.onAction().subscribe(() => this.reloadAllGames());
         }
     }
@@ -147,7 +157,10 @@ export class MatchCreationPageComponent implements OnInit {
                 }
             });
         } else {
-            const snackBarRef = this.notificationService.displayErrorMessageAction(SnackBarError.INVISIBLE, SnackBarAction.REFRESH);
+            const snackBarRef = this.notificationService.displayErrorMessageAction(
+                translate('feedback-messages.invisible'),
+                translate('feedback-messages.refresh'),
+            );
             snackBarRef.onAction().subscribe(() => this.reloadAllGames());
         }
     }

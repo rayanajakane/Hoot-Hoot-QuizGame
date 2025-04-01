@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Inject, Input, OnChanges, OnInit, Optional, Output, SimpleChanges } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -10,6 +11,7 @@ import { Question } from '@app/interfaces/question';
 import { BankService } from '@app/services/bank/bank.service';
 import { QuestionService } from '@app/services/question/question.service';
 import { QuestionType } from '@common/constants/question-types';
+import { translate } from '@jsverse/transloco';
 
 export interface DialogManagement {
     modificationState: ManagementState;
@@ -69,7 +71,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         if (choices.length < MAX_CHOICES) {
             this.choices.push(this.buildChoices());
         } else {
-            this.openSnackBar('Il ne peut pas y avoir plus de 4 choix.', SNACK_BAR_DISPLAY_TIME);
+            this.openSnackBar(translate('question-creation-form.choices-max-error'), SNACK_BAR_DISPLAY_TIME);
             return;
         }
     }
@@ -104,7 +106,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         if (choices.length > MIN_CHOICES) {
             this.choices?.removeAt(index);
         } else {
-            this.openSnackBar('Il ne peut pas y avoir moins de 2 choix', SNACK_BAR_DISPLAY_TIME);
+            this.openSnackBar(translate('question-creation-form.choices-min-error'), SNACK_BAR_DISPLAY_TIME);
             return;
         }
     }
@@ -143,13 +145,13 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
     getButtonText() {
         switch (this.modificationState) {
             case ManagementState.BankCreate:
-                return 'Ajouter la question à la banque';
+                return translate('question-creation-form.add-question-bank');
             case ManagementState.GameCreate:
-                return 'Vérifier si la question est valide';
+                return translate('question-creation-form.verify-question');
             case ManagementState.BankModify:
-                return 'Modifier la question';
+                return translate('question-creation-form.modify-question');
             case ManagementState.GameModify:
-                return 'Modifier la question';
+                return translate('question-creation-form.modify-question');
         }
     }
 
@@ -159,8 +161,32 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         // return this.modificationState !== ManagementState.GameModify && this.modificationState !== ManagementState.BankModify;
     }
 
-    public toggleBank() {
+    toggleBank() {
         this.bankService.addToBank = this.bankService.addToBank ? false : true;
+    }
+
+    setPicture(event: Event) {
+        const eventTarget: HTMLInputElement | null = event.target as HTMLInputElement | null;
+        if (eventTarget?.files?.[0]) {
+            const file: File = eventTarget.files[0];
+            if (file.size > IMAGE_MAX_FILE_SIZE) {
+                this.openSnackBar(translate('question-creation-form.file-big-error'), SNACK_BAR_DISPLAY_TIME);
+                return;
+            }
+            const reader = new FileReader();
+            reader.addEventListener('load', () => {
+                this.questionForm.get('pictureUrl')?.setValue(reader.result as null);
+                this.questionForm.get('pictureFile')?.setValue(file);
+                this.loadedImageFile = file;
+            });
+            reader.readAsDataURL(file);
+        }
+    }
+
+    removePicture() {
+        this.questionForm.get('pictureUrl')?.setValue('');
+        this.questionForm.get('pictureFile')?.setValue(null);
+        this.loadedImageFile = null;
     }
 
     private initializeForm(): void {
@@ -179,21 +205,21 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         this.questionForm.statusChanges.subscribe((status) => {
             if (status === 'INVALID') {
                 if (this.questionForm.get('text')?.invalid) {
-                    return this.showNotification('Le champ de la question est requis !');
+                    return this.showNotification(translate('question-creation-form.required-error'));
                 }
 
                 if (this.questionForm.get('choices')?.invalid && this.questionForm.hasError('invalidChoicesLength')) {
-                    return this.showNotification('Il faut au moins une réponse correcte et une incorrecte !');
+                    return this.showNotification(translate('question-creation-form.invalid-choices-length-error'));
                 }
 
                 if (this.questionForm.get('estimatedParameters')?.invalid) {
                     const errors = this.questionForm.get('estimatedParameters')?.errors;
                     const errorMessages: { [key: string]: string } = {
-                        invalidBounds: 'La borne inférieure doit être inférieure à la borne supérieure !',
-                        invalidMargin: 'La marge est trop grande ! Elle ne doit représenter que 25% de l`intervalle !',
-                        invalidType: 'Les paramètres doivent être des nombres entiers !',
-                        negativeMargin: 'La marge ne peut pas être négative !',
-                        correctAnswerOutOfBounds: 'La réponse correcte doit être entre les bornes !',
+                        invalidBounds: translate('question-creation-form.invalid-bounds'),
+                        invalidMargin: translate('question-creation-form.invalid-margin'),
+                        invalidType: translate('question-creation-form.invalid-type'),
+                        negativeMargin: translate('question-creation-form.negative-margin'),
+                        correctAnswerOutOfBounds: translate('question-creation-form.correct-answer-out-of-bounds'),
                     };
 
                     for (const error in errorMessages) {
@@ -354,30 +380,5 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
                 margin: this.question.estimatedParameters?.margin,
             });
         }
-    }
-
-    public setPicture(event: Event) {
-        const eventTarget: HTMLInputElement | null = event.target as HTMLInputElement | null;
-        if (eventTarget?.files?.[0]) {
-            const file: File = eventTarget.files[0];
-            if (file.size > IMAGE_MAX_FILE_SIZE) {
-                // TODO: Transloco
-                this.openSnackBar('Le fichier est trop grand.', SNACK_BAR_DISPLAY_TIME);
-                return;
-            }
-            const reader = new FileReader();
-            reader.addEventListener('load', () => {
-                this.questionForm.get('pictureUrl')?.setValue(reader.result as null);
-                this.questionForm.get('pictureFile')?.setValue(file);
-                this.loadedImageFile = file;
-            });
-            reader.readAsDataURL(file);
-        }
-    }
-
-    public removePicture() {
-        this.questionForm.get('pictureUrl')?.setValue('');
-        this.questionForm.get('pictureFile')?.setValue(null);
-        this.loadedImageFile = null;
     }
 }

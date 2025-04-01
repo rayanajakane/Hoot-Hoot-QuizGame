@@ -1,14 +1,14 @@
-<div class="form-container">
+<div class="form-container" *transloco="let t">
     <form [formGroup]="questionForm" class="question-form">
         <mat-form-field class="question-text-container">
             <mat-label>Question</mat-label>
-            <input class="question-input" matInput formControlName="text" placeholder="Texte de la question" />
+            <input class="question-input" matInput formControlName="text" [placeholder]="t('question-creation-form.question-text')" />
         </mat-form-field>
 
         <div id="question-properties-options-container">
             <div id="question-options">
                 <mat-form-field>
-                    <mat-label>{{ this.isActiveSubmit() ? ' Type de Question' : questionForm.get('type')?.value }}</mat-label>
+                    <mat-label>{{ this.isActiveSubmit() ? t('question-creation-form.question-type') : questionForm.get('type')?.value }}</mat-label>
                     <mat-select formControlName="type">
                         <span *ngIf="this.isActiveSubmit()">
                             <mat-option *ngFor="let type of ['QCM', 'QRL', 'QRE']" [value]="type">{{ type }}</mat-option>
@@ -24,9 +24,17 @@
                 </mat-form-field>
 
                 <div class="upload-image-container">
-                    <!-- TODO: Transloco -->
-                    <button mat-raised-button color="primary" (click)="pictureUrl.click()"><mat-icon>upload</mat-icon>Téléverser une image</button>
-                    <button mat-raised-button [disabled]="!questionForm.get('pictureUrl')!.value" (click)="removePicture()">Retirer l'image</button>
+                    <button mat-raised-button color="primary" (click)="pictureUrl.click()">
+                        <mat-icon>upload</mat-icon>{{ t('question-creation-form.upload-image') }}
+                    </button>
+                    <button
+                        mat-raised-button
+                        color="basic"
+                        [disabled]="!questionForm.get('pictureUrl')!.value"
+                        (click)="removePicture()"
+                    >
+                        {{ t('question-creation-form.remove-image') }}
+                    </button>
                     <div class="main-image">
                         <img *ngIf="questionForm.get('pictureUrl')!.value" [src]="questionForm.get('pictureUrl')!.value" />
                     </div>
@@ -35,7 +43,7 @@
 
                 <div *ngIf="modificationState === managementState.GameCreate">
                     <mat-slide-toggle [checked]="bankService.addToBank" color="primary" (click)="toggleBank()"
-                        ><p>Ajouter à la banque</p></mat-slide-toggle
+                        ><p>{{ t('question-creation-form.add-bank') }}</p></mat-slide-toggle
                     >
                 </div>
 
@@ -64,13 +72,18 @@
                             <div class="choice-container" [formGroupName]="i">
                                 <mat-form-field class="choice-input-container">
                                     <p class="choice-number" matPrefix>{{ i + 1 }}.</p>
-                                    <input class="choice-input" matInput formControlName="text" placeholder="Choix de réponse" />
+                                    <input
+                                        class="choice-input"
+                                        matInput
+                                        formControlName="text"
+                                        [placeholder]="t('question-creation-form.question-choice')"
+                                    />
                                     <span matSuffix class="choice-buttons">
                                         <input
                                             type="checkbox"
                                             formControlName="isCorrect"
                                             class="correct-choice pointer-on-hover"
-                                            matTooltip="Cocher pour rendre le choix vrai"
+                                            [matTooltip]="t('question-creation-form.tooltip-answer-true')"
                                         />
                                         <button
                                             mat-icon-button
@@ -78,7 +91,7 @@
                                             class="pointer-on-hover"
                                             (click)="removeChoice(i)"
                                             color="accent"
-                                            matTooltip="Supprimer le choix"
+                                            [matTooltip]="t('question-creation-form.delete-choice')"
                                             matTooltipClass="button-tooltip"
                                         >
                                             <mat-icon>delete</mat-icon>
@@ -97,30 +110,51 @@
                     </div>
                     <button mat-raised-button color="primary" class="add-button" type="button" (click)="addChoice()">
                         <mat-icon>add</mat-icon>
-                        Ajouter un choix de réponse
+                        {{ t('question-creation-form.add-answer-choice') }}
                     </button>
                 </div>
                 <div *ngIf="questionForm.get('type')?.value === 'QRL'"></div>
                 <div *ngIf="questionForm.get('type')?.value === 'QRE'">
                     <div class="estimation-container" formGroupName="estimatedParameters">
                         <mat-form-field>
-                            <mat-label>Borne inférieure</mat-label>
-                            <input matInput formControlName="lowerBound" placeholder="Valeur de la borne inférieure" type="number" />
+                            <mat-label>{{ t('question-creation-form.boundary-low') }}</mat-label>
+                            <input
+                                matInput
+                                formControlName="lowerBound"
+                                [placeholder]="t('question-creation-form.boundary-low-placeholder')"
+                                type="number"
+                            />
                         </mat-form-field>
 
                         <mat-form-field>
-                            <mat-label>Borne supérieure</mat-label>
-                            <input matInput formControlName="upperBound" placeholder="Valeur de la borne supérieure" type="number" />
+                            <mat-label>{{ t('question-creation-form.boundary-high') }}</mat-label>
+                            <input
+                                matInput
+                                formControlName="upperBound"
+                                [placeholder]="t('question-creation-form.boundary-high-placeholder')"
+                                type="number"
+                            />
                         </mat-form-field>
 
                         <mat-form-field>
-                            <mat-label>Bonne réponse</mat-label>
-                            <input matInput formControlName="correctAnswer" placeholder="Valeur de la bonne réponse à la question" type="number" />
+                            <mat-label>{{ t('question-creation-form.good-answer') }}</mat-label>
+                            <input
+                                matInput
+                                formControlName="correctAnswer"
+                                [placeholder]="t('question-creation-form.good-answer-placeholder')"
+                                type="number"
+                            />
                         </mat-form-field>
 
                         <mat-form-field>
-                            <mat-label>Marge de tolérance</mat-label>
-                            <input matInput formControlName="margin" placeholder="Valeur de la marge de tolérance" type="number" min="0" />
+                            <mat-label>{{ t('question-creation-form.tolerance-margin') }}</mat-label>
+                            <input
+                                matInput
+                                formControlName="margin"
+                                [placeholder]="t('question-creation-form.tolerance-margin-placeholder')"
+                                type="number"
+                                min="0"
+                            />
                         </mat-form-field>
                     </div>
                 </div>

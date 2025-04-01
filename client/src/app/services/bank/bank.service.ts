@@ -1,10 +1,10 @@
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BankStatus, GameStatus } from '@app/constants/feedback-messages';
 import { Question } from '@app/interfaces/question';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { QuestionService } from '@app/services/question/question.service';
+import { translate } from '@jsverse/transloco';
 
 @Injectable({
     providedIn: 'root',
@@ -27,7 +27,8 @@ export class BankService {
                 this.questions = [...data];
                 this.isLoadingBank = false;
             },
-            error: (error: HttpErrorResponse) => this.notificationService.displayErrorMessage(`${BankStatus.UNRETRIEVED}\n ${error.message}`),
+            error: (error: HttpErrorResponse) =>
+                this.notificationService.displayErrorMessage(`${translate('bank-status.unretrieved')}\n ${error.message}`),
         });
     }
 
@@ -35,9 +36,9 @@ export class BankService {
         this.questionService.deleteQuestion(questionId).subscribe({
             next: () => {
                 this.questions = this.questions.filter((question: Question) => question.id !== questionId);
-                this.notificationService.displaySuccessMessage(`${BankStatus.DELETED}`);
+                this.notificationService.displaySuccessMessage(`${translate('bank-status.deleted')}`);
             },
-            error: (error: HttpErrorResponse) => this.notificationService.displayErrorMessage(`${BankStatus.STILL}\n ${error.message}`),
+            error: (error: HttpErrorResponse) => this.notificationService.displayErrorMessage(`${translate('bank-status.still')}\n ${error.message}`),
         });
     }
 
@@ -63,7 +64,8 @@ export class BankService {
                     }
                 }
             },
-            error: (error: HttpErrorResponse) => this.notificationService.displayErrorMessage(`${BankStatus.FAILURE}\n ${error.message}`),
+            error: (error: HttpErrorResponse) =>
+                this.notificationService.displayErrorMessage(`${translate('bank-status.failure')}\n ${error.message}`),
         });
     }
 
@@ -82,22 +84,23 @@ export class BankService {
                     }
                 }
             },
-            error: (error: HttpErrorResponse) => this.notificationService.displayErrorMessage(`${BankStatus.FAILURE}\n ${error.message}`),
+            error: (error: HttpErrorResponse) =>
+                this.notificationService.displayErrorMessage(`${translate('bank-status.failure')}\n ${error.message}`),
         });
     }
 
     addQuestionToLocalBank(newQuestion: Question, isModificationPageQuestion: boolean) {
         this.questions.push(newQuestion);
         if (isModificationPageQuestion) {
-            this.notificationService.displaySuccessMessage(GameStatus.ARCHIVED);
+            this.notificationService.displaySuccessMessage(translate('game-status.archived'));
         } else {
-            this.notificationService.displaySuccessMessage(BankStatus.SUCCESS);
+            this.notificationService.displaySuccessMessage(translate('bank-status.success'));
         }
     }
 
     updateQuestion(newQuestion: Question): void {
         if (this.isDuplicateQuestion(newQuestion, this.questions)) {
-            this.notificationService.displayErrorMessage(BankStatus.DUPLICATE);
+            this.notificationService.displayErrorMessage(translate('bank-status.duplicate'));
             return;
         }
         const pictureFile = newQuestion.pictureFile;
@@ -114,9 +117,10 @@ export class BankService {
                 if (isImageToUpload && pictureFile) {
                     await this.uploadQuestionPicture(newQuestion, pictureFile, false, false);
                 }
-                this.notificationService.displaySuccessMessage(BankStatus.MODIFIED);
+                this.notificationService.displaySuccessMessage(translate('bank-status.modified'));
             },
-            error: (error: HttpErrorResponse) => this.notificationService.displayErrorMessage(`${BankStatus.UNMODIFIED} \n ${error.message}`),
+            error: (error: HttpErrorResponse) =>
+                this.notificationService.displayErrorMessage(`${translate('bank-status.unmodified')} \n ${error.message}`),
         });
     }
 

@@ -20,6 +20,7 @@ import { MatchContextService } from '@app/services/match-context/match-context.s
 import { MatchService } from '@app/services/match/match.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { QuestionService } from '@app/services/question/question.service';
+import { getTranslocoTestingModules } from '@app/transloco-testing.module';
 import { MINIMUM_QUESTIONS } from '@common/constants/match-constants';
 import { Subject, of, throwError } from 'rxjs';
 import SpyObj = jasmine.SpyObj;
@@ -63,7 +64,14 @@ describe('MatchCreationPageComponent', () => {
 
         TestBed.configureTestingModule({
             declarations: [MatchCreationPageComponent],
-            imports: [HttpClientTestingModule, BrowserAnimationsModule, ScrollingModule, MatCardModule, MatIconModule],
+            imports: [
+                HttpClientTestingModule,
+                BrowserAnimationsModule,
+                ScrollingModule,
+                MatCardModule,
+                MatIconModule,
+                ...getTranslocoTestingModules(),
+            ],
             providers: [
                 GameService,
                 { provide: NotificationService, useValue: notificationSpy },

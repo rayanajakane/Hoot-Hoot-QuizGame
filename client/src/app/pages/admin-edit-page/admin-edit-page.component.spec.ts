@@ -3,7 +3,7 @@
 /* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { HttpClientModule, HttpErrorResponse } from '@angular/common/http';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -32,6 +32,7 @@ import { getMockGame } from '@app/constants/game-mocks';
 import { getMockQuestion } from '@app/constants/question-mocks';
 import { AdminEditPageComponent } from '@app/pages/admin-edit-page/admin-edit-page.component';
 import { GameModificationService } from '@app/services/game-modification/game-modification.service';
+import { getTranslocoTestingModules } from '@app/transloco-testing.module';
 import { of, throwError } from 'rxjs';
 
 describe('AdminEditPageComponent', () => {
@@ -89,6 +90,7 @@ describe('AdminEditPageComponent', () => {
                 MatSidenavModule,
                 ScrollingModule,
                 MatSliderModule,
+                ...getTranslocoTestingModules(),
             ],
             declarations: [
                 AdminEditPageComponent,
@@ -138,10 +140,14 @@ describe('AdminEditPageComponent', () => {
         expect(gameModificationSpy.setNewGame).toHaveBeenCalled();
     });
 
-    it('should display error message on error', () => {
+    it('should display error message on error', fakeAsync(() => {
         const error = new HttpErrorResponse({ error: 'Test Error', status: 404 });
         activatedRouteSpy.params = throwError(() => error);
+
         component['getGameIdFromUrl']();
+        tick(); // Advances time in fakeAsync
+        fixture.detectChanges();
+
         expect(notificationServiceSpy.displayErrorMessage).toHaveBeenCalledWith(`${GameStatus.FAILURE}\n${error.message}`);
-    });
+    }));
 });
