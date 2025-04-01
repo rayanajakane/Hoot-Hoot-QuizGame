@@ -352,7 +352,7 @@ class AuthViewModel : ViewModel() {
                             _authState.value = AuthState.Authenticated
                             SocketHandler.connect()
                             SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
-                            SocketHandler.getSocket().emit(FriendsEvents.CONNECT.value)
+                            SocketHandler.getSocket().emit(FriendsEvents.CONNECT.value, user?.uid )
                             Log.d(TAG, "signInWithEmail:success")
                         }
                     userRef?.child("isOnline")?.get()
@@ -437,7 +437,7 @@ class AuthViewModel : ViewModel() {
                                         _authState.value = AuthState.Authenticated
                                         SocketHandler.connect()
                                         SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
-                                        SocketHandler.getSocket().emit(FriendsEvents.CONNECT.value)
+                                        SocketHandler.getSocket().emit(FriendsEvents.CONNECT.value, user?.uid)
                                     }
                                     Log.d(TAG, "createUserWithEmail:success")
                                 }
