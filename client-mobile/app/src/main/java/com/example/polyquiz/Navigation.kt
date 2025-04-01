@@ -24,7 +24,6 @@ import com.example.polyquiz.pages.presentation.JoinMatchPage
 import com.example.polyquiz.pages.presentation.MatchCreationPage
 import com.example.polyquiz.pages.presentation.WaitPage
 import com.example.polyquiz.friends.presentation.FriendsSearchScreen
-import com.example.polyquiz.money.domain.MoneyService
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.ui.features.camera.MainCameraScreen
 import com.example.polyquiz.ui.theme.Theme
@@ -213,20 +212,30 @@ fun Navigation(
         composable<Route.UserEditPage> {
             UserEditPage(
                 modifier = modifier,
+                context = context,
+                authViewModel = authViewModel,
+                cameraViewModel = cameraViewModel,
+                currentTheme = currentTheme,
+                onThemeUpdated = onThemeUpdated,
                 navigateToHome = {
                     navController.navigate(Route.Home)
+                },
+                navigateToCreate = {
+                    navController.navigate(Route.MatchCreation)
+                },
+                navigateToUserEdit = {
+                    navController.navigate(Route.UserEditPage)
+                },
+                navigateToFriendsPage = {
+                    navController.navigate(Route.FriendsSearchScreen)
+                },
+                navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
+                navigateToLogin = {
+                    navController.navigate(Route.Login)
                 },
                 navigateToCamera = {
                     navController.navigate(Route.MainCameraScreen)
                 },
-                navigateToLogin = {
-                    navController.navigate(Route.Login)
-                },
-                authViewModel = authViewModel,
-                context = context,
-                cameraViewModel = cameraViewModel,
-                currentTheme = currentTheme,
-                onThemeUpdated = onThemeUpdated
             )
         }
         composable<Route.FriendsSearchScreen> {

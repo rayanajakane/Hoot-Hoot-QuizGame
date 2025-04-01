@@ -95,11 +95,11 @@ fun MenuButton(
                 onClick = { navigateToCreate() }
             )
             DropdownMenuItem(
-                text = { Text(stringResource(R.string.edit_profile)) },
+                text = { Text(stringResource(R.string.my_profile)) },
                 leadingIcon = {
                     Icon(
                         Icons.Filled.Person,
-                        contentDescription = stringResource(R.string.edit_profile)
+                        contentDescription = stringResource(R.string.my_profile)
                     )
                 },
                 onClick = { navigateToUserEdit() }

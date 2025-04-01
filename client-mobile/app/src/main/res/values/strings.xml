@@ -39,7 +39,7 @@
     <string name="username_already_exists">Ce nom d\'utilisateur est déjà pris.</string>
     <string name="visual_themes">Thèmes visuels</string>
     <string name="language">Langue</string>
-    <string name="edit_profile">Mon profil</string>
+    <string name="edit_profile">Modification du profil</string>
     <string name="home_page">Page principale</string>
     <string name="user_edit">Modification du Profil</string>
     <string name="save">Enregistrer</string>
@@ -77,6 +77,11 @@
     <string name="playing_matches">Parties en cours</string>
     <string name="join_action">Joindre</string>
     <string name="custom_match">Partie personnalisée</string>
+    <string name="my_profile">Mon profil</string>
+    <string name="confirm">Confirmer</string>
+    <string name="cancel">Annuler</string>
+    <string name="warning">Avertissement</string>
+    <string name="dialog_warning">Cette opération est irréversible. Voulez-vous VRAIMENT supprimer votre compte ?</string>
     <string name="matches_won">"Nombre de parties gagnées  "</string>
     <string name="avg_good_answers_percentage">Moyenne de questions bien répondues par partie</string>
     <string name="avg_time">Temps moyen par partie</string>
