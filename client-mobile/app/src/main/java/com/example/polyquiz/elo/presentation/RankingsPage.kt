@@ -22,14 +22,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.FriendsDisplayText
 import com.example.polyquiz.elo.domain.EloService
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RankingsPage(
     modifier: Modifier,
@@ -58,13 +59,11 @@ fun RankingsPage(
         Text(text = "Votre elo: $currentRating")
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text(text = "Rank", modifier = Modifier.weight(1f))
-            Text(text = "Username", modifier = Modifier.weight(2f))
-            Text(text = "Elo", modifier = Modifier.weight(1f))
+            Text(text = stringResource(R.string.rank), modifier = Modifier.weight(1f))
+            Text(text = stringResource(R.string.username), modifier = Modifier.weight(2f))
+            Text(text = stringResource(R.string.elo), modifier = Modifier.weight(1f))
             Button(onClick = {quitRankingsPage()}) {
-                Text(
-                    "Retourner à la page d'accueil"
-                )
+                Text(text = stringResource(R.string.home_page))
             }
         }
         HorizontalDivider()
