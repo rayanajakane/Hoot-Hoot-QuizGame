@@ -29,7 +29,8 @@ import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.http.GameService
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchService
-
+import com.example.polyquiz.match.domain.PartyConfig
+import com.example.polyquiz.match.presentation.PartyConfigDialog
 
 
 @Composable
@@ -44,7 +45,8 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
     var isLoadingSelectedGame by remember { mutableStateOf(false) }
     val username by remember { mutableStateOf(authViewModel.getUsername() )}
     val userId by remember { mutableStateOf(authViewModel.getUserId()) }
-    val isFriendsOnly by remember { mutableStateOf(false) }
+    var showPartyConfigDialog by remember { mutableStateOf(false) }
+    var partyConfigs by remember { mutableStateOf(PartyConfig(false, false)) }
 
     var N_POPULAR_GAMES = 3
 
@@ -85,11 +87,11 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
         }
     }
 
-    fun revalidateGame(isFriendsOnly:Boolean = false){
+    fun revalidateGame(partyConfigs: PartyConfig = PartyConfig(false, false)){
         if(selectedGame?.isVisible!!){
             gamesIsValid = true
             matchService.currentGame = selectedGame
-            matchService.saveBackupGame(selectedGame!!.id!!, userId, username, isFriendsOnly)
+            matchService.saveBackupGame(selectedGame!!.id!!, userId, username, partyConfigs)
         }
     }
 
@@ -104,20 +106,21 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
         }, onError = {})
     }
 
-    fun reloadSelectedGame(isFriendsOnly:Boolean = false){
+    fun reloadSelectedGame(partyConfigs: PartyConfig = PartyConfig(false, false)){
         gameService.getGameById(selectedGame?.id!!, onSuccess = {
             response ->
             val gson = Gson()
             val game = gson.fromJson(gson.toJson(response), Game::class.java)
             selectedGame = game
-            revalidateGame(isFriendsOnly)
+//            println("Selected game: ${selectedGame!!.title}")
+            revalidateGame(partyConfigs)
         }, onError = {})
 
     }
 
-    fun createMatch(context: MatchContext, isFriendsOnly:Boolean = false){
+    fun createMatch(context: MatchContext, partyConfigs: PartyConfig = PartyConfig(false, false)){
         contextService.setContext(context)
-        reloadSelectedGame(isFriendsOnly)
+        reloadSelectedGame(partyConfigs)
     }
 
     Row(
@@ -223,29 +226,22 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                             containerColor = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary
                         ),
-                        modifier = Modifier
-                            .padding(16.dp)
+                        modifier = Modifier.padding(16.dp)
                     ) {
                         Text(text = "Jouer")
-
                     }
                     Button(
-                        onClick = {
-                            createMatch(MatchContext.HOSTVIEW, true)
-                            navigateToWaitPage()
-                        },
+                        onClick = { showPartyConfigDialog = true },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary
                         ),
-                        modifier = Modifier
-                            .padding(16.dp)
+                        modifier = Modifier.padding(16.dp)
                     ) {
-                        Text(text = "Jouer avec amis")
-
+                        Text(text = "Partie personnalisée")
                     }
-
                 }
+
 
 
             } else {
@@ -254,6 +250,22 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
             Spacer(modifier = Modifier.height(16.dp))
 
         }
+        if (showPartyConfigDialog) {
+            PartyConfigDialog(
+                initialPartyConfig = partyConfigs,
+                onConfirm = { updatedConfigs ->
+                    createMatch(MatchContext.HOSTVIEW, updatedConfigs)
+                    partyConfigs = updatedConfigs
+                    navigateToWaitPage()
+                    showPartyConfigDialog = false
+
+                },
+                onCancel = {
+                    showPartyConfigDialog = false
+                }
+            )
+        }
+
     }
 }
 

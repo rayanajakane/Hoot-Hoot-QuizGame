@@ -3,18 +3,25 @@ package com.example.polyquiz.friends.presentation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.polyquiz.auth.domain.UserIdName
@@ -41,7 +48,6 @@ fun FriendsSearchScreen(
         moneyService.listenForMoneyEvents()
     }
 
-
     val pendingRequests by friendsService.pendingRequests.collectAsState()
     val sentRequests by friendsService.sentRequests.collectAsState()
     val friends by friendsService.friends.collectAsState()
@@ -50,15 +56,13 @@ fun FriendsSearchScreen(
     val searchResults by remember(searchQuery, allUsers) {
         derivedStateOf {
             val query = searchQuery.trim().lowercase()
-            if (query.isEmpty()) allUsers
-            else allUsers.filter { it.name.lowercase().contains(query) }
+            if (query.isEmpty()) allUsers else allUsers.filter { it.name.lowercase().contains(query) }
         }
     }
 
     var showDonationDialog by remember { mutableStateOf(false) }
     var selectedFriendId by remember { mutableStateOf("") }
     var donationAmount by remember { mutableStateOf("") }
-
 
     if (showDonationDialog) {
         AlertDialog(
@@ -91,7 +95,8 @@ fun FriendsSearchScreen(
         )
     }
     DisposableEffect(friendsService) {
-        onDispose { friendsService.stopReturningUsers()
+        onDispose {
+            friendsService.stopReturningUsers()
             moneyService.stopListeningForMoneyEvents()
         }
     }
@@ -106,7 +111,8 @@ fun FriendsSearchScreen(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Retourner à la page d'accueil"
                         )
-                    }}
+                    }
+                }
             )
         },
         content = { paddingValues ->
@@ -116,6 +122,28 @@ fun FriendsSearchScreen(
                     .padding(paddingValues)
                     .padding(16.dp)
             ) {
+                val currentBalance by moneyService.currentBalance.collectAsState()
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.AccountBalanceWallet,
+                        contentDescription = "Wallet",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(32.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Balance: $currentBalance",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
