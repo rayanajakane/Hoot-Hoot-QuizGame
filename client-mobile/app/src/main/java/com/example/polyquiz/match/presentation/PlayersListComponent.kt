@@ -4,13 +4,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.polyquiz.R
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
@@ -32,30 +36,27 @@ fun PlayersListComponent(
     var sortBy by remember { mutableStateOf("score") }
     var sortOrder by remember { mutableStateOf("descending") }
 
-//    val sortedPlayers = remember(players, sortBy, sortOrder) {
-//        players.sortedWith(
-//            when (sortBy) {
-//                "name" -> compareBy { it.username }
-//                "score" -> compareBy { it.score as Comparable<*> }
-//                "state" -> compareBy { it.state }
-//                else -> compareBy<Player> { it.score as Comparable<*> }
-//            }.let { comparator ->
-//                if (sortOrder == "descending") comparator.reversed() else comparator
-//            }
-//        )
-//    }
-
     Column(
         modifier = modifier
             .fillMaxHeight()
             .width(250.dp)
-            .background(PurpleGrey80)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(8.dp)
     ) {
-        Text(text = "Joueurs", fontSize = 20.sp, modifier = Modifier.padding(8.dp))
+        Text(
+            text = stringResource(R.string.players),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(8.dp)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
 
         if (userId == matchRoomService.hostId) {
-            SortOptions(sortBy, sortOrder, onSortChange = { sortBy = it }, onOrderChange = { sortOrder = it })
+            SortOptions(
+                sortBy,
+                sortOrder,
+                onSortChange = { sortBy = it },
+                onOrderChange = { sortOrder = it })
         }
 
         LazyColumn(modifier = Modifier.weight(1f)) {
@@ -105,27 +106,41 @@ fun SortOptions(
 
 @Composable
 fun PlayerCard(player: Player, context: MatchContextService) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .background(Color.White),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = player.username,
-            fontSize = 16.sp,
-            color = Color.Black
+    Card(
+        shape = RoundedCornerShape(3.dp),
+        colors = CardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceBright,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceBright,
+            disabledContentColor = MaterialTheme.colorScheme.onSurface
         )
-        Column(horizontalAlignment = Alignment.End) {
-            Text(text = "${player.score} pts", fontSize = 14.sp)
-            Text(text = "(${player.bonusCount}✨)", fontSize = 12.sp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = player.username,
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Text(text = "${player.score} pts", fontSize = 14.sp)
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(text = "(${player.bonusCount}✨)", fontSize = 12.sp)
+            }
         }
     }
 }
 
 @Composable
-fun ButtonGroup(options: List<Pair<String, String>>, selected: String, onSelected: (String) -> Unit) {
+fun ButtonGroup(
+    options: List<Pair<String, String>>,
+    selected: String,
+    onSelected: (String) -> Unit
+) {
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         options.forEach { (value, label) ->
             Button(

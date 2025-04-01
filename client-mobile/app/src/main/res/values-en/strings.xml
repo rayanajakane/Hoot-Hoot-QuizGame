@@ -127,4 +127,5 @@
     <string name="players_to_grade">There are still players to grade</string>
     <string name="grade_players">Please grade player answers!</string>
     <string name="submit_grading">SUBMIT GRADING</string>
+    <string name="players">Players</string>
 </resources>

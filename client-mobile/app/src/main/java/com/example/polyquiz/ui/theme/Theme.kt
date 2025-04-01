@@ -16,7 +16,7 @@ enum class Theme(val displayName: StringValue) {
 
 // Ref : https://lh3.googleusercontent.com/2tz16tRWvWsNwxg22BmLGDpZ7Pp3SqAg6Zr10WUCbjeEJHFSBzkbb4gwkjIQ5m4rfYoSntR412o7bC7sr8Xi5-gpiciNiQyjssfNWQ=w1064-v0
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFFBB86FC),
+    primary = Color(0xFFACC5FC),
     secondary = Color(0xFF3700B3),
     background = Color(0xFF121212),
     surface = Color(0xFF1A1C22),
