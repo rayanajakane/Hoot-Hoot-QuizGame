@@ -8,6 +8,9 @@ export enum Theme {
     DARK = 'dark-theme',
     LIGHT = 'light-theme',
     BENTEN = 'ben-ten-theme',
+    MARIO = 'mario-theme',
+    SONIC = 'sonic-theme',
+    PIKACHU = 'pikachu-theme',
 }
 
 @Injectable({
@@ -107,6 +110,12 @@ export class ThemeService {
                 return Theme.LIGHT;
             case 'BENTEN':
                 return Theme.BENTEN;
+            case 'MARIO':
+                return Theme.MARIO;
+            case 'SONIC':
+                return Theme.SONIC;
+            case 'PIKACHU':
+                return Theme.PIKACHU;
             default:
                 return Theme.LIGHT;
         }
@@ -121,6 +130,12 @@ export class ThemeService {
                 return 'LIGHT';
             case Theme.BENTEN:
                 return 'BENTEN';
+            case Theme.MARIO:
+                return 'MARIO';
+            case Theme.SONIC:
+                return 'SONIC';
+            case Theme.PIKACHU:
+                return 'PIKACHU';
             default:
                 return 'LIGHT';
         }

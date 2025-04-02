@@ -97,7 +97,7 @@
                 {{ t('page.buy-goodies') }}
             </button>
             <div *ngFor="let theme of premiumThemes">
-                <div *ngIf="!isThemePurchased(theme)" class="premium-theme-option">
+                <div *ngIf="!isThemePurchased(theme)">
                     <span>{{ getThemeLabel(theme) }}</span>
                     <button mat-button (click)="purchaseTheme(theme)">
                         {{ 'page.purchase-theme' | transloco }}
