@@ -1,5 +1,6 @@
 package com.example.polyquiz.auth.presentation
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -14,10 +15,12 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -117,20 +120,24 @@ fun UserEditPage(
         Theme.LIGHT to stringResource(R.string.light_theme),
         Theme.DARK to stringResource(R.string.dark_theme)
     )
-    val availableLangs = mapOf("en" to stringResource(R.string.english), "fr" to stringResource(R.string.french))
-    var userHistory by remember { mutableStateOf(
-        UserHistoryInfo(
-            auth = listOf(),
-            match = listOf(),
-            stats = MatchStats(
-                nMatchesPlayed = 0,
-                nMatchesWon = 0,
-                averageGoodAnswersPercentage = 0,
-                averageTime = 0
-            ),
-            intensityGrid = listOf()
+    val availableLangs =
+        mapOf("en" to stringResource(R.string.english), "fr" to stringResource(R.string.french))
+    var userHistory by remember {
+        mutableStateOf(
+            UserHistoryInfo(
+                auth = listOf(),
+                match = listOf(),
+                stats = MatchStats(
+                    nMatchesPlayed = 0,
+                    nMatchesWon = 0,
+                    averageGoodAnswersPercentage = 0,
+                    averageTime = 0
+                ),
+                intensityGrid = listOf()
+            )
         )
-    ) }
+    }
+    val historyData = userHistory
     LaunchedEffect(authViewModel.getUserId()) {
         authViewModel.getUserId().let { uid ->
             HistoryService.getHistoryById(uid, onSuccess = { history ->
@@ -171,11 +178,18 @@ fun UserEditPage(
         authViewModel.deleteUser()
         navigateToLogin()
     }
+
     fun saveUserProfile(): Boolean {
         var usernameUpdate: String = ""
         var avatarURLUpdate: String = ""
-        var isUpdated = false
+
+        // Flag used to tell us if something was updated or not
+        var isUpdated: Boolean = false
+
+        // To hide the keyboard in case it's open
         keyboardController?.hide()
+
+        // Change username
         if (initialUsername != username) {
             usernameUpdate = username
             initialUsername = username
@@ -183,6 +197,8 @@ fun UserEditPage(
         } else {
             Log.d("Save UserProfile", "Username has not changed.")
         }
+
+        // Save avatar image
         val capturedImage = cameraViewModel.state.value.capturedImage
         if (!isPresetAvatar && capturedImage != null) {
             Log.d("UserEditPage", "Saving new stuff")
@@ -227,6 +243,8 @@ fun UserEditPage(
         } else {
             Log.d("Save UserProfile", "Theme was not changed")
         }
+
+        // Change app language
         if (initialLang != currentLang) {
             isUpdated = true
             translationService.setLanguage(currentLang)
@@ -237,21 +255,13 @@ fun UserEditPage(
         } else {
             Log.d("Save UserProfile", "Lang was not changed")
         }
+
+        // Send snackbar if updated
         if (isUpdated) {
             authViewModel.setProfileUpdated(isUpdated)
         }
         return isUpdated
     }
-    val historyData = userHistory
-    Button(
-        onClick = { navigateToHome() },
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary
-        )
-    ) {
-        Text(text = stringResource(R.string.home_page))
-
     // Delete dialog
     when {
         openDeleteDialog.value -> {
@@ -265,6 +275,7 @@ fun UserEditPage(
             )
         }
     }
+
     Row(
         horizontalArrangement = Arrangement.spacedBy(26.dp),
         modifier = Modifier
@@ -279,13 +290,16 @@ fun UserEditPage(
     ) {
         ChatComponent(modifier = modifier, authViewModel = authViewModel)
         Box(
-            // TODO : Check alignment
-            contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxSize()
-                .imePadding()
+                .navigationBarsPadding()
         ) {
-            Column {
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .imePadding()
+                    .verticalScroll(rememberScrollState())
+            ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -330,7 +344,10 @@ fun UserEditPage(
                             } else {
                                 if (avatarURL.isNotEmpty()) {
                                     AvatarPlaceholder(128.dp, avatarURL)
-                                    Log.d("UserEditPage", "Showing avatar from url : $avatarURL")
+                                    Log.d(
+                                        "UserEditPage",
+                                        "Showing avatar from url : $avatarURL"
+                                    )
                                 } else {
                                     AvatarPlaceholder(128.dp, PresetAvatar.DEFAULT.value)
                                 }
@@ -473,7 +490,10 @@ fun UserEditPage(
                 ) {
                     Text(text = stringResource(R.string.delete_user))
                 }
+
+
                 Spacer(modifier = Modifier.height(16.dp))
+
                 Text(
                     text = stringResource(R.string.statistics),
                     fontSize = 30.sp,
@@ -487,9 +507,9 @@ fun UserEditPage(
                     modifier = Modifier
                         .width(700.dp)
                         .fillMaxWidth()
-                        .padding(8.dp) ,
+                        .padding(8.dp),
 
-                ) {
+                    ) {
                     Column(modifier = Modifier.padding(20.dp)) {
                         Row(
                             modifier = Modifier
@@ -500,7 +520,7 @@ fun UserEditPage(
                                 .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
 
-                        ) {
+                            ) {
                             Text(text = stringResource(R.string.matches_played))
                             Text(text = historyData.stats.nMatchesPlayed.toString())
                         }
@@ -525,7 +545,7 @@ fun UserEditPage(
                                 .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(text = stringResource(R.string.avg_good_answers_percentage) )
+                            Text(text = stringResource(R.string.avg_good_answers_percentage))
                             Text(text = "${historyData.stats.averageGoodAnswersPercentage} %")
                         }
                         Row(
@@ -551,11 +571,11 @@ fun UserEditPage(
                 IntensityGrid(historyData.intensityGrid)
                 ElevatedCard(
                     colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFFEBEDF0)
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(5.dp)
+                        .padding(5.dp, end = 26.dp)
                         .height(40.dp)
                 ) {
                     Row(
@@ -590,7 +610,7 @@ fun UserEditPage(
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(5.dp)
+                            .padding(5.dp, end = 26.dp)
                             .height(40.dp)
                     ) {
                         Row(
@@ -618,8 +638,9 @@ fun UserEditPage(
                             )
                         }
                     }
+                    Spacer(modifier = Modifier.height(8.dp))
 
-            }
+                }
                 Text(
                     text = stringResource(R.string.auth_history),
                     fontSize = 30.sp,
@@ -629,7 +650,7 @@ fun UserEditPage(
 
                 ElevatedCard(
                     colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFFEBEDF0)
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -674,7 +695,9 @@ fun UserEditPage(
                                 modifier = Modifier.weight(1f)
                             )
                             Text(
-                                text = if (item.isLogin) stringResource(R.string.sign_in) else stringResource(R.string.sign_out),
+                                text = if (item.isLogin) stringResource(R.string.sign_in) else stringResource(
+                                    R.string.sign_out
+                                ),
                                 modifier = Modifier.weight(1f)
                             )
                         }
@@ -685,6 +708,7 @@ fun UserEditPage(
         }
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -771,7 +795,11 @@ fun TemporaryAvatar(avatarSize: Dp, bitmap: Bitmap?) {
 }
 
 @Composable
-fun ClickableAvatarPlaceholder(avatarSize: Dp, imageUrl: String, onClickAvatar: (String) -> Unit) {
+fun ClickableAvatarPlaceholder(
+    avatarSize: Dp,
+    imageUrl: String,
+    onClickAvatar: (String) -> Unit
+) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -845,3 +873,4 @@ fun DeleteDialog(
         }
     )
 }
+

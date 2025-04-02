@@ -134,15 +134,14 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
         Column(
             verticalArrangement = Arrangement.SpaceAround,
         ) {
-            Row {
-                Text(
-                    text = username,
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight(800),
-                    modifier = Modifier.padding(20.dp, 20.dp, 20.dp, 0.dp)
-                )
-                ChatSelectionMenu(selectedChat) { newChat -> selectedChat = newChat }
-            }
+            Text(
+                text = username,
+                fontSize = 30.sp,
+                fontWeight = FontWeight(800),
+                modifier = Modifier.padding(20.dp, 20.dp, 20.dp, 0.dp)
+            )
+            ChatSelectionMenu(selectedChat) { newChat -> selectedChat = newChat }
+
             // REFERENCE: https://youtu.be/P3xQdINdrWY
             // To handle the situation where there would be no message to display.
             messages?.let {
@@ -325,7 +324,7 @@ fun ChatSelectionMenu(selectedChat: String, onChatSelected: (String) -> Unit) {
             onValueChange = { },
             label = { Text("Option") },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier.menuAnchor()
+            modifier = Modifier.menuAnchor().fillMaxWidth()
         )
 
         ExposedDropdownMenu(
