@@ -40,7 +40,6 @@
                 <div class="buttons-container">
                     <button
                         class="submit-button"
-                        color="basic"
                         mat-raised-button
                         (click)="gameModificationService.handleSubmit()"
                         [disabled]="gameModificationService.gameForm.invalid || game.questions.length === 0"
