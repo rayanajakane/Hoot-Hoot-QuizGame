@@ -41,7 +41,7 @@
 
                 <div id="question">
                     <div id="question-text-container" [ngClass]="this.currentQuestion.pictureUrl !== '' ? 'two-columns' : 'one-column'">
-                        <h1 class="question-text">{{ this.currentQuestion!.text }}</h1>
+                        <h1>{{ this.currentQuestion!.text }}</h1>
                         <img
                             *ngIf="this.currentQuestion.pictureUrl !== '' && !this.matchRoomService.isCooldown"
                             src="{{ this.currentQuestion.pictureUrl }}"
