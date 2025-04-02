@@ -1,21 +1,33 @@
 package com.example.polyquiz.match.presentation
 
+import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.example.polyquiz.R
 import com.example.polyquiz.constants.MatchContext
+import com.example.polyquiz.constants.PresetAvatar
+import com.example.polyquiz.core.storage.ImageStorage
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.Player
@@ -61,7 +73,7 @@ fun PlayersListComponent(
 
         LazyColumn(modifier = Modifier.weight(1f)) {
             items(players) { player ->
-                PlayerCard(player, context)
+                PlayerCard(Modifier, player, player.photoUrl, context)
             }
         }
 
@@ -105,7 +117,13 @@ fun SortOptions(
 }
 
 @Composable
-fun PlayerCard(player: Player, context: MatchContextService) {
+fun PlayerCard(
+    modifier: Modifier,
+    player: Player,
+    url: String,
+    context: MatchContextService,
+    withAvatar: Boolean = false
+) {
     Card(
         shape = RoundedCornerShape(3.dp),
         colors = CardColors(
@@ -113,14 +131,27 @@ fun PlayerCard(player: Player, context: MatchContextService) {
             contentColor = MaterialTheme.colorScheme.onSurface,
             disabledContainerColor = MaterialTheme.colorScheme.surfaceBright,
             disabledContentColor = MaterialTheme.colorScheme.onSurface
-        )
+        ),
+        modifier = modifier
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
+            if (withAvatar) {
+                AsyncImage(
+                    model = url,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape),
+                    placeholder = rememberAsyncImagePainter(model = PresetAvatar.DEFAULT.value)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+            }
             Text(
                 text = player.username,
                 fontSize = 16.sp,
