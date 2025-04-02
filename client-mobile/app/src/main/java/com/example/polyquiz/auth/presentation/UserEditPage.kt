@@ -32,6 +32,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoFixNormal
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
@@ -44,6 +46,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Text
@@ -77,6 +80,8 @@ import coil.compose.AsyncImage
 import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.auth.domain.HistoryService
+import com.example.polyquiz.auth.domain.UsernameSuggestionService
+import com.example.polyquiz.auth.domain.UsernameSuggestionService.showUsernameDialog
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.MatchStats
 import com.example.polyquiz.constants.PresetAvatar
@@ -167,9 +172,6 @@ fun UserEditPage(
         theme = selectedTheme
         Log.d("Theme changer", "Selected $theme")
     }
-
-    var showUsernameDialog by remember { mutableStateOf(false) }
-
     DisposableEffect(Unit) {
         onDispose {
             authViewModel.setProfileUpdated(false)
@@ -428,7 +430,37 @@ fun UserEditPage(
                                 isError = usernameError.isNotEmpty(),
                                 singleLine = true,
                                 label = { Text(stringResource(R.string.username)) },
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier.fillMaxWidth(),
+                                trailingIcon = {
+                                    if (showUsernameDialog) {
+                                        UsernameSuggestionDialog(
+                                            onDismiss = {
+                                                showUsernameDialog = false
+                                            },
+                                            onUsernameSelected = { selectedUsername ->
+                                                authViewModel.updateUsername(
+                                                    selectedUsername,
+                                                    context,
+                                                )
+                                                UsernameSuggestionService.showUsernameDialog = false
+                                            }
+                                        )
+                                    }
+                                    IconButton(
+                                        onClick = { UsernameSuggestionService.showUsernameDialog = true},
+
+                                        modifier = Modifier
+                                            .size(40.dp)
+                                            .clip(CircleShape)
+                                    )
+                                    {
+                                        Icon(
+                                            imageVector = Icons.Default.AutoFixNormal,
+                                            contentDescription = null
+                                        )
+                                    }
+
+                                }
                             )
                             if (usernameError.isNotEmpty()) {
                                 Text(text = usernameError, color = Color.Red)

@@ -214,7 +214,10 @@ fun SignupPage(
                                             UsernameSuggestionService.showUsernameDialog = false
                                         },
                                         onUsernameSelected = { selectedUsername ->
-                                           // username = selectedUsername
+                                            authViewModel.setAndUpdateUsername(
+                                                selectedUsername,
+                                                context,
+                                            )
                                             UsernameSuggestionService.showUsernameDialog = false
                                         }
                                     )
