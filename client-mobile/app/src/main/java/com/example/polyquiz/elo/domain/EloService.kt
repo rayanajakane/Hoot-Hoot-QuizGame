@@ -3,6 +3,7 @@ package com.example.polyquiz.elo.domain
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.polyquiz.constants.Ranking
+import com.example.polyquiz.match.domain.Player
 import com.example.vanillaprototype.socket.SocketHandler
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
@@ -12,7 +13,8 @@ data class EloResponse(val mu: Double)
 
 object EloService {
     private val mSocket = SocketHandler.getSocket()
-    var _rankings = MutableLiveData<List<Ranking>>()
+    var _rankings = MutableLiveData<List<Player>>()
+//    var rankings = MutableLiveData<List<Player>>()
     var currentRating = MutableLiveData<Int>()
 
     fun listenForEloEvents() {
@@ -31,12 +33,15 @@ object EloService {
                     Gson().fromJson(args[0].toString(), Array<Ranking>::class.java).toList()
                 val sortedRankings = rankingsList
                     .sortedByDescending { it.rating }
-                    .map { it.copy(rating = it.rating) }
+                    .map { ranking -> Player(id = "",username = ranking.username, score = ranking.rating.roundToInt(), bonusCount = 0, isPlaying = false, isChatActive = false, state = "") } // Convert to Player
+
 
                 _rankings.postValue(sortedRankings)
+
             }
         }
     }
+
 
     fun getRankings() {
         mSocket.emit(EloEvents.GET_RANKINGS.value)
