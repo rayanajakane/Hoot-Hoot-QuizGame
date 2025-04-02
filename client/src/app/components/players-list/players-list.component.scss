@@ -11,9 +11,6 @@
 h2 {
     margin-left: 1rem;
 }
-.player-card:first-of-type {
-    margin-top: 5rem;
-}
 
 #sort-options {
     margin: 1rem;
@@ -46,25 +43,25 @@ h2 {
     gap: 0.5rem;
 }
 
-.no-interaction {
-    color: rgb(211, 31, 64);
-}
+// .no-interaction {
+//     color: rgb(211, 31, 64);
+// }
 
-.first-interaction {
-    color: rgb(228, 189, 18);
-}
+// .first-interaction {
+//     color: rgb(228, 189, 18);
+// }
 
-.final-answer {
-    color: rgb(21, 143, 33);
-}
+// .final-answer {
+//     color: rgb(21, 143, 33);
+// }
 
 .exit {
     color: #000;
 }
 
-.default {
-    color: rgb(0, 0, 0, 0.5);
-}
+// .default {
+//     color: rgb(0, 0, 0, 0.5);
+// }
 
 .chat-toggle-button {
     border: transparent;

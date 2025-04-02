@@ -35,6 +35,7 @@ object MatchRoomService {
     var isLocked by mutableStateOf(false)
     var gameTitle: String = ""
     var gameDuration: Int = 0
+    var partyConfig by mutableStateOf(PartyConfig(false, false))
     var currentQuestion by mutableStateOf<Question?>(null)
     var isHostPlaying by mutableStateOf(true)
     var isCooldown by mutableStateOf(false)
@@ -99,13 +100,19 @@ object MatchRoomService {
         isTimeToNavigateToResults= false
     }
 
-    fun createRoom(gameId: String, hostId: String, hostUsername: String, isClassicMode: Boolean = true, isFriendsOnly: Boolean = false) {
+    fun createRoom(gameId: String, hostId: String, hostUsername: String, isClassicMode: Boolean = true, partyConfigs: PartyConfig = PartyConfig(false, false)) {
+        val partyConfisObject = JSONObject().apply {
+            put("isFriendsOnly", partyConfigs.isFriendsOnly)
+            put("isEntryFeeRequired", partyConfigs.isEntryFeeRequired)
+            put("entryFeeAmount", partyConfigs.entryFeeAmount)
+        }
         val data = JSONObject().apply {
             put("gameId", gameId)
             put("hostId", hostId)
-            put("isFriendsOnly", isFriendsOnly)
+            put("partyConfig", partyConfisObject)
             put("isClassicMode", isClassicMode)
         }
+        println("data : $data")
 
         socket.emit(MatchEvents.CREATE_ROOM.value, data, Ack { args ->
             if (args.isNotEmpty()) {
@@ -113,6 +120,7 @@ object MatchRoomService {
                 matchRoomCode = response.getString("code")
                 username = hostUsername
                 userId = hostId
+                partyConfig = partyConfigs
                 this.hostId = hostId
                 sendPlayersData(matchRoomCode)
             }
@@ -276,6 +284,7 @@ object MatchRoomService {
 
     fun onRouteToResultsPage() {
         socket.on(MatchEvents.ROUTE_TO_RESULTS_PAGE.value) { _ ->
+            println("Navigating to results page")
             isResults = true
             isTimeToNavigateToResults = true
             //navigateToResultsPage()

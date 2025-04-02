@@ -1,25 +1,55 @@
-<div id="main-container">
+<div id="main-container" *transloco="let t">
     <div id="estimated-answer-area" *ngIf="matchContextService.getContext() !== contextOptions.HostView">
         <p *ngIf="answerService.showFeedback" class="correct-answer">
-            Réponse correcte : {{ answerService.feedback.correctAnswer }}. La marge est de +/-
-            {{ matchRoomService.currentQuestion.estimatedParameters?.margin }}
+            {{
+                t('question-area.good-answer-qre', {
+                    answer: answerService.feedback.correctAnswer,
+                    margin: matchRoomService.currentQuestion.estimatedParameters?.margin
+                })
+            }}
         </p>
         <p *ngIf="!answerService.showFeedback" class="instruction">
-            Choisissez une valeur estimée. La marge est de +/- {{ matchRoomService.currentQuestion.estimatedParameters?.margin }}
+            {{ t('question-area.choose-estimated', { margin: matchRoomService.currentQuestion.estimatedParameters?.margin }) }}
         </p>
 
         <mat-form-field appearance="outline" class="number-input">
-            <mat-label>Réponse</mat-label>
+            <mat-label>{{ t('question-area.answer') }}</mat-label>
             <input matInput type="text" [formControl]="currentLongAnswerControl" (input)="onInputChange()" [class.error]="isOutOfBounds" />
         </mat-form-field>
 
-        <p *ngIf="isOutOfBounds" class="error-message">Valeur hors limites ! Doit être entre {{ lowerBound }} et {{ upperBound }}</p>
+        <p *ngIf="isOutOfBounds" class="error-message">{{ t('question-area.out-of-bounds', { lowerBound: lowerBound, upperBound: upperBound }) }}</p>
 
         <div class="slider-container">
             <span class="bound-label">{{ lowerBound }}</span>
             <mat-slider class="full-width" [min]="lowerBound" [max]="upperBound" [step]="1"
             [value]="matchContextService.getContext() === contextOptions.CheaterView ? answerService.feedback.correctAnswer : 0">
                 <input matSliderThumb [formControl]="currentLongAnswerControl" (input)="onSliderChange($event)" />
+            </mat-slider>
+            <span class="bound-label">{{ upperBound }}</span>
+        </div>
+    </div>
+    <div id="estimated-answer-area" *ngIf="matchContextService.getContext() === contextOptions.HostView">
+        <mat-form-field appearance="outline" class="number-input">
+            <mat-label>Réponse</mat-label>
+            <input
+                matInput
+                type="text"
+                disabled
+                placeholder="{{ matchRoomService.currentAnswers[0] }}"
+                value="{{ matchRoomService.currentAnswers[0] }}"
+            />
+        </mat-form-field>
+
+        <div class="slider-container">
+            <span class="bound-label">{{ lowerBound }}</span>
+            <mat-slider class="full-width" [min]="lowerBound" [max]="upperBound" [step]="1">
+                <input
+                    matSliderThumb
+                    disabled
+                    placeholder="{{ matchRoomService.currentAnswers[0] }}"
+                    value="{{ matchRoomService.currentAnswers[0] }}"
+                    class="mat-slider-thumb"
+                />
             </mat-slider>
             <span class="bound-label">{{ upperBound }}</span>
         </div>

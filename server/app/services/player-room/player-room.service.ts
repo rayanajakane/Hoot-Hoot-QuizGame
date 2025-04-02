@@ -2,6 +2,7 @@ import { BANNED_PLAYER } from '@app/constants/match-login-errors';
 import { MultipleChoiceAnswer } from '@app/model/answer-types/multiple-choice-answer/multiple-choice-answer';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
 import { Player } from '@app/model/schema/player.schema';
+import { FirebaseAuthService } from '@app/modules/firebase/firebase-auth/firebase-auth.service';
 import { HistoryService } from '@app/services/history/history.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { AnswerCorrectness } from '@common/constants/answer-correctness';
@@ -21,6 +22,7 @@ export class PlayerRoomService {
     constructor(
         private readonly matchRoomService: MatchRoomService,
         private historyService: HistoryService,
+        private authService: FirebaseAuthService,
     ) {}
 
     getPlayers(code: string): Player[] {
@@ -39,7 +41,7 @@ export class PlayerRoomService {
     recalculateScores(roomCode: string) {
         const totalVotes = Object.values(this.matchRoomService?.votesCount).reduce((total, vote) => total + vote, 0);
         const cheaterUsername = this.matchRoomService.cheaterPlayer.username;
-        
+
         if (totalVotes === this.getPlayers(roomCode).length) {
             const cheaterPlayer = this.matchRoomService.cheaterPlayer;
 
@@ -88,14 +90,17 @@ export class PlayerRoomService {
         }
     }
 
-    addPlayer(playerSocket: Socket, matchRoomCode: string, newid: string, newUsername: string): Player {
+    async addPlayer(playerSocket: Socket, matchRoomCode: string, newid: string, newUsername: string): Promise<Player> {
         if (this.getUsernameErrors(matchRoomCode, newUsername)) {
             return undefined;
         }
 
+        const photoUrl = await this.authService.getUserPhotoUrl(newid);
+
         const newPlayer: Player = {
             username: newUsername,
             id: newid,
+            photoUrl,
             answer: new MultipleChoiceAnswer(),
             score: 0,
             answerCorrectness: AnswerCorrectness.WRONG,

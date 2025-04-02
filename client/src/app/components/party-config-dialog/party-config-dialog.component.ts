@@ -6,7 +6,6 @@ import { PartyConfig } from '@common/interfaces/party-config';
     selector: 'app-party-config-dialog',
     templateUrl: './party-config-dialog.component.html',
     styleUrls: ['./party-config-dialog.component.scss'],
-    standalone: false,
 })
 export class PartyConfigDialogComponent {
     partyConfig: PartyConfig;
@@ -16,8 +15,12 @@ export class PartyConfigDialogComponent {
         private readonly dialogRef: MatDialogRef<PartyConfigDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: PartyConfig,
     ) {
-        dialogRef.disableClose = true;
+        // dialogRef.disableClose = true; // Deactivated for UX purpose.
         this.partyConfig = { ...data };
+    }
+
+    get isValid(): boolean {
+        return !this.partyConfig.isEntryFeeRequired || (this.partyConfig.entryFeeAmount != null && this.partyConfig.entryFeeAmount >= 0);
     }
 
     onCancel(): void {
@@ -25,6 +28,8 @@ export class PartyConfigDialogComponent {
     }
 
     onConfirm(): void {
-        this.dialogRef.close(this.partyConfig);
+        if (this.isValid) {
+            this.dialogRef.close(this.partyConfig);
+        }
     }
 }

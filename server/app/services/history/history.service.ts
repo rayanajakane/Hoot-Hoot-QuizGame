@@ -45,11 +45,10 @@ export class HistoryService {
         historyMatchItems.forEach((historyMatchItem) => {
             if (historyMatchItem.end.getFullYear() === year) {
                 // Reference: https://stackoverflow.com/questions/8619879/javascript-calculate-the-day-of-the-year-1-366
-                const timeDifference =
-                    historyMatchItem.end.getTime() -
-                    yearStart.getTime() +
-                    (yearStart.getTimezoneOffset() - historyMatchItem.end.getTimezoneOffset()) * 60 * 1000;
-                const index = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+                const date = historyMatchItem.end;
+                const index =
+                    (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(date.getFullYear(), 0, 0)) / 24 / 60 / 60 / 1000 - 1;
+
                 matchCount[index]++;
             }
         });

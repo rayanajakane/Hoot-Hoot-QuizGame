@@ -73,7 +73,7 @@ export class MatchGateway implements OnGatewayDisconnect {
                 console.log('Returning balance', currPlayerBalance);
                 this.server.to(socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
             }
-            const newPlayer = this.playerRoomService.addPlayer(socket, data.roomCode, data.userId, data.username);
+            const newPlayer = await this.playerRoomService.addPlayer(socket, data.roomCode, data.userId, data.username);
             this.returnAllMatches();
             return { code: data.roomCode, username: newPlayer.username, userId: newPlayer.id };
         }
@@ -308,7 +308,7 @@ export class MatchGateway implements OnGatewayDisconnect {
                 this.server.in(socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
             } else if (isOnePlayerLeft) {
                 this.timeService.expireTimer(roomCode, this.server, ExpiredTimerEvents.QuestionTimerExpired);
-                this.routeToResultsPage({} as Socket, roomCode);
+                await this.routeToResultsPage({} as Socket, roomCode);
             }
         }
         socket.leave(roomCode);

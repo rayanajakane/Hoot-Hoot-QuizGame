@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
+import { PresetAvatar } from '@app/constants/image-constants';
 import { Player } from '@app/interfaces/player';
 import { ConfettiService } from '@app/services/confetti/confetti.service';
 import { HistogramService } from '@app/services/histogram/histogram.service';
@@ -17,6 +18,8 @@ export class ResultsPageComponent implements OnInit, OnDestroy {
     players: Player[] = [];
     currentQuestionIndex: number = 0;
     histogramsGame: Histogram[] = [];
+
+    defaultAvatar = PresetAvatar.Default;
 
     private histogramSubscriptions: Subscription[] = [];
     constructor(

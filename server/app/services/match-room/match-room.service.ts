@@ -221,7 +221,7 @@ export class MatchRoomService {
         this.setQuestionStrategy(matchRoom);
         this.defineCurrentQuestionAnswer(matchRoomCode, firstQuestion);
         this.removeAnswerField(firstQuestion);
-        matchRoom.hostSocket.send(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
+        server.to(matchRoom.hostSocket.id).emit(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
         const isClassicMode: boolean = matchRoom.isClassicMode;
         server.in(matchRoomCode).emit(MatchEvents.BeginQuiz, { firstQuestion, gameDuration, isClassicMode });
         this.timeService.startTimer(server, matchRoomCode, matchRoom.questionDuration, ExpiredTimerEvents.QuestionTimerExpired);
@@ -243,7 +243,7 @@ export class MatchRoomService {
 
         this.removeAnswerField(nextQuestion);
         server.in(matchRoomCode).emit(MatchEvents.GoToNextQuestion, nextQuestion);
-        matchRoom.hostSocket.send(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
+        server.to(matchRoom.hostSocket.id).emit(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
         this.timeService.startTimer(server, matchRoomCode, matchRoom.questionDuration, ExpiredTimerEvents.QuestionTimerExpired);
     }
 

@@ -13,6 +13,14 @@ export class UpdateGameDto {
 
     @ApiProperty()
     @IsString()
+    authorId: string;
+
+    @ApiProperty()
+    @IsString()
+    authorName: string;
+
+    @ApiProperty()
+    @IsString()
     title: string;
 
     @ApiProperty()

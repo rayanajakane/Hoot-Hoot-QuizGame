@@ -1,9 +1,11 @@
 #main-container {
     margin-left: 20vw;
+    z-index: 1000;
 }
 
 .bank-container {
     background-color: white;
+    z-index: 1000;
 }
 
 .sidenav-active {
@@ -188,6 +190,5 @@ mat-sidenav {
 #header-bar {
     position: fixed;
     z-index: 999;
-    background-color: #fafafa;
     width: 75vw;
 }

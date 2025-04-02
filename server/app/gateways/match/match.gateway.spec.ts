@@ -106,7 +106,7 @@ describe('MatchGateway', () => {
         matchRoomSpy.getRoomCodeErrors.returns('');
         matchRoomSpy.getRoom.returns(MOCK_MATCH_ROOM);
         playerRoomSpy.getUsernameErrors.returns('');
-        playerRoomSpy.addPlayer.returns(MOCK_PLAYER);
+        playerRoomSpy.addPlayer.resolves(MOCK_PLAYER);
         const result = await gateway.joinRoom(socket, MOCK_USER_INFO);
         expect(socket.join.calledOnce).toBeTruthy();
         expect(playerRoomSpy.addPlayer.calledOnce).toBeTruthy();

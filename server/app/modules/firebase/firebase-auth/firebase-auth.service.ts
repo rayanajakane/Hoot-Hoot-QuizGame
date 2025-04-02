@@ -21,7 +21,7 @@ export class FirebaseAuthService {
     }
 
     async getUserPhotoUrl(uid: string) {
-        this.getUserById(uid).then((userRecord: UserRecord) => {
+        return this.getUserById(uid).then((userRecord: UserRecord) => {
             return userRecord.photoURL ? userRecord.photoURL : '';
         });
     }

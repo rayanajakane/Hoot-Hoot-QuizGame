@@ -28,7 +28,7 @@ fun PlayersListComponent(
     modifier: Modifier = Modifier,
     extraContent: @Composable () -> Unit = {}
 ) {
-    val username = matchRoomService.retrieveUsername()
+    val userId = matchRoomService.userId
     var sortBy by remember { mutableStateOf("score") }
     var sortOrder by remember { mutableStateOf("descending") }
 
@@ -54,7 +54,7 @@ fun PlayersListComponent(
     ) {
         Text(text = "Joueurs", fontSize = 20.sp, modifier = Modifier.padding(8.dp))
 
-        if (username == "Organisateur") {
+        if (userId == matchRoomService.hostId) {
             SortOptions(sortBy, sortOrder, onSortChange = { sortBy = it }, onOrderChange = { sortOrder = it })
         }
 
@@ -115,18 +115,7 @@ fun PlayerCard(player: Player, context: MatchContextService) {
         Text(
             text = player.username,
             fontSize = 16.sp,
-            color = if (context.getContext() == MatchContext.HOSTVIEW) {
-                when {
-                    !player.isPlaying -> Color.Gray
-                    player.state == "no-interaction" -> AndroidGreen
-                    player.state == "first-interaction" -> GoldenYellow
-                    player.state == "final-answer" -> BrightRed
-                    player.state == "exit" -> Color.Black
-                    else -> Color.Black.copy(alpha = 0.5f)
-                }
-            } else {
-                Color.Black
-            }
+            color = Color.Black
         )
         Column(horizontalAlignment = Alignment.End) {
             Text(text = "${player.score} pts", fontSize = 14.sp)

@@ -1,8 +1,12 @@
 .right-panel {
-    position: absolute;
+    position: fixed;
     top: 1rem;
     right: 1rem;
     text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    z-index: 1;
 }
 
 .balance-container {
@@ -10,7 +14,6 @@
     align-items: center;
     justify-content: flex-end;
     margin-top: 0.5rem;
-    background-color: #e8eaf6;
     border-radius: 8px;
     padding: 0.5rem 1rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -19,13 +22,11 @@
 
 .balance-icon {
     margin-right: 0.5rem;
-    color: #ff4081;
 }
 
 .balance-text {
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: bold;
-    color: #1a237e;
 }
 
 .two-columns-layout {
@@ -36,11 +37,10 @@
 }
 
 app-chat {
-    flex: 0 0 25%;
-    max-width: 25%;
+    flex: 0 0 20%;
+    max-width: 20%;
 }
 
 .second-column {
     flex: 1;
-    margin-right: 15rem;
 }

@@ -1,40 +1,26 @@
 <div id="main-container">
     <h1>Résultats</h1>
-    <!-- <div id="info-container">
-        <mat-paginator
-            #paginator
-            class="demo-paginator"
-            (page)="handlePageEvent($event)"
-            [length]="histogramsGame.length"
-            [pageSize]="1"
-            [disabled]="false"
-            [showFirstLastButtons]="true"
-            [pageSizeOptions]="[1]"
-            [hidePageSize]="false"
-            [pageIndex]="currentQuestionIndex"
-            aria-label="Select page"
-        >
-        </mat-paginator>
-        <div *ngIf="isQuestionMultipleChoice()">
-            <app-histogram
-                *ngIf="this.histogramsGame.length !== 0"
-                [isResultsPage]="true"
-                [currentHistogram]="currentMultipleChoiceHistogram"
-            ></app-histogram>
-        </div>
-        <div *ngIf="isQuestionLongAnswer()">
-            <app-long-answer-histogram
-                *ngIf="this.histogramsGame.length !== 0"
-                [isResultsPage]="true"
-                [currentLongAnswerHistogram]="currentLongAnswerHistogram"
-            ></app-long-answer-histogram>
-        </div>
+    <div id="players-list">
+        <mat-card *ngFor="let player of this.players | sortPlayers: 'score' : 'descending'" class="player-card">
+            <div class="username-avatar-container">
+                <div class="avatar-container">
+                    <div class="avatar">
+                        <img src="{{ player.photoUrl ? player.photoUrl : defaultAvatar }}" alt="" />
+                    </div>
+                </div>
+                <p [ngClass]="[player.isPlaying ? '' : 'inactive-player']">{{ player.username }}</p>
+            </div>
+            <div class="player-performance">
+                <p>{{ player.score }} pts</p>
+                <p>({{ player.bonusCount }}✨)</p>
+            </div>
+        </mat-card>
     </div>
     <div class="controls-container">
         <button mat-raised-button class="exit-button" color="primary" (click)="handleDisconnect()" routerLink="/home">
             <mat-icon class="material-icons">logout</mat-icon>
             <p>QUITTER</p>
         </button>
-    </div> -->
+    </div>
 </div>
 <app-players-list [players]="players" [canHostToggleChatState]="false"></app-players-list>

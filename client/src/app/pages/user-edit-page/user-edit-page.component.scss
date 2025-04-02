@@ -95,7 +95,6 @@ img {
 }
 
 .header-card {
-    background-color: rgb(0, 0, 0, 0.05);
     font-weight: 500;
 }
 
@@ -172,17 +171,34 @@ img {
 }
 
 .square {
-    background-color: #ebedf0;
+    background-color: #cdcdcd;
 }
 
 .square1 {
-    background-color: #c6e48b;
+    background-color: red;
 }
 
 .square2 {
-    background-color: #7bc96f;
+    background-color: orange;
 }
 
 .square3 {
-    background-color: #196127;
+    background-color: yellow;
+}
+
+#grid-legend-container {
+    display: flex;
+    justify-content: flex-start;
+}
+
+#grid-legend {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.days p {
+    display: none;
 }
