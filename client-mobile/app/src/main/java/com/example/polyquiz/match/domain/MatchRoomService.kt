@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.constants.ChatEvents
 import com.example.polyquiz.constants.Route
+import com.example.polyquiz.constants.VotingData
 
 @SuppressLint("StaticFieldLeak")
 object MatchRoomService {
@@ -35,7 +36,7 @@ object MatchRoomService {
     var isLocked by mutableStateOf(false)
     var gameTitle: String = ""
     var gameDuration: Int = 0
-    var partyConfig by mutableStateOf(PartyConfig(false, false))
+    var partyConfig by mutableStateOf(PartyConfig(false, false, 0, false, false))
     var currentQuestion by mutableStateOf<Question?>(null)
     var isHostPlaying by mutableStateOf(true)
     var isCooldown by mutableStateOf(false)
@@ -44,6 +45,16 @@ object MatchRoomService {
     var userId by mutableStateOf("")
     var hostId by mutableStateOf("")
     var errorMsg by mutableStateOf("")
+    var cheaterPlayer by mutableStateOf(Player(
+        "", "", 0, 0, false,
+        isChatActive = false,
+        state = "",
+    ))
+
+    var isCheaterMode by mutableStateOf(false)
+    var votesData by mutableStateOf(VotingData("", 0, listOf("")))
+
+    var totalVotes: MutableList<VotingData> = mutableListOf()
 
     private var matchRoomCode: String = ""
     private var hasEnteredRoom = false
@@ -71,6 +82,11 @@ object MatchRoomService {
             onHostQuit()
             onPlayerKick()
             handleError()
+            onMatchCheaterModeStarted()
+            onVoting()
+            onVotingResults()
+            onSelectedCheater()
+
 //            onPlayerChatStateToggle()
             onRouteToResultsPage()
 //            timeToGoToWaitPage = true
@@ -98,6 +114,69 @@ object MatchRoomService {
         hasBeenKickedOut = true
         Log.d("Disconnect from room WaitPage","Called disconnectFromRoom, hostId=$hostId" )
         isTimeToNavigateToResults= false
+    }
+
+    fun sendBackVotesResult(voteData: VotingData) {
+        socket.send(MatchEvents.SEND_VOTES_RESULTS, voteData)
+    }
+
+    fun startMatchCheaterMode(){
+        isCheaterMode = true;
+        isMatchStarted = true;
+        socket.send(MatchEvents.START_MATCH_CHEATER_MODE, matchRoomCode)
+    }
+
+    fun onSelectedCheater(){
+        socket.on(MatchEvents.SEND_CHEATER.value){ args ->
+            getPlayerByUsername(args.toString())?.let { player ->
+                cheaterPlayer = player
+            }
+        }
+    }
+
+    fun onMatchCheaterModeStarted() {
+        socket.on(MatchEvents.CHEATER_MODE_MATCH_STARTING.value) { args ->
+            if (args.isNotEmpty()) {
+                val data = args[0] as JSONObject
+                if (data.optBoolean("start", false)) {
+                    isMatchStarted = true
+                }
+                if (data.has("gameTitle")) {
+                    gameTitle = data.getString("gameTitle")
+                }
+            }
+        }
+    }
+
+    fun onVoting() {
+        socket.on(MatchEvents.SHOW_VOTING_DIALOG.value) {
+
+        }
+    }
+
+    fun voteOnCheater() {
+        socket.send(MatchEvents.VOTE_ON_CHEATER, matchRoomCode)
+    }
+
+//    fun onCurrentAnswers() {
+//        socket.on(MatchEvents.CURRENT_ANSWERS.value) { answer: List<String> ->
+//            if (username == cheaterPlayer?.username) {
+//                currentAnswers = answer.toMutableList()
+//            }
+//        }
+//    }
+
+    fun onVotingResults() {
+        socket.on(MatchEvents.SEND_BACK_VOTES_RESULTS.value) { args ->
+
+            if (args.isNotEmpty()) {
+                val data = args[0] as JSONObject
+                val gson = Gson()
+                val votingData = gson.fromJson(data.toString(), VotingData::class.java)
+                votesData = votingData
+                totalVotes.add(votingData)
+            }
+        }
     }
 
     fun createRoom(gameId: String, hostId: String, hostUsername: String, isClassicMode: Boolean = true, partyConfigs: PartyConfig = PartyConfig(false, false)) {

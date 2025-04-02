@@ -90,6 +90,17 @@ fun PartyConfigDialog(
                         modifier = Modifier.padding(top = 4.dp)
                     )
                 }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = "Jouer en Mode Tricheur")
+                    Spacer(modifier = Modifier.weight(1f))
+                    Switch(
+                        checked = partyConfig.isCheaterMode,
+                        onCheckedChange = { partyConfig = partyConfig.copy(isCheaterMode = it) }
+                    )
+                }
             }
         },
         confirmButton = {
