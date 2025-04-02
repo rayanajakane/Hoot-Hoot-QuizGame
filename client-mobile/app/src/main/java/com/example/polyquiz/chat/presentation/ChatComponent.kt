@@ -46,12 +46,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -69,6 +71,7 @@ import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.constants.SIZE_CONSTANTS
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -80,12 +83,22 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     var selectedChat by remember {
         mutableStateOf(if (roomCode.isNotEmpty()) "Match" else "General")
     }
+    val coroutineScope = rememberCoroutineScope()
+    Log.d("Chat", "roomcode not empty: ${roomCode.isNotEmpty()}")
     LaunchedEffect(selectedChat) {
         if (selectedChat == "Match") {
             Log.d("chat", "changed channel to ${ChatChannel.ROOM.value}")
             ChatService.channel = ChatChannel.ROOM.value
         } else {
             ChatService.channel = ChatChannel.GENERAL.value
+        }
+    }
+
+    LaunchedEffect(roomCode) {
+        selectedChat = if (roomCode.isNotEmpty()) {
+            "Match"
+        } else {
+            "General"
         }
     }
 
@@ -99,7 +112,10 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     LaunchedEffect(messages?.size) {
         messages?.let { list ->
             if (list.isNotEmpty()) {
-                listState.scrollToItem(list.size - 1)
+                coroutineScope.launch {
+                    Log.d("chat", "list not empty, SCROLL. list size : ${list.size}")
+                    listState.scrollToItem(list.size - 1)
+                }
             }
         }
     }
