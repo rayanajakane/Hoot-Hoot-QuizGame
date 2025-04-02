@@ -20,6 +20,7 @@ import { PartyConfig } from '@common/interfaces/party-config';
 import { translate } from '@jsverse/transloco';
 
 const N_POPULAR_GAMES = 3;
+const MINIMUM_PLAYERS = 3;
 
 @Component({
     selector: 'app-match-creation-page',
@@ -157,13 +158,15 @@ export class MatchCreationPageComponent implements OnInit {
         return true;
     }
 
-    // hasEnoughPlayers(playersCount: number) {
-    //     if (playersCount < MINIMUM_PLAYERS) {
-    //         this.gameIsValidCheaterMode = false;
-    //         return false;
-    //     }
-    //     return true;
-    // }
+    hasEnoughPlayers(playersCount: number) {
+        if (playersCount < MINIMUM_PLAYERS) {
+            this.gameIsValidCheaterMode = false;
+            this.partyConfig.canPlayCheaterMode = false;
+            return false;
+        }
+        this.partyConfig.canPlayCheaterMode = true;
+        return true;
+    }
 
     loadSelectedGame(selectedGame: Game): void {
         this.isRandomGame = false;
