@@ -70,7 +70,7 @@ export class MoneyService {
         return true;
     }
 
-    async getMoneyError(uid: string, amount: number, isDonation: boolean = false): Promise<string> {
+    async getMoneyError(uid: string, amount: number, isDonation: boolean = false): Promise<string[]> {
         const errors: string[] = [];
         const balance = await this.getCurrentBalance(uid);
 
@@ -91,7 +91,7 @@ export class MoneyService {
             }
         }
 
-        return errors.join(' ');
+        return errors;
     }
 
     async rewardPlayers(roomCode: string): Promise<void> {

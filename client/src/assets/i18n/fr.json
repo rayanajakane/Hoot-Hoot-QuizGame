@@ -335,6 +335,9 @@
     "players-list": {
         "players": "Joueurs"
     },
+    "money-errors": {
+        "not-enough-money": "Vous n'avez pas assez d'argent pour effectuer cette transaction."
+    },
     "username-suggestion": {
         "title": "Suggestions de noms d'utilisateurs",
         "regenerate": "Générer d'autres noms",
