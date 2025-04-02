@@ -8,30 +8,35 @@
     position: fixed;
     bottom: 0;
     overflow-y: auto;
+    display: grid;
+    grid-template-rows: 1fr 10fr 1fr;
 }
 
 .header-row {
-    position: absolute;
+    // position: absolute;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-between;
     width: 20vw;
+    margin-bottom: 0;
 }
 
 #header-title {
     margin-left: 1rem;
+    font-size: 1.25rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0rem;
 }
 
 #messages-container {
-    top: 10vh;
-    height: 75vh;
+    // height: 75vh;
     width: 20vw;
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    position: fixed;
+    // position: fixed;
     display: flex;
     align-items: center;
 }
@@ -167,5 +172,5 @@ img {
 }
 
 #channel-field {
-    width: 8.5vw !important;
+    width: 20w !important;
 }

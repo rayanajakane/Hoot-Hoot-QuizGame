@@ -2,7 +2,7 @@
     <div class="header-row">
         <h2 id="header-title">{{ this.authenticationService.userDisplayName }}</h2>
         <div id="channel-field-container">
-            <mat-form-field id="channel-field">
+            <mat-form-field id="channel-field" subscriptSizing="dynamic" [style.width.vw]="20">
                 <mat-label>Option</mat-label>
                 <mat-select [(value)]="channel">
                     <mat-option value="general">General</mat-option>
