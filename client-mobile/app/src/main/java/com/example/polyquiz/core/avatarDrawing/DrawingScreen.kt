@@ -2,13 +2,17 @@ package com.example.polyquiz.core.avatarDrawing
 
 import android.graphics.Bitmap
 import android.graphics.Paint
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -49,17 +53,19 @@ fun DrawingScreen(viewModel: DrawingViewModel, navigateToUserEdit: () -> Unit, u
     ) {
         var canvasSize by remember { mutableStateOf(IntSize.Zero) }
 
-            DrawingCanvas(
-                paths = state.paths,
-                currentPath = state.currentPath,
-                onAction = viewModel::onAction,
-                modifier = Modifier
-                    .size(800.dp)
-                    .onSizeChanged { canvasSize = it }
-            )
+        DrawingCanvas(
+            paths = state.paths,
+            currentPath = state.currentPath,
+            onAction = viewModel::onAction,
+            modifier = Modifier
+                .size(800.dp)
+                .onSizeChanged { canvasSize = it }
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f), RoundedCornerShape(8.dp))
+        )
 
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceBright),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -68,7 +74,11 @@ fun DrawingScreen(viewModel: DrawingViewModel, navigateToUserEdit: () -> Unit, u
                 selectedColor = state.selectedColor,
                 colors = allColors,
                 onSelectColor = { viewModel.onAction(DrawingAction.OnSelectColor(it)) },
-                onClearCanvas = { viewModel.onAction(DrawingAction.OnClearCanvasClick) }
+                onClearCanvas = { viewModel.onAction(DrawingAction.OnClearCanvasClick) },
+//                modifier = Modifier
+//                    .background(MaterialTheme.colorScheme.surfaceVariant)
+//                    .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f), RoundedCornerShape(8.dp))
+
             )
 
             Button(onClick = {
