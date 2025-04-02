@@ -34,7 +34,7 @@ fun IntensityGrid(intensityGrid: List<Number>) {
     calendar.set(java.util.Calendar.DAY_OF_YEAR, 1)
     val startDate = calendar.time
 
-    BoxWithConstraints(Modifier.fillMaxWidth()) {
+    BoxWithConstraints(Modifier.fillMaxWidth().padding(end = 26.dp)) {
         val totalColumns = chunkedData.size
         val spacing = 2.dp
         val totalSpacing = spacing * (totalColumns - 1)
