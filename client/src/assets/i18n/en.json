@@ -61,6 +61,9 @@
         "dark-theme": "Dark theme",
         "light-theme": "Light theme",
         "ben-ten-theme": "Ben 10 theme",
+        "mario-theme": "Mario theme",
+        "sonic-theme": "Sonic theme",
+        "pikachu-theme": "Pikachu theme",
         "fr": "French",
         "en": "English"
     },
