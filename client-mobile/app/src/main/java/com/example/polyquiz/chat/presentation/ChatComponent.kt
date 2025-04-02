@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -80,7 +81,6 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
         mutableStateOf(if (roomCode.isNotEmpty()) "Match" else "General")
     }
     LaunchedEffect(selectedChat) {
-        Log.d("Chat", "Selected chat: $selectedChat with room code: $roomCode")
         if (selectedChat == "Match") {
             ChatService.channel = ChatChannel.ROOM.value
         } else {
@@ -112,17 +112,20 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
             .size(width = 300.dp, height = 1000.dp)
             .fillMaxHeight()
             .imePadding()
+            .statusBarsPadding()
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceAround,
         ) {
-            Text(
-                text = username,
-                fontSize = 30.sp,
-                fontWeight = FontWeight(800),
-                modifier = Modifier.padding(20.dp, 20.dp, 20.dp, 0.dp)
-            )
-            ChatSelectionMenu(selectedChat) { newChat -> selectedChat = newChat }
+            Row {
+                Text(
+                    text = username,
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight(800),
+                    modifier = Modifier.padding(20.dp, 20.dp, 20.dp, 0.dp)
+                )
+                ChatSelectionMenu(selectedChat) { newChat -> selectedChat = newChat }
+            }
             // REFERENCE: https://youtu.be/P3xQdINdrWY
             // To handle the situation where there would be no message to display.
             messages?.let {
