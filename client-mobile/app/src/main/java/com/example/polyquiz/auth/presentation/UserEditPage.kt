@@ -167,6 +167,9 @@ fun UserEditPage(
         theme = selectedTheme
         Log.d("Theme changer", "Selected $theme")
     }
+
+    var showUsernameDialog by remember { mutableStateOf(false) }
+
     DisposableEffect(Unit) {
         onDispose {
             authViewModel.setProfileUpdated(false)
@@ -178,6 +181,24 @@ fun UserEditPage(
         authViewModel.resetSignUpFields()
         authViewModel.deleteUser()
         navigateToLogin()
+    }
+
+    @Composable
+    fun openUsernameDialog(){
+        if(showUsernameDialog){
+            UsernameSuggestionDialog(
+                onDismiss = {showUsernameDialog = false},
+                onUsernameSelected = { newUsername ->
+                    username = newUsername
+                    showUsernameDialog = false
+                    authViewModel.updateUsername(
+                        newUsername,
+                        context = TODO()
+                    )
+                }
+
+            )
+        }
     }
 
     fun saveUserProfile(): Boolean {
