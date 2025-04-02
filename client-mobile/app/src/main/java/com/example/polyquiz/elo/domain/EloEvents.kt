@@ -1,10 +1,10 @@
 package com.example.polyquiz.elo.domain
 
 enum class EloEvents (val value: String) {
-    GETELO("getElo"),
-    RETURNELO("returnElo"),
-    UPDATEELOFORMATCH("updateEloForMatch"),
+    GET_ELO("getElo"),
+    RETURN_ELO("returnElo"),
+    UPDATE_ELO_FOR_MATCH("updateEloForMatch"),
     ERROR("eloError"),
-    GETRANKINGS("getRankings"),
-    RETURNRANKINGS("returnRankings"),
+    GET_RANKINGS("getRankings"),
+    RETURN_RANKINGS("returnRankings"),
 }

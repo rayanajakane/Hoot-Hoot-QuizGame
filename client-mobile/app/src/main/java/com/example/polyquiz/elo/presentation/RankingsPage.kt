@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
@@ -55,8 +57,9 @@ fun RankingsPage(
 
 
 
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = "Votre elo: $currentRating")
+    Column(modifier = Modifier.padding(16.dp).navigationBarsPadding()
+        .statusBarsPadding()) {
+        Text(text = stringResource(R.string.your_elo) + " : " + currentRating)
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(text = stringResource(R.string.rank), modifier = Modifier.weight(1f))
