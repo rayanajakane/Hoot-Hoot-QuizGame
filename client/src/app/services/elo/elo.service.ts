@@ -54,5 +54,4 @@ export class EloService {
             this.currentRating = Math.round(data.mu);
         });
     }
-
 }
