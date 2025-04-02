@@ -31,7 +31,7 @@
         </div>
     </div>
 
-    <div id="estimated-answer-area" *ngIf="matchContextService.getContext() === contextOptions.CheaterView">
+    <div id="estimated-answer-area" *ngIf="matchContextService.getContext() === contextOptions.CheaterView && matchContextService.getContext() !== contextOptions.PlayerView">
         <mat-form-field appearance="outline" class="number-input">
             <mat-label>Réponse</mat-label>
             <input
