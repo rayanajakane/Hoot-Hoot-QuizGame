@@ -1,5 +1,6 @@
 package com.example.polyquiz.match.presentation
 
+import android.service.autofill.FieldClassification.Match
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
@@ -16,6 +17,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
+import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.PartyConfig
 
 @Composable
@@ -96,10 +98,13 @@ fun PartyConfigDialog(
                 ) {
                     Text(text = "Jouer en Mode Tricheur")
                     Spacer(modifier = Modifier.weight(1f))
+
                     Switch(
                         checked = partyConfig.isCheaterMode,
-                        onCheckedChange = { partyConfig = partyConfig.copy(isCheaterMode = it) }
+                        onCheckedChange = { partyConfig = partyConfig.copy(isCheaterMode = it) },
+
                     )
+                    MatchRoomService.isCheaterMode = partyConfig.isCheaterMode
                 }
             }
         },

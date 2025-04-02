@@ -127,7 +127,12 @@ fun WaitPage(
     }
 
     fun startMatch() {
-        MatchRoomService.startMatch()
+        if(matchRoomService.isCheaterMode){
+            matchRoomService.startMatchCheaterMode();
+        }
+        else {
+        matchRoomService.startMatch()
+        }
     }
 
     fun quitMatch() { //originellement quitGame sur le client lourd

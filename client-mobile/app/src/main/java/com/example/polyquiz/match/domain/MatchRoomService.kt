@@ -52,7 +52,7 @@ object MatchRoomService {
     ))
 
     var isCheaterMode by mutableStateOf(false)
-    var votesData by mutableStateOf(VotingData("", 0, listOf("")))
+    var votesData by mutableStateOf(VotingData("", 0,  mutableListOf("") ))
 
     var totalVotes: MutableList<VotingData> = mutableListOf()
 
@@ -117,13 +117,14 @@ object MatchRoomService {
     }
 
     fun sendBackVotesResult(voteData: VotingData) {
-        socket.send(MatchEvents.SEND_VOTES_RESULTS, voteData)
+        socket.emit(MatchEvents.SEND_VOTES_RESULTS.value, voteData)
     }
 
     fun startMatchCheaterMode(){
         isCheaterMode = true;
         isMatchStarted = true;
-        socket.send(MatchEvents.START_MATCH_CHEATER_MODE, matchRoomCode)
+        socket.emit(MatchEvents.START_MATCH_CHEATER_MODE.value, matchRoomCode)
+
     }
 
     fun onSelectedCheater(){
@@ -155,7 +156,7 @@ object MatchRoomService {
     }
 
     fun voteOnCheater() {
-        socket.send(MatchEvents.VOTE_ON_CHEATER, matchRoomCode)
+        socket.emit(MatchEvents.VOTE_ON_CHEATER.value, matchRoomCode)
     }
 
 //    fun onCurrentAnswers() {
@@ -260,8 +261,11 @@ object MatchRoomService {
     }
 
     fun onMatchStarted() {
+
         socket.on(MatchEvents.MATCH_STARTING.value) { args ->
+
             if (args.isNotEmpty()) {
+
                 val data = args[0] as JSONObject
                 if (data.optBoolean("start", false)) {
                     isMatchStarted = true

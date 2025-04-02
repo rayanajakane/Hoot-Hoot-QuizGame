@@ -35,11 +35,16 @@ import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.MatchStatus
 import com.example.polyquiz.constants.UserInfo
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AnswerCorrectness
+import com.example.polyquiz.match.domain.MatchRoomService.voteOnCheater
 
 @Composable
 fun QuestionArea(
@@ -249,6 +254,7 @@ fun QuestionArea(
             }
 
         }
+
         if (MatchRoomService.isMatchStarted) {
             PlayersListComponent(
                 matchRoomService = matchRoomService,
@@ -293,6 +299,19 @@ fun QuestionArea(
                     }
                 }
             )
+        }
+
+        if (context == MatchContext.HOSTVIEW && !matchRoomService.isCooldown && matchRoomService.isCheaterMode) {
+            if (answerService.isEndGame) {
+                Button(
+                    onClick = { voteOnCheater() },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Votez pour le tricheur", color = Color.White)
+                }
+            }
         }
     }
 
