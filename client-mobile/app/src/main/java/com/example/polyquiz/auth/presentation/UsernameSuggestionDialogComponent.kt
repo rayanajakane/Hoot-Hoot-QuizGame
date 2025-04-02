@@ -16,6 +16,8 @@ import androidx.compose.runtime.setValue
 import com.example.polyquiz.auth.domain.UsernameSuggestionService
 import androidx.compose.material3.Button
 import androidx.compose.material3.RadioButton
+import androidx.compose.ui.res.stringResource
+import com.example.polyquiz.R
 import java.lang.reflect.Modifier
 
 @Composable
@@ -41,7 +43,7 @@ fun UsernameSuggestionDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(text = "Choose a Username") },
+        title = { Text(stringResource(R.string.username_edit)) },
         text = {
             Column {
                 if (usernameSuggestions.isNotEmpty()) {
@@ -68,12 +70,12 @@ fun UsernameSuggestionDialog(
                     }
                 }
             ) {
-                Text("Confirm")
+                Text(stringResource(R.string.confirm))
             }
         },
         dismissButton = {
             Button(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.cancel))
             }
         },
     )
