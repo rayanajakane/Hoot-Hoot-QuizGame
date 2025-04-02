@@ -35,6 +35,8 @@ import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchService
 import com.example.polyquiz.match.domain.PartyConfig
 import com.example.polyquiz.match.presentation.PartyConfigDialog
+import androidx.compose.foundation.lazy.LazyColumn
+
 
 
 @Composable
@@ -47,7 +49,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
     var selectedGame by remember { mutableStateOf<Game?>(null) }
     var gamesIsValid by remember { mutableStateOf(false) }
     var isLoadingSelectedGame by remember { mutableStateOf(false) }
-    val username by remember { mutableStateOf(authViewModel.getUsername()) }
+    val username by remember { mutableStateOf(authViewModel.getUsername() )}
     val userId by remember { mutableStateOf(authViewModel.getUserId()) }
     var showPartyConfigDialog by remember { mutableStateOf(false) }
     var partyConfigs by remember { mutableStateOf(PartyConfig(false, false)) }
@@ -173,16 +175,57 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                     fontWeight = FontWeight.Bold
                 )
             } else {
-                games.forEach { game ->
-                    ElevatedButton(
-                        onClick = { selectedGame = game },
-                        modifier = Modifier
-                            .fillMaxWidth(0.42f)
-                            .padding(1.dp),
-                        shape = RoundedCornerShape(3.dp)
-                    )
-                    {
-                        Text(text = game.title)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        elevation = CardDefaults.cardElevation(2.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(12.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "Title",
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = "Author",
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    games.forEach { game ->
+                        ElevatedButton(
+                            onClick = { selectedGame = game },
+                            modifier = Modifier
+                                .fillMaxWidth(0.42f)
+                                .padding(1.dp),
+                            shape = RoundedCornerShape(3.dp),
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = game.title,
+                                    maxLines = 1,
+                                )
+                                Text(
+                                    text = game.authorName ?: "",
+                                    maxLines = 1,
+                                )
+                            }
+                        }
                     }
                 }
             }
