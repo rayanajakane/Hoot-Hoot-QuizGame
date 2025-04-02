@@ -9,6 +9,7 @@ import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { TimeService } from '@app/services/time/time.service';
 import { AnswerCorrectness } from '@common/constants/answer-correctness';
 import { QuestionType } from '@common/constants/question-types';
+import { PartyConfig } from '@common/interfaces/party-config';
 @Component({
     selector: 'app-question-area',
     templateUrl: './question-area.component.html',
@@ -20,6 +21,8 @@ export class QuestionAreaComponent implements OnInit {
     gameDuration: number;
     context: MatchContext;
     isFirstQuestion: boolean = true;
+    showVotingDialog:boolean;
+    partyConfig: PartyConfig;
 
     // Allow more constructor parameters to decouple services
     // eslint-disable-next-line max-params
@@ -113,4 +116,9 @@ export class QuestionAreaComponent implements OnInit {
     private resetStateForNewQuestion(): void {
         this.answerService.resetStateForNewQuestion();
     }
+
+    voteOnCheater(){
+        this.matchRoomService.voteOnCheater();
+    }
+
 }
