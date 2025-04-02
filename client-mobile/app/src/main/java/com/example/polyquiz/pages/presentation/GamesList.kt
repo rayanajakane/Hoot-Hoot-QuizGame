@@ -38,6 +38,8 @@ import com.example.polyquiz.match.presentation.PartyConfigDialog
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.OutlinedTextField
+import com.example.polyquiz.SnackbarController
+import com.example.polyquiz.SnackbarEvent
 
 
 @Composable
@@ -60,8 +62,6 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
     var searchResults by remember { mutableStateOf<List<Game>>(emptyList()) }
 
     val N_POPULAR_GAMES = 3
-
-
     val contextService = MatchContextService
 
     fun performSearch() {
@@ -91,8 +91,8 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
         )
     }
 
-    fun sortMostPopularGames() {
-        if (games.size <= N_POPULAR_GAMES) {
+    fun sortMostPopularGames(){
+        if (games.size <= N_POPULAR_GAMES){
             popularGames = games
         }
 
@@ -105,10 +105,31 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
         }
 
     }
+    fun fetchGames() {
+        gameService.getGames(
+            onSuccess = { fetchedGames ->
+                val gson = Gson()
+                val json = gson.toJson(fetchedGames)
+                val listType = object : TypeToken<List<Game>>() {}.type
+                games = gson.fromJson(json, listType)
+                sortMostPopularGames()
+                performSearch()
+            },
+            onError = {
+                    errorMessage -> println("Error: $errorMessage")
+            }
+        )
+    }
+
+    LaunchedEffect(Unit) {
+        fetchGames()
+    }
 
     fun validateGame(selectedGame: Game) {
         if (selectedGame.isVisible!!) {
             gamesIsValid = true
+        } else {
+            fetchGames()
         }
     }
 
@@ -117,26 +138,41 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
             gamesIsValid = true
             matchService.currentGame = selectedGame
             matchService.saveBackupGame(selectedGame!!.id!!, userId, username, partyConfigs)
+        } else {
+            fetchGames()
         }
     }
 
-    fun loadSelectedGame(currentGame: Game) {
-        isLoadingSelectedGame = true
-        gameService.getGameById(currentGame.id!!, onSuccess = { response ->
-            val gson = Gson()
-            val game = gson.fromJson(gson.toJson(response), Game::class.java)
-            selectedGame = game
-            validateGame(selectedGame!!)
-        }, onError = {})
+    fun loadSelectedGame(currentGame: Game){
+        isLoadingSelectedGame =true
+        gameService.getGameById(currentGame.id!!,
+            onSuccess = {
+                response ->
+                val gson = Gson()
+                val game = gson.fromJson(gson.toJson(response), Game::class.java)
+                selectedGame = game
+                validateGame(selectedGame!!)
+                        },
+            onError = {
+                errorMessage ->
+                println("Error: $errorMessage")
+                fetchGames()
+        })
     }
 
-    fun reloadSelectedGame(partyConfigs: PartyConfig = PartyConfig(false, false)) {
-        gameService.getGameById(selectedGame?.id!!, onSuccess = { response ->
-            val gson = Gson()
-            val game = gson.fromJson(gson.toJson(response), Game::class.java)
-            selectedGame = game
-            revalidateGame(partyConfigs)
-        }, onError = {})
+    fun reloadSelectedGame(partyConfigs: PartyConfig = PartyConfig(false, false)){
+        gameService.getGameById(selectedGame?.id!!,
+            onSuccess = {
+                response ->
+                val gson = Gson()
+                val game = gson.fromJson(gson.toJson(response), Game::class.java)
+                selectedGame = game
+                revalidateGame(partyConfigs)
+        }, onError = {
+            errorMessage ->
+            println("Error: $errorMessage")
+            fetchGames()
+        })
 
     }
 
@@ -174,7 +210,6 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                         fontWeight = FontWeight.Bold
                     )
                     Row {
-                        sortMostPopularGames()
                         if (popularGames.isEmpty()) {
                             Text(
                                 stringResource(R.string.no_games_available),
@@ -285,7 +320,6 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
             }
         }
     }
-
 
     Card(
         modifier = Modifier
