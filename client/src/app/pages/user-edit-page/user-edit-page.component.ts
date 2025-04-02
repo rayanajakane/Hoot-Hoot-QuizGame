@@ -37,10 +37,13 @@ export class UserEditPageComponent implements OnInit {
     purchasedPremiumAvatars: { [key: string]: PremiumAvatar } = {};
 
     availableLangs: Language[];
-    availableThemes = Object.values(Theme);
+    availableThemes: Theme[];
+    purchasedThemes: Theme[] = [];
+    premiumThemes = [Theme.BENTEN];
     themeLabels = {
         [Theme.DARK]: translate('page.dark-theme'),
         [Theme.LIGHT]: translate('page.light-theme'),
+        [Theme.BENTEN]: translate('page.ben-ten-theme'),
     };
     langLabels = {
         ['fr']: translate('page.fr'),
@@ -137,6 +140,7 @@ export class UserEditPageComponent implements OnInit {
             return;
         }
         this.fetchPurchasedAvatars();
+        this.fetchPurchasedThemes();
         this.historyService.getUserHistory(this.currentUser.uid).subscribe({
             next: (userHistory: UserHistoryInfo) => {
                 this.userHistory = userHistory;
@@ -162,6 +166,20 @@ export class UserEditPageComponent implements OnInit {
         this.purchasedPremiumAvatars = Object.entries(PremiumAvatar)
             .filter(([key]) => purchasedAvatars.includes(key))
             .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
+    }
+
+    async fetchPurchasedThemes() {
+        const purchasedThemeIds = await this.themeService.getPurchasedThemes();
+        this.purchasedThemes = this.premiumThemes.filter((theme) => purchasedThemeIds.includes(theme.toString()));
+    }
+
+    isThemePurchased(theme: Theme): boolean {
+        return this.themeService.isThemePurchased(theme);
+    }
+
+    async purchaseTheme(theme: Theme) {
+        await this.themeService.purchaseTheme(theme.toString());
+        this.fetchPurchasedThemes();
     }
 
     getAvatarState(avatar: string): AvatarState {
@@ -197,6 +215,7 @@ export class UserEditPageComponent implements OnInit {
             this.themeLabels = {
                 [Theme.DARK]: translate('page.dark-theme'),
                 [Theme.LIGHT]: translate('page.light-theme'),
+                [Theme.BENTEN]: translate('page.ben-ten-theme'),
             };
 
             this.langLabels = {

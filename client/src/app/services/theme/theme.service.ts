@@ -1,12 +1,13 @@
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable, Renderer2, RendererFactory2 } from '@angular/core';
-import { AuthenticationService } from '@app/services/authentication/authentication.service';
-import { DataSnapshot, get, update } from '@firebase/database';
 import { AuthError } from '@app/services/authentication/auth-error';
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
+import { DataSnapshot, get, ref, set, update } from '@firebase/database';
 
 export enum Theme {
     DARK = 'dark-theme',
     LIGHT = 'light-theme',
+    BENTEN = 'ben-ten-theme',
 }
 
 @Injectable({
@@ -15,6 +16,7 @@ export enum Theme {
 export class ThemeService {
     currentTheme: Theme = Theme.DARK;
     private renderer: Renderer2;
+    private purchasedThemes: string[] = [];
 
     constructor(
         private authService: AuthenticationService,
@@ -71,6 +73,31 @@ export class ThemeService {
         this.saveThemeToDB(theme);
     }
 
+    async getPurchasedThemes(): Promise<string[]> {
+        const userId = this.authService.userId;
+        if (!userId) return [];
+
+        const themesRef = ref(this.authService.database, `users/${userId}/purchasedThemes`);
+        const snapshot = await get(themesRef);
+        this.purchasedThemes = snapshot.exists() ? Object.keys(snapshot.val()) : [];
+        return this.purchasedThemes;
+    }
+
+    async purchaseTheme(themeId: string): Promise<void> {
+        const userId = this.authService.userId;
+        if (!userId) return;
+
+        const themeRef = ref(this.authService.database, `users/${userId}/purchasedThemes/${themeId}`);
+        await set(themeRef, true);
+        this.purchasedThemes.push(themeId);
+    }
+
+    isThemePurchased(theme: Theme): boolean {
+        if (theme === Theme.DARK || theme === Theme.LIGHT) return true;
+
+        return this.purchasedThemes.includes(theme.toString());
+    }
+
     // Prevents unexpected behavior. Used instead of 'as Theme'
     private toTheme(theme: string): Theme {
         switch (theme) {
@@ -78,6 +105,8 @@ export class ThemeService {
                 return Theme.DARK;
             case 'LIGHT':
                 return Theme.LIGHT;
+            case 'BENTEN':
+                return Theme.BENTEN;
             default:
                 return Theme.LIGHT;
         }
@@ -90,6 +119,8 @@ export class ThemeService {
                 return 'DARK';
             case Theme.LIGHT:
                 return 'LIGHT';
+            case Theme.BENTEN:
+                return 'BENTEN';
             default:
                 return 'LIGHT';
         }

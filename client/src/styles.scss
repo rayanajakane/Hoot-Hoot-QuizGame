@@ -2,6 +2,7 @@
 // For more information: https://material.angular.io/guide/theming¸¸
 @use '@angular/material' as mat;
 @use './styles/dark.scss' as dark-palettes;
+@use './styles/ben-ten.scss' as ben-ten;
 
 // Plus imports for other components in your app.
 
@@ -17,6 +18,10 @@ $warn: mat.define-palette(mat.$red-palette);
 $primary-dark: mat.define-palette(dark-palettes.$m2-primary);
 $accent-dark: mat.define-palette(dark-palettes.$m2-accent, A200, A100, A400);
 $warn-dark: mat.define-palette(dark-palettes.$m2-error);
+
+$primary-ben-ten: mat.define-palette(ben-ten.$m2-primary);
+$accent-ben-ten: mat.define-palette(ben-ten.$m2-accent, A200, A100, A400);
+$warn-ben-ten: mat.define-palette(ben-ten.$m2-error);
 
 $main-theme: mat.define-light-theme(
     (
@@ -34,6 +39,16 @@ $dark-theme: mat.define-dark-theme(
             primary: $primary-dark,
             accent: $accent-dark,
             warn: $warn-dark,
+        ),
+    )
+);
+
+$ben-ten-theme: mat.define-light-theme(
+    (
+        color: (
+            primary: $primary-ben-ten,
+            accent: $accent-ben-ten,
+            warn: $warn-ben-ten,
         ),
     )
 );
@@ -190,10 +205,63 @@ $dark-theme: mat.define-dark-theme(
         color: white;
     }
 }
+
+.ben-ten-theme {
+    @include mat.all-component-themes($ben-ten-theme);
+    #header-bar {
+        background-color: #fafafa;
+    }
+    .alert {
+        color: mat.get-color-from-palette($primary);
+    }
+
+    .own-message {
+        background-color: #5b6feb;
+        color: #fff;
+        border-radius: 1em 1em 0.15em 1em;
+    }
+
+    .friends-section {
+        background: #f9f9f9;
+        h3 {
+            color: #333;
+        }
+    }
+
+    .clickable-item:hover {
+        background-color: #dddddd;
+    }
+
+    .balance-container {
+        background-color: #e8eaf6;
+    }
+
+    .balance-icon {
+        color: #ff4081;
+    }
+
+    .balance-text {
+        color: #1a237e;
+    }
+
+    .mat-basic {
+        background-color: white;
+    }
+
+    .signup-button {
+        background-color: white;
+    }
+
+    .card-header-background {
+        background-color: rgb(0, 0, 0, 0.05) !important;
+    }
+}
+
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include mat.all-component-themes($dark-theme);
+@include mat.all-component-themes($ben-ten-theme);
 
 /* You can add global styles to this file, and also import other style files */
 
