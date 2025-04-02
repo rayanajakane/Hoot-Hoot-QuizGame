@@ -140,6 +140,7 @@ fun WaitPage(
 
     val onToggleLock: () -> Unit = {
         MatchRoomService.toggleLock()
+        Log.d("toggle lock", "Toggled lock on wait page")
     }
 
     val banPlayerUsername: (String) -> Unit = { userId ->
