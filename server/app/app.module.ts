@@ -33,6 +33,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { HistoryController } from './controllers/history/history.controller';
 import { UsernameSuggestionController } from './controllers/username-suggestion/username-suggestion.controller';
 import { FriendsGateway } from './gateways/friends/friends.gateway';
+import { GameGateway } from './gateways/game/game.gateway';
 import { MoneyGateway } from './gateways/money/money.gateway';
 import { HistoryService } from './services/history/history.service';
 import { MoneyService } from './services/money/money.service';
@@ -84,6 +85,7 @@ import { UsernameSuggestionService } from './services/username-suggestion/userna
         PartyService,
         HistoryService,
         UsernameSuggestionService,
+        GameGateway,
     ],
 })
 export class AppModule {}
