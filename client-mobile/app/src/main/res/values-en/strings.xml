@@ -66,6 +66,9 @@
     <string name="play">Play</string>
     <string name="matches_played">"Matches Played: "</string>
     <string name="all_games">"All Games"</string>
+    <string name="username_edit">Please pick a username</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
     <string name="rank">Rank</string>
     <string name="return_to_user_edit">Return to user edit</string>
     <string name="save_canvas">Use this drawing</string>

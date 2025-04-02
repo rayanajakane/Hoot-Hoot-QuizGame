@@ -145,4 +145,7 @@
     <string name="entry_fee">Frais d\'entrée</string>
     <string name="entry_fee_message">Les joueurs devront payer ce montant pour rejoindre la partie.</string>
     <string name="prepare">Préparez vous pour la prochaine question! ⏳</string>
+    <string name="username_edit">Veuillez choisir un identifiant</string>
+    <string name="confirm">Confirmer</string>
+    <string name="cancel">Annuler</string>
 </resources>
