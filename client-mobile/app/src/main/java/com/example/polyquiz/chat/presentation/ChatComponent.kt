@@ -82,6 +82,7 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     }
     LaunchedEffect(selectedChat) {
         if (selectedChat == "Match") {
+            Log.d("chat", "changed channel to ${ChatChannel.ROOM.value}")
             ChatService.channel = ChatChannel.ROOM.value
         } else {
             ChatService.channel = ChatChannel.GENERAL.value

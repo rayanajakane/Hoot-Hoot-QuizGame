@@ -38,6 +38,7 @@ import com.example.polyquiz.constants.UserInfo
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.Icon
 import androidx.compose.ui.input.pointer.pointerInput
@@ -280,11 +281,8 @@ fun QuestionArea(
                         Spacer(modifier = Modifier.height(16.dp))
                         if (context == MatchContext.HOSTVIEW && !matchRoomService.isCooldown) {
                             Spacer(modifier = Modifier.height(16.dp))
-                            if (answerService.isNextQuestionButtonEnabled) {
-                                Button(onClick = { matchRoomService.goToNextQuestion() }) {
-                                    Text(stringResource(R.string.next_question))
-                                }
-                            } else if(answerService.isEndGame) {
+                            if (answerService.isEndGame) {
+                                Log.d("Question area", "is end game")
                                 Button(
                                     onClick = {
                                         routeToResultsPage();
@@ -293,7 +291,18 @@ fun QuestionArea(
                                     modifier = Modifier.fillMaxWidth(0.8f),
                                     shape = RoundedCornerShape(8.dp)
                                 ) {
+                                    Icon(Icons.Filled.BarChart, contentDescription = stringResource(R.string.show_final))
+                                    Spacer(modifier = Modifier.height(8.dp))
                                     Text(stringResource(R.string.show_final))
+                                }
+                            }
+                            else if (answerService.isNextQuestionButtonEnabled) {
+                                Log.d("Question area", "next question enabled")
+                                Button(
+                                    onClick = { matchRoomService.goToNextQuestion() },
+                                    shape = RoundedCornerShape(3.dp)
+                                ) {
+                                    Text(stringResource(R.string.next_question))
                                 }
                             }
                         }

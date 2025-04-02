@@ -49,7 +49,9 @@ object AnswerService {
     // server sends : Feedback :  { score: 0, answerCorrectness: 0, correctAnswer: [ '0' ] }
     fun onFeedback() {
         Log.d("answer service", "called onFeedback")
+        Log.d("answer socket", "Socket is null? : id=${mSocket.id()} and ${mSocket.isActive}, and connected= ${mSocket.connected()}")
         mSocket.on(AnswerEvents.FEEDBACK.value) { args ->
+            Log.d("answer socket", " args is empty : ${args.isEmpty()}")
             if (args.isNotEmpty() && args[0] != null) {
                 val jsonObject = JSONObject(args[0].toString())
 
@@ -64,10 +66,9 @@ object AnswerService {
 
                 showFeedback = true
                 isNextQuestionButtonEnabled = true
-                Log.d("answer service", "next question enabled")
                 processFeedback(feedback)
             } else {
-                Log.e("answer service", "CACA")
+                isNextQuestionButtonEnabled = true
             }
         }
     }
