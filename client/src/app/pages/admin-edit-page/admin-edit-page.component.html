@@ -79,12 +79,12 @@
                     <div class="game-form-details item-container">
                         <mat-form-field class="game-title">
                             <mat-label>{{ t('common.title') }}</mat-label>
-                            <input matInput id="text" type="text" formControlName="title" />
+                            <input matInput id="text" type="text" formControlName="title" maxLength="50" />
                         </mat-form-field>
 
                         <mat-form-field class="game-description">
                             <mat-label>{{ t('common.desc') }}</mat-label>
-                            <textarea matInput id="description" type="text" formControlName="description"> </textarea>
+                            <textarea matInput id="description" type="text" formControlName="description" maxLength="100"> </textarea>
                         </mat-form-field>
                     </div>
 
