@@ -18,6 +18,7 @@ import { ManagementState } from '@app/constants/states';
 import { Question } from '@app/interfaces/question';
 import { BankService } from '@app/services/bank/bank.service';
 import { QuestionService } from '@app/services/question/question.service';
+import { getTranslocoModule } from '@app/transloco-testing.module';
 import { QuestionType } from '@common/constants/question-types';
 
 const mockQuestion: Question = {
@@ -63,6 +64,7 @@ describe('QuestionCreationFormComponent', () => {
                 MatInputModule,
                 NoopAnimationsModule,
                 MatIconModule,
+                getTranslocoModule(),
             ],
             providers: [
                 { provide: MatSnackBar, useValue: snackBarSpyObj },

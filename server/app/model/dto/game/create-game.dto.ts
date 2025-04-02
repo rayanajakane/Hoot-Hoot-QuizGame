@@ -10,6 +10,16 @@ export class CreateGameDto {
     id: string;
 
     @ApiProperty()
+    @IsString()
+    @Prop({ required: true })
+    authorId: string;
+
+    @ApiProperty()
+    @IsString()
+    @Prop({ required: true })
+    authorName: string;
+
+    @ApiProperty()
     @IsOptional()
     @Prop({ required: false })
     originalId: string;

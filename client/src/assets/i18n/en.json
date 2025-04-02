@@ -90,7 +90,8 @@
         "question-bank": "Question bank",
         "existing-games-list": "Existing games list",
         "game-title": "Game title",
-        "last-modification": "Last modification"
+        "last-modification": "Last modification",
+        "author": "Auteur"
     },
     "common": {
         "cancel": "Cancel",
@@ -298,5 +299,15 @@
     },
     "players-list": {
         "players": "Players"
+    },
+    "username-suggestion": {
+        "title": "Usernames Suggestions",
+        "regenerate": "Generate other usernames",
+        "ok": "OK"
+    },
+    "games-search": {
+        "label": "Search Games",
+        "title": "Title",
+        "author": "Author"
     }
 }

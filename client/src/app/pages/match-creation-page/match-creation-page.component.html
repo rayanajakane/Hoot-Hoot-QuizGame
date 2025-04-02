@@ -14,8 +14,29 @@
                     <p>{{ t('match-creation-page.n-matches-played') }} {{ game.nMatchesPlayed }}</p>
                 </mat-card>
             </div>
-            <h3>Tous les jeux</h3>
-            <app-game-list-item *ngFor="let game of games" [game]="game" [isAdminMode]="false" (click)="loadSelectedGame(game)"></app-game-list-item>
+            <div id="search-container">
+                <h3>{{ t('games-search.label') }}</h3>
+                <div id="search-inputs-container">
+                    <mat-form-field appearance="outline" class="search-field">
+                        <mat-label>{{ t('games-search.title') }}</mat-label>
+                        <input matInput [formControl]="titleSearchControl" [placeholder]="t('games-search.title')" />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="search-field">
+                        <mat-label>{{ t('games-search.author') }}</mat-label>
+                        <input matInput [formControl]="authorSearchControl" [placeholder]="t('games-search.author')" />
+                    </mat-form-field>
+                </div>
+            </div>
+            <mat-card class="game-match-card-header card-header-background">
+                <p>{{ t('admin-main-page.game-title') }}</p>
+                <p>{{ t('admin-main-page.author') }}</p>
+            </mat-card>
+            <app-game-list-item
+                *ngFor="let game of searchResults"
+                [game]="game"
+                [isAdminMode]="false"
+                (click)="loadSelectedGame(game)"
+            ></app-game-list-item>
         </div>
 
         <div id="game-details-container">

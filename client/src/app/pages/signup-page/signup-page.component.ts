@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { UsernameSuggestionDialogComponent } from '@app/components/username-suggestion-dialog/username-suggestion-dialog.component';
 import { MAX_LENGTH, MIN_LENGTH, PW_MAX_LENGTH, PW_MIN_LENGTH } from '@app/constants/authentication';
 import { IMAGE_MAX_FILE_SIZE, PresetAvatar } from '@app/constants/image-constants';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
@@ -48,6 +50,7 @@ export class SignupPageComponent implements OnInit {
         public notificationService: NotificationService,
         private fb: FormBuilder,
         private readonly translocoService: TranslocoService,
+        public dialog: MatDialog,
     ) {}
 
     get email() {
@@ -183,5 +186,14 @@ export class SignupPageComponent implements OnInit {
             const containsSpecial = /(?=.*[\^\$\*\.\[\]\{\}\(\)\?"!@#%&/\\,><':;\|_~])/.test(password);
             return containsSpecial ? null : { noSpecial: true };
         };
+    }
+
+    openUsernameDialog() {
+        const dialogRef = this.dialog.open(UsernameSuggestionDialogComponent);
+        dialogRef.afterClosed().subscribe((username: string) => {
+            if (username) {
+                this.form.controls['username'].setValue(username);
+            }
+        });
     }
 }

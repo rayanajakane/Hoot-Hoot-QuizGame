@@ -90,7 +90,8 @@
         "question-bank": "Banque de questions",
         "existing-games-list": "Liste des jeux existants",
         "game-title": "Titre du jeu",
-        "last-modification": "Date de dernière modification"
+        "last-modification": "Date de dernière modification",
+        "author": "Auteur"
     },
     "common": {
         "cancel": "Annuler",
@@ -296,5 +297,15 @@
     },
     "players-list": {
         "players": "Joueurs"
+    },
+    "username-suggestion": {
+        "title": "Suggestions de noms d'utilisateurs",
+        "regenerate": "Générer d'autres noms",
+        "ok": "OK"
+    },
+    "games-search": {
+        "label": "Rechercher des jeux",
+        "title": "Titre",
+        "author": "Auteur"
     }
 }
