@@ -329,10 +329,25 @@
         "answer": "Answer",
         "out-of-bounds": "Value is out of bounds! Must be between {{lowerBound}} and {{upperBound}}",
         "panic-mode-activated": "❗ PANIC MODE ACTIVATED! ❗",
-        "show-voting-button":  "Go to voting page"
+        "show-voting-button": "Go to voting page"
     },
     "players-list": {
         "players": "Players"
+    },
+    "money-errors": {
+        "not-enough-money": "You don't have enough money to make this transaction.",
+        "donation-amount-exceeded": "With this donation, you will exceed the maximum amount of money allowed to send.",
+        "invalid-amount": "The amount is invalid, it must be a positive number.",
+        "zero-amount": "The amount shouldn't be equal to 0."
+    },
+    "match-errors": {
+        "ban_player": "The host banned you from the match.",
+        "no_more_host": "The host left the match.",
+        "no_more_players": "There are no more players in the match."
+    },
+    "match-friends-errors": {
+        "not_friends_with_host": "You are not friends with the host.",
+        "no_friends": "You don't have any friends."
     },
     "username-suggestion": {
         "title": "Usernames Suggestions",

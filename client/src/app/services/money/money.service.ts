@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { MoneyEvents } from '@common/events/money.events';
+import { translate } from '@jsverse/transloco';
 
 @Injectable({
     providedIn: 'root',
@@ -63,7 +64,10 @@ export class MoneyService {
 
     handleError() {
         this.socketHandler.on(MoneyEvents.Error, (error: string) => {
-            this.notificationService.displayErrorMessage(error);
+            const errorMessage = 'money-errors.' + error.split('\n')[0];
+            console.log(errorMessage);
+            console.log(typeof errorMessage);
+            this.notificationService.displayErrorMessage(translate(errorMessage));
         });
     }
 }

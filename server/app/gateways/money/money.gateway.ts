@@ -108,7 +108,7 @@ export class MoneyGateway {
         if (userId) this.userSockets.delete(userId);
     }
 
-    sendError(socketId: string, error: string) {
+    sendError(socketId: string, error: string[]) {
         console.log('Sending error:', error);
         this.server.to(socketId).emit(MoneyEvents.Error, error);
     }
