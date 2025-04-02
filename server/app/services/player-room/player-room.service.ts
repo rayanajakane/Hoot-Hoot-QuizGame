@@ -58,20 +58,20 @@ export class PlayerRoomService {
                         const player = this.getPlayerByUsername(roomCode, voterUsername);
                         if (player) {
                             player.bonusCount = Math.round(cheaterScore * 0.3);
-                            const players: Player[] = this.getPlayers(roomCode);
-                            players.forEach((player: Player) => {
-                                player.score = Math.round(player.score + player.bonusCount);
-                                const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
-                                console.log(feedback);
-                                this.getPlayerByUsername(roomCode, voterUsername).socket.emit(AnswerEvents.Feedback, feedback);
-                            });
+
+                            player.score = Math.round(player.score + player.bonusCount);
+                            const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
+                            console.log(feedback);
+                            this.getPlayerByUsername(roomCode, voterUsername).socket.emit(AnswerEvents.Feedback, feedback);
                         }
                     });
 
                     const players: Player[] = this.getPlayers(roomCode);
                     const player = this.getPlayerByUsername(roomCode, cheaterUsername);
                     player.score = Math.round(player.score - 0.3 * player.score);
+
                     const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
+
                     this.getPlayerByUsername(roomCode, player.username).socket.emit(AnswerEvents.Feedback, feedback);
                 }
             }

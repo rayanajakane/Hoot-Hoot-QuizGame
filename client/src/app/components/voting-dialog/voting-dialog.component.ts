@@ -42,8 +42,8 @@ export class VotingDialogComponent {
         }
         this.closeDialog();
 
-        const player = this.matchRoomService.getPlayerByUsername(this.voteCounts.username);
-        this.matchRoomService.socketService.socket.emit(MatchEvents.SendUpdatedScores, player?.bonusCount);
+        //const player = this.matchRoomService.getPlayerByUsername(this.voteCounts.username);
+        this.matchRoomService.socketService.socket.emit(MatchEvents.SendUpdatedScores, this.matchRoomService.getRoomCode());
     }
 
     closeDialog() {
