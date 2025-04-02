@@ -2,7 +2,7 @@
     <form [formGroup]="questionForm" class="question-form">
         <mat-form-field class="question-text-container">
             <mat-label>Question</mat-label>
-            <input class="question-input" matInput formControlName="text" [placeholder]="t('question-creation-form.question-text')" />
+            <input class="question-input" matInput formControlName="text" maxLength="50" [placeholder]="t('question-creation-form.question-text')" />
         </mat-form-field>
 
         <div id="question-properties-options-container">
@@ -27,12 +27,7 @@
                     <button mat-raised-button color="primary" (click)="pictureUrl.click()">
                         <mat-icon>upload</mat-icon>{{ t('question-creation-form.upload-image') }}
                     </button>
-                    <button
-                        mat-raised-button
-                        color="basic"
-                        [disabled]="!questionForm.get('pictureUrl')!.value"
-                        (click)="removePicture()"
-                    >
+                    <button mat-raised-button color="basic" [disabled]="!questionForm.get('pictureUrl')!.value" (click)="removePicture()">
                         {{ t('question-creation-form.remove-image') }}
                     </button>
                     <div class="main-image">
@@ -76,6 +71,7 @@
                                         class="choice-input"
                                         matInput
                                         formControlName="text"
+                                        maxLength="50"
                                         [placeholder]="t('question-creation-form.question-choice')"
                                     />
                                     <span matSuffix class="choice-buttons">
