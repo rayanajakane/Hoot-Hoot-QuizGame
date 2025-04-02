@@ -1,9 +1,10 @@
 package com.example.polyquiz.auth.presentation
 
-import androidx.benchmark.perfetto.Row
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -15,8 +16,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.polyquiz.auth.domain.UsernameSuggestionService
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.example.polyquiz.R
 import java.lang.reflect.Modifier
 
@@ -38,6 +41,7 @@ fun UsernameSuggestionDialog(
 
     fun regenerate(){
         UsernameSuggestionService.getUsernameSuggestions();
+        usernameSuggestions = UsernameSuggestionService.usernames;
         selectedUsername = "";
     }
 
@@ -51,17 +55,20 @@ fun UsernameSuggestionDialog(
                         Row {
                             RadioButton(
                                 selected = selectedUsername == username,
-                                onClick = { selectedUsername = username }
+                                onClick = { selectedUsername = username },
+
                             )
                             Text(text = username)
                         }
                     }
+                    Button(onClick = { regenerate() }) {
+                        Text("Régénérer")
+                    }
                 }
-
-
-                //Spacer(modifier = Modifier.height(16.dp))
             }
         },
+
+
         confirmButton = {
             Button(
                 onClick = {
@@ -73,10 +80,14 @@ fun UsernameSuggestionDialog(
                 Text(stringResource(R.string.confirm))
             }
         },
+
         dismissButton = {
             Button(onClick = onDismiss) {
                 Text(stringResource(R.string.cancel))
             }
         },
+
+
     )
+
 }
