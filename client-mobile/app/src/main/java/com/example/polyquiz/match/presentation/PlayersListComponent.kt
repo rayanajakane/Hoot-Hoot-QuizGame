@@ -17,7 +17,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -152,11 +155,21 @@ fun PlayerCard(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
             }
-            Text(
-                text = player.username,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+            if(!player.isPlaying) {
+                Text(
+                    text = player.username,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                )
+            } else {
+                Text(
+                    text = player.username,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 Text(text = "${player.score} pts", fontSize = 14.sp)
                 Spacer(modifier = Modifier.width(4.dp))

@@ -3,6 +3,7 @@ package com.example.polyquiz.auth.presentation
 import StringValue
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -186,7 +187,8 @@ fun LoginPage(
                         authViewModel.signIn(email, password, context)
                         keyboardController?.hide()
                     },
-                    enabled = authState.value != AuthState.Loading
+                    enabled = authState.value != AuthState.Loading,
+                    shape = RoundedCornerShape(3.dp)
                 ) {
                     Text(text = stringResource(R.string.login_action))
                 }
@@ -200,8 +202,8 @@ fun LoginPage(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.surfaceBright,
                         contentColor = MaterialTheme.colorScheme.onSurface
-
-                    )
+                    ),
+                    shape = RoundedCornerShape(3.dp)
                 ) {
                     Text(text = stringResource(R.string.signup_action))
                 }
