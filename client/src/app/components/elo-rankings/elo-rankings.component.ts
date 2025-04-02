@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { PresetAvatar } from '@app/constants/image-constants';
+import { PresetAvatar } from '@app/constants/avatar-constants';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { EloService } from '@app/services/elo/elo.service';
 
