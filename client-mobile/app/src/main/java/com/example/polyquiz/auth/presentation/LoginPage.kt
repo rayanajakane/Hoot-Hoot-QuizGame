@@ -123,7 +123,6 @@ fun LoginPage(
                         bottom = 16.dp
                     )
                     .fillMaxWidth(0.5f)
-                    .padding(60.dp)
             ) {
                 Text(
                     text = stringResource(R.string.login_title),

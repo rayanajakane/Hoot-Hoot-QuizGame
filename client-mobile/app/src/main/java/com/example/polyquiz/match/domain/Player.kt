@@ -1,8 +1,9 @@
 package com.example.polyquiz.match.domain
 
 data class Player (
-    val id: String,
     val username: String,
+    val id: String,
+    val photoUrl: String,
     val score: Number,
     val bonusCount: Number,
     val isPlaying:Boolean,

@@ -51,6 +51,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.polyquiz.R
@@ -272,14 +273,6 @@ fun LockMatchToggle(onToggleLock: () -> Unit) {
 
 @Composable
 fun PlayerCard(player: Player, isHost: Boolean, onClick: (String) -> Unit) {
-    val playerAvatarRef = ImageStorage.getAvatarRef(player.id)
-    var playerAvatarUrL = ""
-    ImageStorage.getImageURL(playerAvatarRef) { url ->
-        if (url != null) {
-            playerAvatarUrL = url
-        }
-    }
-    var painter: AsyncImagePainter
     ElevatedCard(colors = CardColors(
         containerColor = MaterialTheme.colorScheme.surface,
         disabledContainerColor = MaterialTheme.colorScheme.background,
@@ -293,18 +286,15 @@ fun PlayerCard(player: Player, isHost: Boolean, onClick: (String) -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            painter = if (playerAvatarUrL.isEmpty()) {
-                rememberAsyncImagePainter(model = PresetAvatar.DEFAULT.value)
-            } else {
-                rememberAsyncImagePainter(model = playerAvatarUrL)
-            }
-            Image(
-                painter = painter,
-                contentDescription = "Avatar",
+            AsyncImage(
+                model = player.photoUrl,
+                contentDescription = null,
                 modifier = Modifier
                     .size(40.dp)
-                    .clip(CircleShape)
+                    .clip(CircleShape),
+                placeholder = rememberAsyncImagePainter(model = PresetAvatar.DEFAULT.value)
             )
+            Spacer(modifier = Modifier.width(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,

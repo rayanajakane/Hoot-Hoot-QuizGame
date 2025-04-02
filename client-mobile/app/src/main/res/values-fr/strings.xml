@@ -110,7 +110,6 @@
     <string name="grade_players">Veuillez noter les réponses des joueurs!</string>
     <string name="submit_grading">SOUMETTRE CORRECTION</string>
     <string name="players">Joueurs</string>
-
     <string name="matches_won">Nombre de parties gagnées</string>
     <string name="avg_good_answers_percentage">Moyenne de questions bien répondues par partie</string>
     <string name="avg_time">Temps moyen par partie</string>
@@ -129,6 +128,5 @@
     <string name="matches_year">Parties au courant de l\'année</string>
     <string name="match_history">Historique des parties jouées</string>
     <string name="auth_history">Historique d\'authentification</string>
-
-
+    <string name="results">Résultats</string>
 </resources>

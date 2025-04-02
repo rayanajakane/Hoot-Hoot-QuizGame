@@ -47,6 +47,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -193,6 +194,12 @@ fun UserEditPage(
                     avatarURLUpdate = newAvatarUrl
                     initialAvatarURL = newAvatarUrl
                     isUpdated = true
+                    Log.d("Save UserProfile", "URLUpdate: $avatarURLUpdate")
+
+                    Log.d("Save UserProfile", "URL Update: $avatarURLUpdate")
+                    // Saves both avatar and or username in one go
+                    authViewModel.updateUserProfile(avatarURLUpdate, usernameUpdate)
+
                 } else {
                     Log.e("Save UserProfile", "Failed to save image. URL was null")
                 }
@@ -203,10 +210,15 @@ fun UserEditPage(
             avatarURLUpdate = newAvatarUrl
             initialAvatarURL = newAvatarUrl
             isUpdated = true
+
+            Log.d("Save UserProfile", "URL Update: $avatarURLUpdate")
+            // Saves both avatar and or username in one go
+            authViewModel.updateUserProfile(avatarURLUpdate, usernameUpdate)
         } else {
             Log.d("Save UserProfile", "Avatar has not changed")
         }
-        authViewModel.updateUserProfile(avatarURLUpdate, usernameUpdate)
+
+        // Change app theme
         if (currentTheme != theme) {
             isUpdated = true
             onThemeUpdated(theme)
@@ -396,7 +408,9 @@ fun UserEditPage(
                                     onValueChange = { },
                                     readOnly = true,
                                     trailingIcon = {
-                                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedLang)
+                                        ExposedDropdownMenuDefaults.TrailingIcon(
+                                            expanded = expandedLang
+                                        )
                                     },
                                     colors = ExposedDropdownMenuDefaults.textFieldColors()
                                 )
@@ -414,7 +428,9 @@ fun UserEditPage(
                                             },
                                             onClick = {
                                                 expandedLang = false
-                                                textFieldStateLang.setTextAndPlaceCursorAtEnd(language)
+                                                textFieldStateLang.setTextAndPlaceCursorAtEnd(
+                                                    language
+                                                )
                                                 currentLang = language
                                             },
                                             contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
@@ -692,7 +708,9 @@ fun ThemeDropdown(
             onValueChange = { },
             readOnly = true,
             trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedTheme)
+                ExposedDropdownMenuDefaults.TrailingIcon(
+                    expanded = expandedTheme
+                )
             },
             colors = ExposedDropdownMenuDefaults.textFieldColors()
         )

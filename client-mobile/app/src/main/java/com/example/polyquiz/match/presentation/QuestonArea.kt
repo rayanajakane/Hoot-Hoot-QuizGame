@@ -35,6 +35,10 @@ import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.MatchStatus
 import com.example.polyquiz.constants.UserInfo
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material3.Icon
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -62,7 +66,11 @@ fun QuestionArea(
     val question by matchRoomService::currentQuestion
     val score by answerService::playerScore
 
-    LaunchedEffect(Unit, MatchRoomService.hasBeenKickedOut, MatchRoomService.isTimeToNavigateToResults) {
+    LaunchedEffect(
+        Unit,
+        MatchRoomService.hasBeenKickedOut,
+        MatchRoomService.isTimeToNavigateToResults
+    ) {
         answerService.resetStateForNewQuestion()
         timeService.listenToTimerEvents()
         answerService.listenToAnswerEvents()
@@ -82,6 +90,7 @@ fun QuestionArea(
             true -> {
                 navigateToResultsPage();
             }
+
             else -> Unit
         }
     }
@@ -91,7 +100,8 @@ fun QuestionArea(
         matchRoomService.routeToResultsPage()
     }
 
-    Row(modifier = Modifier.statusBarsPadding()
+    Row(modifier = Modifier
+        .statusBarsPadding()
         .fillMaxSize()
         .pointerInput(Unit) {
             detectTapGestures(onTap = {
@@ -187,7 +197,10 @@ fun QuestionArea(
                     if (answerService.bonusPoints > 0) {
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = stringResource(R.string.bonus_message, answerService.bonusPoints),
+                            text = stringResource(
+                                R.string.bonus_message,
+                                answerService.bonusPoints
+                            ),
                             style = MaterialTheme.typography.titleMedium,
                             color = Color.Green
                         )
@@ -259,7 +272,8 @@ fun QuestionArea(
                 players = matchRoomService.players,
                 modifier = Modifier
                     .width(250.dp)
-                    .fillMaxHeight(),
+                    .fillMaxHeight()
+                    .navigationBarsPadding(),
                 extraContent = {
                     Column {
                         Spacer(modifier = Modifier.height(16.dp))
@@ -288,8 +302,14 @@ fun QuestionArea(
                                 matchRoomService.isQuitting = true
                                 matchRoomService.disconnectFromRoom()
                                 navigateToHome()
-                            }
+                            },
+                            shape = RoundedCornerShape(3.dp),
                         ) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.Logout,
+                                contentDescription = stringResource(R.string.leave)
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
                             Text(stringResource(R.string.leave))
                         }
                     }

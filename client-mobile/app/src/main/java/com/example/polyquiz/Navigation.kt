@@ -153,11 +153,13 @@ fun Navigation(
         }
         composable<Route.ResultsPage> {
             ResultsPage(
+                authViewModel,
                 matchRoomService = MatchRoomService,
                 navigateToHome = { navController.navigate(Route.Home) },
-                players,
-                modifier,
-                extraContent = {}
+                extraContent = {},
+                matchContextService = MatchContextService,
+                players = players,
+                modifier = modifier
             )
         }
 
