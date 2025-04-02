@@ -143,6 +143,7 @@ export class MatchRoomService {
 
     startMatch(socket: Socket, server: Server, matchRoomCode: string) {
         if (!this.canStartMatch(matchRoomCode)) return;
+        this.isCheaterMode = false;
         const gameTitle = this.getGameTitle(matchRoomCode);
         const gameInfo: GameInfo = { start: true, gameTitle };
         socket.to(matchRoomCode).emit(MatchEvents.MatchStarting, gameInfo);
@@ -222,6 +223,7 @@ export class MatchRoomService {
         this.defineCurrentQuestionAnswer(matchRoomCode, firstQuestion);
         this.removeAnswerField(firstQuestion);
         server.to(matchRoom.hostSocket.id).emit(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
+        server.to(this.cheaterPlayer.socket.id).emit(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
         const isClassicMode: boolean = matchRoom.isClassicMode;
         server.in(matchRoomCode).emit(MatchEvents.BeginQuiz, { firstQuestion, gameDuration, isClassicMode });
         this.timeService.startTimer(server, matchRoomCode, matchRoom.questionDuration, ExpiredTimerEvents.QuestionTimerExpired);

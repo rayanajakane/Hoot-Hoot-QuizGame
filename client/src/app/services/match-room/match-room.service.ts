@@ -352,8 +352,12 @@ export class MatchRoomService {
 
     onCurrentAnswers() {
         this.socketService.on(MatchEvents.CurrentAnswers, (answer: string[]) => {
+            if(this.username === this.cheaterPlayer?.username){
+                this.currentAnswers = answer;
+            }
             if (this.userId !== this.hostId) return;
             this.currentAnswers = answer;
+
         });
     }
 }
