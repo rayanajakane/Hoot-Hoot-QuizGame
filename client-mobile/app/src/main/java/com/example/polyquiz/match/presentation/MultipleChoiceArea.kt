@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -97,6 +98,7 @@ fun ChoiceButton(
                 }
             },
             enabled = answerService.isSelectionEnabled,
+            shape = RoundedCornerShape(3.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = buttonColor,
                 disabledContainerColor = buttonColor,
