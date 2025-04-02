@@ -10,6 +10,7 @@ import { Choice } from '@app/model/database/choice';
 import { Game, GameDocument } from '@app/model/database/game';
 import { CreateGameDto } from '@app/model/dto/game/create-game.dto';
 import { UpdateGameDto } from '@app/model/dto/game/update-game.dto';
+import { FirebaseAuthService } from '@app/modules/firebase/firebase-auth/firebase-auth.service';
 import { GameCreationService } from '@app/services/game-creation/game-creation.service';
 import { GameValidationService } from '@app/services/game-validation/game-validation.service';
 import { Injectable } from '@nestjs/common';
@@ -22,6 +23,7 @@ export class GameService {
         @InjectModel(Game.name) public gameModel: Model<GameDocument>,
         private readonly validation: GameValidationService,
         private readonly creationService: GameCreationService,
+        private readonly authService: FirebaseAuthService,
     ) {}
 
     async getAllGames(): Promise<Game[]> {
