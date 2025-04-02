@@ -44,7 +44,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AnswerCorrectness
+import com.example.polyquiz.match.domain.MatchRoomService.players
 import com.example.polyquiz.match.domain.MatchRoomService.voteOnCheater
+import com.example.polyquiz.pages.presentation.VotingDialogComponent
 
 @Composable
 fun QuestionArea(
@@ -61,6 +63,7 @@ fun QuestionArea(
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     var context by remember { mutableStateOf(matchContextService.getContext()) }
+    var showVotingDialogState by remember { mutableStateOf(false) }
     val question by matchRoomService::currentQuestion
     val score by answerService::playerScore
 
@@ -300,6 +303,21 @@ fun QuestionArea(
                 }
             )
         }
+        if (MatchRoomService.showVotingDialogState) {
+            VotingDialogComponent(
+                players = players,
+                matchRoomService = MatchRoomService,
+                onVote = { voteData ->
+                    matchRoomService.sendBackVotesResult(voteData)
+                    showVotingDialogState = false
+
+                },
+                onClose = {
+                    showVotingDialogState = false
+                }
+            )
+        }
+
 
         if (context == MatchContext.HOSTVIEW && !matchRoomService.isCooldown && matchRoomService.isCheaterMode) {
             if (answerService.isEndGame) {

@@ -74,14 +74,14 @@ fun VotingDialogComponent(
                         totalVotes++
                         onVote(voteCounts)
                     }
-                    onClose()
                 }
             ) {
                 Text("Soumettre")
             }
+            onClose()
         },
         dismissButton = {
-            TextButton(onClick = { onClose() }) {
+            TextButton(onClick =  onClose ) {
                 Text("Annuler")
             }
         }

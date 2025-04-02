@@ -11,6 +11,7 @@ import org.json.JSONObject
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -18,6 +19,7 @@ import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.constants.ChatEvents
 import com.example.polyquiz.constants.Route
 import com.example.polyquiz.constants.VotingData
+import com.example.polyquiz.pages.presentation.VotingDialogComponent
 
 @SuppressLint("StaticFieldLeak")
 object MatchRoomService {
@@ -45,6 +47,8 @@ object MatchRoomService {
     var userId by mutableStateOf("")
     var hostId by mutableStateOf("")
     var errorMsg by mutableStateOf("")
+    var showVotingDialogState by mutableStateOf(false)
+
     var cheaterPlayer by mutableStateOf(Player(
         "", "", 0, 0, false,
         isChatActive = false,
@@ -55,6 +59,7 @@ object MatchRoomService {
     var votesData by mutableStateOf(VotingData("", 0,  mutableListOf("") ))
 
     var totalVotes: MutableList<VotingData> = mutableListOf()
+
 
     private var matchRoomCode: String = ""
     private var hasEnteredRoom = false
@@ -151,9 +156,18 @@ object MatchRoomService {
 
     fun onVoting() {
         socket.on(MatchEvents.SHOW_VOTING_DIALOG.value) {
+            println("voting${MatchContextService.getContext()}")
 
+            if (MatchContextService.getContext() !== MatchContext.HOSTVIEW) {
+               // showVotingDialog()
+                showVotingDialogState = true
+            }
+
+
+            println("voting${showVotingDialogState}")
         }
     }
+
 
     fun voteOnCheater() {
         socket.emit(MatchEvents.VOTE_ON_CHEATER.value, matchRoomCode)
