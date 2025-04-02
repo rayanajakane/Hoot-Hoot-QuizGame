@@ -72,28 +72,13 @@
                 ></app-estimated-answer-area>
             </div>
 
-            <ng-template #elseBlock>
-                <div id="score-area" *ngIf="context !== matchContext.HostView">
-                    <h1 id="score">
-                        SCORE :
-                        {{ this.answerService.playerScore }}
-                    </h1>
-                </div>
-            </ng-template>
-
-            <div id="question">
-                <div id="question-text-container" [ngClass]="this.currentQuestion.pictureUrl !== '' ? 'two-columns' : 'one-column'">
-                    <h1>{{ this.currentQuestion!.text }}</h1>
-                    <img *ngIf="this.currentQuestion.pictureUrl !== ''" src="{{ this.currentQuestion.pictureUrl }}" alt="" />
-                </div>
-                <h1 id="points" *ngIf="!this.matchRoomService.isCooldown">{{ currentQuestion.points }} points</h1>
-            </div>
-
-            <div id="timer-area">
-                <mat-progress-spinner [value]="this.timeService.computeTimerProgress()" mode="determinate" diameter="90"> </mat-progress-spinner>
-                <h2 id="time-left">
-                    {{ time }}
-                </h2>
+            <div
+                id="submit-button-container"
+                *ngIf="context === matchContext.PlayerView || context === matchContext.TestPage || context === matchContext.RandomMode|| context === matchContext.CheaterView"
+            >
+                <button mat-raised-button color="primary" id="submit-button" *ngIf="this.answerService.isSelectionEnabled" (click)="submitAnswers()">
+                    {{ t('question-area.submit') }}
+                </button>
             </div>
         </div>
 
