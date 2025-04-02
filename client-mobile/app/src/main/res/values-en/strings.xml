@@ -65,4 +65,22 @@
     <string name="play">Play</string>
     <string name="matches_played">"Matches Played: "</string>
     <string name="all_games">"All Games"</string>
+    <string name="matches_won">Number of Matches Won</string>
+    <string name="avg_good_answers_percentage">Average Well Answered Questions</string>
+    <string name="avg_time">"Average Time "</string>
+    <string name="start">"Match Start  "</string>
+    <string name="end">Match End</string>
+    <string name="result">Result</string>
+    <string name="gave_up">"Gave Up?  "</string>
+    <string name="victory">Victory</string>
+    <string name="defeat">Defeat</string>
+    <string name="no_items_to_display">No items to display</string>
+    <string name="date">Date</string>
+    <string name="action">Action</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="statistics">Statistics</string>
+    <string name="matches_year">Matches Throughout the Year</string>
+    <string name="match_history">Match History</string>
+    <string name="auth_history">"Authentication History  "</string>
 </resources>
