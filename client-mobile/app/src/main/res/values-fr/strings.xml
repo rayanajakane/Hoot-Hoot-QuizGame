@@ -129,4 +129,11 @@
     <string name="match_history">Historique des parties jouées</string>
     <string name="auth_history">Historique d\'authentification</string>
     <string name="results">Résultats</string>
+    <string name="match_config">Configuration de la partie</string>
+    <string name="between_friends">Partie entre amis uniquement</string>
+    <string name="only_friends">Seuls vos amis pourront rejoindre cette partie.</string>
+    <string name="with_fee">Partie avec prix d\'entrée</string>
+    <string name="entry_fee">Frais d\'entrée</string>
+    <string name="entry_fee_message">Les joueurs devront payer ce montant pour rejoindre la partie.</string>
+    <string name="prepare">Préparez vous pour la prochaine question! ⏳</string>
 </resources>

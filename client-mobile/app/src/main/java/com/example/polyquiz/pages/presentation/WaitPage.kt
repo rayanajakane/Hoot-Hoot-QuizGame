@@ -57,7 +57,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
-import com.example.polyquiz.constants.MatchButtonActions
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.constants.StartMatchFeedback
@@ -218,7 +217,7 @@ fun WaitPage(
                             enabled = !disabled
 
                         ) {
-                            Text(MatchButtonActions.START_MATCH.value)
+                            Text(stringResource(R.string.start_match))
                         }
 
                     }

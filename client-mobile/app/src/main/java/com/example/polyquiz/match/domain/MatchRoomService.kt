@@ -1,4 +1,5 @@
 package com.example.polyquiz.match.domain
+import StringValue
 import android.annotation.SuppressLint
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.constants.MatchEvents
@@ -12,6 +13,8 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
+import com.example.polyquiz.R
 import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.constants.ChatEvents
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -222,7 +225,7 @@ object MatchRoomService {
             isCooldown = true
             val context = MatchContextService.getContext()
             if (isCooldown && context != MatchContext.TESTPAGE && context != MatchContext.RANDOMMODE) {
-                currentQuestion?.text = MatchStatus.PREPARE.value
+                currentQuestion?.text = StringValue.StringResource(R.string.prepare).toString()
             }
         }
     }

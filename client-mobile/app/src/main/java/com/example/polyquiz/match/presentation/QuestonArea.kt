@@ -176,13 +176,16 @@ fun QuestionArea(
                         )
 
                         AnswerCorrectness.OK -> {
-                            stringResource(R.string.partial_answer) + " points \uD83C\uDD97" to Color(
+                            stringResource(
+                                R.string.partial_answer,
+                                (question?.points ?: 0) / 2
+                            ) to Color(
                                 0xFFf6c811
                             )
                         }
 
                         AnswerCorrectness.GOOD -> {
-                            stringResource(R.string.good_answer) + "${question?.points} points \uD83C\uDD97" to Color(
+                            stringResource(R.string.good_answer, question?.points ?: 0) to Color(
                                 0xFF4caf50
                             )
                         }
@@ -259,7 +262,8 @@ fun QuestionArea(
                                     roomCode = matchRoomService.getRoomCode()
                                 )
                             )
-                        }
+                        },
+                        shape = RoundedCornerShape(3.dp)
                     ) {
                         Text(stringResource(R.string.submit))
                     }
@@ -291,12 +295,14 @@ fun QuestionArea(
                                     modifier = Modifier.fillMaxWidth(0.8f),
                                     shape = RoundedCornerShape(8.dp)
                                 ) {
-                                    Icon(Icons.Filled.BarChart, contentDescription = stringResource(R.string.show_final))
+                                    Icon(
+                                        Icons.Filled.BarChart,
+                                        contentDescription = stringResource(R.string.show_final)
+                                    )
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Text(stringResource(R.string.show_final))
                                 }
-                            }
-                            else if (answerService.isNextQuestionButtonEnabled) {
+                            } else if (answerService.isNextQuestionButtonEnabled) {
                                 Log.d("Question area", "next question enabled")
                                 Button(
                                     onClick = { matchRoomService.goToNextQuestion() },
