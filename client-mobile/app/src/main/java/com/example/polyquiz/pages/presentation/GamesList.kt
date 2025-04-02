@@ -168,6 +168,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                 val game = gson.fromJson(gson.toJson(response), Game::class.java)
                 selectedGame = game
                 revalidateGame(partyConfigs)
+                navigateToWaitPage()
         }, onError = {
             errorMessage ->
             println("Error: $errorMessage")
@@ -374,7 +375,6 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                     Button(
                         onClick = {
                             createMatch(MatchContext.HOSTVIEW)
-                            navigateToWaitPage()
                         },
                         shape = RoundedCornerShape(3.dp),
                         colors = ButtonDefaults.buttonColors(
@@ -425,7 +425,6 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                 onConfirm = { updatedConfigs ->
                     createMatch(MatchContext.HOSTVIEW, updatedConfigs)
                     partyConfigs = updatedConfigs
-                    navigateToWaitPage()
                     showPartyConfigDialog = false
 
                 },
