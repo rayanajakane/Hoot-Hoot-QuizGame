@@ -326,10 +326,13 @@
         "choose-estimated": "Choisissez une valeur estimée. La marge est de +/- {{margin}}",
         "answer": "Réponse",
         "out-of-bounds": "Valeur hors limites ! Doit être entre {{lowerBound}} et {{upperBound}}",
-        "show-voting-button":"Aller vers la page de vote"
+        "show-voting-button": "Aller vers la page de vote"
     },
     "players-list": {
         "players": "Joueurs"
+    },
+    "money-errors": {
+        "not-enough-money": "Vous n'avez pas assez d'argent pour effectuer cette transaction."
     },
     "username-suggestion": {
         "title": "Suggestions de noms d'utilisateurs",
@@ -341,11 +344,11 @@
         "title": "Titre",
         "author": "Auteur"
     },
-    "cheater-mode":{
-        "notifyCheater":"Vous êtes le/la tricheur/tricheuse de cette partie",
+    "cheater-mode": {
+        "notifyCheater": "Vous êtes le/la tricheur/tricheuse de cette partie",
         "cheater": "Tricheur",
-        "vote":"Voter" ,
-        "voteCheater":"Votez pour le tricheur",
+        "vote": "Voter",
+        "voteCheater": "Votez pour le tricheur",
         "answer-hint": "Indice pour la réponse: \"{{answer}}\"",
         "notifyRegularPlayer": "Vous avez le rôle de joueur régulier dans cette partie",
         "playerVoted": "\"{{player}}\" a voté",
@@ -353,8 +356,8 @@
         "players-voted": "Tous les joueurs ont voté",
         "players-amount-invalid": "Le nombre de joueurs doit être supérieur à 3"
     },
-    
-    "questions-generations":{
+
+    "questions-generations": {
         "input": "Veuillez fournir un sujet ou un thème pour générer des questions, et sélectionnez le type de question souhaité ",
         "generate": "Générer",
         "regenerate": "Regénérer d'autres questions",
@@ -362,9 +365,9 @@
         "submit": "Soumettre",
         "language": "La langue de la question",
         "choice-number": "Nombre de choix de réponses",
-        "choice":"Choix",
+        "choice": "Choix",
         "generate-IA": "Générer question IA",
-        "error": "Erreur lors de la génération de la question", 
+        "error": "Erreur lors de la génération de la question",
         "choice-input": "Entrez les choix",
         "french": "Français",
         "english": "Anglais",

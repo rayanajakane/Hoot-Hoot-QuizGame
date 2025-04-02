@@ -327,10 +327,25 @@
         "choose-estimated": "Chose an estimated value. Margin is +/- {{margin}}",
         "answer": "Answer",
         "out-of-bounds": "Value is out of bounds! Must be between {{lowerBound}} and {{upperBound}}",
-        "show-voting-button":"Go to voting page"
+        "show-voting-button": "Go to voting page"
     },
     "players-list": {
         "players": "Players"
+    },
+    "money-errors": {
+        "not-enough-money": "You don't have enough money to make this transaction.",
+        "donation-amount-exceeded": "With this donation, you will exceed the maximum amount of money allowed to send.",
+        "invalid-amount": "The amount is invalid, it must be a positive number.",
+        "zero-amount": "The amount shouldn't be equal to 0."
+    },
+    "match-errors": {
+        "ban_player": "The host banned you from the match.",
+        "no_more_host": "The host left the match.",
+        "no_more_players": "There are no more players in the match."
+    },
+    "match-friends-errors": {
+        "not_friends_with_host": "You are not friends with the host.",
+        "no_friends": "You don't have any friends."
     },
     "username-suggestion": {
         "title": "Usernames Suggestions",
@@ -342,11 +357,11 @@
         "title": "Title",
         "author": "Author"
     },
-    "cheater-mode":{
-        "notifyCheater":"You are the cheater",
+    "cheater-mode": {
+        "notifyCheater": "You are the cheater",
         "cheater": "Cheater",
-        "vote":"Vote",
-        "voteCheater":"Vote for the cheater",
+        "vote": "Vote",
+        "voteCheater": "Vote for the cheater",
         "notifyRegularPlayer": "You are a regular player",
         "playerVoted": "\"{{player}}\" has voted",
         "answer-hint": "Answer Hint: \"{{answer}}\"",
@@ -354,7 +369,7 @@
         "players-voted": "All players have voted",
         "players-amount-invalid": "The match needs at least 3 players"
     },
-    "questions-generations":{
+    "questions-generations": {
         "input": "Please provide a topic or theme to generate questions, and select the desired question type.",
         "generate": "Generate",
         "regenerate": "Regenerate other questions",
@@ -362,10 +377,10 @@
         "submit": "Submit",
         "language": "The question language",
         "choice-number": "Number of answer choices",
-        "choice":"Choice",
+        "choice": "Choice",
         "question-input": "Enter the question",
         "generate-IA": "Generate questions with IA",
-        "error": "Error while generating questions", 
+        "error": "Error while generating questions",
         "choice-input": "Enter the choice",
         "french": "French",
         "english": "English"

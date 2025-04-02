@@ -1,6 +1,6 @@
 import { CHAT_REACTIVATED } from '@app/constants/chat-state-messages';
 import { ExpiredTimerEvents } from '@app/constants/expired-timer-events';
-import { BAN_PLAYER, LESS_THAN_3_PLAYERS, NO_MORE_HOST, NO_MORE_PLAYERS } from '@app/constants/match-errors';
+import { BAN_PLAYER, NO_MORE_HOST, NO_MORE_PLAYERS } from '@app/constants/match-errors';
 import { Game } from '@app/model/database/game';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
 import { Player, VotingData } from '@app/model/schema/player.schema';
@@ -17,11 +17,9 @@ import { PartyService } from '@app/services/party/party.service';
 import { PlayerRoomService } from '@app/services/player-room/player-room.service';
 import { TimeService } from '@app/services/time/time.service';
 import { PlayerState } from '@common/constants/player-states';
-import { AnswerEvents } from '@common/events/answer.events';
 import { ChatEvents } from '@common/events/chat.events';
 import { MatchEvents } from '@common/events/match.events';
 import { MoneyEvents } from '@common/events/money.events';
-import { Feedback } from '@common/interfaces/feedback';
 import { PartyConfig } from '@common/interfaces/party-config';
 import { UserInfo } from '@common/interfaces/user-info';
 import { Injectable } from '@nestjs/common';
@@ -57,10 +55,13 @@ export class MatchGateway implements OnGatewayDisconnect {
         const matchRoom = this.matchRoomService.getRoom(data.roomCode);
         const codeErrors = this.matchRoomService.getRoomCodeErrors(data.roomCode);
         const usernameErrors = this.playerRoomService.getUsernameErrors(data.roomCode, data.userId);
-        let errorMessage = codeErrors + usernameErrors;
+        let errorMessage = [];
+        errorMessage = errorMessage.concat(codeErrors);
+        errorMessage = errorMessage.concat(usernameErrors);
+        console.log('Joining room', matchRoom.partyConfig);
         if (matchRoom.partyConfig.isFriendsOnly || matchRoom.partyConfig.isEntryFeeRequired) {
             const partyErrors = await this.partyService.canJoinParty(data.userId, data.roomCode);
-            errorMessage += partyErrors;
+            errorMessage.concat(partyErrors);
         }
 
         if (errorMessage) {
@@ -138,10 +139,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         }
         this.server.to(this.roomCode).emit(MatchEvents.SendBackVotesResults, votesCount);
         this.server.to(this.roomCode).emit(MatchEvents.SendVotingUsers, newVotesCount.usersWhoVoted);
-
     }
-
-
 
     @SubscribeMessage(MatchEvents.SendUpdatedScores)
     sendUpdatedScores(@ConnectedSocket() socket: Socket, @MessageBody() roomCode) {
@@ -197,7 +195,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         const playerToBan = this.playerRoomService.getPlayerById(data.roomCode, data.userId);
         if (playerToBan) {
             this.playerRoomService.deletePlayer(data.roomCode, data.userId);
-            this.sendError(playerToBan.socket.id, BAN_PLAYER);
+            this.sendError(playerToBan.socket.id, [BAN_PLAYER]);
             this.server.in(playerToBan.socket.id).emit(MatchEvents.KickPlayer);
             playerToBan.socket.leave(data.roomCode);
             // this.server.in(playerToBan.socket.id).disconnectSockets();
@@ -275,7 +273,7 @@ export class MatchGateway implements OnGatewayDisconnect {
 
         // !hostRoom.currentQuestionIndex is true when in wait page (=== 0)
         if (hostRoom.isPlaying || !hostRoom.currentQuestionIndex) {
-            this.sendError(hostRoomCode, NO_MORE_HOST);
+            this.sendError(hostRoomCode, [NO_MORE_HOST]);
             const endDate = new Date();
             if (hostRoom.players) {
                 hostRoom.players.forEach((player) => {
@@ -314,8 +312,7 @@ export class MatchGateway implements OnGatewayDisconnect {
                 await this.partyService.leaveParty(player.id, roomCode);
                 const currPlayerBalance = await this.moneyService.getCurrentBalance(player.id);
                 this.server.in(socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
-            } 
-            else if (isOnePlayerLeft) {
+            } else if (isOnePlayerLeft) {
                 this.timeService.expireTimer(roomCode, this.server, ExpiredTimerEvents.QuestionTimerExpired);
                 await this.routeToResultsPage({} as Socket, roomCode);
             }
@@ -323,7 +320,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         socket.leave(roomCode);
         const isRoomEmpty = this.isRoomEmpty(room);
         if (room.isPlaying && isRoomEmpty) {
-            this.sendError(roomCode, NO_MORE_PLAYERS);
+            this.sendError(roomCode, [NO_MORE_PLAYERS]);
             this.deleteRoom(roomCode);
             return;
         }
@@ -368,7 +365,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         this.server.to(matchRoomCode).emit(MatchEvents.FetchPlayersData, this.playerRoomService.getPlayersStringified(matchRoomCode));
     }
 
-    sendError(socketId: string, error: string) {
+    sendError(socketId: string, error: string[]) {
         this.server.to(socketId).emit(MatchEvents.Error, error);
     }
 
@@ -376,7 +373,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         return room.players.every((player) => !player.isPlaying || !player.socket.rooms.has(room.code));
     }
 
-   private isRoomLessThanThreePlayers(room: MatchRoom) {
+    private isRoomLessThanThreePlayers(room: MatchRoom) {
         return room.players.filter((player) => player.isPlaying || player.socket.rooms.has(room.code)).length < 3;
     }
 
