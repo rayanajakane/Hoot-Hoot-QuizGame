@@ -415,7 +415,7 @@ fun UserEditPage(
                             modifier = Modifier
                                 .padding(
                                     start = 20.dp,
-                                    end = 250.dp
+                                    end = 150.dp
                                 )
                                 .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
@@ -427,7 +427,7 @@ fun UserEditPage(
                             modifier = Modifier
                                 .padding(
                                     start = 20.dp,
-                                    end = 250.dp
+                                    end = 150.dp
                                 )
                                 .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
@@ -439,7 +439,7 @@ fun UserEditPage(
                             modifier = Modifier
                                 .padding(
                                     start = 20.dp,
-                                    end = 250.dp
+                                    end = 150.dp
                                 )
                                 .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
@@ -451,7 +451,7 @@ fun UserEditPage(
                             modifier = Modifier
                                 .padding(
                                     start = 20.dp,
-                                    end = 250.dp
+                                    end = 150.dp
                                 )
                                 .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
@@ -469,71 +469,77 @@ fun UserEditPage(
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
                 IntensityGrid(historyData.intensityGrid)
-                Text(
-                    text = stringResource(R.string.match_history),
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
-                if (historyData.match.isEmpty()) {
-                    Text(
-                        text = stringResource(R.string.no_items_to_display),
-                        fontStyle = FontStyle.Italic,
-                        modifier = Modifier.padding(8.dp)
-                    )
-                } else {
+                ElevatedCard(
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFEBEDF0)
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .height(40.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(R.string.start),
+                            modifier = Modifier.weight(1f)
+                        )
+                        Text(
+                            text = stringResource(R.string.end),
+                            modifier = Modifier.weight(1f)
+                        )
+                        Text(
+                            text = stringResource(R.string.result),
+                            modifier = Modifier.weight(1f)
+                        )
+                        Text(
+                            text = stringResource(R.string.gave_up),
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+
+                historyData.match.forEach { item ->
                     ElevatedCard(
                         colors = CardDefaults.cardColors(
-                            containerColor = Color(0xFFEBEDF0)
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
                             .height(40.dp)
-
                     ) {
                         Row(
                             modifier = Modifier
-                                .padding(8.dp)
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(text = stringResource(R.string.start))
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Text(text = stringResource(R.string.end))
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Text(text = stringResource(R.string.result))
-                            Text(text = stringResource(R.string.gave_up))
+                            Text(
+                                text = formatDateTime(item.start),
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                text = formatDateTime(item.end),
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                text = if (item.hasWon) stringResource(R.string.victory)
+                                else stringResource(R.string.defeat),
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                text = if (item.hasGivenUp) "✔" else "-",
+                                modifier = Modifier.weight(1f)
+                            )
                         }
                     }
-                    historyData.match.forEach { item ->
-                        ElevatedCard(
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
-                            ),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                                .height(40.dp)
 
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .padding(8.dp)
-                                    .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-
-                            ) {
-                                Text(text = formatDateTime(item.start))
-                                Text(text = formatDateTime(item.end))
-                                Text(text = if (item.hasWon) stringResource(R.string.victory) else stringResource(R.string.defeat))
-                                Text(text = if (item.hasGivenUp) "✔" else "-")
-                            }
-                        }
-                    }
-                }
+            }
                 Text(
                     text = stringResource(R.string.auth_history),
                     fontSize = 30.sp,
