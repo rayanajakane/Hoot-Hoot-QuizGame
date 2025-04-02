@@ -349,6 +349,35 @@
         "not_friends_with_host": "You are not friends with the host.",
         "no_friends": "You don't have any friends."
     },
+    "request-errors": {
+        "error-game-not-found": "The game has not been found.",
+        "error-game-same-title": "A game with the same title already exists.",
+        "error-invalid-game": "The game is invalid: ",
+        "error-wrong-format": "At least one of the elements of the game is invalid.",
+        "error-question-not-found": "The question has not been found.",
+        "error-question-same-title-bank": "The question already exists in the question bank.",
+        "error-invalid-question": "The question is invalid: ",
+        "error-default": "Error."
+    },
+    "game-validation-errors": {
+        "error-repeat-choices": "There shouldn't be any repeated choices in the same question.",
+        "error-choices-number": "There should be between 2 and 4 choices in a question.",
+        "error-points": "The number of points must between 10 and 100.",
+        "error-empty-question": "The question cannot be empty.",
+        "error-choices-ratio": "There should be at least one correct and one incorrect choice.",
+        "error-empty-title": "The title of the game cannot be empty.",
+        "error-empty-description": "The description of the game cannot be empty.",
+        "error-duration": "The duration of the game must be between 10 and 60 seconds.",
+        "error-question-number": "There should be at least one question in the game.",
+        "error-question-type": "The type of the question should either be QCM, QRL or QRE.",
+        "error-invalid-bounds": "The lower bound must be smaller than the upper bound.",
+        "error-margin-too-big": "The margin should be positive and less than 25% of the interval.",
+        "error-answer-out-of-bounds": "The correct answer must be included in the bounds.",
+        "error-answer-not-integer": "The correct answer must be an integer.",
+        "error-lower-bound-not-integer": "The lower bound must be an integer.",
+        "error-upper-bound-not-integer": "The upper bound must be an integer.",
+        "error-margin-not-integer": "The margin must be an integer."
+    },
     "username-suggestion": {
         "title": "Usernames Suggestions",
         "regenerate": "Generate other usernames",

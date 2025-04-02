@@ -334,7 +334,29 @@
         "players": "Joueurs"
     },
     "money-errors": {
-        "not-enough-money": "Vous n'avez pas assez d'argent pour effectuer cette transaction."
+        "not-enough-money": "Vous n'avez pas assez d'argent pour effectuer cette transaction.",
+        "donation-amount-exceeded": "Avec cette donation, vous dépassez la limite quotidienne.",
+        "invalid-amount": "Le montant est invalide, il doit être un nombre positif.",
+        "zero-amount": "Le montant ne peut pas être 0"
+    },
+    "match-errors": {
+        "ban_player": "L'organisateur vous a banni.",
+        "no_more_host": "L'organisateur a quitté la partie.",
+        "no_more_players": "Il n'y a plus de joueurs dans la partie."
+    },
+    "match-friends-errors": {
+        "not_friends_with_host": "Vous n'êtes pas ami avec l'hôte.",
+        "no_friends": "Vous n'avez pas d'amis."
+    },
+    "request-errors": {
+        "error-game-not-found": "Le jeu est introuvable.",
+        "error-game-same-title": "Un jeu du même titre existe déjà.",
+        "error-invalid-game": "Le jeu est invalide: ",
+        "error-wrong-format": "Au moins un des éléments du jeu ne suit pas le format attendu.",
+        "error-question-not-found": "La question est introuvable.",
+        "error-question-same-title-bank": "La question existe déjà dans la banque.",
+        "error-invalid-question": "La question est invalide: ",
+        "error-default": "Error."
     },
     "username-suggestion": {
         "title": "Suggestions de noms d'utilisateurs",
