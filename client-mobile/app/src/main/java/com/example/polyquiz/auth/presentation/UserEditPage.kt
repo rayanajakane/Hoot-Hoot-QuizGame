@@ -418,7 +418,8 @@ fun UserEditPage(
                                     end = 150.dp
                                 )
                                 .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                            horizontalArrangement = Arrangement.SpaceBetween,
+
                         ) {
                             Text(text = stringResource(R.string.matches_played))
                             Text(text = historyData.stats.nMatchesPlayed.toString())
@@ -461,7 +462,6 @@ fun UserEditPage(
                         }
                     }
                 }
-                Log.d("UserEditPage", "intensityGrid = ${userHistory.intensityGrid}")
                 Text(
                     text = stringResource(R.string.matches_year),
                     fontSize = 30.sp,
@@ -475,13 +475,13 @@ fun UserEditPage(
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp)
+                        .padding(5.dp)
                         .height(40.dp)
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 8.dp),
+                            .padding(horizontal = 8.dp, vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
@@ -510,13 +510,13 @@ fun UserEditPage(
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp)
+                            .padding(5.dp)
                             .height(40.dp)
                     ) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 8.dp),
+                                .padding(horizontal = 8.dp, vertical = 8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
@@ -553,13 +553,13 @@ fun UserEditPage(
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp)
+                        .padding(5.dp)
                         .height(40.dp)
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 8.dp),
+                            .padding(horizontal = 8.dp, vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
@@ -580,13 +580,13 @@ fun UserEditPage(
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp)
+                            .padding(5.dp)
                             .height(40.dp)
                     ) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 8.dp),
+                                .padding(horizontal = 8.dp, vertical = 8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
