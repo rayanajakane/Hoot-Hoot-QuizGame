@@ -15,10 +15,6 @@
         align-items: center;
         gap: 0.5rem;
         font-size: 1.2rem;
-
-        mat-icon {
-            color: #ffd700;
-        }
     }
 }
 
@@ -51,13 +47,11 @@
         .price {
             font-size: 1.2rem;
             font-weight: bold;
-            color: #666;
         }
     }
 }
 
 .error-message {
-    color: #f44336;
     font-size: 0.8rem;
     margin-top: -0.5rem;
     text-align: center;
