@@ -24,7 +24,7 @@ export class EstimatedAnswerAreaComponent implements OnInit, OnDestroy {
         public answerService: AnswerService,
     ) {}
 
-    get contextOptions(): typeof MatchContext {
+    get contextOptions(): typeof MatchContext {        
         return MatchContext;
     }
 

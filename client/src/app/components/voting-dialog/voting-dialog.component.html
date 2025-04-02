@@ -2,6 +2,7 @@
     <h2>Votez pour le tricheur</h2>
     <mat-radio-group [(ngModel)]="selectedPlayer">
         <mat-selection-list *ngFor="let player of matchRoomService.players">
+          <app-players-list [matchRoomService.players] > </app-players-list>
           <div *ngIf="player.username !== matchRoomService.getUsername()">
             <mat-radio-button [value]="player.username">
               <label>{{ player.username }}</label>
@@ -14,4 +15,8 @@
     <div class="dialog-actions">
         <button mat-raised-button color="primary" (click)="onVote()">Votez</button>
     </div>
+
+    <div class="cancel-button">
+      <button mat-raised-button color="primary" (click)="closeDialog()">Annuler</button>
+  </div>
 </div>
