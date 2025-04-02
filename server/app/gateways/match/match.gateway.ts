@@ -1,6 +1,6 @@
 import { CHAT_REACTIVATED } from '@app/constants/chat-state-messages';
 import { ExpiredTimerEvents } from '@app/constants/expired-timer-events';
-import { BAN_PLAYER, LESS_THAN_3_PLAYERS, NO_MORE_HOST, NO_MORE_PLAYERS } from '@app/constants/match-errors';
+import { BAN_PLAYER, NO_MORE_HOST, NO_MORE_PLAYERS } from '@app/constants/match-errors';
 import { Game } from '@app/model/database/game';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
 import { Player, VotingData } from '@app/model/schema/player.schema';
@@ -328,10 +328,11 @@ export class MatchGateway implements OnGatewayDisconnect {
         }
 
         if (this.matchRoomService.isCheaterMode && room.isPlaying && lessthanThreePlayers) {
-            this.sendError(roomCode, [LESS_THAN_3_PLAYERS]);
+            this.sendError(roomCode, LESS_THAN_3_PLAYERS);
             this.deleteRoom(roomCode);
             return;
         }
+
 
         if (isRoomEmpty && (!room.hostSocket.connected || !room.hostSocket.rooms.has(roomCode))) {
             this.deleteRoom(roomCode);
@@ -359,7 +360,6 @@ export class MatchGateway implements OnGatewayDisconnect {
     }
 
     sendError(socketId: string, error: string[]) {
-        console.log('Sending error:', error);
         this.server.to(socketId).emit(MatchEvents.Error, error);
     }
 
