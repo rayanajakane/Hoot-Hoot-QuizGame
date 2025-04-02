@@ -4,6 +4,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatSliderModule } from '@angular/material/slider';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
@@ -53,6 +54,7 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
 import { FriendsListItemComponent } from './components/friends-list-item/friends-list-item.component';
 import { FriendsSearchComponent } from './components/friends-search/friends-search.component';
 import { PartyConfigDialogComponent } from './components/party-config-dialog/party-config-dialog.component';
+import { UsernameSuggestionDialogComponent } from './components/username-suggestion-dialog/username-suggestion-dialog.component';
 import { JoinMatchPageComponent } from './pages/join-match-page/join-match-page.component';
 import { ShopPageComponent } from './pages/shop-page/shop-page.component';
 /**
@@ -107,6 +109,7 @@ import { ShopPageComponent } from './pages/shop-page/shop-page.component';
         PartyConfigDialogComponent,
         ConfirmDialogComponent,
         ShopPageComponent,
+        UsernameSuggestionDialogComponent,
     ],
     imports: [
         AppMaterialModule,
@@ -114,6 +117,7 @@ import { ShopPageComponent } from './pages/shop-page/shop-page.component';
         BrowserAnimationsModule,
         BrowserModule,
         FormsModule,
+        MatRadioModule,
         HttpClientModule,
         DragDropModule,
         ReactiveFormsModule,

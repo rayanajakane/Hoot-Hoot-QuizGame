@@ -63,6 +63,9 @@
                                 placeholder=""
                                 id="username-input"
                             />
+                            <button type="button" mat-icon-button matSuffix (click)="openUsernameDialog()">
+                                <mat-icon>auto_fix_high</mat-icon>
+                            </button>
                             <mat-error *ngIf="form.get('username')?.hasError('containsSpecialChar')"
                                 >{{ t('auth.error.username-special-char') }}
                             </mat-error>
@@ -153,7 +156,7 @@
             </div>
             <h2>{{ t('history.match-history') }}</h2>
             <p *ngIf="userHistory.match.length === 0" class="no-item-to-display">{{ t('history.no-item') }}</p>
-            <mat-card class="history-match-item header-card" *ngIf="userHistory.match.length !== 0">
+            <mat-card class="history-match-item header-card card-header-background" *ngIf="userHistory.match.length !== 0">
                 <p>{{ t('history.start') }}</p>
                 <p>{{ t('history.end') }}</p>
                 <p>{{ t('history.result') }}</p>

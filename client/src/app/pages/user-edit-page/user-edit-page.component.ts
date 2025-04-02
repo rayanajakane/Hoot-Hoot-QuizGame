@@ -3,6 +3,7 @@ import { User } from '@angular/fire/auth';
 import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '@app/components/confirm-dialog/confirm-dialog.component';
+import { UsernameSuggestionDialogComponent } from '@app/components/username-suggestion-dialog/username-suggestion-dialog.component';
 import { MAX_LENGTH, MIN_LENGTH } from '@app/constants/authentication';
 import { AvatarState, PremiumAvatar, PresetAvatar } from '@app/constants/avatar-constants';
 import { IMAGE_MAX_FILE_SIZE } from '@app/constants/image-constants';
@@ -247,6 +248,15 @@ export class UserEditPageComponent implements OnInit {
         dialogRef.afterClosed().subscribe((confirm) => {
             if (confirm) {
                 this.deleteUser();
+            }
+        });
+    }
+
+    openUsernameDialog() {
+        const dialogRef = this.dialog.open(UsernameSuggestionDialogComponent);
+        dialogRef.afterClosed().subscribe((username: string) => {
+            if (username) {
+                this.form.controls['username'].setValue(username);
             }
         });
     }

@@ -1,6 +1,7 @@
 <mat-card class id="game-card" [ngClass]="isAdminMode ? '' : 'clickable-item'">
-    <mat-card-content id="game-card-content">
-        <p id="game-title" [ngClass]="isAdminMode ? '' : 'full-grid'">{{ game.title }}</p>
+    <mat-card-content [ngClass]="isAdminMode ? 'admin-card-content' : 'game-match-card-content'">
+        <p id="game-title">{{ game.title }}</p>
+        <p id="game-author">{{ game.authorName ? game.authorName : '' }}</p>
         <p id="game-date" *ngIf="isAdminMode">{{ game.lastModification | date: 'YYYY-MM-dd HH:mm:ss' }}</p>
         <div *ngIf="isAdminMode" id="icons-container">
             <button

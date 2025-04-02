@@ -24,6 +24,8 @@ export class GameModificationService {
     newGame: Game = {
         id: '',
         title: '',
+        authorId: this.authenticationService.userId,
+        authorName: this.authenticationService.userDisplayName,
         description: '',
         lastModification: new Date().toString(),
         duration: 10,

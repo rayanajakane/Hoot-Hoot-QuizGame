@@ -12,6 +12,8 @@ describe('CommunicationService', () => {
     const mockGame: Game = {
         id: 'gameID',
         title: 'gameTitle',
+        authorId: '',
+        authorName: '',
         description: 'gameDesc',
         lastModification: new Date().toString(),
         duration: 30,

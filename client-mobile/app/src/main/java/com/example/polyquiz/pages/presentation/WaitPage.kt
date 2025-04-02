@@ -184,14 +184,15 @@ fun WaitPage(
                             Text(StartMatchFeedback.LOCK_MATCH.value)
                             Spacer(modifier = Modifier.width(8.dp))
                             Switch(
-                                checked = MatchRoomService.isLocked,
+                                checked = matchRoomService.isLocked,
                                 onCheckedChange = { toggleLock() })
                         }
+                        val disabled  = !matchRoomService.isLocked || players.isEmpty() ||  (matchRoomService.partyConfig.isEntryFeeRequired && matchRoomService.players.size <= 1)
                         Button(
                             onClick = {
                                 startMatch()
                             },
-                            enabled = MatchRoomService.isLocked && players.isNotEmpty()
+                            enabled = !disabled
 
                         ) {
                             Text(MatchButtonActions.START_MATCH.value)

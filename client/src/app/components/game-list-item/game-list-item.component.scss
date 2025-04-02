@@ -8,13 +8,21 @@
     min-height: 3rem;
 }
 
-#game-card-content {
+.admin-card-content {
     padding: 0 1rem;
     margin-left: 8px;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    justify-content: space-between;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    justify-content: center;
     align-items: center;
+}
+
+.game-match-card-content {
+    padding: 0 1rem;
+    margin-left: 8px;
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    justify-content: center;
 }
 
 #icons-container {
@@ -22,8 +30,4 @@
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
-}
-
-.full-grid {
-    grid-area: 1 / 1 / 2 / 4;
 }

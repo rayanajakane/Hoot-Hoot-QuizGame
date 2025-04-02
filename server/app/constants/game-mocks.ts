@@ -8,6 +8,8 @@ const gameYear = 2020;
 const getMockGame = (): Game => ({
     id: getRandomString(),
     originalId: getRandomString(),
+    authorId: '',
+    authorName: '',
     title: getRandomString(),
     description: getRandomString(),
     lastModification: new Date(gameYear, 1, 1),
@@ -28,6 +30,8 @@ const pastYear = 2020;
 const GAME_WITH_IS_CORRECT_FIELD: Game = {
     id: '',
     originalId: '',
+    authorId: '',
+    authorName: '',
     title: '',
     description: '',
     lastModification: new Date(pastYear, 1, 1),
@@ -91,6 +95,8 @@ const GAME_WITH_IS_CORRECT_FIELD: Game = {
 const GAME_WITHOUT_IS_CORRECT_FIELD: Game = {
     id: '',
     originalId: '',
+    authorId: '',
+    authorName: '',
     title: '',
     description: '',
     lastModification: new Date(pastYear, 1, 1),
