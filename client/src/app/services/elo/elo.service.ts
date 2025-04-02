@@ -9,28 +9,31 @@ import { EloEvents } from '@common/events/elo.events';
 })
 export class EloService {
     currentRating: number;
-    rankings: { username: string; rating: number }[];
+    rankings: Player[];
 
     constructor(private readonly socketHandler: SocketHandlerService) {}
 
     listenForEloEvents() {
-        // this.onRatingChange();
         this.onReturnRankings();
     }
     stopListeningForEloEvents() {
-        // this.socketHandler.socket.removeListener(EloEvents.EloUpdated);
-        // this.socketHandler.socket.removeListener(EloEvents.Error);
         this.socketHandler.socket.removeListener(EloEvents.ReturnRankings);
     }
 
     onReturnRankings() {
-        this.socketHandler.on(EloEvents.ReturnRankings, (data: { username: string; rating: number }[]) => {
+        this.socketHandler.on(EloEvents.ReturnRankings, (data: { username: string; rating: number; photoUrl: string }[]) => {
             this.rankings = data
-                .sort((a, b) => b.rating - a.rating)
-                .map((ranking) => ({
-                    ...ranking,
-                    rating: Math.round(ranking.rating),
-                }));
+                .map((item: any) => ({
+                    username: item.name || item.username || 'Unknown',
+                    score: Math.round(item.elo || item.rating || 0),
+                    photoUrl: item.avatar || item.photoUrl || '',
+                    id: '',
+                    bonusCount: 0,
+                    isPlaying: false,
+                    isChatActive: false,
+                    state: '',
+                }))
+                .sort((a, b) => b.score - a.score);
         });
     }
 
