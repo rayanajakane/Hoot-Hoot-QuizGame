@@ -3,12 +3,14 @@ package com.example.polyquiz.auth.presentation
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import android.content.Context
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +21,8 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
@@ -47,14 +51,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -62,12 +67,17 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.auth.domain.HistoryService
 import com.example.polyquiz.chat.presentation.ChatComponent
+import com.example.polyquiz.constants.MatchStats
 import com.example.polyquiz.constants.PresetAvatar
+import com.example.polyquiz.constants.UserHistoryInfo
 import com.example.polyquiz.core.ThemeService
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.core.TranslationService
 import com.example.polyquiz.ui.theme.Theme
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,54 +88,63 @@ fun UserEditPage(
     navigateToCamera: () -> Unit,
     navigateToLogin: () -> Unit,
     authViewModel: AuthViewModel,
-    context: Context,
+    context: android.content.Context,
     cameraViewModel: CameraViewModel,
     currentTheme: Theme,
     onThemeUpdated: (Theme) -> Unit
 ) {
-
     val focusManager = LocalFocusManager.current
     val translationService = TranslationService
-
     var currentLang by remember { mutableStateOf(Locale.getDefault().language) }
     var theme by remember { mutableStateOf(currentTheme) }
-
     val email by authViewModel.email.collectAsState()
     var username by remember { mutableStateOf(authViewModel.getUsername()) }
     val usernameError by authViewModel.usernameError.collectAsState()
-
     var expandedLang by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
-
     val availableThemes = mapOf(
         Theme.LIGHT to stringResource(R.string.light_theme),
         Theme.DARK to stringResource(R.string.dark_theme)
     )
-
-    val availableLangs =
-        mapOf("en" to stringResource(R.string.english), "fr" to stringResource(R.string.french))
-
+    val availableLangs = mapOf("en" to stringResource(R.string.english), "fr" to stringResource(R.string.french))
+    var userHistory by remember { mutableStateOf(
+        UserHistoryInfo(
+            auth = listOf(),
+            match = listOf(),
+            stats = MatchStats(
+                nMatchesPlayed = 0,
+                nMatchesWon = 0,
+                averageGoodAnswersPercentage = 0,
+                averageTime = 0
+            ),
+            intensityGrid = listOf()
+        )
+    ) }
+    LaunchedEffect(authViewModel.getUserId()) {
+        authViewModel.getUserId().let { uid ->
+            HistoryService.getHistoryById(uid, onSuccess = { history ->
+                userHistory = history
+            }, onError = { error ->
+                Log.e("UserEditPage", "Error loading history: $error")
+            })
+        }
+    }
     val textFieldStateLang = rememberTextFieldState(currentLang)
-
     val avatarURL by authViewModel.avatarURL.collectAsState()
     val isPresetAvatar by cameraViewModel.isPresetAvatar.collectAsState()
     val temporaryAvatar by cameraViewModel.temporaryAvatar.collectAsState()
     val avatarToShow = temporaryAvatar ?: avatarURL
-
     var initialAvatarURL by remember { mutableStateOf(authViewModel.getAvatarURL()) }
     var initialUsername by remember { mutableStateOf(authViewModel.getUsername()) }
-    val initialLang by remember { mutableStateOf(Locale.getDefault().language)}
-
+    val initialLang by remember { mutableStateOf(Locale.getDefault().language) }
     val onClickAvatar: (String) -> Unit = { url ->
         cameraViewModel.setPresetAvatar(authViewModel, url)
         Log.d("Save UserProfile", "Initial URL : $initialAvatarURL, new url: $url")
     }
-
     val onClickTheme: (Theme) -> Unit = { selectedTheme ->
         theme = selectedTheme
         Log.d("Theme changer", "Selected $theme")
     }
-
     DisposableEffect(Unit) {
         onDispose {
             authViewModel.setProfileUpdated(false)
@@ -133,24 +152,16 @@ fun UserEditPage(
             cameraViewModel.resetCapturedPhotoState()
         }
     }
-
     fun deleteUser() {
         authViewModel.deleteUser()
         authViewModel.resetSignUpFields()
         navigateToLogin()
     }
-
-    fun saveUserProfile() : Boolean {
-        var usernameUpdate : String = ""
+    fun saveUserProfile(): Boolean {
+        var usernameUpdate: String = ""
         var avatarURLUpdate: String = ""
-
-        // Flag used to tell us if something was updated or not
-        var isUpdated: Boolean = false
-
-        // To hide the keyboard in case it's open
+        var isUpdated = false
         keyboardController?.hide()
-
-        // Change username
         if (initialUsername != username) {
             usernameUpdate = username
             initialUsername = username
@@ -158,8 +169,6 @@ fun UserEditPage(
         } else {
             Log.d("Save UserProfile", "Username has not changed.")
         }
-
-        // Save avatar image
         val capturedImage = cameraViewModel.state.value.capturedImage
         if (!isPresetAvatar && capturedImage != null) {
             Log.d("UserEditPage", "Saving new stuff")
@@ -176,7 +185,7 @@ fun UserEditPage(
                     Log.e("Save UserProfile", "Failed to save image. URL was null")
                 }
             }
-        } else if(initialAvatarURL != authViewModel.getAvatarURL()) {
+        } else if (initialAvatarURL != authViewModel.getAvatarURL()) {
             Log.d("Save UserProfile", "Using preset avatar")
             val newAvatarUrl = authViewModel.getAvatarURL()
             avatarURLUpdate = newAvatarUrl
@@ -185,11 +194,7 @@ fun UserEditPage(
         } else {
             Log.d("Save UserProfile", "Avatar has not changed")
         }
-
-        // Saves both avatar and or username in one go
         authViewModel.updateUserProfile(avatarURLUpdate, usernameUpdate)
-
-        // Change app theme
         if (currentTheme != theme) {
             isUpdated = true
             onThemeUpdated(theme)
@@ -197,27 +202,21 @@ fun UserEditPage(
         } else {
             Log.d("Save UserProfile", "Theme was not changed")
         }
-
-        // Change app language
-        if(initialLang != currentLang) {
+        if (initialLang != currentLang) {
             isUpdated = true
             translationService.setLanguage(currentLang)
             translationService.saveLanguageToDB(currentLang, authViewModel.getUserConfigsDatabaseRef())
         } else {
             Log.d("Save UserProfile", "Lang was not changed")
         }
-
-        // Send snackbar if updated
-        if(isUpdated) {
+        if (isUpdated) {
             authViewModel.setProfileUpdated(isUpdated)
         }
         return isUpdated
     }
-
+    val historyData = userHistory
     Button(
-        onClick = {
-            navigateToHome()
-        },
+        onClick = { navigateToHome() },
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary
@@ -225,9 +224,8 @@ fun UserEditPage(
     ) {
         Text(text = stringResource(R.string.home_page))
     }
-
     Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.spacedBy(26.dp),
         modifier = Modifier
             .fillMaxSize()
             .pointerInput(Unit) {
@@ -239,15 +237,15 @@ fun UserEditPage(
     ) {
         ChatComponent(modifier = modifier, authViewModel = authViewModel)
         Box(
-            contentAlignment = Alignment.Center, modifier = Modifier
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
                 .fillMaxSize()
                 .imePadding()
         ) {
-            Column {
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 Button(
-                    onClick = {
-                        navigateToHome()
-                    }, colors = ButtonDefaults.buttonColors(
+                    onClick = { navigateToHome() },
+                    colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = MaterialTheme.colorScheme.onPrimary
                     )
@@ -261,16 +259,17 @@ fun UserEditPage(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-                ElevatedCard(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest)) {
+                ElevatedCard(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
+                    )
+                ) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(32.dp),
                         modifier = Modifier
                             .fillMaxWidth(0.8f)
-                            .padding(
-                                start = 40.dp, top = 24.dp, end = 40.dp, bottom = 16.dp
-                            )
+                            .padding(start = 40.dp, top = 24.dp, end = 40.dp, bottom = 16.dp)
                     ) {
-                        // Avatar stuff column
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -286,49 +285,22 @@ fun UserEditPage(
                                     AvatarPlaceholder(128.dp, PresetAvatar.DEFAULT.value)
                                 }
                             }
-
                             Button(
-                                onClick = {
-                                    navigateToCamera()
-                                },
+                                onClick = { navigateToCamera() }
                             ) { Text(stringResource(R.string.upload_avatar)) }
                             Text(stringResource(R.string.preset_avatars))
                             Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                                ClickableAvatarPlaceholder(
-                                    32.dp,
-                                    PresetAvatar.A.value,
-                                    onClickAvatar
-                                )
-                                ClickableAvatarPlaceholder(
-                                    32.dp,
-                                    PresetAvatar.B.value,
-                                    onClickAvatar
-                                )
-                                ClickableAvatarPlaceholder(
-                                    32.dp,
-                                    PresetAvatar.C.value,
-                                    onClickAvatar
-                                )
-                                ClickableAvatarPlaceholder(
-                                    32.dp,
-                                    PresetAvatar.D.value,
-                                    onClickAvatar
-                                )
-                                ClickableAvatarPlaceholder(
-                                    32.dp,
-                                    PresetAvatar.DEFAULT.value,
-                                    onClickAvatar
-                                )
+                                ClickableAvatarPlaceholder(32.dp, PresetAvatar.A.value, onClickAvatar)
+                                ClickableAvatarPlaceholder(32.dp, PresetAvatar.B.value, onClickAvatar)
+                                ClickableAvatarPlaceholder(32.dp, PresetAvatar.C.value, onClickAvatar)
+                                ClickableAvatarPlaceholder(32.dp, PresetAvatar.D.value, onClickAvatar)
+                                ClickableAvatarPlaceholder(32.dp, PresetAvatar.DEFAULT.value, onClickAvatar)
                             }
-
                         }
-                        // Form stuff column
                         Column {
                             TextField(
                                 value = email,
-                                onValueChange = {
-                                    //TODO
-                                },
+                                onValueChange = { },
                                 singleLine = true,
                                 enabled = false,
                                 label = { Text(stringResource(R.string.email)) },
@@ -350,16 +322,11 @@ fun UserEditPage(
                                 Text(text = usernameError, color = Color.Red)
                             }
                             Spacer(modifier = Modifier.height(8.dp))
-
-                            // Visual themes menu
                             ThemeDropdown(context, availableThemes, currentTheme, onClickTheme)
-
                             Spacer(modifier = Modifier.height(8.dp))
-
-                            // Languages
                             ExposedDropdownMenuBox(
                                 expanded = expandedLang,
-                                onExpandedChange = { expandedLang = it },
+                                onExpandedChange = { expandedLang = it }
                             ) {
                                 TextField(
                                     value = availableLangs[currentLang].toString(),
@@ -367,20 +334,17 @@ fun UserEditPage(
                                         .menuAnchor(MenuAnchorType.PrimaryNotEditable)
                                         .fillMaxWidth(),
                                     label = { Text(stringResource(R.string.language)) },
-                                    onValueChange = {
-                                        // TODO
-                                    },
+                                    onValueChange = { },
                                     readOnly = true,
                                     trailingIcon = {
-                                        ExposedDropdownMenuDefaults.TrailingIcon(
-                                            expanded = expandedLang
-                                        )
+                                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedLang)
                                     },
-                                    colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                                    colors = ExposedDropdownMenuDefaults.textFieldColors()
                                 )
                                 ExposedDropdownMenu(
                                     expanded = expandedLang,
-                                    onDismissRequest = { expandedLang = false }) {
+                                    onDismissRequest = { expandedLang = false }
+                                ) {
                                     availableLangs.keys.forEach { language ->
                                         DropdownMenuItem(
                                             text = {
@@ -391,22 +355,17 @@ fun UserEditPage(
                                             },
                                             onClick = {
                                                 expandedLang = false
-                                                textFieldStateLang.setTextAndPlaceCursorAtEnd(
-                                                    language
-                                                )
+                                                textFieldStateLang.setTextAndPlaceCursorAtEnd(language)
                                                 currentLang = language
-
                                             },
-                                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                                         )
                                     }
                                 }
                             }
                             Spacer(modifier = Modifier.height(8.dp))
                             Button(
-                                onClick = {
-                                    saveUserProfile()
-                                },
+                                onClick = { saveUserProfile() },
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = MaterialTheme.colorScheme.primary,
                                     contentColor = MaterialTheme.colorScheme.onPrimary
@@ -415,43 +374,242 @@ fun UserEditPage(
                             ) {
                                 Text(text = stringResource(R.string.save))
                             }
-
                         }
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-
                 Text(
-                    stringResource(R.string.danger_zone), fontSize = 30.sp,
+                    stringResource(R.string.danger_zone),
+                    fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-
-                // Delete user button
                 Button(
-                    onClick = {
-                        deleteUser()
-                    },
-                    // TODO : Change color
+                    onClick = { deleteUser() },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.errorContainer,
                         contentColor = MaterialTheme.colorScheme.onErrorContainer
-                    ),
-                ) {
-                    Text(
-                        text = stringResource(R.string.delete_user)
                     )
+                ) {
+                    Text(text = stringResource(R.string.delete_user))
                 }
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = stringResource(R.string.statistics),
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(vertical = 8.dp),
+                )
+                ElevatedCard(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
+                    ),
+                    modifier = Modifier
+                        .width(700.dp)
+                        .fillMaxWidth()
+                        .padding(8.dp) ,
+
+                ) {
+                    Column(modifier = Modifier.padding(20.dp)) {
+                        Row(
+                            modifier = Modifier
+                                .padding(
+                                    start = 20.dp,
+                                    end = 150.dp
+                                )
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+
+                        ) {
+                            Text(text = stringResource(R.string.matches_played))
+                            Text(text = historyData.stats.nMatchesPlayed.toString())
+                        }
+                        Row(
+                            modifier = Modifier
+                                .padding(
+                                    start = 20.dp,
+                                    end = 150.dp
+                                )
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(text = stringResource(R.string.matches_won))
+                            Text(text = historyData.stats.nMatchesWon.toString())
+                        }
+                        Row(
+                            modifier = Modifier
+                                .padding(
+                                    start = 20.dp,
+                                    end = 150.dp
+                                )
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(text = stringResource(R.string.avg_good_answers_percentage) )
+                            Text(text = "${historyData.stats.averageGoodAnswersPercentage} %")
+                        }
+                        Row(
+                            modifier = Modifier
+                                .padding(
+                                    start = 20.dp,
+                                    end = 150.dp
+                                )
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(text = stringResource(R.string.avg_time))
+                            Text(text = "${historyData.stats.averageTime} s")
+                        }
+                    }
+                }
+                Text(
+                    text = stringResource(R.string.matches_year),
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+                IntensityGrid(historyData.intensityGrid)
+                ElevatedCard(
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFEBEDF0)
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(5.dp)
+                        .height(40.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(R.string.start),
+                            modifier = Modifier.weight(1f)
+                        )
+                        Text(
+                            text = stringResource(R.string.end),
+                            modifier = Modifier.weight(1f)
+                        )
+                        Text(
+                            text = stringResource(R.string.result),
+                            modifier = Modifier.weight(1f)
+                        )
+                        Text(
+                            text = stringResource(R.string.gave_up),
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+
+                historyData.match.forEach { item ->
+                    ElevatedCard(
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(5.dp)
+                            .height(40.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp, vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = formatDateTime(item.start),
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                text = formatDateTime(item.end),
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                text = if (item.hasWon) stringResource(R.string.victory)
+                                else stringResource(R.string.defeat),
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                text = if (item.hasGivenUp) "✔" else "-",
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
+
+            }
+                Text(
+                    text = stringResource(R.string.auth_history),
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+
+                ElevatedCard(
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFEBEDF0)
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(5.dp)
+                        .height(40.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(R.string.date),
+                            modifier = Modifier.weight(1f)
+                        )
+                        Text(
+                            text = stringResource(R.string.action),
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+
+                historyData.auth.forEach { item ->
+                    ElevatedCard(
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(5.dp)
+                            .height(40.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp, vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = formatDateTime(item.date),
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                text = if (item.isLogin) stringResource(R.string.sign_in) else stringResource(R.string.sign_out),
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
+                }
+
             }
         }
-
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ThemeDropdown(
-    context: Context,
+    context: android.content.Context,
     themes: Map<Theme, String>,
     currentTheme: Theme,
     onClick: (Theme) -> Unit
@@ -459,10 +617,9 @@ fun ThemeDropdown(
     var expandedTheme by remember { mutableStateOf(false) }
     var selectedTheme by remember { mutableStateOf(currentTheme) }
     val textFieldStateTheme = rememberTextFieldState(currentTheme.toString())
-
     ExposedDropdownMenuBox(
         expanded = expandedTheme,
-        onExpandedChange = { expandedTheme = it },
+        onExpandedChange = { expandedTheme = it }
     ) {
         TextField(
             value = themes[selectedTheme].toString(),
@@ -470,21 +627,17 @@ fun ThemeDropdown(
                 .menuAnchor(MenuAnchorType.PrimaryNotEditable)
                 .fillMaxWidth(),
             label = { Text(stringResource(R.string.visual_themes)) },
-            onValueChange = {
-                // TODO
-            },
+            onValueChange = { },
             readOnly = true,
             trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(
-                    expanded = expandedTheme
-                )
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedTheme)
             },
-            colors = ExposedDropdownMenuDefaults.textFieldColors(),
-
-            )
+            colors = ExposedDropdownMenuDefaults.textFieldColors()
+        )
         ExposedDropdownMenu(
             expanded = expandedTheme,
-            onDismissRequest = { expandedTheme = false }) {
+            onDismissRequest = { expandedTheme = false }
+        ) {
             themes.keys.forEach { theme ->
                 DropdownMenuItem(
                     text = {
@@ -496,14 +649,10 @@ fun ThemeDropdown(
                     onClick = {
                         onClick(theme)
                         selectedTheme = theme
-                        textFieldStateTheme.setTextAndPlaceCursorAtEnd(
-                            theme.displayName.asString(
-                                context
-                            )
-                        )
+                        textFieldStateTheme.setTextAndPlaceCursorAtEnd(theme.displayName.asString(context))
                         expandedTheme = false
                     },
-                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                 )
             }
         }
@@ -516,27 +665,18 @@ fun TemporaryAvatar(avatarSize: Dp, bitmap: Bitmap?) {
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .size(avatarSize)
-            .border(
-                width = 2.dp,
-                color = MaterialTheme.colorScheme.primary,
-                shape = CircleShape
-            )
+            .border(width = 2.dp, color = MaterialTheme.colorScheme.primary, shape = CircleShape)
     ) {
-        // TODO: Add image
         if (bitmap != null) {
             Image(
                 bitmap = bitmap.asImageBitmap(),
-                // TODO : Add translation once merged
                 contentDescription = "placeholder avatar",
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(CircleShape),
+                modifier = Modifier.fillMaxSize().clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
         }
     }
 }
-
 
 @Composable
 fun ClickableAvatarPlaceholder(avatarSize: Dp, imageUrl: String, onClickAvatar: (String) -> Unit) {
@@ -544,14 +684,8 @@ fun ClickableAvatarPlaceholder(avatarSize: Dp, imageUrl: String, onClickAvatar: 
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .size(avatarSize)
-            .border(
-                width = 2.dp,
-                color = MaterialTheme.colorScheme.primary,
-                shape = CircleShape
-            )
-            .clickable {
-                onClickAvatar(imageUrl)
-            }
+            .border(width = 2.dp, color = MaterialTheme.colorScheme.primary, shape = CircleShape)
+            .clickable { onClickAvatar(imageUrl) }
     ) {
         AsyncImage(
             model = imageUrl,
@@ -561,3 +695,9 @@ fun ClickableAvatarPlaceholder(avatarSize: Dp, imageUrl: String, onClickAvatar: 
         )
     }
 }
+
+fun formatDateTime(timestamp: Date): String {
+    val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+    return sdf.format(timestamp)
+}
+
