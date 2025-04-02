@@ -8,6 +8,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Text
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.draw.clip
+import coil.compose.rememberAsyncImagePainter
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -36,12 +43,14 @@ import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.MatchStatus
 import com.example.polyquiz.constants.UserInfo
 import androidx.compose.foundation.layout.*
+import androidx.compose.ui.draw.shadow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.Icon
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -49,6 +58,7 @@ import androidx.compose.ui.unit.sp
 import com.example.polyquiz.R
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AnswerCorrectness
+import com.example.polyquiz.match.domain.MatchRoomService.isCooldown
 
 @Composable
 fun QuestionArea(
@@ -92,7 +102,6 @@ fun QuestionArea(
             true -> {
                 navigateToResultsPage();
             }
-
             else -> Unit
         }
     }
@@ -130,16 +139,68 @@ fun QuestionArea(
                 stroke = 8.dp
             )
 
+
+            val hasImage = !question?.pictureUrl.isNullOrEmpty()
+
+            val containerModifier = Modifier
+                .width(400.dp)
+                .height(200.dp)
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxWidth(0.8f)
+//                    .height(120.dp)
+//                    .background(
+//                        color = Color(0xFF5469D4),
+//                        shape = RoundedCornerShape(8.dp)
+//                    ),
+//                contentAlignment = Alignment.Center
+//            ) {
+
             Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .height(120.dp)
-                    .background(
-                        color = Color(0xFF5469D4),
-                        shape = RoundedCornerShape(8.dp)
-                    ),
-                contentAlignment = Alignment.Center
+                modifier = containerModifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .shadow(4.dp)
+                    .background(MaterialTheme.colorScheme.primary)
+                    .padding(16.dp)
             ) {
+                if (hasImage && !matchRoomService.isCooldown) {
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .padding(
+                                    start = 50.dp,
+                                )
+                            ,
+                            verticalArrangement = Arrangement.Center,
+
+                            ) {
+                            val questionText = question?.text ?: ""
+                            Text(
+                                text = questionText.uppercase(),
+                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                                color = Color.White
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .fillMaxHeight(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painter = rememberAsyncImagePainter(model = question?.pictureUrl),
+                                contentDescription = "Question Image",
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .aspectRatio(1f)
+                            )
+                        }
+                    }
+                } else {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     val questionText =
                         if (matchRoomService.isCooldown) stringResource(R.string.match_prepare) else question?.text
