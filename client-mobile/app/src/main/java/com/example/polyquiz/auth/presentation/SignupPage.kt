@@ -7,8 +7,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoFixNormal
+import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.rounded.People
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
@@ -41,6 +44,7 @@ import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.auth.domain.UsernameSuggestionService
 import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.constants.SIZE_CONSTANTS
 import com.example.polyquiz.ui.features.camera.CameraViewModel
@@ -196,13 +200,41 @@ fun SignupPage(
                             onValueChange = {
                                 if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.setAndUpdateUsername(
                                     it,
-                                    context
+                                    context,
                                 )
                             },
                             isError = usernameError.isNotEmpty(),
                             singleLine = true,
                             label = { Text(stringResource(R.string.username)) },
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
+                            trailingIcon = {
+                                if (UsernameSuggestionService.showUsernameDialog) {
+                                    UsernameSuggestionDialog(
+                                        onDismiss = {
+                                            UsernameSuggestionService.showUsernameDialog = false
+                                        },
+                                        onUsernameSelected = { selectedUsername ->
+                                           // username = selectedUsername
+                                            UsernameSuggestionService.showUsernameDialog = false
+                                        }
+                                    )
+                                }
+                                IconButton(
+                                    onClick = { UsernameSuggestionService.showUsernameDialog = !UsernameSuggestionService.showUsernameDialog},
+
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clip(CircleShape)
+                                )
+                                {
+                                    Icon(
+                                        imageVector = Icons.Default.AutoFixNormal,
+                                        contentDescription = null
+                                    )
+                                }
+
+                            }
+
                         )
 
                         if (usernameError.isNotEmpty()) {
