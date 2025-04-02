@@ -20,12 +20,12 @@ object EloService {
     }
 
     fun stopListeningForEloEvents() {
-        mSocket.off(EloEvents.RETURNRANKINGS.value)
+        mSocket.off(EloEvents.RETURN_RANKINGS.value)
     }
 
 
     fun onReturnRankings() {
-        mSocket.on(EloEvents.RETURNRANKINGS.value) { args ->
+        mSocket.on(EloEvents.RETURN_RANKINGS.value) { args ->
             if (args[0] != null) {
                 val rankingsList =
                     Gson().fromJson(args[0].toString(), Array<Ranking>::class.java).toList()
@@ -39,21 +39,21 @@ object EloService {
     }
 
     fun getRankings() {
-        mSocket.emit(EloEvents.GETRANKINGS.value)
+        mSocket.emit(EloEvents.GET_RANKINGS.value)
     }
 
     fun getElo(userId: String) {
-        mSocket.emit(EloEvents.GETELO.value, userId)
+        mSocket.emit(EloEvents.GET_ELO.value, userId)
         Log.d("EloService", "Sending userId: $userId")
 
     }
 
     fun updateEloForMatch(roomCode: String) {
-        mSocket.emit(EloEvents.UPDATEELOFORMATCH.value, roomCode)
+        mSocket.emit(EloEvents.UPDATE_ELO_FOR_MATCH.value, roomCode)
     }
 
 fun returnElo() {
-    mSocket.on(EloEvents.RETURNELO.value) { args ->
+    mSocket.on(EloEvents.RETURN_ELO.value) { args ->
         Log.d("returnElo", "Raw response: ${args[0]}")
 
         if (args[0] != null) {
@@ -66,7 +66,6 @@ fun returnElo() {
                 currentRating.postValue(rating.roundToInt())
 
             } catch (e: JsonSyntaxException) {
-                // Log the error if parsing fails
                 Log.e("returnElo", "Error parsing JSON: ${e.message}")
             }
         }

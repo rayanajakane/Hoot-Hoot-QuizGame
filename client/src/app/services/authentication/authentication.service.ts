@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { PresetAvatar } from '@app/constants/avatar-constants';
 import { AuthError } from '@app/services/authentication/auth-error';
 import { ChatService } from '@app/services/chat/chat.service';
+import { EloService } from '@app/services/elo/elo.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { MoneyService } from '@app/services/money/money.service';
 import { NotificationService } from '@app/services/notification/notification.service';
@@ -20,7 +21,6 @@ import { browserSessionPersistence, sendPasswordResetEmail, setPersistence, User
 import { Database, DataSnapshot, get, getDatabase, onDisconnect, ref, remove, set, update } from 'firebase/database';
 import { deleteObject, FirebaseStorage, ref as firebaseStorageRef, getDownloadURL, getStorage, uploadBytes } from 'firebase/storage';
 import { BehaviorSubject } from 'rxjs';
-import { EloService } from '../elo/elo.service';
 
 @Injectable({
     providedIn: 'root',
