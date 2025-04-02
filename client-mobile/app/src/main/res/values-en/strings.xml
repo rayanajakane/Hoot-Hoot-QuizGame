@@ -104,6 +104,8 @@
     <string name="matches_year">Matches Throughout the Year</string>
     <string name="match_history">Match History</string>
     <string name="auth_history">"Authentication History  "</string>
+    <string name="your_elo">Your elo</string>
+    <string name="rankings">Rankings</string>
     <string name="waiting_to_start">The match will start soon…</string>
     <string name="access_code">Access code</string>
     <string name="leave">Exit</string>

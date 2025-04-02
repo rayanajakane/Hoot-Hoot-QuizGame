@@ -17,12 +17,13 @@ export class EloService {
         this.eloMmr = new EloMmr();
     }
 
-    async getAllUsersWithElo(): Promise<{ username: string; rating: number }[]> {
+    async getAllUsersWithElo(): Promise<{ username: string; rating: number; photoUrl: string }[]> {
         try {
             const listUsersResult = await this.firebaseAuthService.getUsers();
             const allUsers = listUsersResult.users.map((user) => ({
                 userId: user.uid,
                 username: user.displayName || 'Unknown User',
+                photoUrl: user.photoURL || '',
             }));
             const snapshot = await this.firebaseService.database.ref('users').once('value');
             if (!snapshot.exists()) return [];
@@ -33,6 +34,7 @@ export class EloService {
                 return {
                     username: user.username,
                     rating: elo,
+                    photoUrl: user.photoUrl,
                 };
             });
 

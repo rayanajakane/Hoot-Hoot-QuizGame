@@ -42,7 +42,7 @@ object SocketHandler {
     fun disconnect() {
         mSocket.off(ChatEvents.SENT_GENERAL_MESSAGE.value)
         ChatService.deleteMessages()
-        mSocket.off(EloEvents.RETURNELO.value)
+        mSocket.off(EloEvents.RETURN_ELO.value)
         mSocket.disconnect()
     }
 }

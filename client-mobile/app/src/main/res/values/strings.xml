@@ -71,6 +71,8 @@
     <string name="clear_canvas">Réinitialiser le canvas</string>
     <string name="light_theme">Thème clair</string>
     <string name="dark_theme">Thème sombre</string>
+    <string name="your_elo">Votre elo</string>
+    <string name="rankings">Classements</string>
     <string name="hoot" translatable="false">Hoot Hoot</string>
     <string name="join_match">Joindre une partie</string>
     <string name="host_match">Créer une partie</string>
