@@ -1,5 +1,6 @@
 package com.example.polyquiz.match.presentation
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
@@ -274,11 +275,11 @@ fun QuestionArea(
                         Spacer(modifier = Modifier.height(16.dp))
                         if (context == MatchContext.HOSTVIEW && !matchRoomService.isCooldown) {
                             Spacer(modifier = Modifier.height(16.dp))
-                            if (!answerService.isEndGame) {
+                            if (answerService.isNextQuestionButtonEnabled) {
                                 Button(onClick = { matchRoomService.goToNextQuestion() }) {
                                     Text(stringResource(R.string.next_question))
                                 }
-                            } else {
+                            } else if(answerService.isEndGame) {
                                 Button(
                                     onClick = {
                                         routeToResultsPage();

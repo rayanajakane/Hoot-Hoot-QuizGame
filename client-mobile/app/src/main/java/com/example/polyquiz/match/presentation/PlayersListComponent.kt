@@ -1,7 +1,5 @@
 package com.example.polyquiz.match.presentation
 
-import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,30 +12,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import coil.compose.SubcomposeAsyncImage
 import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import com.example.polyquiz.R
-import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.constants.PresetAvatar
-import com.example.polyquiz.core.storage.ImageStorage
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.Player
-import com.example.polyquiz.ui.theme.AndroidGreen
-import com.example.polyquiz.ui.theme.BrightRed
-import com.example.polyquiz.ui.theme.PurpleGrey80
-import com.example.polyquiz.ui.theme.GoldenYellow
 
 @Composable
 fun PlayersListComponent(
@@ -66,14 +53,6 @@ fun PlayersListComponent(
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        if (userId == matchRoomService.hostId) {
-            SortOptions(
-                sortBy,
-                sortOrder,
-                onSortChange = { sortBy = it },
-                onOrderChange = { sortOrder = it })
-        }
-
         LazyColumn(modifier = Modifier.weight(1f)) {
             items(players) { player ->
                 PlayerCard(Modifier, player, player.photoUrl, context)
@@ -87,34 +66,6 @@ fun PlayersListComponent(
             contentAlignment = Alignment.BottomCenter
         ) {
             extraContent()
-        }
-    }
-}
-
-@Composable
-fun SortOptions(
-    sortBy: String,
-    sortOrder: String,
-    onSortChange: (String) -> Unit,
-    onOrderChange: (String) -> Unit
-) {
-    Column(modifier = Modifier.padding(8.dp)) {
-        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Trier par:")
-            ButtonGroup(
-                options = listOf("name" to "Nom", "score" to "Score", "state" to "État"),
-                selected = sortBy,
-                onSelected = onSortChange
-            )
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Ordre:")
-            ButtonGroup(
-                options = listOf("ascending" to "ASC", "descending" to "DESC"),
-                selected = sortOrder,
-                onSelected = onOrderChange
-            )
         }
     }
 }

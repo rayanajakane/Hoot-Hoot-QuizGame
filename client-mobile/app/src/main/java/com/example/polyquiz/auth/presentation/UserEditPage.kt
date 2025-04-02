@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material.icons.Icons
@@ -337,7 +338,7 @@ fun UserEditPage(
                             Button(
                                 onClick = {
                                     navigateToCamera()
-                                },
+                                }, shape = RoundedCornerShape(3.dp)
                             ) { Text(stringResource(R.string.upload_avatar)) }
                             Text(stringResource(R.string.preset_avatars))
                             Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -445,7 +446,8 @@ fun UserEditPage(
                                     containerColor = MaterialTheme.colorScheme.primary,
                                     contentColor = MaterialTheme.colorScheme.onPrimary
                                 ),
-                                modifier = Modifier.width(200.dp)
+                                modifier = Modifier.width(200.dp),
+                                shape = RoundedCornerShape(3.dp)
                             ) {
                                 Text(text = stringResource(R.string.save))
                             }
@@ -462,8 +464,8 @@ fun UserEditPage(
                 Button(
                     onClick = {
                         openDeleteDialog.value = !openDeleteDialog.value
-//                        deleteUser()
                     },
+                    shape = RoundedCornerShape(3.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.errorContainer,
                         contentColor = MaterialTheme.colorScheme.onErrorContainer
@@ -825,7 +827,8 @@ fun DeleteDialog(
             TextButton(
                 onClick = {
                     onConfirmation()
-                }
+                },
+                shape = RoundedCornerShape(3.dp)
             ) {
                 Text(stringResource(R.string.confirm))
             }
@@ -834,7 +837,8 @@ fun DeleteDialog(
             TextButton(
                 onClick = {
                     onDismissRequest()
-                }
+                },
+                shape = RoundedCornerShape(3.dp)
             ) {
                 Text(stringResource(R.string.cancel))
             }

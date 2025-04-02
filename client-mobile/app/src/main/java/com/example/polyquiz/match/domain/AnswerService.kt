@@ -45,14 +45,18 @@ object AnswerService {
         onNextQuestion()
     }
 
+    // TODO : fix on feedback pl0x : args is empty and or null
+    // server sends : Feedback :  { score: 0, answerCorrectness: 0, correctAnswer: [ '0' ] }
     fun onFeedback() {
+        Log.d("answer service", "called onFeedback")
         mSocket.on(AnswerEvents.FEEDBACK.value) { args ->
             if (args.isNotEmpty() && args[0] != null) {
                 val jsonObject = JSONObject(args[0].toString())
 
                 val answerCorrectnessValue = jsonObject.optInt("answerCorrectness")
-                val mappedCorrectness = AnswerCorrectness.entries.find { it.value == answerCorrectnessValue }
-                    ?: AnswerCorrectness.WRONG
+                val mappedCorrectness =
+                    AnswerCorrectness.entries.find { it.value == answerCorrectnessValue }
+                        ?: AnswerCorrectness.WRONG
 
                 jsonObject.put("answerCorrectness", mappedCorrectness.name)
 
@@ -60,7 +64,10 @@ object AnswerService {
 
                 showFeedback = true
                 isNextQuestionButtonEnabled = true
+                Log.d("answer service", "next question enabled")
                 processFeedback(feedback)
+            } else {
+                Log.e("answer service", "CACA")
             }
         }
     }
@@ -86,14 +93,19 @@ object AnswerService {
             isEndGame = true
         }
     }
+
     fun onGradeAnswers() {
         mSocket.on(AnswerEvents.GRADE_ANSWERS.value) { args ->
             if (args.isNotEmpty() && args[0] != null) {
                 gradeAnswers = true
-                playersAnswers = Gson().fromJson(args[0].toString(), object : TypeToken<List<LongAnswerInfo>>() {}.type)
+                playersAnswers = Gson().fromJson(
+                    args[0].toString(),
+                    object : TypeToken<List<LongAnswerInfo>>() {}.type
+                )
             }
         }
     }
+
     fun onNextQuestion() {
         mSocket.on(MatchEvents.GO_TO_NEXT_QUESTION.value) {
             resetStateForNewQuestion()
@@ -118,7 +130,8 @@ object AnswerService {
 
     fun sendGrades() {
         gradeAnswers = false
-        val gradesInfo = GradesInfo(matchRoomCode = MatchRoomService.getRoomCode(), grades = playersAnswers)
+        val gradesInfo =
+            GradesInfo(matchRoomCode = MatchRoomService.getRoomCode(), grades = playersAnswers)
         println(gradesInfo)
         val gradesInfoStringified = Gson().toJson(gradesInfo)
         val gradesInfoJsonObject = JSONObject(gradesInfoStringified)
@@ -127,8 +140,9 @@ object AnswerService {
 
     fun handleGrading() {
         isGradingComplete = playersAnswers.all { it.score != null }
-       // println("isGradingComplete$isGradingComplete")
+        // println("isGradingComplete$isGradingComplete")
     }
+
     fun selectChoice(choice: String, userInfo: UserInfo) {
         val choiceInfo = ChoiceInfo(choice, userInfo)
         val choiceInfoStringified = Gson().toJson(choiceInfo)
@@ -153,7 +167,8 @@ object AnswerService {
     fun updateLongAnswer() {
         println("updating long answer")
         if (!isSelectionEnabled) return
-        val userInfo = UserInfo(userId = MatchRoomService.userId, roomCode = MatchRoomService.getRoomCode())
+        val userInfo =
+            UserInfo(userId = MatchRoomService.userId, roomCode = MatchRoomService.getRoomCode())
         println(userInfo)
         val choiceInfo = ChoiceInfo(currentLongAnswer, userInfo)
         val choiceInfoStringified = Gson().toJson(choiceInfo)

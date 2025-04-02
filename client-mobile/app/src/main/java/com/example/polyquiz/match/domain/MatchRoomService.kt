@@ -271,7 +271,7 @@ object MatchRoomService {
 
     fun startMatch() {
         isMatchStarted = true
-        socket.emit(MatchEvents.START_MATCH.value, matchRoomCode)
+        socket.emit(MatchEvents.START_MATCH.value, matchRoomCode.value)
     }
 
     fun onMatchStarted() {
@@ -309,7 +309,7 @@ object MatchRoomService {
     }
 
     fun goToNextQuestion() {
-        socket.emit(MatchEvents.GO_TO_NEXT_QUESTION.value, matchRoomCode)
+        socket.emit(MatchEvents.GO_TO_NEXT_QUESTION.value, matchRoomCode.value)
     }
 
     fun onStartCooldown() {
@@ -373,11 +373,8 @@ object MatchRoomService {
     }
 
     fun routeToResultsPage() {
-        socket.emit(MatchEvents.ROUTE_TO_RESULTS_PAGE.value, matchRoomCode)
+        socket.emit(MatchEvents.ROUTE_TO_RESULTS_PAGE.value, matchRoomCode.value)
     }
-//    private fun navigateToResultsPage() {
-//        navController?.navigate(Route.ResultsPage)
-//    }
 
     fun onRouteToResultsPage() {
         socket.on(MatchEvents.ROUTE_TO_RESULTS_PAGE.value) { _ ->
@@ -397,7 +394,8 @@ object MatchRoomService {
     }
 
     fun toggleLock() {
-        socket.emit(MatchEvents.TOGGLE_LOCK.value, matchRoomCode)
+        socket.emit(MatchEvents.TOGGLE_LOCK.value, matchRoomCode.value)
         isLocked = !isLocked
+        Log.d("toggle Lock", "Toggled lock to $isLocked, roomcode: ${matchRoomCode.value}")
     }
 }
