@@ -6,7 +6,9 @@ import { HistoryService } from '@app/services/history/history.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { AnswerCorrectness } from '@common/constants/answer-correctness';
 import { PlayerState } from '@common/constants/player-states';
+import { AnswerEvents } from '@common/events/answer.events';
 import { MatchEvents } from '@common/events/match.events';
+import { Feedback } from '@common/interfaces/feedback';
 import { Injectable } from '@nestjs/common';
 import { Socket } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
@@ -32,6 +34,58 @@ export class PlayerRoomService {
                 return value;
             }
         });
+    }
+
+    recalculateScores(roomCode: string) {
+        const totalVotes = Object.values(this.matchRoomService?.votesCount).reduce((total, vote) => total + vote, 0);
+        const cheaterUsername = this.matchRoomService.cheaterPlayer.username;
+        
+        if (totalVotes === this.getPlayers(roomCode).length) {
+            const cheaterPlayer = this.matchRoomService.cheaterPlayer;
+
+            if (!this.matchRoomService.cheaterGetsBonus(cheaterUsername)) {
+                const cheaterVotes = this.matchRoomService.votesCount[cheaterUsername];
+
+                if (cheaterVotes) {
+                    const cheaterScore = this.getPlayerById(roomCode, cheaterPlayer.id).score;
+                    const cheaterVoteEntry = this.matchRoomService.totalVotes.filter((vote) => vote.username === cheaterPlayer.username);
+
+                    const playersWhoVotedForCheater = cheaterVoteEntry.flatMap((vote) => vote.usersWhoVoted);
+
+                    playersWhoVotedForCheater.forEach((voterUsername: string) => {
+                        const player = this.getPlayerByUsername(roomCode, voterUsername);
+                        if (player) {
+                            player.bonusCount = Math.round(cheaterScore * 0.3);
+                            const players: Player[] = this.getPlayers(roomCode);
+                            players.forEach((player: Player) => {
+                                player.score = Math.round(player.score + player.bonusCount);
+                                const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
+                                console.log(feedback);
+                                this.getPlayerByUsername(roomCode, voterUsername).socket.emit(AnswerEvents.Feedback, feedback);
+                            });
+                        }
+                    });
+
+                    const players: Player[] = this.getPlayers(roomCode);
+                    const player = this.getPlayerByUsername(roomCode, cheaterUsername);
+                    player.score = Math.round(player.score - 0.3 * player.score);
+                    const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
+                    this.getPlayerByUsername(roomCode, player.username).socket.emit(AnswerEvents.Feedback, feedback);
+                }
+            }
+        }
+
+        if (totalVotes === this.getPlayers(roomCode).length) {
+            if (this.matchRoomService.cheaterGetsBonus(cheaterUsername)) {
+                const player = this.getPlayerByUsername(roomCode, cheaterUsername);
+                player.bonusCount = Math.round(player.bonusCount + player.bonusCount * 0.3);
+                player.score = Math.round(player.score + player.bonusCount);
+
+                const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
+                console.log(feedback);
+                this.matchRoomService.cheaterPlayer.socket.emit(AnswerEvents.Feedback, feedback);
+            }
+        }
     }
 
     addPlayer(playerSocket: Socket, matchRoomCode: string, newid: string, newUsername: string): Player {

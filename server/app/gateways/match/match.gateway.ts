@@ -46,7 +46,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         private readonly timeService: TimeService,
         private historyService: HistoryService,
         private readonly partyService: PartyService,
-        private readonly playerService: PlayerRoomService,
+
         private readonly eventEmitter: EventEmitter2,
     ) {}
 
@@ -124,10 +124,9 @@ export class MatchGateway implements OnGatewayDisconnect {
         this.roomCode = matchRoomCode;
     }
     totalVotes: VotingData[] = [{ username: '', numberOfVotes: 0, usersWhoVoted: [] }];
-
     @SubscribeMessage(MatchEvents.SendVotesResults)
     sendResults(@ConnectedSocket() socket: Socket, @MessageBody() newVotesCount: VotingData) {
-        this.totalVotes.push(newVotesCount);
+        this.matchRoomService.totalVotes.push(newVotesCount);
         const username = newVotesCount.username;
         const newVoteCount = newVotesCount.numberOfVotes;
         let votesCount = this.matchRoomService.votesCount;
@@ -137,72 +136,14 @@ export class MatchGateway implements OnGatewayDisconnect {
         } else {
             votesCount[username] = newVoteCount;
         }
-
-        const size = Object.keys(this.matchRoomService.votesCount).length;
-        const totalVotes = Object.values(this.matchRoomService?.votesCount).reduce((total, vote) => total + vote, 0);
-        console.log('99', totalVotes);
-        console.log('true', this.matchRoomService.cheaterGetsBonus(this.matchRoomService.cheaterPlayer.username));
-        console.log('votes', this.matchRoomService.votesCount);
-        console.log('size', size);
-        console.log('size2', this.playerRoomService.getPlayers(this.roomCode).length);
-        console.log('size4', this.totalVotes.length);
     }
 
     @SubscribeMessage(MatchEvents.SendBackVotesResults)
     sendBackVotes(@ConnectedSocket() socket: Socket) {}
 
     @SubscribeMessage(MatchEvents.SendUpdatedScores)
-    sendUpdatedResults(@ConnectedSocket() socket: Socket, @MessageBody() score) {
-        const size = Object.keys(this.matchRoomService.votesCount).length;
-
-
-        const totalVotes = Object.values(this.matchRoomService?.votesCount).reduce((total, vote) => total + vote, 0);
-        if (totalVotes === this.playerRoomService.getPlayers(this.roomCode).length) {
-            this.matchRoomService.totalVotes = [this.matchRoomService.votesCount];
-            const cheaterPlayer = this.matchRoomService.cheaterPlayer;
-
-
-            if (!this.matchRoomService.cheaterGetsBonus(this.matchRoomService.cheaterPlayer.username)) {
-                const cheaterVotes = this.matchRoomService.votesCount[this.matchRoomService.cheaterPlayer.username];
-
-                if (cheaterVotes) {
-
-                    const cheaterScore = this.playerRoomService.getPlayerById(this.roomCode, cheaterPlayer.id).score;
-                    const cheaterVoteEntry = this.totalVotes.filter((vote) => vote.username === cheaterPlayer.username);
-
-                    const playersWhoVotedForCheater = cheaterVoteEntry.flatMap((vote) => vote.usersWhoVoted);
-
-                    const players: Player[] = this.playerService.getPlayers(this.roomCode);
-                    const player = this.playerRoomService.getPlayerByUsername(this.roomCode, this.matchRoomService.cheaterPlayer.username);
-                    player.score = player.score - 0.3* player.score;
-                    const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
-                    this.playerRoomService.getPlayerByUsername(this.roomCode, player.username).socket.emit(AnswerEvents.Feedback, feedback);
-
-                    playersWhoVotedForCheater.forEach((voterUsername: string) => {
-                        const player = this.playerRoomService.getPlayerByUsername(this.roomCode, voterUsername);
-                        if (player) {
-                            player.score = player.score + cheaterScore * 0.3;
-
-                            const players: Player[] = this.playerService.getPlayers(this.roomCode);
-                            players.forEach((player: Player) => {
-                                const feedback: Feedback = { score: player.score + player.bonusCount, answerCorrectness: player.answerCorrectness };
-                                this.playerRoomService.getPlayerByUsername(this.roomCode, voterUsername).socket.emit(AnswerEvents.Feedback, feedback);
-                            });
-                        }
-                    });
-                }
-            }
-        }
-        if (size === this.playerRoomService.getPlayers(this.roomCode).length) {
-            if (this.matchRoomService.cheaterGetsBonus(this.matchRoomService.cheaterPlayer.username)) {
-
-                const player = this.playerRoomService.getPlayerByUsername(this.roomCode, this.matchRoomService.cheaterPlayer.username);
-                player.bonusCount = player.bonusCount + player.bonusCount * 0.3;
-            
-                const feedback: Feedback = { score: player.score + player.bonusCount, answerCorrectness: player.answerCorrectness };
-                this.matchRoomService.cheaterPlayer.socket.emit(AnswerEvents.Feedback, feedback);
-            }
-        }
+    sendUpdatedScores(@ConnectedSocket() socket: Socket, @MessageBody() roomCode) {
+        this.playerRoomService.recalculateScores(roomCode);
     }
 
     returnAllMatches() {

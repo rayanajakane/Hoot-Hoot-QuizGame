@@ -7,8 +7,8 @@
                 id="score-feedback-area"
                 *ngIf="
                     (this.answerService.showFeedback && context === matchContext.PlayerView && !this.matchRoomService.isCooldown) ||
-                        (this.answerService.showFeedback && (context === matchContext.TestPage || context === matchContext.RandomMode))|| 
-                        (context === matchContext.CheaterView && !this.matchRoomService.isCooldown && this.answerService.showFeedback) ;
+                        (this.answerService.showFeedback && (context === matchContext.TestPage || context === matchContext.RandomMode)) ||
+                        (context === matchContext.CheaterView && !this.matchRoomService.isCooldown && this.answerService.showFeedback);
                     else elseBlock
                 "
             >
@@ -63,7 +63,12 @@
 
         <div
             id="submit-button-container"
-            *ngIf="context === matchContext.PlayerView || context === matchContext.TestPage || context === matchContext.RandomMode || context === matchContext.CheaterView"
+            *ngIf="
+                context === matchContext.PlayerView ||
+                context === matchContext.TestPage ||
+                context === matchContext.RandomMode ||
+                context === matchContext.CheaterView
+            "
         >
             <button mat-raised-button color="primary" id="submit-button" *ngIf="this.answerService.isSelectionEnabled" (click)="submitAnswers()">
                 SOUMETTRE
@@ -115,6 +120,15 @@
                 </div>
             </button>
         </div>
+    </div>
+    <div *ngIf="context === matchContext.HostView && !this.matchRoomService.isCooldown && this.matchRoomService.isCheaterMode">
+        <button mat-raised-button *ngIf="this.answerService.isEndGame" color="primary" (click)="voteOnCheater()">
+            <mat-icon class="material-icons">bar_chart</mat-icon>
+            <p>Voter pour le tricheur</p>
+        </button>
+    </div>
+    <div *ngIf="context === matchContext.CheaterView && !this.matchRoomService.isCooldown">
+        <app-voting-dialog *ngIf="showVotingDialog" [players]="matchRoomService.players"></app-voting-dialog>
     </div>
     <button mat-raised-button class="exit-button" color="primary" routerLink="/home" (click)="quitGame()">
         <mat-icon class="material-icons">logout</mat-icon>
