@@ -146,3 +146,18 @@ app-game-list-item {
     justify-content: space-between;
     align-items: center;
 }
+
+#search-inputs-container {
+    display: flex;
+    gap: 1rem;
+}
+
+.game-match-card-header {
+    font-weight: 500;
+    padding: 0 1rem;
+    margin-left: 8px;
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    justify-content: center;
+    align-items: center;
+}

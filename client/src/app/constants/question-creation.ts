@@ -12,6 +12,8 @@ export interface ChatStateInfo {
 export const RANDOM_MODE_GAME = {
     id: '',
     title: 'Mode aléatoire',
+    authorId: '',
+    authorName: '',
     description: 'SURPRISE',
     duration: 20,
     isVisible: true,

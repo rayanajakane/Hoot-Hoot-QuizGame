@@ -83,6 +83,10 @@ $dark-theme: mat.define-dark-theme(
     .signup-button {
         background-color: white;
     }
+
+    .card-header-background {
+        background-color: rgb(0, 0, 0, 0.05) !important;
+    }
 }
 
 .dark-theme {
@@ -126,6 +130,10 @@ $dark-theme: mat.define-dark-theme(
 
     .alert {
         color: mat.get-color-from-palette($primary-dark);
+    }
+
+    .card-header-background {
+        background-color: rgb(0, 0, 0, 0.05) !important;
     }
 
     // TODO: When button is disabled, give color pl0x

@@ -20,6 +20,8 @@ describe('MatchService', () => {
     const fakeGame: Game = {
         id: '0',
         title: 'title',
+        authorId: '',
+        authorName: '',
         description: 'desc',
         lastModification: 'new Date(YEAR, 1, 1)',
         duration: 30,
