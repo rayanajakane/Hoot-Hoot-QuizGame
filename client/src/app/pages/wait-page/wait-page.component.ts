@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { PresetAvatar } from '@app/constants/image-constants';
+import { PresetAvatar } from '@app/constants/avatar-constants';
 import { MatchContext } from '@app/constants/states';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
