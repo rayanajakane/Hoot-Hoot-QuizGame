@@ -546,6 +546,7 @@ fun UserEditPage(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
+
                 ElevatedCard(
                     colors = CardDefaults.cardColors(
                         containerColor = Color(0xFFEBEDF0)
@@ -554,23 +555,24 @@ fun UserEditPage(
                         .fillMaxWidth()
                         .padding(8.dp)
                         .height(40.dp)
-
                 ) {
                     Row(
                         modifier = Modifier
-                            .padding(
-                                start = 20.dp,
-                                end = 250.dp
-                            )
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
-
                     ) {
-                        Text(text = stringResource(R.string.date))
-                        Text(text = stringResource(R.string.action))
+                        Text(
+                            text = stringResource(R.string.date),
+                            modifier = Modifier.weight(1f)
+                        )
+                        Text(
+                            text = stringResource(R.string.action),
+                            modifier = Modifier.weight(1f)
+                        )
                     }
                 }
+
                 historyData.auth.forEach { item ->
                     ElevatedCard(
                         colors = CardDefaults.cardColors(
@@ -583,19 +585,22 @@ fun UserEditPage(
                     ) {
                         Row(
                             modifier = Modifier
-                                .padding(
-                                start = 20.dp,
-                                end = 250.dp
-                            )
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(text = formatDateTime(item.date))
-                            Text(text = if (item.isLogin) stringResource(R.string.sign_in) else stringResource(R.string.sign_out))
+                            Text(
+                                text = formatDateTime(item.date),
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                text = if (item.isLogin) stringResource(R.string.sign_in) else stringResource(R.string.sign_out),
+                                modifier = Modifier.weight(1f)
+                            )
                         }
                     }
                 }
+
             }
         }
     }
