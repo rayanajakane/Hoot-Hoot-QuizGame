@@ -49,7 +49,8 @@
         "avatar-choices": "Avatars prédéfinis",
         "avatar-premium": "Avatars premium",
         "no-premium-avatars": "Aucun avatar premium disponible",
-        "buy-avatars": "Acheter des avatars",
+        "premium-themes": "Thèmes premium",
+        "buy-goodies": "Aller à la boutique",
         "delete-user": "Supprimer le profil",
         "danger-zone": "Zone dangereuse",
         "delete-warning": "Cette opération est irréversible. Voulez-vous VRAIMENT supprimer votre compte ?",
@@ -59,6 +60,7 @@
         "sent-email-extra-info": "Si vous avez déjà un compte, vous recevrez un courriel pour réinitialiser votre mot de passe.",
         "dark-theme": "Thème sombre",
         "light-theme": "Thème clair",
+        "ben-ten-theme": "Thème Ben 10",
         "fr": "Français",
         "en": "Anglais"
     },

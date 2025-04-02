@@ -38,10 +38,6 @@
                             <p *ngIf="(purchasedPremiumAvatars | keyvalue).length === 0" class="no-avatars">
                                 {{ t('page.no-premium-avatars') }}
                             </p>
-                            <button mat-raised-button color="primary" routerLink="/shop">
-                                <mat-icon>shopping_cart</mat-icon>
-                                {{ t('page.buy-avatars') }}
-                            </button>
                         </div>
                     </div>
                     <div id="form-fields">
@@ -80,6 +76,10 @@
                             <mat-label>{{ t('page.theme') }}</mat-label>
                             <mat-select formControlName="currentTheme" data-testid="theme-select-test-id">
                                 <mat-option *ngFor="let theme of availableThemes" [value]="theme">{{ getThemeLabel(theme) }}</mat-option>
+                                <mat-option disabled>
+                                    <em>--{{ t('page.premium-themes') }}--</em>
+                                </mat-option>
+                                <mat-option *ngFor="let theme of purchasedThemes" [value]="theme"> {{ getThemeLabel(theme) }} 👑 </mat-option>
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field id="language">
@@ -92,6 +92,18 @@
                     </div>
                 </mat-card>
             </form>
+            <button mat-raised-button color="primary" routerLink="/shop">
+                <mat-icon>shopping_cart</mat-icon>
+                {{ t('page.buy-goodies') }}
+            </button>
+            <div *ngFor="let theme of premiumThemes">
+                <div *ngIf="!isThemePurchased(theme)" class="premium-theme-option">
+                    <span>{{ getThemeLabel(theme) }}</span>
+                    <button mat-button (click)="purchaseTheme(theme)">
+                        {{ 'page.purchase-theme' | transloco }}
+                    </button>
+                </div>
+            </div>
             <h2>{{ t('page.danger-zone') }}</h2>
             <button mat-raised-button color="warn" (click)="deleteUser()" id="delete-button">{{ t('page.delete-user') }}</button>
             <h2>{{ t('history.stats-header') }}</h2>
