@@ -40,10 +40,8 @@ export class MatchRoomService {
     partyConfig: PartyConfig;
 
     currentAnswers: string[] = [];
-    isCheaterMode: boolean;
-    cheaterPlayer: Player;
-    votesData: VotingData;
-    totalVotes: VotingData[];
+
+
 
     private hostId: string;
     private matchRoomCode: string;
@@ -102,7 +100,6 @@ export class MatchRoomService {
             this.handleError();
             this.onPlayerChatStateToggle();
             this.onRouteToResultsPage();
-            this.onVoting();
             this.onVotingResults();
             this.onCurrentAnswers();
             this.onVoting();

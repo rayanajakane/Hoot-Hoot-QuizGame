@@ -145,7 +145,6 @@ export class MatchGateway implements OnGatewayDisconnect {
         // if(vote.username === username){
         //     vote.numberOfVotes = votesCount[username];
         // }
-        console.log("votes", this.matchRoomService.totalVotes);
 
         this.server.to(this.roomCode).emit(MatchEvents.SendBackVotesResults,votesCount);
     }
