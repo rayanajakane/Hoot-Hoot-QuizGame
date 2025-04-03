@@ -105,6 +105,7 @@ $ben-ten-theme: mat.define-light-theme(
 }
 
 .dark-theme {
+    @include mat.all-component-themes($dark-theme);
     background-color: #101114 !important;
     --mdc-elevated-card-container-color: #1a1c22;
     --mdc-elevated-card-container-elevation: #080808;
@@ -208,60 +209,125 @@ $ben-ten-theme: mat.define-light-theme(
 
 .ben-ten-theme {
     @include mat.all-component-themes($ben-ten-theme);
-    #header-bar {
-        background-color: #fafafa;
-    }
-    .alert {
-        color: mat.get-color-from-palette($primary);
+
+    background-color: #e7f5e6 !important;
+    --mdc-elevated-card-container-color: #c2e5c1;
+    --mdc-elevated-card-container-elevation: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --mdc-filled-text-field-container-color: white;
+    --mdc-snackbar-supporting-text-color: #000 !important;
+    --mdc-dialog-supporting-text-color: #333;
+    --mat-expansion-container-background-color: #99d498;
+    --mdc-protected-button-container-color: mat.get-color-from-palette($primary-ben-ten, 500);
+    --mat-sidenav-container-background-color: #e7f5e6;
+
+    color: #333;
+
+    .color-variant {
+        color: mat.get-color-from-palette($accent-ben-ten, 500) !important;
     }
 
-    .own-message {
-        background-color: #5b6feb;
-        color: #fff;
-        border-radius: 1em 1em 0.15em 1em;
-    }
-
-    .friends-section {
-        background: #f9f9f9;
-        h3 {
-            color: #333;
-        }
-    }
-
-    .clickable-item:hover {
-        background-color: #dddddd;
-    }
-
-    .balance-container {
-        background-color: #e8eaf6;
-    }
-
-    .balance-icon {
-        color: #ff4081;
-    }
-
-    .balance-text {
-        color: #1a237e;
-    }
-
-    .mat-basic {
-        background-color: white;
+    .mdc-snackbar__label {
+        color: black !important;
     }
 
     .signup-button {
-        background-color: white;
+        background-color: white !important;
+        border: 2px solid mat.get-color-from-palette($primary-ben-ten, 500) !important;
+    }
+
+    .mat-basic {
+        background-color: white !important;
+        border: 1px solid mat.get-color-from-palette($primary-ben-ten, 200) !important;
+    }
+
+    .friends-section {
+        background: #c2e5c1;
+        h3 {
+            color: #147e13;
+        }
+    }
+
+    .color-variant-2 {
+        color: mat.get-color-from-palette($primary-ben-ten, 900) !important;
+    }
+
+    .alert {
+        color: mat.get-color-from-palette($primary-ben-ten, 900);
     }
 
     .card-header-background {
-        background-color: rgb(0, 0, 0, 0.05) !important;
+        background-color: rgba(70, 166, 68, 0.1) !important;
+    }
+
+    .own-message {
+        background-color: mat.get-color-from-palette($accent-ben-ten, 500);
+        color: white;
+        border-radius: 1em 1em 0.15em 1em;
+    }
+
+    .sidenav-container {
+        background-color: #e7f5e6 !important;
+    }
+
+    #header-bar {
+        background-color: mat.get-color-from-palette($primary-ben-ten, 500);
+        color: white;
+    }
+
+    #game-header-card {
+        background-color: white !important;
+        border: 2px solid mat.get-color-from-palette($primary-ben-ten, 500) !important;
+    }
+
+    #game-details-container {
+        background-color: #c2e5c1;
+        border: 1px solid mat.get-color-from-palette($primary-ben-ten, 300);
+    }
+
+    #timer-area {
+        background-color: white !important;
+        color: mat.get-color-from-palette($primary-ben-ten, 900) !important;
+        border: 2px solid mat.get-color-from-palette($primary-ben-ten, 500);
+    }
+
+    .clickable-item:hover {
+        background-color: #99d498 !important;
+    }
+
+    .player-card {
+        background-color: white !important;
+        border: 2px solid mat.get-color-from-palette($primary-ben-ten, 300) !important;
+    }
+
+    .balance-container {
+        background-color: #ddf0ff;
+        border: 1px solid mat.get-color-from-palette($accent-ben-ten, 300);
+    }
+
+    .balance-icon {
+        color: mat.get-color-from-palette($accent-ben-ten, 500);
+    }
+
+    .balance-text {
+        color: mat.get-color-from-palette($primary-ben-ten, 900);
+    }
+
+    // Add some Ben 10 stylistic elements
+    .mat-mdc-raised-button:not(:disabled) {
+        border: 2px solid mat.get-color-from-palette($primary-ben-ten, 900);
+        font-weight: bold;
+        letter-spacing: 0.5px;
+    }
+
+    .mat-mdc-outlined-button:not(:disabled) {
+        border: 2px solid mat.get-color-from-palette($primary-ben-ten, 500);
+    }
+
+    .mat-card {
+        border-radius: 12px !important;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
     }
 }
-
-// Include theme styles for core and each component used in your app.
-// Alternatively, you can import and @include the theme mixins for each component
-// that you are using.
-@include mat.all-component-themes($dark-theme);
-@include mat.all-component-themes($ben-ten-theme);
 
 /* You can add global styles to this file, and also import other style files */
 
