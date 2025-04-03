@@ -7,7 +7,7 @@ import { DataSnapshot, get, ref, set, update } from '@firebase/database';
 export enum Theme {
     DARK = 'dark-theme',
     LIGHT = 'light-theme',
-    BENTEN = 'ben-ten-theme',
+    LUIGI = 'luigi-theme',
     MARIO = 'mario-theme',
     SONIC = 'sonic-theme',
     PIKACHU = 'pikachu-theme',
@@ -108,8 +108,8 @@ export class ThemeService {
                 return Theme.DARK;
             case 'LIGHT':
                 return Theme.LIGHT;
-            case 'BENTEN':
-                return Theme.BENTEN;
+            case 'LUIGI':
+                return Theme.LUIGI;
             case 'MARIO':
                 return Theme.MARIO;
             case 'SONIC':
@@ -128,8 +128,8 @@ export class ThemeService {
                 return 'DARK';
             case Theme.LIGHT:
                 return 'LIGHT';
-            case Theme.BENTEN:
-                return 'BENTEN';
+            case Theme.LUIGI:
+                return 'LUIGI';
             case Theme.MARIO:
                 return 'MARIO';
             case Theme.SONIC:
