@@ -4,6 +4,7 @@
 @use './styles/dark.scss' as dark-palettes;
 @use './styles/luigi.scss' as luigi;
 @use './styles/mario.scss' as mario;
+@use './styles/sonic.scss' as sonic;
 
 // Plus imports for other components in your app.
 
@@ -27,6 +28,10 @@ $warn-luigi: mat.define-palette(luigi.$m2-error);
 $primary-mario: mat.define-palette(mario.$m2-primary);
 $accent-mario: mat.define-palette(mario.$m2-accent, A200, A100, A400);
 $warn-mario: mat.define-palette(mario.$m2-error);
+
+$primary-sonic: mat.define-palette(sonic.$m2-primary);
+$accent-sonic: mat.define-palette(sonic.$m2-accent, A200, A100, A400);
+$warn-sonic: mat.define-palette(sonic.$m2-error);
 
 $main-theme: mat.define-light-theme(
     (
@@ -64,6 +69,16 @@ $mario-theme: mat.define-light-theme(
             primary: $primary-mario,
             accent: $accent-mario,
             warn: $warn-mario,
+        ),
+    )
+);
+
+$sonic-theme: mat.define-light-theme(
+    (
+        color: (
+            primary: $primary-sonic,
+            accent: $accent-sonic,
+            warn: $warn-sonic,
         ),
     )
 );
@@ -347,7 +362,6 @@ $mario-theme: mat.define-light-theme(
 .mario-theme {
     @include mat.all-component-themes($mario-theme);
 
-    // Mario theme custom styles
     background-color: #fff6f5;
     color: #333;
 
@@ -399,6 +413,69 @@ $mario-theme: mat.define-light-theme(
 
     .card-header-background {
         background-color: rgba(252, 0, 25, 0.05) !important;
+    }
+}
+
+.sonic-theme {
+    @include mat.all-component-themes($sonic-theme);
+
+    background-color: #e8f0fd;
+    color: #1a1a1a;
+
+    #header-bar {
+        background-color: mat.get-color-from-palette(sonic.$m2-primary, 500);
+        color: white;
+    }
+
+    .alert {
+        color: mat.get-color-from-palette(sonic.$m2-primary, 700);
+    }
+
+    .own-message {
+        background-color: mat.get-color-from-palette(sonic.$m2-primary, 500);
+        color: white;
+        border-radius: 1em 1em 0.15em 1em;
+    }
+
+    .friends-section {
+        background: #fef5ff;
+        h3 {
+            color: mat.get-color-from-palette(sonic.$m2-primary, 900);
+        }
+    }
+
+    .clickable-item:hover {
+        background-color: mat.get-color-from-palette(sonic.$m2-primary, 100);
+    }
+
+    .balance-container {
+        background-color: #fce7ff;
+    }
+
+    .balance-icon {
+        color: mat.get-color-from-palette(sonic.$m2-accent, 500);
+    }
+
+    .balance-text {
+        color: mat.get-color-from-palette(sonic.$m2-primary, 900);
+    }
+
+    .mat-basic {
+        background-color: white;
+    }
+
+    .signup-button {
+        background-color: white;
+        border: 1px solid mat.get-color-from-palette(sonic.$m2-primary, 300);
+    }
+
+    .card-header-background {
+        background-color: rgba(63, 129, 241, 0.05) !important;
+    }
+
+    .sonic-accent {
+        background-color: mat.get-color-from-palette(sonic.$m2-accent, 500);
+        color: black;
     }
 }
 
