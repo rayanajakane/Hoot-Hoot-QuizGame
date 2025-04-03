@@ -120,7 +120,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         this.server.to(matchRoomCode).emit(MatchEvents.ShowVotingDialog);
         this.roomCode = matchRoomCode;
     }
-    totalVotes: VotingData[] = [{ username: '', numberOfVotes: 0, usersWhoVoted: [] }];
+    //totalVotes: VotingData[] = [{ username: '', numberOfVotes: 0, usersWhoVoted: [] }];
     @SubscribeMessage(MatchEvents.SendVotesResults)
     sendResults(@ConnectedSocket() socket: Socket, @MessageBody() newVotesCount: VotingData) {
       //  let vote: VotingData = { username: '', numberOfVotes: 0, usersWhoVoted: [] };
@@ -143,6 +143,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         // if(vote.username === username){
         //     vote.numberOfVotes = votesCount[username];
         // }
+        console.log("votes", this.matchRoomService.totalVotes);
 
         this.server.to(this.roomCode).emit(MatchEvents.SendBackVotesResults,votesCount);
     }

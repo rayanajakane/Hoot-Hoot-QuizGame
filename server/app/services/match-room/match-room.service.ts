@@ -190,7 +190,7 @@ export class MatchRoomService {
         }
 
         if (this.votesCount[username]) {
-            if (this.votesCount[username] / total <= 0.5) {
+            if (this.votesCount[username] / total < 0.5) { //moins de moitie, stirctly minus 
                 return true;
             } else return false;
         }

@@ -37,15 +37,15 @@
             >
                 {{ t('wait-page.start-match') }}
             </button>
-            <p *ngIf = "matchRoomService.isCheaterMode && isHost ">
+            <p *ngIf="matchRoomService.isCheaterMode && isHost">
                 <button
                     mat-raised-button
                     id="start-button"
                     color="primary"
                     (click)="startMatch()"
                     [disabled]="
+                        matchRoomService.players.length < 3 ||
                         !isLocked ||
-                        
                         (matchRoomService.partyConfig.isEntryFeeRequired && matchRoomService.players.length <= 1)
                     "
                 >
