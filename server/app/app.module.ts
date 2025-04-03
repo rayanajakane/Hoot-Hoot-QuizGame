@@ -31,10 +31,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MongooseModule } from '@nestjs/mongoose';
 import { HistoryController } from './controllers/history/history.controller';
+import { EloGateway } from './gateways/elo/elo.gateway';
 import { UsernameSuggestionController } from './controllers/username-suggestion/username-suggestion.controller';
 import { FriendsGateway } from './gateways/friends/friends.gateway';
 import { GameGateway } from './gateways/game/game.gateway';
 import { MoneyGateway } from './gateways/money/money.gateway';
+import { EloService } from './services/elo/elo.service';
 import { HistoryService } from './services/history/history.service';
 import { MoneyService } from './services/money/money.service';
 import { PartyService } from './services/party/party.service';
@@ -84,6 +86,8 @@ import { UsernameSuggestionService } from './services/username-suggestion/userna
         MoneyGateway,
         PartyService,
         HistoryService,
+        EloService,
+        EloGateway,
         UsernameSuggestionService,
         GameGateway,
     ],
