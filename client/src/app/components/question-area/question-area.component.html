@@ -164,9 +164,6 @@
             <p>Voter pour le tricheur</p>
         </button>
     </div>
-    <div *ngIf="context === matchContext.CheaterView && !this.matchRoomService.isCooldown">
-        <app-voting-dialog [players]="matchRoomService.players"></app-voting-dialog>
-    </div>
     <button mat-raised-button class="exit-button" color="primary" routerLink="/home" (click)="quitGame()">
         <mat-icon class="material-icons">logout</mat-icon>
         <p>QUITTER</p>
