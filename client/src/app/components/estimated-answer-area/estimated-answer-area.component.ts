@@ -54,7 +54,7 @@ export class EstimatedAnswerAreaComponent implements OnInit, OnDestroy {
 
     setAnswerforCheater(){
         if (this.matchContextService.getContext() === this.contextOptions.CheaterView) {
-           this.currentLongAnswerControl.setValue(this.matchRoomService.currentAnswers[0].toString());
+           this.currentLongAnswerControl.setValue(this.matchRoomService.currentAnswers[0]?.toString());
         }
     }
 

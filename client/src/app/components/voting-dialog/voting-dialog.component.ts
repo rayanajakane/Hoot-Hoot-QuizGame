@@ -87,6 +87,6 @@ export class VotingDialogComponent {
             this.voteCounts.numberOfVotes = this.matchRoomService.votesData?.numberOfVotes;
         }
 
+
         this.isVotingDisabled = false;
-    }
-}
+        this.matchRoomService.socketService.socket.emit(MatchEvents.SendUpdatedScores, this.matchRoomService.getRoomCode());
