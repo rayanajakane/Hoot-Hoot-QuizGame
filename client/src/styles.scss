@@ -3,6 +3,7 @@
 @use '@angular/material' as mat;
 @use './styles/dark.scss' as dark-palettes;
 @use './styles/luigi.scss' as luigi;
+@use './styles/mario.scss' as mario;
 
 // Plus imports for other components in your app.
 
@@ -22,6 +23,10 @@ $warn-dark: mat.define-palette(dark-palettes.$m2-error);
 $primary-luigi: mat.define-palette(luigi.$m2-primary);
 $accent-luigi: mat.define-palette(luigi.$m2-accent, A200, A100, A400);
 $warn-luigi: mat.define-palette(luigi.$m2-error);
+
+$primary-mario: mat.define-palette(mario.$m2-primary);
+$accent-mario: mat.define-palette(mario.$m2-accent, A200, A100, A400);
+$warn-mario: mat.define-palette(mario.$m2-error);
 
 $main-theme: mat.define-light-theme(
     (
@@ -49,6 +54,16 @@ $luigi-theme: mat.define-light-theme(
             primary: $primary-luigi,
             accent: $accent-luigi,
             warn: $warn-luigi,
+        ),
+    )
+);
+
+$mario-theme: mat.define-light-theme(
+    (
+        color: (
+            primary: $primary-mario,
+            accent: $accent-mario,
+            warn: $warn-mario,
         ),
     )
 );
@@ -326,6 +341,64 @@ $luigi-theme: mat.define-light-theme(
     .mat-card {
         border-radius: 12px !important;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+    }
+}
+
+.mario-theme {
+    @include mat.all-component-themes($mario-theme);
+
+    // Mario theme custom styles
+    background-color: #fff6f5;
+    color: #333;
+
+    #header-bar {
+        background-color: mat.get-color-from-palette(mario.$m2-primary, 500);
+        color: white;
+    }
+
+    .alert {
+        color: mat.get-color-from-palette(mario.$m2-primary, 500);
+    }
+
+    .own-message {
+        background-color: mat.get-color-from-palette(mario.$m2-primary, 500);
+        color: white;
+        border-radius: 1em 1em 0.15em 1em;
+    }
+
+    .friends-section {
+        background: #fff6ed;
+        h3 {
+            color: #333;
+        }
+    }
+
+    .clickable-item:hover {
+        background-color: #ffe0e3;
+    }
+
+    .balance-container {
+        background-color: #fff6ed;
+    }
+
+    .balance-icon {
+        color: mat.get-color-from-palette(mario.$m2-accent, 500);
+    }
+
+    .balance-text {
+        color: mat.get-color-from-palette(mario.$m2-primary, 800);
+    }
+
+    .mat-basic {
+        background-color: white;
+    }
+
+    .signup-button {
+        background-color: white;
+    }
+
+    .card-header-background {
+        background-color: rgba(252, 0, 25, 0.05) !important;
     }
 }
 
