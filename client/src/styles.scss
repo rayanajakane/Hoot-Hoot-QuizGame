@@ -2,7 +2,7 @@
 // For more information: https://material.angular.io/guide/theming¸¸
 @use '@angular/material' as mat;
 @use './styles/dark.scss' as dark-palettes;
-@use './styles/ben-ten.scss' as ben-ten;
+@use './styles/luigi.scss' as luigi;
 
 // Plus imports for other components in your app.
 
@@ -19,9 +19,9 @@ $primary-dark: mat.define-palette(dark-palettes.$m2-primary);
 $accent-dark: mat.define-palette(dark-palettes.$m2-accent, A200, A100, A400);
 $warn-dark: mat.define-palette(dark-palettes.$m2-error);
 
-$primary-ben-ten: mat.define-palette(ben-ten.$m2-primary);
-$accent-ben-ten: mat.define-palette(ben-ten.$m2-accent, A200, A100, A400);
-$warn-ben-ten: mat.define-palette(ben-ten.$m2-error);
+$primary-luigi: mat.define-palette(luigi.$m2-primary);
+$accent-luigi: mat.define-palette(luigi.$m2-accent, A200, A100, A400);
+$warn-luigi: mat.define-palette(luigi.$m2-error);
 
 $main-theme: mat.define-light-theme(
     (
@@ -43,12 +43,12 @@ $dark-theme: mat.define-dark-theme(
     )
 );
 
-$ben-ten-theme: mat.define-light-theme(
+$luigi-theme: mat.define-light-theme(
     (
         color: (
-            primary: $primary-ben-ten,
-            accent: $accent-ben-ten,
-            warn: $warn-ben-ten,
+            primary: $primary-luigi,
+            accent: $accent-luigi,
+            warn: $warn-luigi,
         ),
     )
 );
@@ -207,8 +207,8 @@ $ben-ten-theme: mat.define-light-theme(
     }
 }
 
-.ben-ten-theme {
-    @include mat.all-component-themes($ben-ten-theme);
+.luigi-theme {
+    @include mat.all-component-themes($luigi-theme);
 
     background-color: #e7f5e6 !important;
     --mdc-elevated-card-container-color: #c2e5c1;
@@ -217,13 +217,13 @@ $ben-ten-theme: mat.define-light-theme(
     --mdc-snackbar-supporting-text-color: #000 !important;
     --mdc-dialog-supporting-text-color: #333;
     --mat-expansion-container-background-color: #99d498;
-    --mdc-protected-button-container-color: mat.get-color-from-palette($primary-ben-ten, 500);
+    --mdc-protected-button-container-color: mat.get-color-from-palette($primary-luigi, 500);
     --mat-sidenav-container-background-color: #e7f5e6;
 
     color: #333;
 
     .color-variant {
-        color: mat.get-color-from-palette($accent-ben-ten, 500) !important;
+        color: mat.get-color-from-palette($accent-luigi, 500) !important;
     }
 
     .mdc-snackbar__label {
@@ -232,12 +232,12 @@ $ben-ten-theme: mat.define-light-theme(
 
     .signup-button {
         background-color: white !important;
-        border: 2px solid mat.get-color-from-palette($primary-ben-ten, 500) !important;
+        border: 2px solid mat.get-color-from-palette($primary-luigi, 500) !important;
     }
 
     .mat-basic {
         background-color: white !important;
-        border: 1px solid mat.get-color-from-palette($primary-ben-ten, 200) !important;
+        border: 1px solid mat.get-color-from-palette($primary-luigi, 200) !important;
     }
 
     .friends-section {
@@ -248,11 +248,11 @@ $ben-ten-theme: mat.define-light-theme(
     }
 
     .color-variant-2 {
-        color: mat.get-color-from-palette($primary-ben-ten, 900) !important;
+        color: mat.get-color-from-palette($primary-luigi, 900) !important;
     }
 
     .alert {
-        color: mat.get-color-from-palette($primary-ben-ten, 900);
+        color: mat.get-color-from-palette($primary-luigi, 900);
     }
 
     .card-header-background {
@@ -260,7 +260,7 @@ $ben-ten-theme: mat.define-light-theme(
     }
 
     .own-message {
-        background-color: mat.get-color-from-palette($accent-ben-ten, 500);
+        background-color: mat.get-color-from-palette($accent-luigi, 500);
         color: white;
         border-radius: 1em 1em 0.15em 1em;
     }
@@ -270,24 +270,24 @@ $ben-ten-theme: mat.define-light-theme(
     }
 
     #header-bar {
-        background-color: mat.get-color-from-palette($primary-ben-ten, 500);
+        background-color: mat.get-color-from-palette($primary-luigi, 500);
         color: white;
     }
 
     #game-header-card {
         background-color: white !important;
-        border: 2px solid mat.get-color-from-palette($primary-ben-ten, 500) !important;
+        border: 2px solid mat.get-color-from-palette($primary-luigi, 500) !important;
     }
 
     #game-details-container {
         background-color: #c2e5c1;
-        border: 1px solid mat.get-color-from-palette($primary-ben-ten, 300);
+        border: 1px solid mat.get-color-from-palette($primary-luigi, 300);
     }
 
     #timer-area {
         background-color: white !important;
-        color: mat.get-color-from-palette($primary-ben-ten, 900) !important;
-        border: 2px solid mat.get-color-from-palette($primary-ben-ten, 500);
+        color: mat.get-color-from-palette($primary-luigi, 900) !important;
+        border: 2px solid mat.get-color-from-palette($primary-luigi, 500);
     }
 
     .clickable-item:hover {
@@ -296,31 +296,31 @@ $ben-ten-theme: mat.define-light-theme(
 
     .player-card {
         background-color: white !important;
-        border: 2px solid mat.get-color-from-palette($primary-ben-ten, 300) !important;
+        border: 2px solid mat.get-color-from-palette($primary-luigi, 300) !important;
     }
 
     .balance-container {
         background-color: #ddf0ff;
-        border: 1px solid mat.get-color-from-palette($accent-ben-ten, 300);
+        border: 1px solid mat.get-color-from-palette($accent-luigi, 300);
     }
 
     .balance-icon {
-        color: mat.get-color-from-palette($accent-ben-ten, 500);
+        color: mat.get-color-from-palette($accent-luigi, 500);
     }
 
     .balance-text {
-        color: mat.get-color-from-palette($primary-ben-ten, 900);
+        color: mat.get-color-from-palette($primary-luigi, 900);
     }
 
     // Add some Ben 10 stylistic elements
     .mat-mdc-raised-button:not(:disabled) {
-        border: 2px solid mat.get-color-from-palette($primary-ben-ten, 900);
+        border: 2px solid mat.get-color-from-palette($primary-luigi, 900);
         font-weight: bold;
         letter-spacing: 0.5px;
     }
 
     .mat-mdc-outlined-button:not(:disabled) {
-        border: 2px solid mat.get-color-from-palette($primary-ben-ten, 500);
+        border: 2px solid mat.get-color-from-palette($primary-luigi, 500);
     }
 
     .mat-card {
