@@ -39,11 +39,11 @@ export class UserEditPageComponent implements OnInit {
     availableLangs: Language[];
     availableThemes: Theme[];
     purchasedThemes: Theme[] = [];
-    premiumThemes = [Theme.BENTEN, Theme.MARIO, Theme.SONIC, Theme.PIKACHU];
+    premiumThemes = [Theme.LUIGI, Theme.MARIO, Theme.SONIC, Theme.PIKACHU];
     themeLabels = {
         [Theme.DARK]: translate('page.dark-theme'),
         [Theme.LIGHT]: translate('page.light-theme'),
-        [Theme.BENTEN]: translate('page.ben-ten-theme'),
+        [Theme.LUIGI]: translate('page.luigi-theme'),
         [Theme.MARIO]: translate('page.mario-theme'),
         [Theme.SONIC]: translate('page.sonic-theme'),
         [Theme.PIKACHU]: translate('page.pikachu-theme'),
@@ -218,7 +218,7 @@ export class UserEditPageComponent implements OnInit {
             this.themeLabels = {
                 [Theme.DARK]: translate('page.dark-theme'),
                 [Theme.LIGHT]: translate('page.light-theme'),
-                [Theme.BENTEN]: translate('page.ben-ten-theme'),
+                [Theme.LUIGI]: translate('page.luigi-theme'),
                 [Theme.MARIO]: translate('page.mario-theme'),
                 [Theme.SONIC]: translate('page.sonic-theme'),
                 [Theme.PIKACHU]: translate('page.pikachu-theme'),
