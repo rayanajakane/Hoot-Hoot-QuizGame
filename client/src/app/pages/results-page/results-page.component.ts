@@ -23,7 +23,7 @@ export class ResultsPageComponent implements OnInit, OnDestroy {
 
     private histogramSubscriptions: Subscription[] = [];
     constructor(
-        private readonly matchRoomService: MatchRoomService,
+        public readonly matchRoomService: MatchRoomService,
         private readonly histogramService: HistogramService,
         private readonly confettiService: ConfettiService,
     ) {}

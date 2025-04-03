@@ -1,3 +1,4 @@
+<ng-container *transloco="let t">
 <div id="main-container">
     <h1>Résultats</h1>
     <div id="players-list">
@@ -9,6 +10,7 @@
                     </div>
                 </div>
                 <p [ngClass]="[player.isPlaying ? '' : 'inactive-player']">{{ player.username }}</p>
+                <span *ngIf="player.username === this.matchRoomService.cheaterPlayer?.username" class="cheater-tag"><p>{{t('cheater-mode.cheater')}}</p></span>
             </div>
             <div class="player-performance">
                 <p>{{ player.score }} pts</p>
@@ -24,3 +26,4 @@
     </div>
 </div>
 <app-players-list [players]="players" [canHostToggleChatState]="false"></app-players-list>
+</ng-container>

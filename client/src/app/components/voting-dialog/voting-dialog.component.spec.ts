@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { VotingDialogComponent } from './voting-dialog.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 describe('VotingDialogComponent', () => {
   let component: VotingDialogComponent;
@@ -8,7 +9,7 @@ describe('VotingDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [VotingDialogComponent]
+      imports: [VotingDialogComponent, MatSnackBarModule]
     })
     .compileComponents();
     

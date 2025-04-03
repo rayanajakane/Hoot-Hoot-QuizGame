@@ -1,3 +1,4 @@
+<ng-container *transloco="let t">
 <div id="players-main-container">
     <h2>Joueurs</h2>
     <div *ngIf="this.matchContextService.getContext() === context.HostView && this.matchContextService.getContext() !== context.RandomMode">
@@ -23,7 +24,7 @@
             <div class="player-performance">
                 <p>{{ player.score }} pts</p>
                 <p>({{ player.bonusCount }}✨)</p>
-                <span *ngIf="player.username === this.matchRoomService.cheaterPlayer?.username" class="cheater-tag">Tricheur</span>
+                <span *ngIf="player.username === this.matchRoomService.cheaterPlayer?.username" class="cheater-tag"><p>{{t('cheater-mode.cheater')}}</p></span>
             </div>
             <!-- <mat-slide-toggle [(ngModel)]="player.isChatActive" (click)="toggleChat(player)"></mat-slide-toggle>-->
         </div>

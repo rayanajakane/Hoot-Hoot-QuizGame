@@ -310,5 +310,11 @@
         "label": "Rechercher des jeux",
         "title": "Titre",
         "author": "Auteur"
+    },
+    "cheater-mode":{
+        "notifyCheater":"Vous êtes le/la tricheur/tricheuse de cette partie",
+        "cheater": "Tricheur",
+        "vote":"Voter" ,
+        "voteCheater":"Votez pour le tricheur"
     }
 }

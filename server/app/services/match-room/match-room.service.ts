@@ -274,6 +274,10 @@ export class MatchRoomService {
         this.getRoom(matchRoomCode).submittedPlayers = 0;
     }
 
+    resetCheaterPlayer() {
+        this.cheaterPlayer = null;
+    }
+
     incrementCurrentQuestionIndex(matchRoomCode: string) {
         this.getRoom(matchRoomCode).currentQuestionIndex++;
     }

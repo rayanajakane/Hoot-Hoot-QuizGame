@@ -56,7 +56,6 @@ export class MatchGateway implements OnGatewayDisconnect {
         const codeErrors = this.matchRoomService.getRoomCodeErrors(data.roomCode);
         const usernameErrors = this.playerRoomService.getUsernameErrors(data.roomCode, data.userId);
         let errorMessage = codeErrors + usernameErrors;
-        console.log('Joining room', matchRoom.partyConfig);
         if (matchRoom.partyConfig.isFriendsOnly || matchRoom.partyConfig.isEntryFeeRequired) {
             const partyErrors = await this.partyService.canJoinParty(data.userId, data.roomCode);
             errorMessage += partyErrors;
@@ -67,10 +66,8 @@ export class MatchGateway implements OnGatewayDisconnect {
         } else {
             socket.join(data.roomCode);
             if (matchRoom.partyConfig.isEntryFeeRequired) {
-                console.log('Joining party');
                 await this.partyService.joinParty(data.userId, data.roomCode);
                 const currPlayerBalance = await this.moneyService.getCurrentBalance(data.userId);
-                console.log('Returning balance', currPlayerBalance);
                 this.server.to(socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
             }
             const newPlayer = await this.playerRoomService.addPlayer(socket, data.roomCode, data.userId, data.username);
@@ -126,7 +123,9 @@ export class MatchGateway implements OnGatewayDisconnect {
     totalVotes: VotingData[] = [{ username: '', numberOfVotes: 0, usersWhoVoted: [] }];
     @SubscribeMessage(MatchEvents.SendVotesResults)
     sendResults(@ConnectedSocket() socket: Socket, @MessageBody() newVotesCount: VotingData) {
+      //  let vote: VotingData = { username: '', numberOfVotes: 0, usersWhoVoted: [] };
         this.matchRoomService.totalVotes.push(newVotesCount);
+
         const username = newVotesCount.username;
         const newVoteCount = newVotesCount.numberOfVotes;
         let votesCount = this.matchRoomService.votesCount;
@@ -136,10 +135,19 @@ export class MatchGateway implements OnGatewayDisconnect {
         } else {
             votesCount[username] = newVoteCount;
         }
+        // for(let i =0; i< this.matchRoomService.totalVotes.length; i++){
+        //     vote.usersWhoVoted.push(this.matchRoomService.totalVotes[i]?.usersWhoVoted[i]);
+        // }
+        // vote.username = username;
+
+        // if(vote.username === username){
+        //     vote.numberOfVotes = votesCount[username];
+        // }
+
+        this.server.to(this.roomCode).emit(MatchEvents.SendBackVotesResults,votesCount);
     }
 
-    @SubscribeMessage(MatchEvents.SendBackVotesResults)
-    sendBackVotes(@ConnectedSocket() socket: Socket) {}
+
 
     @SubscribeMessage(MatchEvents.SendUpdatedScores)
     sendUpdatedScores(@ConnectedSocket() socket: Socket, @MessageBody() roomCode) {

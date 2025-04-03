@@ -311,5 +311,11 @@
         "label": "Search Games",
         "title": "Title",
         "author": "Author"
+    },
+    "cheater-mode":{
+        "notifyCheater":"You are the cheater",
+        "cheater": "Cheater",
+        "vote":"Vote",
+        "voteCheater":"Vote for the cheater"
     }
 }

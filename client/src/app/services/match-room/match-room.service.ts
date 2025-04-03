@@ -35,7 +35,8 @@ export class MatchRoomService {
     isCheaterMode: boolean;
     cheaterPlayer: Player;
     votesData: VotingData;
-    totalVotes: VotingData[];
+    totalVotes: VotingData[] = [{ username: '', numberOfVotes: 0, usersWhoVoted: [] }];
+    votesResults: { [username: string]: number };
     partyConfig: PartyConfig;
 
     currentAnswers: string[] = [];
@@ -98,6 +99,7 @@ export class MatchRoomService {
             this.onPlayerChatStateToggle();
             this.onRouteToResultsPage();
             this.onVoting();
+            this.onVotingResults();
             this.onCurrentAnswers();
         }
     }
@@ -117,13 +119,15 @@ export class MatchRoomService {
         this.socketService.socket.removeListener(MatchEvents.Error);
         this.socketService.socket.removeListener(MatchEvents.RouteToResultsPage);
         this.socketService.socket.removeListener(MatchEvents.CurrentAnswers);
+        this.socketService.socket.removeListener(MatchEvents.VoteOnCheater);
         this.socketService.send(MatchEvents.Disconnect);
         this.matchContextService.resetContext();
+        // this.currentAnswers = [];
         // this.socketService.socket.removeListener(MatchEvents.Disconnect);
     }
 
-    sendBackVotesResult(voteData:VotingData){
-        this.socketService.send(MatchEvents.SendVotesResults, voteData)
+    sendBackVotesResult(voteData: VotingData) {
+        this.socketService.send(MatchEvents.SendVotesResults, voteData);
     }
 
     createRoom(
@@ -263,21 +267,17 @@ export class MatchRoomService {
 
                 dialogRef.afterClosed().subscribe((result) => {
                     if (result) {
-                        // this.partyConfig = result;
                         console.log(result);
-                        //  console.log("match", this.partyConfig.isCheaterMode)
                     }
                 });
             }
         });
     }
 
-    onVotingResults(){
-        this.socketService.on(MatchEvents.SendBackVotesResults, (data: VotingData) =>
-        {
-            this.votesData = data;
-            this.totalVotes.push(data);
-        })
+    onVotingResults() {
+        this.socketService.on(MatchEvents.SendBackVotesResults, (data: { [username: string]: number }) => {
+            this.votesResults = data;
+        });
     }
 
     onStartCooldown() {
@@ -325,11 +325,31 @@ export class MatchRoomService {
         this.isWaitOver = false;
         this.isPlaying = false;
         this.isCooldown = false;
+        this.currentAnswers = [];
+        this.votesResults = {};
+        this.votesData = { username: '', numberOfVotes: 0, usersWhoVoted: [] };
+
+        this.resetCheaterPlayerValue();
         this.chatService.clearMatchRoomMessages();
     }
 
     routeToResultsPage() {
         this.socketService.send(MatchEvents.RouteToResultsPage, this.matchRoomCode);
+    }
+
+    resetCheaterPlayerValue() {
+        if (this.cheaterPlayer) {
+            this.cheaterPlayer = {
+                username: '',
+                id: '',
+                photoUrl: '',
+                score: 0,
+                bonusCount: 0,
+                isPlaying: false,
+                isChatActive: false,
+                state: '',
+            };
+        }
     }
 
     onRouteToResultsPage() {
@@ -352,12 +372,12 @@ export class MatchRoomService {
 
     onCurrentAnswers() {
         this.socketService.on(MatchEvents.CurrentAnswers, (answer: string[]) => {
-            if(this.username === this.cheaterPlayer?.username){
+            console.log(this.cheaterPlayer?.username);
+            if (this.username === this.cheaterPlayer?.username) {
                 this.currentAnswers = answer;
             }
             if (this.userId !== this.hostId) return;
             this.currentAnswers = answer;
-
         });
     }
 }
