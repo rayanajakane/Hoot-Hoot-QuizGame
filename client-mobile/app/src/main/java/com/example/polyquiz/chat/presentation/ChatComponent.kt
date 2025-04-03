@@ -247,7 +247,6 @@ fun MessageContainer(message: Message, currentUserId: String, username: String) 
                 if (message.authorId != currentUserId) {
                     AvatarImage(message.photoUrl)
                 }
-                // TODO : Count
                 TruncatedText(
                     message.authorUsername,
                     maxChars = 11,
@@ -395,24 +394,29 @@ fun ReactionsRow(
 }
 @Composable
 fun ReactionButton(emoji: String, count: Int, onClick: () -> Unit) {
+    var isClicked by remember { mutableStateOf(false) }
     Button(
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+        onClick = {
+            isClicked = !isClicked
+            onClick()
+                  },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (isClicked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh
+        ),
         modifier = Modifier
             .heightIn(min = 32.dp)
-//            .padding(4.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = emoji,
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.Black,
+                color = if (isClicked) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.offset(y = (-4).dp)
             )
             Text(
                 text = "$count",
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.Black
+                color = if (isClicked) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
             )
         }
     }
