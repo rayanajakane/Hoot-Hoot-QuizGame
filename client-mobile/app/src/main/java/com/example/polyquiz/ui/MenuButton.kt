@@ -38,6 +38,7 @@ fun MenuButton(
     navigateToUserEdit: () -> Unit,
     navigateToFriendsPage: () -> Unit,
     navigateToJoinRoom: () -> Unit,
+    navigateToRankingsPage: () -> Unit,
     signOut: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -113,6 +114,16 @@ fun MenuButton(
                     )
                 },
                 onClick = { navigateToFriendsPage() }
+            )
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.rankings)) },
+                leadingIcon = {
+                    Icon(
+                        Icons.Filled.Group,
+                        contentDescription = stringResource(R.string.rankings)
+                    )
+                },
+                onClick = { navigateToRankingsPage() }
             )
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.logout_action)) },
