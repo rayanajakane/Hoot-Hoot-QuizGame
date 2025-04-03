@@ -106,6 +106,7 @@ fun UserEditPage(
     navigateToJoinRoom: () -> Unit,
     navigateToLogin: () -> Unit,
     navigateToCamera: () -> Unit,
+    navigateToRankingsPage: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val translationService = TranslationService
@@ -318,6 +319,7 @@ fun UserEditPage(
                         navigateToUserEdit,
                         navigateToFriendsPage,
                         navigateToJoinRoom,
+                        navigateToRankingsPage,
                         signOut = {
                             authViewModel.signOut()
                             navigateToLogin()

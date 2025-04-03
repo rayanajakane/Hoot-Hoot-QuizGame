@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { EloRankingsComponent } from '@app/components/elo-rankings/elo-rankings.component';
 import { FriendsSearchComponent } from '@app/components/friends-search/friends-search.component';
 import { QuestionAreaComponent } from '@app/components/question-area/question-area.component';
 import { ManagementState } from '@app/constants/states';
@@ -52,6 +53,7 @@ const routes: Routes = [
     { path: 'edit-profile', component: UserEditPageComponent, canActivate: [authenticationGuard] },
     { path: 'reset-password-email-sent', component: ForgotPasswordFeedbackPageComponent },
     { path: 'friends-search', component: FriendsSearchComponent, canActivate: [authenticationGuard] },
+    { path: 'elo-rankings', component: EloRankingsComponent, canActivate: [authenticationGuard] },
     { path: 'shop', component: ShopPageComponent, canActivate: [authenticationGuard] },
 ];
 

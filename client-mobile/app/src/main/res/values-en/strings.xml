@@ -9,6 +9,7 @@
     <string name="return_to_login">Return to login</string>
     <string name="logout_action">Log out</string>
     <string name="upload_avatar">Upload avatar</string>
+    <string name="draw_avatar">Draw an avatar</string>
     <string name="preset_avatars">Preset avatars</string>
     <string name="reset_password">Reset password</string>
     <string name="sent_email">Sent email !</string>
@@ -65,6 +66,10 @@
     <string name="play">Play</string>
     <string name="matches_played">"Matches Played: "</string>
     <string name="all_games">"All Games"</string>
+    <string name="rank">Rank</string>
+    <string name="return_to_user_edit">Return to user edit</string>
+    <string name="save_canvas">Use this drawing</string>
+    <string name="clear_canvas">Clear canvas</string>
     <string name="join_match">Join a match</string>
     <string name="host_match">Host a match</string>
     <string name="team_name">Team 201</string>
@@ -99,6 +104,8 @@
     <string name="matches_year">Matches Throughout the Year</string>
     <string name="match_history">Match History</string>
     <string name="auth_history">"Authentication History  "</string>
+    <string name="your_elo">Your elo</string>
+    <string name="rankings">Rankings</string>
     <string name="waiting_to_start">The match will start soon…</string>
     <string name="access_code">Access code</string>
     <string name="leave">Exit</string>

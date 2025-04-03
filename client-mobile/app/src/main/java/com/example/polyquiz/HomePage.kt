@@ -61,6 +61,7 @@ fun HomePage(
     navigateToFriendsPage: () -> Unit,
     navigateToJoinRoom: () -> Unit,
     authViewModel: AuthViewModel,
+    navigateToRankingsPage: () -> Unit,
 ) {
     val authState = authViewModel.authState.observeAsState()
     val scope = rememberCoroutineScope()
@@ -98,7 +99,6 @@ fun HomePage(
         }
         when (shouldNavigate.value) {
             true -> {
-                Log.d("Should navigate", "Navigating again")
                 MatchRoomService.timeToGoToWaitPage = false
                 navigateToWaitPage()
             }
@@ -146,6 +146,7 @@ fun HomePage(
                 navigateToUserEdit,
                 navigateToFriendsPage,
                 navigateToJoinRoom,
+                navigateToRankingsPage,
                 signOut = { authViewModel.signOut() }
             )
             Column(
@@ -250,6 +251,26 @@ fun HomePage(
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(text = stringResource(R.string.friends))
                         }
+                    }
+                    ElevatedButton(
+                        onClick = {
+                            navigateToRankingsPage()
+                        },
+                        shape = RoundedCornerShape(3.dp),
+                        modifier = Modifier
+                            .height(55.dp)
+                            .width(164.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceBright,
+                            contentColor = MaterialTheme.colorScheme.onSurface
+                        )
+                    ) {
+                        Icon(
+                            Icons.Filled.Group,
+                            contentDescription = stringResource(R.string.rankings)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(text = stringResource(R.string.rankings))
                     }
                 }
                 Spacer(modifier = Modifier.height(8.dp))

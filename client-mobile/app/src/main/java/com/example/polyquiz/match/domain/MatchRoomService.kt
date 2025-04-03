@@ -19,6 +19,8 @@ import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.constants.ChatEvents
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import com.example.polyquiz.constants.Route
+import com.example.polyquiz.elo.domain.EloService
 
 @SuppressLint("StaticFieldLeak")
 object MatchRoomService {
@@ -304,6 +306,5 @@ object MatchRoomService {
     fun toggleLock() {
         socket.emit(MatchEvents.TOGGLE_LOCK.value, matchRoomCode.value)
         isLocked = !isLocked
-        Log.d("toggle Lock", "Toggled lock to $isLocked, roomcode: ${matchRoomCode.value}")
     }
 }

@@ -9,6 +9,7 @@
     <string name="return_to_login">Retourner à la page de connexion</string>
     <string name="logout_action">Se déconnecter</string>
     <string name="upload_avatar">Téléverser un avatar</string>
+    <string name="draw_avatar">Dessiner un avatar</string>
     <string name="preset_avatars">Avatars prédéfinis</string>
     <string name="reset_password">Réinitialiser le mot de passe</string>
     <string name="sent_email">Courriel envoyé !</string>
@@ -63,8 +64,15 @@
     <string name="play">"Jouer"</string>
     <string name="matches_played">"Parties Jouées: "</string>
     <string name="all_games">"Tous les jeux"</string>
+    <string name="rank">Rang</string>
+    <string name="return_to_user_edit">Retour à la modification du profil</string>
+    <string name="save_canvas">Utiliser ce dessin</string>
+    <string name="clear_canvas">Réinitialiser le canvas</string>
     <string name="light_theme">Thème clair</string>
     <string name="dark_theme">Thème sombre</string>
+    <string name="your_elo">Votre elo</string>
+    <string name="rankings">Classements</string>
+
     <string name="join_match">Joindre une partie</string>
     <string name="host_match">Créer une partie</string>
     <string name="team_name">Équipe 201</string>

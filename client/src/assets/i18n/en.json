@@ -75,6 +75,7 @@
         "team-name": "Team 201",
         "access-code": "Access code",
         "friends": "Friends",
+        "rankings": "Rankings",
         "shop": "Shop",
         "logout": "Logout"
     },
@@ -245,6 +246,11 @@
         "fee-description": "Players will have to pay this fee to join this match.",
         "cancel": "Cancel",
         "confirm": "Confirm"
+    },
+    "elo": {
+        "username": "Username",
+        "elo": "Elo",
+        "rank": "Rank"
     },
     "bank-status": {
         "unavailable": "👀 No other valid bank questions are available! 👀",
