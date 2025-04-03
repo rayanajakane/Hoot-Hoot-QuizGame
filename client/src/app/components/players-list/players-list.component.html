@@ -28,6 +28,7 @@
                 <div class="player-performance">
                     <p>{{ player.score }} pts</p>
                     <p>({{ player.bonusCount }}✨)</p>
+                    <span *ngIf="player.username === this.matchRoomService.cheaterPlayer?.username" class="cheater-tag"><p>{{t('cheater-mode.cheater')}}</p></span>
                 </div>
             </div>
         </div>
