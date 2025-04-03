@@ -33,7 +33,7 @@ object EloService {
                     Gson().fromJson(args[0].toString(), Array<Ranking>::class.java).toList()
                 val sortedRankings = rankingsList
                     .sortedByDescending { it.rating }
-                    .map { ranking -> Player(id = "",username = ranking.username, score = ranking.rating.roundToInt(), bonusCount = 0, isPlaying = false, isChatActive = false, state = "") } // Convert to Player
+                    .map { ranking -> Player(id = "",username = ranking.username, score = ranking.rating.roundToInt(), photoUrl = ranking.photoUrl, bonusCount = 0, isPlaying = false, isChatActive = false, state = "") } // Convert to Player
 
 
                 _rankings.postValue(sortedRankings)
