@@ -47,12 +47,6 @@ export class EloService {
     }
 
     async getPlayerElo(playerId: string): Promise<Rating> {
-        const snapshot = await this.firebaseService.database.ref(`users/${playerId}/elo`).once('value');
-        if (!snapshot.exists()) {
-            return new Rating(1500, 350);
-        }
-        const data = snapshot.val();
-        return new Rating(data.mu, data.sigma);
         try {
             const snapshot = await this.firebaseService.database.ref(`users/${playerId}/elo`).once('value');
             if (!snapshot.exists()) {
