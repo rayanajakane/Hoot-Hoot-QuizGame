@@ -325,6 +325,7 @@
         "notifyCheater":"Vous êtes le/la tricheur/tricheuse de cette partie",
         "cheater": "Tricheur",
         "vote":"Voter" ,
-        "voteCheater":"Votez pour le tricheur"
+        "voteCheater":"Votez pour le tricheur",
+        "notifyRegularPlayer": "Vous avez le rôle de joueur régulier dans cette partie"
     }
 }

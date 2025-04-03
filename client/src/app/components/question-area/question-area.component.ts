@@ -82,6 +82,11 @@ export class QuestionAreaComponent implements OnInit {
             this.matchContextService.setContext(MatchContext.CheaterView);
             this.notificationService.notifyCheaterPlayer(this.matchRoomService.cheaterPlayer.username, this.translocoService.translate('cheater-mode.notifyCheater'));
         }
+        if(this.matchContextService.getContext() === MatchContext.PlayerView){
+            this.notificationService.notifyRegularPlayer(this.matchRoomService.getUsername(), this.translocoService.translate('cheater-mode.notifyRegularPlayer'));
+        }
+        
+      
         this.matchContextService.getContext();
     }
 

@@ -16,6 +16,7 @@
                 <p>{{ player.score }} pts</p>
                 <p>({{ player.bonusCount }}✨)</p>
             </div>
+            <p>Votes: {{this.matchRoomService.votesResults[player.username]? this.matchRoomService.votesResults[player.username]:0 }}</p>
         </mat-card>
     </div>
     <div class="controls-container">
