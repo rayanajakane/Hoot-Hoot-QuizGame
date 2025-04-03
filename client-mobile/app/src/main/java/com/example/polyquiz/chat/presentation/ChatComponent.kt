@@ -53,6 +53,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -61,6 +62,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.TextUnit
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
@@ -80,14 +82,12 @@ import java.util.Locale
 fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     val username by remember { mutableStateOf(authViewModel.getUsername()) }
     val userId by remember { mutableStateOf(authViewModel.getUserId()) }
-    val roomCode by MatchRoomService.matchRoomCode.collectAsState()
     val avatarURL by remember { mutableStateOf(authViewModel.getAvatarURL())}
-//    var selectedChat by remember { mutableStateOf("General") }
+    val roomCode by MatchRoomService.matchRoomCode.collectAsState()
     var selectedChat by remember {
         mutableStateOf(if (roomCode.isNotEmpty()) "Match" else "General")
     }
-    val coroutineScope = rememberCoroutineScope()
-    Log.d("Chat", "roomcode not empty: ${roomCode.isNotEmpty()}")
+
     LaunchedEffect(selectedChat) {
         if (selectedChat == "Match") {
             ChatService.channel = ChatChannel.ROOM.value
@@ -97,10 +97,12 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     }
 
     LaunchedEffect(roomCode) {
-        selectedChat = if (roomCode.isNotEmpty()) {
-            "Match"
+        if(roomCode.isNotEmpty()) {
+            ChatService.channel = ChatChannel.ROOM.value
+            selectedChat = "Match"
         } else {
-            "General"
+            ChatService.channel = ChatChannel.GENERAL.value
+            selectedChat = "General"
         }
     }
 
@@ -114,10 +116,7 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     LaunchedEffect(messages?.size) {
         messages?.let { list ->
             if (list.isNotEmpty()) {
-                coroutineScope.launch {
-                    Log.d("chat", "list not empty, SCROLL. list size : ${list.size}")
-                    listState.scrollToItem(list.size - 1)
-                }
+                listState.scrollToItem(list.size - 1)
             }
         }
     }
@@ -180,12 +179,22 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                     imeAction = ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions(onDone = {
-                    // TODO: Change to actual user avatar
                     if (selectedChat == "General") {
-                        ChatService.sendMessage(newMessageText, userId, username, avatarURL, null)
-                    }
-                    else {
-                        ChatService.sendMessage(newMessageText, userId, username, avatarURL, MatchRoomService.getRoomCode())
+                        ChatService.sendMessage(
+                            newMessageText,
+                            userId,
+                            username,
+                            avatarURL,
+                            null
+                        )
+                    } else {
+                        ChatService.sendMessage(
+                            newMessageText,
+                            userId,
+                            username,
+                            avatarURL,
+                            MatchRoomService.getRoomCode()
+                        )
                     }
                     newMessageText = ""
                 }),
@@ -193,10 +202,21 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                     val image = Icons.AutoMirrored.Filled.Send;
                     IconButton(onClick = {
                         if (selectedChat == "General") {
-                            ChatService.sendMessage(newMessageText, userId, username, avatarURL, null)
-                        }
-                        else {
-                            ChatService.sendMessage(newMessageText, userId, username, avatarURL, MatchRoomService.getRoomCode())
+                            ChatService.sendMessage(
+                                newMessageText,
+                                userId,
+                                username,
+                                avatarURL,
+                                null
+                            )
+                        } else {
+                            ChatService.sendMessage(
+                                newMessageText,
+                                userId,
+                                username,
+                                avatarURL,
+                                MatchRoomService.getRoomCode()
+                            )
                         }
                         newMessageText = ""
                     }) {
@@ -318,7 +338,7 @@ fun ChatSelectionMenu(selectedChat: String, onChatSelected: (String) -> Unit) {
             options.forEach { selectionOption ->
                 val isSelected = selectedChat == selectionOption
                 val roomCode by MatchRoomService.matchRoomCode.collectAsState()
-                val isMatchRoomAvailable = MatchRoomService.getRoomCode().isNotEmpty()
+                MatchRoomService.getRoomCode().isNotEmpty()
 
                 // Enable Match only if the room is available, but still show it if selected
                 val isOptionDisabled =
@@ -360,12 +380,14 @@ fun ChatSelectionMenu(selectedChat: String, onChatSelected: (String) -> Unit) {
 
 @Composable
 fun AvatarImage(photoUrl: String?) {
-    Image(
-        painter = rememberAsyncImagePainter(photoUrl ?: PresetAvatar.DEFAULT.value),
-        contentDescription = "User Avatar",
+    AsyncImage(
+        model = photoUrl,
+        contentDescription = "Avatar",
         modifier = Modifier
             .size(40.dp)
-            .clip(CircleShape)
+            .clip(CircleShape),
+        contentScale = ContentScale.Crop,
+        placeholder = rememberAsyncImagePainter(model = PresetAvatar.DEFAULT.value)
     )
 }
 
@@ -382,13 +404,31 @@ fun ReactionsRow(
         horizontalArrangement = Arrangement.Absolute.Left,
     ) {
         ReactionButton("👍", message.userLikes.size) {
-            ChatService.reactToMessage(message.id, ChatEmoji.LIKE, userId, username, if(roomCode.isNullOrEmpty()) null else roomCode)
+            ChatService.reactToMessage(
+                message.id,
+                ChatEmoji.LIKE,
+                userId,
+                username,
+                if (roomCode.isNullOrEmpty()) null else roomCode
+            )
         }
         ReactionButton("❤️", message.userLoves.size) {
-            ChatService.reactToMessage(message.id, ChatEmoji.LOVE, userId, username, if(roomCode.isNullOrEmpty()) null else roomCode)
+            ChatService.reactToMessage(
+                message.id,
+                ChatEmoji.LOVE,
+                userId,
+                username,
+                if (roomCode.isNullOrEmpty()) null else roomCode
+            )
         }
         ReactionButton("👎", message.userDislikes.size) {
-            ChatService.reactToMessage(message.id, ChatEmoji.DISLIKE, userId, username, if(roomCode.isNullOrEmpty()) null else roomCode)
+            ChatService.reactToMessage(
+                message.id,
+                ChatEmoji.DISLIKE,
+                userId,
+                username,
+                if (roomCode.isNullOrEmpty()) null else roomCode
+            )
         }
     }
 }
@@ -399,7 +439,7 @@ fun ReactionButton(emoji: String, count: Int, onClick: () -> Unit) {
         onClick = {
             isClicked = !isClicked
             onClick()
-                  },
+        },
         colors = ButtonDefaults.buttonColors(
             containerColor = if (isClicked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh
         ),
