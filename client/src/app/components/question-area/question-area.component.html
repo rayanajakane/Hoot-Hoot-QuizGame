@@ -141,5 +141,15 @@
         </button>
 
     </div>
-    <app-players-list [players]="this.matchRoomService.players" *ngIf="context !== matchContext.TestPage"></app-players-list>
-</ng-container>
+    <div *ngIf="context === matchContext.HostView && !this.matchRoomService.isCooldown && this.matchRoomService.isCheaterMode">
+        <button mat-raised-button *ngIf="this.answerService.isEndGame" color="primary" (click)="voteOnCheater()">
+            <mat-icon class="material-icons">bar_chart</mat-icon>
+            <p>Voter pour le tricheur</p>
+        </button>
+    </div>
+    <button mat-raised-button class="exit-button" color="primary" routerLink="/home" (click)="quitGame()">
+        <mat-icon class="material-icons">logout</mat-icon>
+        <p>QUITTER</p>
+    </button>
+
+<app-players-list [players]="this.matchRoomService.players" *ngIf="context !== matchContext.TestPage"></app-players-list>
