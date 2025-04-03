@@ -261,6 +261,7 @@ class AuthViewModel : ViewModel() {
 
 
         if (username.isEmpty() || usernameError.value.isNotEmpty()) {
+            Log.e("Save UserProfile", "Invalid username")
             viewModelScope.launch {
                 SnackbarController.sendEvent(
                     event = SnackbarEvent(
@@ -270,8 +271,10 @@ class AuthViewModel : ViewModel() {
             }
             return
         }
-        val usernameRef = getUsernameDatabaseRef(username.lowercase())
-        usernameRef.get().addOnSuccessListener { databaseSnapshot: DataSnapshot ->
+        val newUsernameRef = getUsernameDatabaseRef(username.lowercase())
+        val oldUsernameRef = getUsernameDatabaseRef(getUsername().lowercase())
+        val oldUsername = getUsername()
+        newUsernameRef.get().addOnSuccessListener { databaseSnapshot: DataSnapshot ->
             if (databaseSnapshot.exists()) {
                 viewModelScope.launch {
                     SnackbarController.sendEvent(
@@ -289,10 +292,19 @@ class AuthViewModel : ViewModel() {
                 }
                 user!!.updateProfile(profileUpdates).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
+                        oldUsernameRef.removeValue().addOnCompleteListener { removeTask ->
+                            if(removeTask.isSuccessful) {
+                                Log.d("Delete user", "Deleted username from DB $oldUsername")
+                            } else {
+                                Log.e("Delete user", "Could not delete username from DB")
+                            }
+                        }
+                        newUsernameRef.setValue(username.lowercase())
+                        _username.value = username
                         SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
                         Log.d(
                             "Profile update",
-                            "Used ${avatarURL.value}"
+                            "Used $username ${avatarURL.value}"
                         )
                     } else {
                         Log.e("Profile update", "An error occured...")
@@ -315,36 +327,6 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-
-    private fun checkUsernameValidity(username: String): Boolean {
-        var usernameIsValid: Boolean = false
-        if (username.isEmpty() || usernameError.value.isNotEmpty()) {
-            viewModelScope.launch {
-                SnackbarController.sendEvent(
-                    event = SnackbarEvent(
-                        message = StringValue.StringResource(R.string.invalid_username)
-                    )
-                )
-            }
-            return false
-        }
-        val usernameRef = getUsernameDatabaseRef(username.lowercase())
-        usernameRef.get().addOnSuccessListener { databaseSnapshot: DataSnapshot ->
-            if (databaseSnapshot.exists()) {
-                usernameIsValid = false
-                viewModelScope.launch {
-                    SnackbarController.sendEvent(
-                        event = SnackbarEvent(
-                            message = StringValue.StringResource(R.string.username_already_exists)
-                        )
-                    )
-                }
-            } else {
-                usernameIsValid = true
-            }
-        }
-        return usernameIsValid
-    }
 
     fun signIn(email: String, password: String, context: Context) {
         if (email.isEmpty() || password.isEmpty()) {
