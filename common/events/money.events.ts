@@ -6,5 +6,7 @@ export enum MoneyEvents {
     DonationReceived = 'donationReceived',
     BuyAvatar = 'buyAvatar',
     AvatarBought = 'avatarBought',
+    BuyTheme = 'buyTheme',
+    ThemeBought = 'themeBought',
     Error = 'error',
 }

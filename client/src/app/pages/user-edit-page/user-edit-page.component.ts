@@ -40,14 +40,7 @@ export class UserEditPageComponent implements OnInit {
     availableThemes: Theme[];
     purchasedThemes: Theme[] = [];
     premiumThemes = [Theme.LUIGI, Theme.MARIO, Theme.SONIC, Theme.PIKACHU];
-    themeLabels = {
-        [Theme.DARK]: translate('page.dark-theme'),
-        [Theme.LIGHT]: translate('page.light-theme'),
-        [Theme.LUIGI]: translate('page.luigi-theme'),
-        [Theme.MARIO]: translate('page.mario-theme'),
-        [Theme.SONIC]: translate('page.sonic-theme'),
-        [Theme.PIKACHU]: translate('page.pikachu-theme'),
-    };
+
     langLabels = {
         ['fr']: translate('page.fr'),
         ['en']: translate('page.en'),
@@ -121,7 +114,7 @@ export class UserEditPageComponent implements OnInit {
     }
 
     getThemeLabel(theme: Theme): string {
-        return this.themeLabels[theme];
+        return this.themeService.themeLabels[theme];
     }
 
     getLangLabel(lang: 'fr' | 'en'): string {
@@ -176,15 +169,6 @@ export class UserEditPageComponent implements OnInit {
         this.purchasedThemes = this.premiumThemes.filter((theme) => purchasedThemeIds.includes(theme.toString()));
     }
 
-    isThemePurchased(theme: Theme): boolean {
-        return this.themeService.isThemePurchased(theme);
-    }
-
-    async purchaseTheme(theme: Theme) {
-        await this.themeService.purchaseTheme(theme.toString());
-        this.fetchPurchasedThemes();
-    }
-
     getAvatarState(avatar: string): AvatarState {
         if (Object.values(PresetAvatar).includes(avatar as PresetAvatar)) {
             return AvatarState.Preset;
@@ -215,7 +199,7 @@ export class UserEditPageComponent implements OnInit {
             this.translationService.setLanguage(this.currentLang.value as string);
 
             // Reset labels to new language
-            this.themeLabels = {
+            this.themeService.themeLabels = {
                 [Theme.DARK]: translate('page.dark-theme'),
                 [Theme.LIGHT]: translate('page.light-theme'),
                 [Theme.LUIGI]: translate('page.luigi-theme'),
