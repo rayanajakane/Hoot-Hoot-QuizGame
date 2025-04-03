@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
 import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { PresetAvatar } from '@app/constants/image-constants';
+import { PresetAvatar } from '@app/constants/avatar-constants';
 import { AuthError } from '@app/services/authentication/auth-error';
 import { ChatService } from '@app/services/chat/chat.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
@@ -12,6 +12,8 @@ import { NotificationService } from '@app/services/notification/notification.ser
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { ChatEvents } from '@common/events/chat.events';
 import { FriendsEvents } from '@common/events/friends.events';
+import { GameEvents } from '@common/events/game.events';
+import { UserIdName } from '@common/interfaces/user-id-name';
 import { TranslocoService } from '@jsverse/transloco';
 import { browserSessionPersistence, sendPasswordResetEmail, setPersistence, User, UserCredential } from 'firebase/auth';
 import { Database, DataSnapshot, get, getDatabase, onDisconnect, ref, remove, set, update } from 'firebase/database';
@@ -155,6 +157,13 @@ export class AuthenticationService {
         }
         if (isValidUsername && isValidAvatarUrl) {
             this.socketHandler.send(FriendsEvents.UpdateData);
+            console.log('Sending...');
+            const userIdName: UserIdName = {
+                id: this.userId,
+                name: username,
+            };
+            this.socketHandler.send(GameEvents.UpdateAuthorName, userIdName);
+            console.log('Sent');
             this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.edited'));
         }
     }

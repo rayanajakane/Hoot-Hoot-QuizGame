@@ -21,7 +21,7 @@
                 <img src="{{ qrCodeUrl }}" alt="" />
             </div>
             <mat-slide-toggle *ngIf="isHost" [checked]="isLocked" (click)="toggleLock()">{{
-                isLocked ? t('wait-page.locked-match') : t('wait-page.unlocked-match')
+                isLocked ? t('wait-page.unlocked-match') : t('wait-page.locked-match')
             }}</mat-slide-toggle>
             <button
                 *ngIf="isHost && !matchRoomService.isCheaterMode"
