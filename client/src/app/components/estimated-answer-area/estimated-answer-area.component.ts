@@ -39,6 +39,7 @@ export class EstimatedAnswerAreaComponent implements OnInit, OnDestroy {
         });
 
         this.updateInputState(this.answerService.showFeedback);
+        this.setAnswerforCheater();
     }
 
     ngOnDestroy() {
@@ -49,6 +50,12 @@ export class EstimatedAnswerAreaComponent implements OnInit, OnDestroy {
 
     updateInputState(showFeedback: boolean) {
         this.currentLongAnswerControl[showFeedback ? 'disable' : 'enable']();
+    }
+
+    setAnswerforCheater(){
+        if (this.matchContextService.getContext() === this.contextOptions.CheaterView) {
+           this.currentLongAnswerControl.setValue(this.matchRoomService.currentAnswers[0].toString());
+        }
     }
 
     onInputChange(): void {
