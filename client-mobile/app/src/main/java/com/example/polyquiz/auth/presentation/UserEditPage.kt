@@ -103,13 +103,10 @@ fun UserEditPage(
     cameraViewModel: CameraViewModel,
     currentTheme: Theme,
     onThemeUpdated: (Theme) -> Unit,
-    navigateToHome: () -> Unit,
     navigateToCreate: () -> Unit,
     navigateToUserEdit: () -> Unit,
     navigateToFriendsPage: () -> Unit,
     navigateToJoinRoom: () -> Unit,
-    navigateToLogin: () -> Unit,
-    navigateToCamera: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     val translationService = TranslationService
