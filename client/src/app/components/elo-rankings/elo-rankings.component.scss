@@ -44,9 +44,9 @@
 }
 
 .player-performance {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .username-avatar-container {
