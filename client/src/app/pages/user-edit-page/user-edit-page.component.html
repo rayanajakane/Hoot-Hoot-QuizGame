@@ -96,14 +96,6 @@
                 <mat-icon>shopping_cart</mat-icon>
                 {{ t('page.buy-goodies') }}
             </button>
-            <div *ngFor="let theme of premiumThemes">
-                <div *ngIf="!isThemePurchased(theme)">
-                    <span>{{ getThemeLabel(theme) }}</span>
-                    <button mat-button (click)="purchaseTheme(theme)">
-                        {{ 'page.purchase-theme' | transloco }}
-                    </button>
-                </div>
-            </div>
             <h2>{{ t('page.danger-zone') }}</h2>
             <button mat-raised-button color="warn" (click)="deleteUser()" id="delete-button">{{ t('page.delete-user') }}</button>
             <h2>{{ t('history.stats-header') }}</h2>

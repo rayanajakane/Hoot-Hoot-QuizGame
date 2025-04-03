@@ -5,6 +5,7 @@ import { AvatarService } from '@app/services/avatar/avatar.service';
 import { MoneyService } from '@app/services/money/money.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
+import { Theme, ThemeService } from '@app/services/theme/theme.service';
 import { MoneyEvents } from '@common/events/money.events';
 import { ShopItem } from '@common/interfaces/shop-item';
 import { TranslocoService } from '@jsverse/transloco';
@@ -16,6 +17,10 @@ import { TranslocoService } from '@jsverse/transloco';
 })
 export class ShopPageComponent implements OnInit {
     avatarItems: ShopItem[] = [];
+    themeItems: ShopItem[] = [];
+    premiumThemes = [Theme.LUIGI, Theme.MARIO, Theme.SONIC, Theme.PIKACHU];
+
+    private readonly THEME_PRICE = 50;
 
     constructor(
         public moneyService: MoneyService,
@@ -24,11 +29,13 @@ export class ShopPageComponent implements OnInit {
         private readonly authService: AuthenticationService,
         private readonly socketHandler: SocketHandlerService,
         private readonly translocoService: TranslocoService,
+        private readonly themeService: ThemeService,
     ) {}
 
     async ngOnInit() {
         await this.initializeShopItems();
         this.onAvatarBought();
+        this.onThemeBought();
     }
 
     buyAvatar(item: ShopItem) {
@@ -50,6 +57,29 @@ export class ShopPageComponent implements OnInit {
         });
     }
 
+    // getThemeLabel(theme: Theme): string {
+    //     return this.themeService.themeLabels[theme];
+    // }
+
+    buyTheme(item: ShopItem) {
+        this.socketHandler.send(MoneyEvents.BuyTheme, {
+            user: this.authService.userId,
+            item,
+        });
+    }
+
+    onThemeBought() {
+        this.socketHandler.on(MoneyEvents.ThemeBought, (item: ShopItem) => {
+            console.log('Theme bought:', item);
+            this.themeService.purchaseTheme(item.id);
+            const foundTheme = this.themeItems.find((theme) => theme.id === item.id);
+            if (foundTheme) {
+                foundTheme.owned = true;
+            }
+            this.notificationService.displaySuccessMessage(this.translocoService.translate('shop.buy-successfully'));
+        });
+    }
+
     private async initializeShopItems() {
         const purchasedAvatars = await this.avatarService.getPurchasedAvatars();
 
@@ -58,6 +88,15 @@ export class ShopPageComponent implements OnInit {
             imageUrl: value,
             price: AVATAR_PRICE,
             owned: purchasedAvatars.includes(key),
+        }));
+
+        const purchasedThemes = await this.themeService.getPurchasedThemes();
+
+        this.themeItems = this.premiumThemes.map((theme) => ({
+            id: theme,
+            imageUrl: this.themeService.getThemeImage(theme),
+            price: this.THEME_PRICE,
+            owned: purchasedThemes.includes(theme.toString()),
         }));
     }
 }

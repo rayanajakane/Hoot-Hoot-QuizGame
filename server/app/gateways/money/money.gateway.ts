@@ -69,6 +69,23 @@ export class MoneyGateway {
         client.emit(MoneyEvents.ReturnBalance, await this.moneyService.getCurrentBalance(data.user));
     }
 
+    @SubscribeMessage(MoneyEvents.BuyTheme)
+    async buyTheme(client: Socket, data: PurchaseInfo) {
+        console.log('Buying theme:', data);
+        if (data.item.owned) {
+            this.sendError(client.id, 'Theme already owned');
+            return;
+        }
+        const moneyErrors = await this.moneyService.getMoneyError(data.user, data.item.price, false);
+        if (moneyErrors) {
+            this.sendError(client.id, moneyErrors);
+            return;
+        }
+        await this.moneyService.updateBalance(data.user, -data.item.price);
+        client.emit(MoneyEvents.ThemeBought, data.item);
+        client.emit(MoneyEvents.ReturnBalance, await this.moneyService.getCurrentBalance(data.user));
+    }
+
     handleDisconnect(client: Socket) {
         const userId = Array.from(this.userSockets.entries()).find(([, socketId]) => socketId === client.id)?.[0];
         if (userId) this.userSockets.delete(userId);

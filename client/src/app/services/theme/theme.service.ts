@@ -3,6 +3,7 @@ import { Inject, Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { AuthError } from '@app/services/authentication/auth-error';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { DataSnapshot, get, ref, set, update } from '@firebase/database';
+import { translate } from '@jsverse/transloco';
 
 export enum Theme {
     DARK = 'dark-theme',
@@ -18,6 +19,16 @@ export enum Theme {
 })
 export class ThemeService {
     currentTheme: Theme = Theme.DARK;
+
+    themeLabels = {
+        [Theme.DARK]: translate('page.dark-theme'),
+        [Theme.LIGHT]: translate('page.light-theme'),
+        [Theme.LUIGI]: translate('page.luigi-theme'),
+        [Theme.MARIO]: translate('page.mario-theme'),
+        [Theme.SONIC]: translate('page.sonic-theme'),
+        [Theme.PIKACHU]: translate('page.pikachu-theme'),
+    };
+
     private renderer: Renderer2;
     private purchasedThemes: string[] = [];
 
@@ -99,6 +110,21 @@ export class ThemeService {
         if (theme === Theme.DARK || theme === Theme.LIGHT) return true;
 
         return this.purchasedThemes.includes(theme.toString());
+    }
+
+    getThemeImage(theme: Theme): string {
+        switch (theme) {
+            case Theme.LUIGI:
+                return 'https://wallpapers.com/images/high/pastel-light-green-plain-t42jcuek6ib3bhiy.webp';
+            case Theme.MARIO:
+                return 'https://wallpapers.com/images/high/pastel-red-background-qjnfkdv8yc64c74a.webp';
+            case Theme.SONIC:
+                return 'https://wallpapers.com/images/high/pastel-blue-aesthetic-desktop-u31lqfendbf31844.webp';
+            case Theme.PIKACHU:
+                return 'https://wallpapers.com/images/high/pastel-yellow-cream-background-iz570fvika661m14.webp';
+            default:
+                return '';
+        }
     }
 
     // Prevents unexpected behavior. Used instead of 'as Theme'
