@@ -3,6 +3,7 @@ package com.example.polyquiz
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -14,6 +15,8 @@ import com.example.polyquiz.auth.presentation.SignupPage
 import com.example.polyquiz.auth.presentation.UserEditPage
 import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.Route
+import com.example.polyquiz.core.avatarDrawing.DrawingScreen
+import com.example.polyquiz.friends.domain.FriendsService
 import com.example.polyquiz.match.domain.AnswerService
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
@@ -26,6 +29,7 @@ import com.example.polyquiz.pages.presentation.WaitPage
 import com.example.polyquiz.friends.presentation.FriendsSearchScreen
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.ui.features.camera.MainCameraScreen
+import com.plcoding.drawinginjetpackcompose.DrawingViewModel
 import com.example.polyquiz.ui.theme.Theme
 
 // References: https://youtu.be/AIC_OFQ1r3k  and  https://youtu.be/lv1raAvwcgI
@@ -238,6 +242,10 @@ fun Navigation(
                 navigateToCamera = {
                     navController.navigate(Route.MainCameraScreen)
                 },
+                navigateToDrawing = {
+                    navController.navigate(Route.Drawing)
+                },
+
             )
         }
         composable<Route.FriendsSearchScreen> {
@@ -254,6 +262,17 @@ fun Navigation(
                 cameraViewModel,
                 navigateToUserEdit = { navController.navigate(Route.UserEditPage) },
                 navigateToSignup = { navController.navigate(Route.Signup) }
+            )
+        }
+        composable<Route.Drawing> {
+
+             val viewModel: DrawingViewModel = viewModel() // If not using Hilt
+
+            DrawingScreen(
+                viewModel = viewModel,
+                navigateToUserEdit = { navController.navigate(Route.UserEditPage) },
+                uid = authViewModel.getUserId(),
+                cameraViewModel = cameraViewModel
             )
         }
     }
