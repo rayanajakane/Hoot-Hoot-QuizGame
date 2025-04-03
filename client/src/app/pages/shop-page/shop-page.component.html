@@ -22,4 +22,24 @@
             </div>
         </mat-card>
     </div>
+
+    <div class="items-grid">
+        <mat-card *ngFor="let item of themeItems" class="shop-item">
+            <img [src]="item.imageUrl" [alt]="'Theme ' + item.id" class="avatar-preview" />
+            <div class="item-details">
+                <span class="price">{{ item.price }}$</span>
+                <button
+                    mat-raised-button
+                    color="primary"
+                    (click)="buyTheme(item)"
+                    [disabled]="item.owned || moneyService.currentBalance < item.price"
+                >
+                    {{ item.owned ? t('owned') : t('buy') }}
+                </button>
+                <span *ngIf="moneyService.currentBalance < item.price && !item.owned" class="error-message">
+                    {{ t('insufficient-funds') }}
+                </span>
+            </div>
+        </mat-card>
+    </div>
 </div>
