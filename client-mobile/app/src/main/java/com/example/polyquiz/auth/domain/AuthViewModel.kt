@@ -258,24 +258,46 @@ class AuthViewModel : ViewModel() {
         }
 
         Log.d("Save UserProfile", "Called update profile")
-        val profileUpdates = userProfileChangeRequest {
-            if(url.isNotEmpty()) {
-                photoUri = Uri.parse(url)
-            }
-            if (username.isNotEmpty() && checkUsernameValidity(username)) {
-                displayName = username
-            }
-        }
 
-        user!!.updateProfile(profileUpdates).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
-                Log.d(
-                    "Profile update",
-                    "Used ${avatarURL.value}"
+
+        if (username.isEmpty() || usernameError.value.isNotEmpty()) {
+            viewModelScope.launch {
+                SnackbarController.sendEvent(
+                    event = SnackbarEvent(
+                        message = StringValue.StringResource(R.string.invalid_username)
+                    )
                 )
+            }
+            return
+        }
+        val usernameRef = getUsernameDatabaseRef(username.lowercase())
+        usernameRef.get().addOnSuccessListener { databaseSnapshot: DataSnapshot ->
+            if (databaseSnapshot.exists()) {
+                viewModelScope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.StringResource(R.string.username_already_exists)
+                        )
+                    )
+                }
             } else {
-                Log.e("Profile update", "An error occured...")
+                val profileUpdates = userProfileChangeRequest {
+                    if(url.isNotEmpty()) {
+                        photoUri = Uri.parse(url)
+                    }
+                    displayName = username
+                }
+                user!!.updateProfile(profileUpdates).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
+                        Log.d(
+                            "Profile update",
+                            "Used ${avatarURL.value}"
+                        )
+                    } else {
+                        Log.e("Profile update", "An error occured...")
+                    }
+                }
             }
         }
     }
