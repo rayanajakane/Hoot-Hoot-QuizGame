@@ -394,11 +394,9 @@ class AuthViewModel : ViewModel() {
                 AuthState.Error(StringValue.StringResource(R.string.invalid_username_password))
             return
         }
-        // TODO: Replace spaces? (or simply forbid them?)
         val usernameRef = getUsernameDatabaseRef(username.lowercase())
         usernameRef.get().addOnSuccessListener { databaseSnapshot: DataSnapshot ->
             if (databaseSnapshot.exists()) {
-                // TODO : Make new error text
                 _authState.value =
                     AuthState.Error(StringValue.StringResource(R.string.username_already_exists))
                 Log.e(TAG, StringValue.StringResource(R.string.username_already_exists).toString())

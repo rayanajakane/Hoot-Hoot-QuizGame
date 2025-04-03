@@ -60,6 +60,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.TextUnit
 import coil.compose.rememberAsyncImagePainter
 import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
@@ -246,7 +247,12 @@ fun MessageContainer(message: Message, currentUserId: String, username: String) 
                 if (message.authorId != currentUserId) {
                     AvatarImage(message.photoUrl)
                 }
-                Text(text = message.authorUsername, fontWeight = FontWeight(600))
+                // TODO : Count
+                TruncatedText(
+                    message.authorUsername,
+                    maxChars = 11,
+                    FontWeight(600),
+                )
                 Text(
                     text = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(message.date)
                         .toString()
@@ -301,7 +307,9 @@ fun ChatSelectionMenu(selectedChat: String, onChatSelected: (String) -> Unit) {
             onValueChange = { },
             label = { Text("Option") },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier.menuAnchor().fillMaxWidth()
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth()
         )
 
         ExposedDropdownMenu(
@@ -410,3 +418,20 @@ fun ReactionButton(emoji: String, count: Int, onClick: () -> Unit) {
     }
 }
 
+@Composable
+fun TruncatedText(
+    text: String,
+    maxChars: Int,
+    fontWeight: FontWeight,
+) {
+    val truncatedText = if (text.length > maxChars) {
+        text.take(maxChars) + "..."
+    } else {
+        text
+    }
+
+    Text(
+        text = truncatedText,
+        fontWeight = fontWeight,
+    )
+}
