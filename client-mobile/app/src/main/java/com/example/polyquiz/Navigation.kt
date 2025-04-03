@@ -155,7 +155,8 @@ fun Navigation(
                     navController.navigate(Route.FriendsSearchScreen)
                 },
                 navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
-                navigateToLogin = { navController.navigate(Route.Login) }
+                navigateToLogin = { navController.navigate(Route.Login) },
+                navigateToRankingsPage = { navController.navigate(Route.RankingsPage) }
             )
         }
         composable<Route.ResultsPage> {
@@ -191,7 +192,8 @@ fun Navigation(
                 },
                 navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
                 navigateToMatchPage = { navController.navigate(Route.MatchRoom) },
-                navigateToLogin = { navController.navigate(Route.Login) }
+                navigateToLogin = { navController.navigate(Route.Login) },
+                navigateToRankingsPage = { navController.navigate(Route.RankingsPage) }
             )
         }
 
@@ -245,6 +247,9 @@ fun Navigation(
                 navigateToCamera = {
                     navController.navigate(Route.MainCameraScreen)
                 },
+                navigateToRankingsPage = {
+                    navController.navigate(Route.RankingsPage)
+                }
             )
         }
         composable<Route.FriendsSearchScreen> {
@@ -271,6 +276,18 @@ fun Navigation(
                 navigateToHome = {
                     navController.navigate(Route.Home)
                 },
+                navigateToCreate = {
+                    navController.navigate(Route.MatchCreation)
+                },
+                navigateToUserEdit = {
+                    navController.navigate(Route.UserEditPage)
+                },
+                navigateToFriendsPage = {
+                    navController.navigate(Route.FriendsSearchScreen)
+                },
+                navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
+                navigateToLogin = { navController.navigate(Route.Login) },
+                navigateToRankingsPage = { navController.navigate(Route.RankingsPage) }
             )
         }
         composable<Route.Drawing> {

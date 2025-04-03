@@ -24,20 +24,27 @@ import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.elo.domain.EloService
+import com.example.polyquiz.ui.MenuButton
 
 @Composable
 fun RankingsPage(
     modifier: Modifier,
     navigateToHome: () -> Unit,
     authViewModel: AuthViewModel,
+    navigateToCreate: () -> Unit,
+    navigateToUserEdit: () -> Unit,
+    navigateToFriendsPage: () -> Unit,
+    navigateToJoinRoom: () -> Unit,
+    navigateToLogin: () -> Unit,
+    navigateToRankingsPage: () -> Unit
 ) {
     val rankings by EloService._rankings.observeAsState(emptyList())
     val currentRating by EloService.currentRating.observeAsState(0)
 
-    fun quitRankingsPage() {
-        EloService.stopListeningForEloEvents()
-        navigateToHome()
-    }
+//    fun quitRankingsPage() {
+//        EloService.stopListeningForEloEvents()
+//        navigateToHome()
+//    }
     LaunchedEffect(Unit) {
         EloService.listenForEloEvents()
         EloService.getElo(authViewModel.getUserId())
@@ -59,9 +66,19 @@ fun RankingsPage(
             Text(text = stringResource(R.string.rank), modifier = Modifier.weight(1f))
             Text(text = stringResource(R.string.username), modifier = Modifier.weight(2f))
             Text(text = stringResource(R.string.elo), modifier = Modifier.weight(1f))
-            Button(onClick = {quitRankingsPage()}) {
-                Text(text = stringResource(R.string.home_page))
-            }
+            MenuButton(
+                modifier = Modifier,
+                navigateToHome,
+                navigateToCreate,
+                navigateToUserEdit,
+                navigateToFriendsPage,
+                navigateToJoinRoom,
+                navigateToRankingsPage,
+                signOut = {
+                    authViewModel.signOut()
+                    navigateToLogin()
+                }
+            )
         }
         HorizontalDivider()
 
