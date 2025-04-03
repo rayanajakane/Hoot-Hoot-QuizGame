@@ -17,6 +17,7 @@ import {
 } from '@app/constants/match-mocks';
 import { MatchGateway } from '@app/gateways/match/match.gateway';
 import { Player } from '@app/model/schema/player.schema';
+import { EloService } from '@app/services/elo/elo.service';
 import { FriendsService } from '@app/services/friends/friends.service';
 import { HistoryService } from '@app/services/history/history.service';
 // import { HistogramService } from '@app/services/histogram/histogram.service';
@@ -50,6 +51,7 @@ describe('MatchGateway', () => {
     let server: SinonStubbedInstance<Server>;
     let eventEmitter: EventEmitter2;
     let historySpy: SinonStubbedInstance<HistoryService>;
+    let eloSpy: SinonStubbedInstance<EloService>;
 
     beforeEach(async () => {
         // histogramSpy = createStubInstance(HistogramService);
@@ -64,6 +66,7 @@ describe('MatchGateway', () => {
         partySpy = createStubInstance(PartyService);
         socket = createStubInstance<Socket>(Socket);
         server = createStubInstance<Server>(Server);
+        eloSpy = createStubInstance(EloService);
 
         const module: TestingModule = await Test.createTestingModule({
             providers: [
@@ -77,6 +80,7 @@ describe('MatchGateway', () => {
                 { provide: MoneyService, useValue: moneySpy },
                 { provide: PartyService, useValue: partySpy },
                 { provide: HistoryService, useValue: historySpy },
+                { provide: EloService, useValue: eloSpy },
                 // { provide: HistoryService, useValue: historySpy },
                 EventEmitter2,
             ],
