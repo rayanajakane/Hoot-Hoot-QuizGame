@@ -5,6 +5,7 @@
 @use './styles/luigi.scss' as luigi;
 @use './styles/mario.scss' as mario;
 @use './styles/sonic.scss' as sonic;
+@use './styles/pikachu.scss' as pikachu;
 
 // Plus imports for other components in your app.
 
@@ -32,6 +33,10 @@ $warn-mario: mat.define-palette(mario.$m2-error);
 $primary-sonic: mat.define-palette(sonic.$m2-primary);
 $accent-sonic: mat.define-palette(sonic.$m2-accent, A200, A100, A400);
 $warn-sonic: mat.define-palette(sonic.$m2-error);
+
+$primary-pikachu: mat.define-palette(pikachu.$m2-primary);
+$accent-pikachu: mat.define-palette(pikachu.$m2-accent, A200, A100, A400);
+$warn-pikachu: mat.define-palette(pikachu.$m2-error);
 
 $main-theme: mat.define-light-theme(
     (
@@ -79,6 +84,16 @@ $sonic-theme: mat.define-light-theme(
             primary: $primary-sonic,
             accent: $accent-sonic,
             warn: $warn-sonic,
+        ),
+    )
+);
+
+$pikachu-theme: mat.define-light-theme(
+    (
+        color: (
+            primary: $primary-pikachu,
+            accent: $accent-pikachu,
+            warn: $warn-pikachu,
         ),
     )
 );
@@ -476,6 +491,71 @@ $sonic-theme: mat.define-light-theme(
     .sonic-accent {
         background-color: mat.get-color-from-palette(sonic.$m2-accent, 500);
         color: black;
+    }
+}
+
+.pikachu-theme {
+    @include mat.all-component-themes($pikachu-theme);
+
+    // Pikachu theme custom styles
+    background-color: #fef8e1; // Light yellow
+    color: #3e2723; // Dark brown for contrast
+
+    #header-bar {
+        background-color: mat.get-color-from-palette(pikachu.$m2-primary, 500); // Pikachu yellow
+        color: black;
+    }
+
+    .alert {
+        color: mat.get-color-from-palette(pikachu.$m2-primary, 800); // Darker yellow
+    }
+
+    .own-message {
+        background-color: mat.get-color-from-palette(pikachu.$m2-primary, 500);
+        color: black;
+        border-radius: 1em 1em 0.15em 1em;
+    }
+
+    .friends-section {
+        background: mat.get-color-from-palette(pikachu.$m2-accent, 50); // Light green
+        h3 {
+            color: mat.get-color-from-palette(pikachu.$m2-accent, 900); // Dark green
+        }
+    }
+
+    .clickable-item:hover {
+        background-color: mat.get-color-from-palette(pikachu.$m2-primary, 100); // Light yellow
+    }
+
+    .balance-container {
+        background-color: mat.get-color-from-palette(pikachu.$m2-accent, 100); // Light green
+    }
+
+    .balance-icon {
+        color: mat.get-color-from-palette(pikachu.$m2-accent, 500); // Medium green
+    }
+
+    .balance-text {
+        color: mat.get-color-from-palette(pikachu.$m2-accent, 900); // Dark green
+    }
+
+    .mat-basic {
+        background-color: white;
+        border: 1px solid mat.get-color-from-palette(pikachu.$m2-primary, 300); // Light yellow border
+    }
+
+    .signup-button {
+        background-color: white;
+        border: 1px solid mat.get-color-from-palette(pikachu.$m2-primary, 500); // Pikachu yellow border
+    }
+
+    .card-header-background {
+        background-color: rgba(245, 196, 8, 0.05) !important; // Semi-transparent yellow
+    }
+
+    // Special Pikachu elements
+    .electric-effect {
+        background: linear-gradient(to right, transparent, mat.get-color-from-palette(pikachu.$m2-primary, 100), transparent);
     }
 }
 
