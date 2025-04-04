@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -95,7 +96,7 @@ fun MatchCreationPage(
         ChatComponent(modifier = modifier, authViewModel = authViewModel)
         Box(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxSize().navigationBarsPadding()
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
                 Row(
