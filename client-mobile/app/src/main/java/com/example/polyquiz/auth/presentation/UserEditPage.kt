@@ -425,10 +425,13 @@ fun UserEditPage(
                             TextField(
                                 value = username,
                                 onValueChange = {
-                                    if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.setAndUpdateUsername(
-                                        it,
-                                        context,
-                                    )
+                                    if (it.length <= SIZE_CONSTANTS.MAX_USERNAME_LENGTH) {
+                                        username = it
+                                        authViewModel.updateUsername(
+                                            it,
+                                            context
+                                        )
+                                    }
                                 },
                                 isError = usernameError.isNotEmpty(),
                                 singleLine = true,
