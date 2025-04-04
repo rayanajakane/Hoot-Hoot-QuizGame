@@ -3,6 +3,8 @@ package com.example.polyquiz.match.domain
 data class Game(
     val id: String? ="",
     val originalId: String,
+    val authorId: String,
+    val authorName: String,
     val title: String,
     val description: String,
     val questions: List<Question>? = null,

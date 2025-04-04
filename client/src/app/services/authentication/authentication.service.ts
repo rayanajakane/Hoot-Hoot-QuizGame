@@ -6,12 +6,16 @@ import { Router } from '@angular/router';
 import { PresetAvatar } from '@app/constants/avatar-constants';
 import { AuthError } from '@app/services/authentication/auth-error';
 import { ChatService } from '@app/services/chat/chat.service';
+import { EloService } from '@app/services/elo/elo.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { MoneyService } from '@app/services/money/money.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { ChatEvents } from '@common/events/chat.events';
+import { EloEvents } from '@common/events/elo.events';
 import { FriendsEvents } from '@common/events/friends.events';
+import { GameEvents } from '@common/events/game.events';
+import { UserIdName } from '@common/interfaces/user-id-name';
 import { TranslocoService } from '@jsverse/transloco';
 import { browserSessionPersistence, sendPasswordResetEmail, setPersistence, User, UserCredential } from 'firebase/auth';
 import { Database, DataSnapshot, get, getDatabase, onDisconnect, ref, remove, set, update } from 'firebase/database';
@@ -38,6 +42,7 @@ export class AuthenticationService {
         private matchRoomService: MatchRoomService,
         private readonly moneyService: MoneyService,
         private auth: Auth,
+        private readonly eloService: EloService,
     ) {
         setPersistence(this.auth, browserSessionPersistence);
 
@@ -155,6 +160,13 @@ export class AuthenticationService {
         }
         if (isValidUsername && isValidAvatarUrl) {
             this.socketHandler.send(FriendsEvents.UpdateData);
+            console.log('Sending...');
+            const userIdName: UserIdName = {
+                id: this.userId,
+                name: username,
+            };
+            this.socketHandler.send(GameEvents.UpdateAuthorName, userIdName);
+            console.log('Sent');
             this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.edited'));
         }
     }
@@ -261,6 +273,7 @@ export class AuthenticationService {
             this.chatService.handleRoomEmoji();
             this.moneyService.getCurrentBalance(this.userId);
             this.moneyService.listenForMoneyEvents();
+            this.eloService.onReturnElo();
         }
     }
 
@@ -270,6 +283,7 @@ export class AuthenticationService {
         this.socketHandler.socket.removeListener(ChatEvents.NewMessage);
         this.chatService.clearMessages();
         this.moneyService.stopListeningForMoneyEvents();
+        this.socketHandler.socket.removeListener(EloEvents.ReturnElo);
     }
 
     signOut() {

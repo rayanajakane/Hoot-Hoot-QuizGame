@@ -3,6 +3,7 @@ package com.example.polyquiz
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -14,6 +15,8 @@ import com.example.polyquiz.auth.presentation.SignupPage
 import com.example.polyquiz.auth.presentation.UserEditPage
 import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.Route
+import com.example.polyquiz.elo.presentation.RankingsPage
+import com.example.polyquiz.core.avatarDrawing.DrawingScreen
 import com.example.polyquiz.match.domain.AnswerService
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
@@ -24,9 +27,9 @@ import com.example.polyquiz.pages.presentation.JoinMatchPage
 import com.example.polyquiz.pages.presentation.MatchCreationPage
 import com.example.polyquiz.pages.presentation.WaitPage
 import com.example.polyquiz.friends.presentation.FriendsSearchScreen
-import com.example.polyquiz.money.domain.MoneyService
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.ui.features.camera.MainCameraScreen
+import com.plcoding.drawinginjetpackcompose.DrawingViewModel
 import com.example.polyquiz.ui.theme.Theme
 
 // References: https://youtu.be/AIC_OFQ1r3k  and  https://youtu.be/lv1raAvwcgI
@@ -126,39 +129,71 @@ fun Navigation(
                 },
                 navigateToFriendsPage = {
                     navController.navigate(Route.FriendsSearchScreen)
+                },
+                navigateToRankingsPage = {
+                    navController.navigate(Route.RankingsPage)
                 }
             )
         }
         composable<Route.MatchCreation> {
             MatchCreationPage(
                 modifier,
-                navigateToLogin = {
-                    navController.navigate(Route.Login)
-                },
+                authViewModel = authViewModel,
                 navigateToHome = {
                     navController.navigate(Route.Home)
                 },
-                authViewModel = authViewModel,
-                navigateToWaitPage = { navController.navigate(Route.WaitPage) }
+                navigateToCreate = {
+                    navController.navigate(Route.MatchCreation)
+                },
+                navigateToUserEdit = {
+                    navController.navigate(Route.UserEditPage)
+                },
+                navigateToWaitPage = {
+                    navController.navigate(Route.WaitPage)
+                },
+                navigateToFriendsPage = {
+                    navController.navigate(Route.FriendsSearchScreen)
+                },
+                navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
+                navigateToLogin = { navController.navigate(Route.Login) },
+                navigateToRankingsPage = { navController.navigate(Route.RankingsPage) }
             )
         }
         composable<Route.ResultsPage> {
             ResultsPage(
+                authViewModel,
                 matchRoomService = MatchRoomService,
                 navigateToHome = { navController.navigate(Route.Home) },
-                players,
-                modifier,
-                extraContent = {}
+                extraContent = {},
+                matchContextService = MatchContextService,
+                players = players,
+                modifier = modifier
             )
         }
 
         composable<Route.JoinMatchPage> {
             JoinMatchPage(
-                modifier,
-                authViewModel,
-                navigateToHome = { navController.navigate(Route.Home) },
+                modifier = modifier,
+                authViewModel = authViewModel,
+                navigateToHome = {
+                    navController.navigate(Route.Home)
+                },
+                navigateToCreate = {
+                    navController.navigate(Route.MatchCreation)
+                },
+                navigateToUserEdit = {
+                    navController.navigate(Route.UserEditPage)
+                },
+                navigateToWaitPage = {
+                    navController.navigate(Route.WaitPage)
+                },
+                navigateToFriendsPage = {
+                    navController.navigate(Route.FriendsSearchScreen)
+                },
+                navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
                 navigateToMatchPage = { navController.navigate(Route.MatchRoom) },
-                navigateToWaitPage = { navController.navigate(Route.WaitPage) }
+                navigateToLogin = { navController.navigate(Route.Login) },
+                navigateToRankingsPage = { navController.navigate(Route.RankingsPage) }
             )
         }
 
@@ -188,20 +223,33 @@ fun Navigation(
         composable<Route.UserEditPage> {
             UserEditPage(
                 modifier = modifier,
+                context = context,
+                authViewModel = authViewModel,
+                cameraViewModel = cameraViewModel,
+                currentTheme = currentTheme,
+                onThemeUpdated = onThemeUpdated,
                 navigateToHome = {
                     navController.navigate(Route.Home)
+                },
+                navigateToCreate = {
+                    navController.navigate(Route.MatchCreation)
+                },
+                navigateToUserEdit = {
+                    navController.navigate(Route.UserEditPage)
+                },
+                navigateToFriendsPage = {
+                    navController.navigate(Route.FriendsSearchScreen)
+                },
+                navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
+                navigateToLogin = {
+                    navController.navigate(Route.Login)
                 },
                 navigateToCamera = {
                     navController.navigate(Route.MainCameraScreen)
                 },
-                navigateToLogin = {
-                    navController.navigate(Route.Login)
-                },
-                authViewModel = authViewModel,
-                context = context,
-                cameraViewModel = cameraViewModel,
-                currentTheme = currentTheme,
-                onThemeUpdated = onThemeUpdated
+                navigateToRankingsPage = {
+                    navController.navigate(Route.RankingsPage)
+                }
             )
         }
         composable<Route.FriendsSearchScreen> {
@@ -218,6 +266,39 @@ fun Navigation(
                 cameraViewModel,
                 navigateToUserEdit = { navController.navigate(Route.UserEditPage) },
                 navigateToSignup = { navController.navigate(Route.Signup) }
+            )
+        }
+
+        composable<Route.RankingsPage> {
+            RankingsPage(
+                modifier = modifier,
+                authViewModel = authViewModel,
+                navigateToHome = {
+                    navController.navigate(Route.Home)
+                },
+                navigateToCreate = {
+                    navController.navigate(Route.MatchCreation)
+                },
+                navigateToUserEdit = {
+                    navController.navigate(Route.UserEditPage)
+                },
+                navigateToFriendsPage = {
+                    navController.navigate(Route.FriendsSearchScreen)
+                },
+                navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
+                navigateToLogin = { navController.navigate(Route.Login) },
+                navigateToRankingsPage = { navController.navigate(Route.RankingsPage) }
+            )
+        }
+        composable<Route.Drawing> {
+
+             val viewModel: DrawingViewModel = viewModel() // If not using Hilt
+
+            DrawingScreen(
+                viewModel = viewModel,
+                navigateToUserEdit = { navController.navigate(Route.UserEditPage) },
+                uid = authViewModel.getUserId(),
+                cameraViewModel = cameraViewModel
             )
         }
     }

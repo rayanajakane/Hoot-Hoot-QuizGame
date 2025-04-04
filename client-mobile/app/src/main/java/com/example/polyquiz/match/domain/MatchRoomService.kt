@@ -1,4 +1,5 @@
 package com.example.polyquiz.match.domain
+import StringValue
 import android.annotation.SuppressLint
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.constants.MatchEvents
@@ -12,15 +13,17 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.res.stringResource
+import com.example.polyquiz.R
 import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.constants.ChatEvents
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import com.example.polyquiz.constants.Route
+import com.example.polyquiz.elo.domain.EloService
 
 @SuppressLint("StaticFieldLeak")
 object MatchRoomService {
-    var navController : NavController? = null
     var players by mutableStateOf<List<Player>>(emptyList())
     var messages by mutableStateOf<List<Message>>(emptyList())
     var isMatchStarted by mutableStateOf(false)
@@ -45,8 +48,11 @@ object MatchRoomService {
     var hostId by mutableStateOf("")
     var errorMsg by mutableStateOf("")
 
-    private var matchRoomCode: String = ""
+//    private var matchRoomCode: String = ""
     private var hasEnteredRoom = false
+
+    private val _matchRoomCode = MutableStateFlow("")
+    val matchRoomCode: StateFlow<String> get() = _matchRoomCode
 
      val socket = SocketHandler.getSocket()
 
@@ -55,7 +61,7 @@ object MatchRoomService {
     val socketId: String
         get() = socket.id() ?: ""
 
-    fun getRoomCode(): String = matchRoomCode
+    fun getRoomCode(): String = _matchRoomCode.value
     fun retrieveUsername(): String = username
 
     fun connect() {
@@ -96,6 +102,7 @@ object MatchRoomService {
         hostId=""
         timeToGoToWaitPage = false
         hasBeenKickedOut = true
+        resetMatchValues()
         Log.d("Disconnect from room WaitPage","Called disconnectFromRoom, hostId=$hostId" )
         isTimeToNavigateToResults= false
     }
@@ -117,12 +124,12 @@ object MatchRoomService {
         socket.emit(MatchEvents.CREATE_ROOM.value, data, Ack { args ->
             if (args.isNotEmpty()) {
                 val response = args[0] as JSONObject
-                matchRoomCode = response.getString("code")
+                _matchRoomCode.value = response.getString("code")
                 username = hostUsername
                 userId = hostId
                 partyConfig = partyConfigs
                 this.hostId = hostId
-                sendPlayersData(matchRoomCode)
+                sendPlayersData(_matchRoomCode.value)
             }
         })
     }
@@ -142,7 +149,7 @@ object MatchRoomService {
             if (args.isNotEmpty()) {
                 ChatService.handleRoomMessage()
                 val response = args[0] as JSONObject
-                matchRoomCode = response.getString("code")
+                _matchRoomCode.value = response.getString("code")
                 this.username = response.getString("username")
                 this.userId = response.getString("userId")
                 sendPlayersData(roomCode)
@@ -177,7 +184,7 @@ object MatchRoomService {
 
     fun startMatch() {
         isMatchStarted = true
-        socket.emit(MatchEvents.START_MATCH.value, matchRoomCode)
+        socket.emit(MatchEvents.START_MATCH.value, matchRoomCode.value)
     }
 
     fun onMatchStarted() {
@@ -212,7 +219,7 @@ object MatchRoomService {
     }
 
     fun goToNextQuestion() {
-        socket.emit(MatchEvents.GO_TO_NEXT_QUESTION.value, matchRoomCode)
+        socket.emit(MatchEvents.GO_TO_NEXT_QUESTION.value, matchRoomCode.value)
     }
 
     fun onStartCooldown() {
@@ -220,7 +227,7 @@ object MatchRoomService {
             isCooldown = true
             val context = MatchContextService.getContext()
             if (isCooldown && context != MatchContext.TESTPAGE && context != MatchContext.RANDOMMODE) {
-                currentQuestion?.text = MatchStatus.PREPARE.value
+                currentQuestion?.text = StringValue.StringResource(R.string.prepare).toString()
             }
         }
     }
@@ -265,7 +272,7 @@ object MatchRoomService {
     }
 
     fun resetMatchValues() {
-        matchRoomCode = ""
+        _matchRoomCode.value = ""
         username = ""
         players = emptyList()
         messages = emptyList()
@@ -276,11 +283,8 @@ object MatchRoomService {
     }
 
     fun routeToResultsPage() {
-        socket.emit(MatchEvents.ROUTE_TO_RESULTS_PAGE.value, matchRoomCode)
+        socket.emit(MatchEvents.ROUTE_TO_RESULTS_PAGE.value, matchRoomCode.value)
     }
-//    private fun navigateToResultsPage() {
-//        navController?.navigate(Route.ResultsPage)
-//    }
 
     fun onRouteToResultsPage() {
         socket.on(MatchEvents.ROUTE_TO_RESULTS_PAGE.value) { _ ->
@@ -300,7 +304,7 @@ object MatchRoomService {
     }
 
     fun toggleLock() {
-        socket.emit(MatchEvents.TOGGLE_LOCK.value, matchRoomCode)
+        socket.emit(MatchEvents.TOGGLE_LOCK.value, matchRoomCode.value)
         isLocked = !isLocked
     }
 }

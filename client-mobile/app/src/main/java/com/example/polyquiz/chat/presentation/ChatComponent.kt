@@ -1,5 +1,6 @@
 package com.example.polyquiz.chat.presentation
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -44,12 +46,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -67,22 +71,35 @@ import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.constants.SIZE_CONSTANTS
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
 fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
-    val username by remember { mutableStateOf(authViewModel.getUsername() )}
-    val userId by remember { mutableStateOf(authViewModel.getUserId() )}
+    val username by remember { mutableStateOf(authViewModel.getUsername()) }
+    val userId by remember { mutableStateOf(authViewModel.getUserId()) }
+    val roomCode by MatchRoomService.matchRoomCode.collectAsState()
+    val avatarURL by remember { mutableStateOf(authViewModel.getAvatarURL())}
 //    var selectedChat by remember { mutableStateOf("General") }
     var selectedChat by remember {
-        mutableStateOf(if (MatchRoomService.getRoomCode().isNotEmpty()) "Match" else "General")
+        mutableStateOf(if (roomCode.isNotEmpty()) "Match" else "General")
     }
+    val coroutineScope = rememberCoroutineScope()
+    Log.d("Chat", "roomcode not empty: ${roomCode.isNotEmpty()}")
     LaunchedEffect(selectedChat) {
         if (selectedChat == "Match") {
             ChatService.channel = ChatChannel.ROOM.value
         } else {
             ChatService.channel = ChatChannel.GENERAL.value
+        }
+    }
+
+    LaunchedEffect(roomCode) {
+        selectedChat = if (roomCode.isNotEmpty()) {
+            "Match"
+        } else {
+            "General"
         }
     }
 
@@ -96,7 +113,10 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     LaunchedEffect(messages?.size) {
         messages?.let { list ->
             if (list.isNotEmpty()) {
-                listState.scrollToItem(list.size - 1)
+                coroutineScope.launch {
+                    Log.d("chat", "list not empty, SCROLL. list size : ${list.size}")
+                    listState.scrollToItem(list.size - 1)
+                }
             }
         }
     }
@@ -106,19 +126,30 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         ),
         shape = RoundedCornerShape(0.dp),
-        modifier = Modifier.size(width = 300.dp, height = 1000.dp).fillMaxHeight().imePadding()
+        modifier = Modifier
+            .size(width = 300.dp, height = 1000.dp)
+            .fillMaxHeight()
+            .imePadding()
+            .statusBarsPadding()
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceAround,
         ) {
-            Text(text = username, fontSize = 30.sp, fontWeight = FontWeight(800), modifier = Modifier.padding(20.dp, 20.dp, 20.dp, 0.dp))
+            Text(
+                text = username,
+                fontSize = 30.sp,
+                fontWeight = FontWeight(800),
+                modifier = Modifier.padding(20.dp, 20.dp, 20.dp, 0.dp)
+            )
             ChatSelectionMenu(selectedChat) { newChat -> selectedChat = newChat }
             // REFERENCE: https://youtu.be/P3xQdINdrWY
             // To handle the situation where there would be no message to display.
             messages?.let {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
-                    modifier = Modifier.weight(1f).padding(20.dp, 20.dp, 20.dp, 0.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(20.dp, 20.dp, 20.dp, 0.dp),
                 ) {
                     itemsIndexed(it) { _: Int, message: Message ->
                         MessageContainer(message, userId, username)
@@ -126,14 +157,20 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                 }
             } ?: LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
-                modifier = Modifier.weight(1f).padding(20.dp, 20.dp, 20.dp, 0.dp)
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(20.dp, 20.dp, 20.dp, 0.dp)
             ) {
 
             }
             TextField(
-                modifier = Modifier.fillMaxWidth().padding(0.dp, 10.dp, 0.dp, 70.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(0.dp, 10.dp, 0.dp, 70.dp),
                 value = newMessageText,
-                onValueChange = { if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) newMessageText = it },
+                onValueChange = {
+                    if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) newMessageText = it
+                },
                 label = { Text(text = stringResource(R.string.message_label)) },
                 singleLine = true,
                 shape = RoundedCornerShape(0.dp),
@@ -144,22 +181,21 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                 keyboardActions = KeyboardActions(onDone = {
                     // TODO: Change to actual user avatar
                     if (selectedChat == "General") {
-                        ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, null)
+                        ChatService.sendMessage(newMessageText, userId, username, avatarURL, null)
                     }
                     else {
-                        ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, MatchRoomService.getRoomCode())
+                        ChatService.sendMessage(newMessageText, userId, username, avatarURL, MatchRoomService.getRoomCode())
                     }
                     newMessageText = ""
                 }),
                 trailingIcon = {
                     val image = Icons.AutoMirrored.Filled.Send;
                     IconButton(onClick = {
-                        // TODO: Change to actual user avatar
                         if (selectedChat == "General") {
-                            ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, null)
+                            ChatService.sendMessage(newMessageText, userId, username, avatarURL, null)
                         }
                         else {
-                            ChatService.sendMessage(newMessageText, userId, username, PresetAvatar.DEFAULT.value, MatchRoomService.getRoomCode())
+                            ChatService.sendMessage(newMessageText, userId, username, avatarURL, MatchRoomService.getRoomCode())
                         }
                         newMessageText = ""
                     }) {
@@ -182,11 +218,21 @@ fun MessageContainer(message: Message, currentUserId: String, username: String) 
     if (message.authorId != currentUserId) {
         containerColor = MaterialTheme.colorScheme.surfaceBright
         containerAlignment = Alignment.Start
-        containerCorner = RoundedCornerShape(topStart=10.dp, topEnd=10.dp, bottomEnd=10.dp, bottomStart=0.dp)
+        containerCorner = RoundedCornerShape(
+            topStart = 10.dp,
+            topEnd = 10.dp,
+            bottomEnd = 10.dp,
+            bottomStart = 0.dp
+        )
     } else {
         containerColor = MaterialTheme.colorScheme.primary
         containerAlignment = Alignment.End
-        containerCorner = RoundedCornerShape(topStart=10.dp, topEnd=10.dp, bottomEnd=0.dp, bottomStart=10.dp)
+        containerCorner = RoundedCornerShape(
+            topStart = 10.dp,
+            topEnd = 10.dp,
+            bottomEnd = 0.dp,
+            bottomStart = 10.dp
+        )
     }
     Column(
         horizontalAlignment = containerAlignment,
@@ -197,16 +243,23 @@ fun MessageContainer(message: Message, currentUserId: String, username: String) 
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.width(containerWidth)
             ) {
-                if(message.authorId != currentUserId) {
+                if (message.authorId != currentUserId) {
                     AvatarImage(message.photoUrl)
                 }
                 Text(text = message.authorUsername, fontWeight = FontWeight(600))
-                Text(text = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(message.date).toString())
-                if(message.authorId == currentUserId) {
+                Text(
+                    text = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(message.date)
+                        .toString()
+                )
+                if (message.authorId == currentUserId) {
                     AvatarImage(message.photoUrl)
                 }
             }
-            Column(modifier = Modifier.padding(top = 10.dp).align(alignment = AbsoluteAlignment.Left)) {
+            Column(
+                modifier = Modifier
+                    .padding(top = 10.dp)
+                    .align(alignment = AbsoluteAlignment.Left)
+            ) {
                 Card(
                     colors = CardDefaults.cardColors(containerColor = containerColor),
                     shape = containerCorner,
@@ -214,13 +267,17 @@ fun MessageContainer(message: Message, currentUserId: String, username: String) 
                 ) {
                     Text(text = message.text, modifier = Modifier.padding(10.dp))
                 }
-                ReactionsRow(message, currentUserId, username, MatchRoomService.getRoomCode(), modifier = Modifier.align(alignment = AbsoluteAlignment.Left))
+                ReactionsRow(
+                    message,
+                    currentUserId,
+                    username,
+                    MatchRoomService.getRoomCode(),
+                    modifier = Modifier.align(alignment = AbsoluteAlignment.Left)
+                )
             }
         }
     }
 }
-
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -244,7 +301,7 @@ fun ChatSelectionMenu(selectedChat: String, onChatSelected: (String) -> Unit) {
             onValueChange = { },
             label = { Text("Option") },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier.menuAnchor()
+            modifier = Modifier.menuAnchor().fillMaxWidth()
         )
 
         ExposedDropdownMenu(
@@ -253,44 +310,45 @@ fun ChatSelectionMenu(selectedChat: String, onChatSelected: (String) -> Unit) {
         ) {
             options.forEach { selectionOption ->
                 val isSelected = selectedChat == selectionOption
+                val roomCode by MatchRoomService.matchRoomCode.collectAsState()
                 val isMatchRoomAvailable = MatchRoomService.getRoomCode().isNotEmpty()
 
                 // Enable Match only if the room is available, but still show it if selected
-                val isOptionDisabled = selectionOption == "Match" && !isMatchRoomAvailable && !isSelected
-
-                DropdownMenuItem(
-                    text = {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                text = selectionOption,
-                                color = if (isOptionDisabled) Color.Gray else LocalContentColor.current
-                            )
-                            if (isSelected) {
-                                Spacer(Modifier.width(8.dp))
-                                Icon(
-                                    imageVector = Icons.Default.Check,
-                                    contentDescription = "Selected",
-                                    tint = LocalContentColor.current
+                val isOptionDisabled =
+                    selectionOption == "Match" && roomCode.isEmpty() && !isSelected
+                if (!isOptionDisabled) {
+                    DropdownMenuItem(
+                        text = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = selectionOption,
+                                    color = if (isOptionDisabled) Color.Gray else LocalContentColor.current
                                 )
+                                if (isSelected) {
+                                    Spacer(Modifier.width(8.dp))
+                                    Icon(
+                                        imageVector = Icons.Default.Check,
+                                        contentDescription = "Selected",
+                                        tint = LocalContentColor.current
+                                    )
+                                }
                             }
-                        }
-                    },
-                    onClick = {
-                        if (!isOptionDisabled) {
+                        },
+                        onClick = {
+
                             onChatSelected(selectionOption)
                             expanded = false
-                        }
-                        ChatService.channel = selectionOption
-                    },
-                    enabled = !isOptionDisabled,
-                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                )
+
+                            ChatService.channel = selectionOption
+                        },
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                    )
+                }
+
             }
         }
     }
 }
-
-
 
 
 @Composable
@@ -298,12 +356,20 @@ fun AvatarImage(photoUrl: String?) {
     Image(
         painter = rememberAsyncImagePainter(photoUrl ?: PresetAvatar.DEFAULT.value),
         contentDescription = "User Avatar",
-        modifier = Modifier.size(40.dp).clip(CircleShape)
+        modifier = Modifier
+            .size(40.dp)
+            .clip(CircleShape)
     )
 }
 
 @Composable
-fun ReactionsRow(message: Message, userId: String, username: String, roomCode: String?, modifier: Modifier) {
+fun ReactionsRow(
+    message: Message,
+    userId: String,
+    username: String,
+    roomCode: String?,
+    modifier: Modifier
+) {
     Row(
         modifier = Modifier.padding(top = 1.dp),
         horizontalArrangement = Arrangement.Absolute.Left,
