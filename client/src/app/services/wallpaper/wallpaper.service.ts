@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
-import { Database, get, getDatabase, ref, set } from 'firebase/database';
+import { get, ref, set } from 'firebase/database';
 import { BehaviorSubject } from 'rxjs';
 
 export enum Wallpaper {
@@ -15,11 +15,9 @@ export enum Wallpaper {
     providedIn: 'root',
 })
 export class WallpaperService {
-    private database: Database;
     private _currentWallpaper = new BehaviorSubject<string>(Wallpaper.None);
 
     constructor(private authService: AuthenticationService) {
-        this.database = getDatabase();
         this.loadCurrentWallpaper();
     }
 
@@ -35,7 +33,7 @@ export class WallpaperService {
         const userId = this.authService.userId;
         if (!userId) return;
 
-        const wallpaperRef = ref(this.database, `users/${userId}/currentWallpaper`);
+        const wallpaperRef = ref(this.authService.database, `users/${userId}/currentWallpaper`);
         const snapshot = await get(wallpaperRef);
 
         if (snapshot.exists()) {
@@ -49,7 +47,7 @@ export class WallpaperService {
         const userId = this.authService.userId;
         if (!userId) return;
 
-        const wallpaperRef = ref(this.database, `users/${userId}/currentWallpaper`);
+        const wallpaperRef = ref(this.authService.database, `users/${userId}/currentWallpaper`);
         await set(wallpaperRef, wallpaper);
         this._currentWallpaper.next(wallpaper);
     }
@@ -58,7 +56,7 @@ export class WallpaperService {
         const userId = this.authService.userId;
         if (!userId) return [];
 
-        const wallpapersRef = ref(this.database, `users/${userId}/purchasedWallpapers`);
+        const wallpapersRef = ref(this.authService.database, `users/${userId}/purchasedWallpapers`);
         const snapshot = await get(wallpapersRef);
         return snapshot.exists() ? Object.keys(snapshot.val()) : [];
     }
@@ -67,7 +65,7 @@ export class WallpaperService {
         const userId = this.authService.userId;
         if (!userId) return;
 
-        const wallpaperRef = ref(this.database, `users/${userId}/purchasedWallpapers/${wallpaperId}`);
+        const wallpaperRef = ref(this.authService.database, `users/${userId}/purchasedWallpapers/${wallpaperId}`);
         await set(wallpaperRef, true);
     }
 
