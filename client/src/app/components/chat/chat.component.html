@@ -1,4 +1,15 @@
-<div id="main-chat-container">
+<div
+    id="main-chat-container"
+    [ngStyle]="
+        hasBackground()
+            ? {
+                  'background-image': 'linear-gradient(rgba(255, 255, 255, 0.70), rgba(255, 255, 255, 0.70)), url(' + currentWallpaper + ')',
+                  'background-size': 'cover',
+                  'background-position': 'center'
+              }
+            : {}
+    "
+>
     <div class="header-row">
         <h2 id="header-title">{{ this.authenticationService.userDisplayName }}</h2>
         <div id="channel-field-container">
@@ -14,19 +25,7 @@
         </div>
     </div>
 
-    <div
-        id="messages-container"
-        #messagesContainer
-        [ngStyle]="
-            hasBackground()
-                ? {
-                      'background-image': 'linear-gradient(rgba(255, 255, 255, 0.70), rgba(255, 255, 255, 0.70)), url(' + currentWallpaper + ')',
-                      'background-size': 'cover',
-                      'background-position': 'center'
-                  }
-                : {}
-        "
-    >
+    <div id="messages-container" #messagesContainer>
         <div
             *ngFor="let message of this.messages"
             class="message-container"
