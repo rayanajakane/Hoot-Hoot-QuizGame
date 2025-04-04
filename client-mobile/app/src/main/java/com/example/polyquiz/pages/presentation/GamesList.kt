@@ -240,32 +240,32 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
             } else {
                 item {
                     Column(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.weight(1f)
                     ) {
                         Text(
                             text = "Search Games",
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
 
-                        OutlinedTextField(
-                            value = titleQuery,
-                            onValueChange = { titleQuery = it },
-                            label = { Text("Title") },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 8.dp),
-                            singleLine = true
-                        )
-
-                        OutlinedTextField(
-                            value = authorQuery,
-                            onValueChange = { authorQuery = it },
-                            label = { Text("Author") },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true
-                        )
+                        Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+                            OutlinedTextField(
+                                value = titleQuery,
+                                onValueChange = { titleQuery = it },
+                                label = { Text("Title") },
+                                modifier = Modifier
+                                    .weight(0.5f)
+                                    .padding(bottom = 8.dp),
+                                singleLine = true
+                            )
+                            OutlinedTextField(
+                                value = authorQuery,
+                                onValueChange = { authorQuery = it },
+                                label = { Text("Author") },
+                                modifier = Modifier.weight(0.5f),
+                                singleLine = true
+                            )
+                        }
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
@@ -320,7 +320,9 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
         Card(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
-                .navigationBarsPadding().weight(1f).fillMaxHeight()
+                .navigationBarsPadding()
+                .weight(1f)
+                .fillMaxHeight()
         ) {
             Column(
                 modifier = Modifier.padding(16.dp)
