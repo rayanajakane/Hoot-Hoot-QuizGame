@@ -8,5 +8,7 @@ export enum MoneyEvents {
     AvatarBought = 'avatarBought',
     BuyTheme = 'buyTheme',
     ThemeBought = 'themeBought',
+    BuyWallpaper = 'buyWallpaper',
+    WallpaperBought = 'wallpaperBought',
     Error = 'error',
 }

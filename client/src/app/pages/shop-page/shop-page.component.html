@@ -2,7 +2,9 @@
     <div class="nav">
         <h1>{{ 'main-page.shop' | transloco }}</h1>
     </div>
-
+    <div>
+        <h1>{{ t('avatar-items') }}</h1>
+    </div>
     <div class="items-grid">
         <mat-card *ngFor="let item of avatarItems" class="shop-item">
             <img [src]="item.imageUrl" [alt]="'Avatar ' + item.id" class="avatar-preview" />
@@ -22,7 +24,9 @@
             </div>
         </mat-card>
     </div>
-
+    <div>
+        <h1>{{ t('theme-items') }}</h1>
+    </div>
     <div class="items-grid">
         <mat-card *ngFor="let item of themeItems" class="shop-item">
             <img [src]="item.imageUrl" [alt]="'Theme ' + item.id" class="avatar-preview" />
@@ -32,6 +36,28 @@
                     mat-raised-button
                     color="primary"
                     (click)="buyTheme(item)"
+                    [disabled]="item.owned || moneyService.currentBalance < item.price"
+                >
+                    {{ item.owned ? t('owned') : t('buy') }}
+                </button>
+                <span *ngIf="moneyService.currentBalance < item.price && !item.owned" class="error-message">
+                    {{ t('insufficient-funds') }}
+                </span>
+            </div>
+        </mat-card>
+    </div>
+    <div>
+        <h1>{{ t('wallpaper-items') }}</h1>
+    </div>
+    <div class="items-grid">
+        <mat-card *ngFor="let item of wallpaperItems" class="shop-item">
+            <img [src]="item.imageUrl" [alt]="'Wallpaper ' + item.id" class="avatar-preview" />
+            <div class="item-details">
+                <span class="price">{{ item.price }}$</span>
+                <button
+                    mat-raised-button
+                    color="primary"
+                    (click)="buyWallpaper(item)"
                     [disabled]="item.owned || moneyService.currentBalance < item.price"
                 >
                     {{ item.owned ? t('owned') : t('buy') }}
