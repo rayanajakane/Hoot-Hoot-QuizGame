@@ -260,9 +260,12 @@ export class MatchRoomService {
     }
 
     goToVoting(){
-        if(!this.isCooldown && this.isCheaterMode){
-            this.voteOnCheater();
-        }
+        this.socketService.on(AnswerEvents.EndGame, () => {
+            console.log("End gamew");
+            if(!this.isCooldown && this.isCheaterMode){
+                this.voteOnCheater();
+             }
+        });
     }
 
     goToNextQuestion() {
@@ -292,6 +295,9 @@ export class MatchRoomService {
             console.log(data);
         });
     }
+
+ 
+
 
     onStartCooldown() {
         this.socketService.on(MatchEvents.StartCooldown, () => {
