@@ -64,6 +64,8 @@
         "mario-theme": "Mario theme",
         "sonic-theme": "Sonic theme",
         "pikachu-theme": "Pikachu theme",
+        "chat-wallpapers": "Chat wallpapers",
+        "no-background": "No background",
         "fr": "French",
         "en": "English"
     },
@@ -178,7 +180,10 @@
         "owned": "✅ Owned",
         "buy": "Buy",
         "insufficient-funds": "Insufficient funds",
-        "buy-successfully": "Bought successfully!"
+        "buy-successfully": "Bought successfully!",
+        "avatar-items": "Avatar",
+        "theme-items": "Themes",
+        "wallpaper-items": "Chat Wallpapers"
     },
     "friends-search": {
         "search-friend": "Search Friend",

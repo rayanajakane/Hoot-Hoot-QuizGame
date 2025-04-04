@@ -64,6 +64,8 @@
         "mario-theme": "Thème Mario",
         "sonic-theme": "Thème Sonic",
         "pikachu-theme": "Thème Pikachu",
+        "chat-wallpapers": "Arrière-plans de clavardage",
+        "no-background": "Aucun arrière-plan",
         "fr": "Français",
         "en": "Anglais"
     },
@@ -176,7 +178,10 @@
         "owned": "✅ Possédé",
         "buy": "Acheter",
         "insufficient-funds": "Fonds insuffisants",
-        "buy-successfully": "Acheté avec succès!"
+        "buy-successfully": "Acheté avec succès!",
+        "avatar-items": "Avatars",
+        "theme-items": "Thèmes",
+        "wallpaper-items": "Arrière-plans de clavardage"
     },
     "friends-search": {
         "search-friend": "Rechercher un ami",
