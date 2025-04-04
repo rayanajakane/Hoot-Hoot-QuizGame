@@ -91,8 +91,8 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
         )
     }
 
-    fun sortMostPopularGames(){
-        if (games.size <= N_POPULAR_GAMES){
+    fun sortMostPopularGames() {
+        if (games.size <= N_POPULAR_GAMES) {
             popularGames = games
         }
 
@@ -105,6 +105,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
         }
 
     }
+
     fun fetchGames() {
         gameService.getGames(
             onSuccess = { fetchedGames ->
@@ -115,8 +116,8 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                 sortMostPopularGames()
                 performSearch()
             },
-            onError = {
-                    errorMessage -> println("Error: $errorMessage")
+            onError = { errorMessage ->
+                println("Error: $errorMessage")
             }
         )
     }
@@ -143,37 +144,33 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
         }
     }
 
-    fun loadSelectedGame(currentGame: Game){
-        isLoadingSelectedGame =true
+    fun loadSelectedGame(currentGame: Game) {
+        isLoadingSelectedGame = true
         gameService.getGameById(currentGame.id!!,
-            onSuccess = {
-                response ->
+            onSuccess = { response ->
                 val gson = Gson()
                 val game = gson.fromJson(gson.toJson(response), Game::class.java)
                 selectedGame = game
                 validateGame(selectedGame!!)
-                        },
-            onError = {
-                errorMessage ->
+            },
+            onError = { errorMessage ->
                 println("Error: $errorMessage")
                 fetchGames()
-        })
+            })
     }
 
-    fun reloadSelectedGame(partyConfigs: PartyConfig = PartyConfig(false, false)){
+    fun reloadSelectedGame(partyConfigs: PartyConfig = PartyConfig(false, false)) {
         gameService.getGameById(selectedGame?.id!!,
-            onSuccess = {
-                response ->
+            onSuccess = { response ->
                 val gson = Gson()
                 val game = gson.fromJson(gson.toJson(response), Game::class.java)
                 selectedGame = game
                 revalidateGame(partyConfigs)
                 navigateToWaitPage()
-        }, onError = {
-            errorMessage ->
-            println("Error: $errorMessage")
-            fetchGames()
-        })
+            }, onError = { errorMessage ->
+                println("Error: $errorMessage")
+                fetchGames()
+            })
 
     }
 
@@ -255,7 +252,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                             onValueChange = { titleQuery = it },
                             label = { Text("Title") },
                             modifier = Modifier
-                                .fillMaxWidth(0.42f)
+                                .fillMaxWidth()
                                 .padding(bottom = 8.dp),
                             singleLine = true
                         )
@@ -264,13 +261,13 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                             value = authorQuery,
                             onValueChange = { authorQuery = it },
                             label = { Text("Author") },
-                            modifier = Modifier.fillMaxWidth(0.42f),
+                            modifier = Modifier.fillMaxWidth(),
                             singleLine = true
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Card(
-                        modifier = Modifier.fillMaxWidth(0.42f),
+                        modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
                         elevation = CardDefaults.cardElevation(2.dp)
                     ) {
@@ -296,7 +293,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                     ElevatedButton(
                         onClick = { selectedGame = game },
                         modifier = Modifier
-                            .fillMaxWidth(0.42f)
+                            .fillMaxWidth()
                             .padding(1.dp),
                         shape = RoundedCornerShape(3.dp),
                     ) {
@@ -319,121 +316,122 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                 }
             }
         }
-    }
 
-    Card(
-        modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .fillMaxHeight()
-            .navigationBarsPadding()
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
+        Card(
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .navigationBarsPadding().weight(1f).fillMaxHeight()
         ) {
-            if (selectedGame != null) {
-                loadSelectedGame(selectedGame!!)
-                matchService.currentGame = selectedGame
-                Text(
-                    text = stringResource(R.string.game_title) + selectedGame!!.title,
-                    modifier = Modifier.padding(8.dp),
-                    fontWeight = FontWeight.Bold
-                )
-                Row(modifier = Modifier.padding(8.dp)) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                if (selectedGame != null) {
+                    loadSelectedGame(selectedGame!!)
+                    matchService.currentGame = selectedGame
                     Text(
-                        text = stringResource(R.string.games_description),
+                        text = stringResource(R.string.game_title) + selectedGame!!.title,
+                        modifier = Modifier.padding(8.dp),
                         fontWeight = FontWeight.Bold
                     )
-                    Text(
-                        text = selectedGame!!.description,
-                    )
-                }
+                    Row(modifier = Modifier.padding(8.dp)) {
+                        Text(
+                            text = stringResource(R.string.games_description),
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = selectedGame!!.description,
+                        )
+                    }
 
-                Row(modifier = Modifier.padding(8.dp)) {
+                    Row(modifier = Modifier.padding(8.dp)) {
+                        Text(
+                            text = stringResource(R.string.games_time),
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = "${selectedGame!!.duration} minutes",
+                            fontWeight = FontWeight.Normal
+                        )
+                    }
+
                     Text(
-                        text = stringResource(R.string.games_time),
+                        text = stringResource(R.string.questions),
+                        modifier = Modifier.padding(8.dp),
                         fontWeight = FontWeight.Bold
                     )
-                    Text(
-                        text = "${selectedGame!!.duration} minutes",
-                        fontWeight = FontWeight.Normal
-                    )
-                }
+                    selectedGame!!.questions?.forEachIndexed { index, question ->
+                        Text("${index + 1}. ${question.text}", modifier = Modifier.padding(8.dp))
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                Text(
-                    text = stringResource(R.string.questions),
-                    modifier = Modifier.padding(8.dp),
-                    fontWeight = FontWeight.Bold
-                )
-                selectedGame!!.questions?.forEachIndexed { index, question ->
-                    Text("${index + 1}. ${question.text}", modifier = Modifier.padding(8.dp))
+
+                    Row {
+                        Button(
+                            onClick = {
+                                createMatch(MatchContext.HOSTVIEW)
+                            },
+                            shape = RoundedCornerShape(3.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            ),
+                            modifier = Modifier
+                                .padding(16.dp)
+                        ) {
+                            Text(text = stringResource(R.string.play))
+
+                        }
+                        Button(
+                            onClick = {
+                                showPartyConfigDialog = true
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            ),
+                            shape = RoundedCornerShape(3.dp),
+                            modifier = Modifier
+                                .padding(16.dp)
+                        ) {
+                            Icon(
+                                Icons.Filled.Settings,
+                                contentDescription = stringResource(R.string.custom_match)
+                            )
+                            Text(text = stringResource(R.string.custom_match))
+
+                        }
+
+                    }
+
+
+                } else {
+                    Text(
+                        text = stringResource(R.string.select_game),
+                        modifier = Modifier.padding(8.dp)
+                    )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
+            }
+            if (showPartyConfigDialog) {
+                PartyConfigDialog(
+                    initialPartyConfig = partyConfigs,
+                    onConfirm = { updatedConfigs ->
+                        createMatch(MatchContext.HOSTVIEW, updatedConfigs)
+                        partyConfigs = updatedConfigs
+                        showPartyConfigDialog = false
 
-                Row {
-                    Button(
-                        onClick = {
-                            createMatch(MatchContext.HOSTVIEW)
-                        },
-                        shape = RoundedCornerShape(3.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary
-                        ),
-                        modifier = Modifier
-                            .padding(16.dp)
-                    ) {
-                        Text(text = stringResource(R.string.play))
-
+                    },
+                    onCancel = {
+                        showPartyConfigDialog = false
                     }
-                    Button(
-                        onClick = {
-                            showPartyConfigDialog = true
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary
-                        ),
-                        shape = RoundedCornerShape(3.dp),
-                        modifier = Modifier
-                            .padding(16.dp)
-                    ) {
-                        Icon(
-                            Icons.Filled.Settings,
-                            contentDescription = stringResource(R.string.custom_match)
-                        )
-                        Text(text = stringResource(R.string.custom_match))
-
-                    }
-
-                }
-
-
-            } else {
-                Text(
-                    text = stringResource(R.string.select_game),
-                    modifier = Modifier.padding(8.dp)
                 )
             }
-            Spacer(modifier = Modifier.height(16.dp))
 
         }
-        if (showPartyConfigDialog) {
-            PartyConfigDialog(
-                initialPartyConfig = partyConfigs,
-                onConfirm = { updatedConfigs ->
-                    createMatch(MatchContext.HOSTVIEW, updatedConfigs)
-                    partyConfigs = updatedConfigs
-                    showPartyConfigDialog = false
-
-                },
-                onCancel = {
-                    showPartyConfigDialog = false
-                }
-            )
-        }
-
     }
+
+
 }
 
 
@@ -452,7 +450,7 @@ fun GameCard(game: Game, onClick: () -> Unit = {}) {
             .padding()
             .shadow(4.dp, shape = RectangleShape)
             .width(130.dp)
-            .height(150.dp),
+            .height(155.dp),
         onClick = onClick
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
