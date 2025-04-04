@@ -97,8 +97,8 @@ fun ChoiceButton(
                     }
                 }
             },
-            enabled = answerService.isSelectionEnabled,
             shape = RoundedCornerShape(3.dp),
+            enabled = answerService.isSelectionEnabled,
             colors = ButtonDefaults.buttonColors(
                 containerColor = buttonColor,
                 disabledContainerColor = buttonColor,
