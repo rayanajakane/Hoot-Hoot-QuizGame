@@ -38,6 +38,7 @@ export class MatchRoomService {
     totalVotes: VotingData[] = [{ username: '', numberOfVotes: 0, usersWhoVoted: [] }];
     votesResults: { [username: string]: number };
     partyConfig: PartyConfig;
+    votingUsers: string [] = [];
 
     currentAnswers: string[] = [];
 
@@ -103,6 +104,7 @@ export class MatchRoomService {
             this.onVotingResults();
             this.onCurrentAnswers();
             this.onVoting();
+            this.onUsersWhoVoted();
             this.goToVoting();
         }
     }
@@ -124,6 +126,7 @@ export class MatchRoomService {
         this.socketService.socket.removeListener(MatchEvents.CurrentAnswers);
         this.socketService.socket.removeListener(MatchEvents.VoteOnCheater);
         this.socketService.socket.removeListener(MatchEvents.ShowVotingDialog);
+        this.socketService.socket.removeListener(MatchEvents.SendVotingUsers);
         this.socketService.socket.removeListener(AnswerEvents.EndGame);
         this.socketService.send(MatchEvents.Disconnect);
         this.matchContextService.resetContext();
@@ -256,7 +259,6 @@ export class MatchRoomService {
 
     goToVoting(){
         this.socketService.on(AnswerEvents.EndGame, () => {
-            console.log("End gamew");
             if(!this.isCooldown && this.isCheaterMode){
                 this.voteOnCheater();
              }
@@ -277,9 +279,13 @@ export class MatchRoomService {
         });
     }
 
+    onUsersWhoVoted() {
+        this.socketService.on(MatchEvents.SendVotingUsers, (user:string) => {
+            this.votingUsers.push(user);
+        });
+    }
     onVotingResults() {
-        //const totalVotes = Object.values(this?.votesResults).reduce((total, vote) => total + vote, 0);
-        this.socketService.on(MatchEvents.SendBackVotesResults, (data: { [username: string]: number }) => {
+        this.socketService.on(MatchEvents.SendBackVotesResults, (data: { [username: string]: number } ) => {
             this.votesResults = data;
             let totalVotes = Object.values(this?.votesResults).reduce((total, vote) => total + vote, 0);
             if(totalVotes=== this.players.length){

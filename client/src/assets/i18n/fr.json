@@ -332,6 +332,7 @@
         "cheater": "Tricheur",
         "vote":"Voter" ,
         "voteCheater":"Votez pour le tricheur",
-        "notifyRegularPlayer": "Vous avez le rôle de joueur régulier dans cette partie"
+        "notifyRegularPlayer": "Vous avez le rôle de joueur régulier dans cette partie",
+        "playerVoted": "\"{{player}}\" a voté"
     }
 }

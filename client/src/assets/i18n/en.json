@@ -333,6 +333,7 @@
         "cheater": "Cheater",
         "vote":"Vote",
         "voteCheater":"Vote for the cheater",
-        "notifyRegularPlayer": "You are a regular player"
+        "notifyRegularPlayer": "You are a regular player",
+        "playerVoted": "\"{{player}}\" has voted"
     }
 }
