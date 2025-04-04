@@ -86,8 +86,6 @@
     <string name="join_action">Joindre</string>
     <string name="custom_match">Partie personnalisée</string>
     <string name="my_profile">Mon profil</string>
-    <string name="confirm">Confirmer</string>
-    <string name="cancel">Annuler</string>
     <string name="warning">Avertissement</string>
     <string name="dialog_warning">Cette opération est irréversible. Voulez-vous VRAIMENT supprimer votre compte ?</string>
     <string name="matches_won">"Nombre de parties gagnées  "</string>
@@ -148,4 +146,6 @@
     <string name="username_edit">Veuillez choisir un identifiant</string>
     <string name="confirm">Confirmer</string>
     <string name="cancel">Annuler</string>
+    <string name="regen">Générer d\'autres noms</string>
+    <string name="suggest_names">Suggestions de noms d\'utilisateurs</string>
 </resources>
