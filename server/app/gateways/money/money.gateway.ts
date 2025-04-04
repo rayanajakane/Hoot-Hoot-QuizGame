@@ -86,6 +86,23 @@ export class MoneyGateway {
         client.emit(MoneyEvents.ReturnBalance, await this.moneyService.getCurrentBalance(data.user));
     }
 
+    @SubscribeMessage(MoneyEvents.BuyWallpaper)
+    async buyWallpaper(client: Socket, data: PurchaseInfo) {
+        console.log('Buying wallpaper:', data);
+        if (data.item.owned) {
+            this.sendError(client.id, 'Wallpaper already owned');
+            return;
+        }
+        const moneyErrors = await this.moneyService.getMoneyError(data.user, data.item.price, false);
+        if (moneyErrors) {
+            this.sendError(client.id, moneyErrors);
+            return;
+        }
+        await this.moneyService.updateBalance(data.user, -data.item.price);
+        client.emit(MoneyEvents.WallpaperBought, data.item);
+        client.emit(MoneyEvents.ReturnBalance, await this.moneyService.getCurrentBalance(data.user));
+    }
+
     handleDisconnect(client: Socket) {
         const userId = Array.from(this.userSockets.entries()).find(([, socketId]) => socketId === client.id)?.[0];
         if (userId) this.userSockets.delete(userId);

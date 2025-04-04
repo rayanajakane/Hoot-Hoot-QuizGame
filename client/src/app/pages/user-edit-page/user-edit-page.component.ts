@@ -13,6 +13,7 @@ import { AvatarService } from '@app/services/avatar/avatar.service';
 import { HistoryService } from '@app/services/history/history.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { Theme, ThemeService } from '@app/services/theme/theme.service';
+import { Wallpaper, WallpaperService } from '@app/services/wallpaper/wallpaper.service';
 import { TranslationService } from '@app/translation/translation.service';
 import { UserHistoryInfo } from '@common/interfaces/history-items';
 import { translate, TranslocoService } from '@jsverse/transloco';
@@ -40,6 +41,8 @@ export class UserEditPageComponent implements OnInit {
     availableThemes: Theme[];
     purchasedThemes: Theme[] = [];
     premiumThemes = [Theme.LUIGI, Theme.MARIO, Theme.SONIC, Theme.PIKACHU];
+
+    purchasedWallpapers: { [key: string]: string } = {};
 
     langLabels = {
         ['fr']: translate('page.fr'),
@@ -78,6 +81,7 @@ export class UserEditPageComponent implements OnInit {
         private themeService: ThemeService,
         private historyService: HistoryService,
         private readonly avatarService: AvatarService,
+        private readonly wallpaperService: WallpaperService,
         public dialog: MatDialog,
     ) {
         this.availableLangs = this.translationService.getAllLanguages();
@@ -113,6 +117,14 @@ export class UserEditPageComponent implements OnInit {
         return PremiumAvatar;
     }
 
+    get wallpaper() {
+        return Wallpaper;
+    }
+
+    get currentWallpaper() {
+        return this.wallpaperService.currentWallpaper;
+    }
+
     getThemeLabel(theme: Theme): string {
         return this.themeService.themeLabels[theme];
     }
@@ -137,6 +149,7 @@ export class UserEditPageComponent implements OnInit {
         }
         this.fetchPurchasedAvatars();
         this.fetchPurchasedThemes();
+        this.fetchPurchasedWallpapers();
         this.historyService.getUserHistory(this.currentUser.uid).subscribe({
             next: (userHistory: UserHistoryInfo) => {
                 this.userHistory = userHistory;
@@ -167,6 +180,17 @@ export class UserEditPageComponent implements OnInit {
     async fetchPurchasedThemes() {
         const purchasedThemeIds = await this.themeService.getPurchasedThemes();
         this.purchasedThemes = this.premiumThemes.filter((theme) => purchasedThemeIds.includes(theme.toString()));
+    }
+
+    async fetchPurchasedWallpapers() {
+        const purchasedWallpapers = await this.wallpaperService.getPurchasedWallpapers();
+        this.purchasedWallpapers = {
+            // eslint-disable-next-line quote-props, @typescript-eslint/naming-convention
+            None: Wallpaper.None,
+            ...Object.entries(Wallpaper)
+                .filter(([key]) => key !== 'None' && purchasedWallpapers.includes(key))
+                .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {}),
+        };
     }
 
     getAvatarState(avatar: string): AvatarState {
@@ -243,6 +267,11 @@ export class UserEditPageComponent implements OnInit {
     setPremiumAvatar(premiumAvatar: PremiumAvatar) {
         this.avatarState = AvatarState.Premium;
         this.form.get('avatar')?.setValue(premiumAvatar);
+    }
+
+    setWallpaper(wallpaperUrl: string) {
+        this.wallpaperService.setWallpaper(wallpaperUrl);
+        this.notificationService.displaySuccessMessage(this.translocoService.translate('user-edit.wallpaper-updated'));
     }
 
     openDeleteDialog() {
