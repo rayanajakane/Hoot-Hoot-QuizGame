@@ -23,6 +23,7 @@ export class VotingDialogComponent {
     totalVotes: number;
     currentVotes: number;
     isVotingDisabled: boolean = true;
+    usersWhoVoted: string[] = [];
    // player: Player;
 
     constructor(
@@ -62,6 +63,10 @@ export class VotingDialogComponent {
                 numberOfVotes: this.voteCounts.numberOfVotes,
                 usersWhoVoted: this.voteCounts.usersWhoVoted,
             };
+            
+           // this.usersWhoVoted.push(this.voteCounts?.usersWhoVoted);
+
+
 
             this.matchRoomService.sendBackVotesResult(votes);
 
