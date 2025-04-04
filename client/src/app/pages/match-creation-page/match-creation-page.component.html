@@ -63,15 +63,6 @@
                         <mat-icon>settings</mat-icon>
                         {{ t('match-creation-page.custom-match') }}
                     </button>
-                    <button
-                    mat-raised-button
-                    color="primary"
-                    (click)="createMatchCheaterMode(matchContext.HostView)"
-                    *ngIf="gameIsValidCheaterMode"
-                    [disabled]="buttonClicked"
-                >
-                    {{ t('common.play.modeCheater') }}
-                </button>
                 </div>
             </div>
 

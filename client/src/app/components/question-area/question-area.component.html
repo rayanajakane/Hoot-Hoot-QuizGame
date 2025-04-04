@@ -8,8 +8,8 @@
                     id="score-feedback-area"
                     *ngIf="
                         (this.answerService.showFeedback && context === matchContext.PlayerView && !this.matchRoomService.isCooldown) ||
-                            (this.answerService.showFeedback && (context === matchContext.TestPage || context === matchContext.RandomMode))||
-                            (this.answerService.showFeedback && context === matchContext.CheaterView && !this.matchRoomService.isCooldown) ;
+                            (this.answerService.showFeedback && (context === matchContext.TestPage || context === matchContext.RandomMode)) ||
+                            (this.answerService.showFeedback && context === matchContext.CheaterView && !this.matchRoomService.isCooldown);
                         else elseBlock
                     "
                 >
@@ -54,7 +54,7 @@
                     </h2>
                 </div>
             </div>
-    
+
             <div
                 class="choice-container"
                 *ngIf="!this.matchRoomService.isCooldown || context === matchContext.TestPage || context === matchContext.RandomMode"
@@ -69,7 +69,12 @@
 
             <div
                 id="submit-button-container"
-                *ngIf="context === matchContext.PlayerView || context === matchContext.TestPage || context === matchContext.RandomMode || context === matchContext.CheaterView"
+                *ngIf="
+                    context === matchContext.PlayerView ||
+                    context === matchContext.TestPage ||
+                    context === matchContext.RandomMode ||
+                    context === matchContext.CheaterView
+                "
             >
                 <button mat-raised-button color="primary" id="submit-button" *ngIf="this.answerService.isSelectionEnabled" (click)="submitAnswers()">
                     {{ t('question-area.submit') }}
@@ -130,26 +135,12 @@
             </div>
         </div>
         <div *ngIf="context === matchContext.HostView && !this.matchRoomService.isCooldown && this.matchRoomService.isCheaterMode">
-            <button mat-raised-button *ngIf="this.answerService.isEndGame" color="primary" (click)="voteOnCheater()">
-                <mat-icon class="material-icons">bar_chart</mat-icon>
-                <p>Voter pour le tricheur</p>
-            </button>
+            <p></p>
         </div>
         <button mat-raised-button class="exit-button" color="primary" routerLink="/home" (click)="quitGame()">
             <mat-icon class="material-icons">logout</mat-icon>
             <p>{{ t('nav.quit') }}</p>
         </button>
-
     </div>
-    <div *ngIf="context === matchContext.HostView && !this.matchRoomService.isCooldown && this.matchRoomService.isCheaterMode">
-        <button mat-raised-button *ngIf="this.answerService.isEndGame" color="primary" (click)="voteOnCheater()">
-            <mat-icon class="material-icons">bar_chart</mat-icon>
-            <p>Voter pour le tricheur</p>
-        </button>
-    </div>
-    <button mat-raised-button class="exit-button" color="primary" routerLink="/home" (click)="quitGame()">
-        <mat-icon class="material-icons">logout</mat-icon>
-        <p>QUITTER</p>
-    </button>
     <app-players-list [players]="this.matchRoomService.players" *ngIf="context !== matchContext.TestPage"></app-players-list>
 </ng-container>

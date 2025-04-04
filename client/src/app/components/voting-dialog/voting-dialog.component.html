@@ -1,24 +1,32 @@
 <ng-container *transloco="let t">
-<div id="voting-dialog">
-    <h2>{{t('cheater-mode.voteCheater')}}</h2>
-    <mat-radio-group [(ngModel)]="selectedPlayer">
-        <mat-selection-list *ngFor="let player of matchRoomService.players">
-        
-          <div *ngIf="player.username !== matchRoomService.getUsername()">
-            <mat-radio-button [value]="player.username">
-              <label>{{ player.username }}</label>
-              <span> - Votes: {{ this.matchRoomService.votesResults[player.username] ? this.matchRoomService.votesResults[player.username]: 0  }}</span>
-            </mat-radio-button>
-          </div>
-        </mat-selection-list>
-      </mat-radio-group>
-
-    <div id ="vote-button">
-        <button mat-raised-button color="primary" (click)="onVote()"> <p> {{ t('cheater-mode.vote') }}</p> </button>
+    <div id="voting-dialog">
+        <h2>{{ t('cheater-mode.voteCheater') }}</h2>
+        <div *ngIf="this.matchContextService.getContext() !== matchContext.HostView">
+            <mat-radio-group [(ngModel)]="selectedPlayer">
+                <mat-selection-list *ngFor="let player of matchRoomService.players">
+                    <div *ngIf="player.username !== matchRoomService.getUsername()">
+                        <mat-radio-button [value]="player.username">
+                            <label>{{ player.username }}</label>
+                        </mat-radio-button>
+                    </div>
+                </mat-selection-list>
+            </mat-radio-group>
+            <div id="vote-button">
+                <button mat-raised-button color="primary" [disabled]="!this.isVotingDisabled" (click)="onVote()">
+                    <p>{{ t('cheater-mode.vote') }}</p>
+                </button>
+            </div>
+        </div>
     </div>
 
-    <div id="cancel-button">
-      <button mat-raised-button color="primary" (click)="closeDialog()">Annuler</button>
-  </div>
-</div>
+    <div *ngIf="this.matchContextService.getContext() === matchContext.HostView" class="players-main-container">
+        <mat-list *ngFor="let player of matchRoomService.players">
+            <div *ngIf="player.username !== matchRoomService.getUsername()" >
+                <p class="player-card" >
+                    {{ player.username }} Votes:
+                    {{ this.matchRoomService.votesResults[player.username] ? this.matchRoomService.votesResults[player.username] : 0 }}
+                </p>
+            </div>
+        </mat-list>
+    </div>
 </ng-container>

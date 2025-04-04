@@ -72,6 +72,7 @@ export class QuestionAreaComponent implements OnInit {
     ngOnInit(): void {
         this.resetStateForNewQuestion();
         this.listenToGameEvents();
+    
         this.matchRoomService.isQuitting = false;
         this.answerService.playerScore = 0;
         this.context = this.matchContextService.getContext();
@@ -90,6 +91,14 @@ export class QuestionAreaComponent implements OnInit {
         this.matchContextService.getContext();
     }
 
+    ngOnChanges(): void {
+        console.log("End game");
+        if(this.answerService.isEndGame &&  !this.matchRoomService.isCooldown){
+            console.log("End game");
+            this.matchRoomService.goToVoting();
+        }
+    }
+
     submitAnswers(): void {
         this.answerService.submitAnswer({ userId: this.matchRoomService.getUserId(), roomCode: this.matchRoomService.getRoomCode() });
     }
@@ -98,6 +107,8 @@ export class QuestionAreaComponent implements OnInit {
         this.matchRoomService.goToNextQuestion();
         this.answerService.isNextQuestionButtonEnabled = false;
     }
+
+    
 
     routeToResultsPage() {
         this.matchRoomService.routeToResultsPage();
