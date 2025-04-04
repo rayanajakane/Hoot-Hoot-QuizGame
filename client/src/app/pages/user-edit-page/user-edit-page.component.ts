@@ -43,6 +43,7 @@ export class UserEditPageComponent implements OnInit {
     premiumThemes = [Theme.LUIGI, Theme.MARIO, Theme.SONIC, Theme.PIKACHU];
 
     purchasedWallpapers: { [key: string]: string } = {};
+    currentWallpaper: Wallpaper;
 
     langLabels = {
         ['fr']: translate('page.fr'),
@@ -91,6 +92,7 @@ export class UserEditPageComponent implements OnInit {
 
         this.oldAvatarState = this.getAvatarState(this.authenticationService.userAvatarUrl);
         this.avatarState = this.oldAvatarState;
+        this.currentWallpaper = this.wallpaperService.currentWallpaper as Wallpaper;
     }
 
     get currentTheme() {
@@ -119,10 +121,6 @@ export class UserEditPageComponent implements OnInit {
 
     get wallpaper() {
         return Wallpaper;
-    }
-
-    get currentWallpaper() {
-        return this.wallpaperService.currentWallpaper;
     }
 
     getThemeLabel(theme: Theme): string {
@@ -221,6 +219,7 @@ export class UserEditPageComponent implements OnInit {
             }
             this.themeService.setTheme(this.currentTheme.value as Theme);
             this.translationService.setLanguage(this.currentLang.value as string);
+            this.wallpaperService.setWallpaper(this.currentWallpaper);
 
             // Reset labels to new language
             this.themeService.themeLabels = {
@@ -270,8 +269,7 @@ export class UserEditPageComponent implements OnInit {
     }
 
     setWallpaper(wallpaperUrl: string) {
-        this.wallpaperService.setWallpaper(wallpaperUrl);
-        this.notificationService.displaySuccessMessage(this.translocoService.translate('user-edit.wallpaper-updated'));
+        this.currentWallpaper = wallpaperUrl as Wallpaper;
     }
 
     openDeleteDialog() {
