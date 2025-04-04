@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 //import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { VotingDialogComponent } from '@app/components/voting-dialog/voting-dialog.component';
 import { ChatChannel } from '@app/constants/chat-channels';
 import { MatchContext } from '@app/constants/states';
 import { Player } from '@app/interfaces/player';
@@ -260,6 +259,12 @@ export class MatchRoomService {
         });
     }
 
+    goToVoting(){
+        if(!this.isCooldown && this.isCheaterMode){
+            this.voteOnCheater();
+        }
+    }
+
     goToNextQuestion() {
         this.socketService.send(MatchEvents.GoToNextQuestion, this.matchRoomCode);
     }
@@ -281,6 +286,7 @@ export class MatchRoomService {
         });
     }
     onVotingResults() {
+        //const totalVotes = Object.values(this?.votesResults).reduce((total, vote) => total + vote, 0);
         this.socketService.on(MatchEvents.SendBackVotesResults, (data: { [username: string]: number }) => {
             this.votesResults = data;
             console.log(data);

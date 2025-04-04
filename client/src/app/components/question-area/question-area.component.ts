@@ -73,7 +73,6 @@ export class QuestionAreaComponent implements OnInit {
     ngOnInit(): void {
         this.resetStateForNewQuestion();
         this.listenToGameEvents();
-
         this.matchRoomService.isQuitting = false;
         this.answerService.playerScore = 0;
         this.context = this.matchContextService.getContext();
@@ -115,6 +114,8 @@ export class QuestionAreaComponent implements OnInit {
         this.matchRoomService.goToNextQuestion();
         this.answerService.isNextQuestionButtonEnabled = false;
     }
+
+    
 
     routeToResultsPage() {
         this.matchRoomService.routeToResultsPage();
