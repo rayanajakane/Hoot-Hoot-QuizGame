@@ -85,6 +85,7 @@ import com.example.polyquiz.auth.domain.UsernameSuggestionService.showUsernameDi
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.MatchStats
 import com.example.polyquiz.constants.PresetAvatar
+import com.example.polyquiz.constants.SIZE_CONSTANTS
 import com.example.polyquiz.constants.UserHistoryInfo
 import com.example.polyquiz.core.ThemeService
 import com.example.polyquiz.ui.features.camera.CameraViewModel
@@ -186,10 +187,10 @@ fun UserEditPage(
     }
 
     @Composable
-    fun openUsernameDialog(){
-        if(showUsernameDialog){
+    fun openUsernameDialog() {
+        if (showUsernameDialog) {
             UsernameSuggestionDialog(
-                onDismiss = {showUsernameDialog = false},
+                onDismiss = { showUsernameDialog = false },
                 onUsernameSelected = { newUsername ->
                     username = newUsername
                     showUsernameDialog = false
@@ -424,20 +425,23 @@ fun UserEditPage(
                             TextField(
                                 value = username,
                                 onValueChange = {
-                                    username = it
-                                    authViewModel.updateUsername(it, context)
+                                    if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.setAndUpdateUsername(
+                                        it,
+                                        context,
+                                    )
                                 },
                                 isError = usernameError.isNotEmpty(),
                                 singleLine = true,
                                 label = { Text(stringResource(R.string.username)) },
                                 modifier = Modifier.fillMaxWidth(),
                                 trailingIcon = {
-                                    if (showUsernameDialog) {
+                                    if (UsernameSuggestionService.showUsernameDialog) {
                                         UsernameSuggestionDialog(
                                             onDismiss = {
-                                                showUsernameDialog = false
+                                                UsernameSuggestionService.showUsernameDialog = false
                                             },
                                             onUsernameSelected = { selectedUsername ->
+                                                username = selectedUsername;
                                                 authViewModel.updateUsername(
                                                     selectedUsername,
                                                     context,
@@ -447,7 +451,10 @@ fun UserEditPage(
                                         )
                                     }
                                     IconButton(
-                                        onClick = { UsernameSuggestionService.showUsernameDialog = true},
+                                        onClick = {
+                                            UsernameSuggestionService.showUsernameDialog =
+                                                !UsernameSuggestionService.showUsernameDialog
+                                        },
 
                                         modifier = Modifier
                                             .size(40.dp)

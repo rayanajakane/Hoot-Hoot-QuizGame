@@ -20,6 +20,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -28,23 +29,22 @@ import java.lang.reflect.Modifier
 
 @Composable
 fun UsernameSuggestionDialog(
-    onDismiss: () -> Unit,
-    onUsernameSelected: (String) -> Unit
+    onDismiss: () -> Unit, onUsernameSelected: (String) -> Unit
 ) {
 
     var selectedUsername by remember { mutableStateOf("") }
-    var usernameSuggestions by remember { mutableStateOf<List<String>>(emptyList()) }
+    val usernameSuggestionsService = UsernameSuggestionService
+    val usernameSuggestions: List<String> by usernameSuggestionsService.usernames.collectAsState(
+        initial = emptyList()
+    )
 
+    LaunchedEffect(usernameSuggestionsService.showUsernameDialog) {
+        usernameSuggestionsService.getUsernameSuggestions()
 
-    LaunchedEffect(Unit) {
-
-        UsernameSuggestionService.getUsernameSuggestions()
-        usernameSuggestions = UsernameSuggestionService.usernames
     }
 
     fun regenerate() {
         UsernameSuggestionService.getUsernameSuggestions();
-        usernameSuggestions = UsernameSuggestionService.usernames;
         selectedUsername = "";
     }
 
@@ -54,6 +54,7 @@ fun UsernameSuggestionDialog(
         title = { Text(stringResource(R.string.suggest_names)) },
         text = {
             Column {
+                println("column${usernameSuggestions}")
                 if (usernameSuggestions.isNotEmpty()) {
                     usernameSuggestions.forEach { username ->
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -78,8 +79,7 @@ fun UsernameSuggestionDialog(
                     if (selectedUsername.isNotBlank()) {
                         onUsernameSelected(selectedUsername)
                     }
-                },
-                shape = RoundedCornerShape(3.dp)
+                }, shape = RoundedCornerShape(3.dp)
             ) {
                 Text(stringResource(R.string.confirm))
             }
@@ -97,8 +97,5 @@ fun UsernameSuggestionDialog(
                 Text(stringResource(R.string.cancel))
             }
         },
-
-
-        )
-
+    )
 }
