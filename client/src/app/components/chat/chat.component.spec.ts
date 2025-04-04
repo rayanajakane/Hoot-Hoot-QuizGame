@@ -13,9 +13,10 @@ import { MOCK_DATE, MOCK_MESSAGE, MOCK_USER_ID_NAME, MOCK_USER_ID_NAME_2 } from 
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { ChatService } from '@app/services/chat/chat.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
+import { Wallpaper, WallpaperService } from '@app/services/wallpaper/wallpaper.service';
 import { getTranslocoModule } from '@app/transloco-testing.module';
 import { ChatEmoji } from '@common/constants/chat-emojis';
-import { Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import SpyObj = jasmine.SpyObj;
 
 const mockDate = MOCK_DATE;
@@ -36,6 +37,9 @@ describe('ChatComponent', () => {
         const chatSpy = jasmine.createSpyObj('ChatService', ['sendMessage', 'handleReceivedMessages', 'reactToMessage']);
         const authSpy = jasmine.createSpyObj('AuthenticationService', ['connectToSocket', 'userDisplayName']);
         const matchSpy = jasmine.createSpyObj('MatchRoomService', ['getRoomCode']);
+        const wallpaperSpy = jasmine.createSpyObj('WallpaperService', [], {
+            currentWallpaper$: of(Wallpaper.None), // Using 'of' operator to create a simple observable
+        });
         socketHandlerSpy.socket = jasmine.createSpyObj('socket', ['removeListener']);
         chatSpy.socketHandler = socketHandlerSpy;
 
@@ -59,6 +63,7 @@ describe('ChatComponent', () => {
                 { provide: ChatService, useValue: chatSpy },
                 { provide: AuthenticationService, useValue: authSpy },
                 { provide: MatchRoomService, useValue: matchSpy },
+                { provide: WallpaperService, useValue: wallpaperSpy },
             ],
         }).compileComponents();
 
