@@ -70,4 +70,8 @@ export class WallpaperService {
         const wallpaperRef = ref(this.database, `users/${userId}/purchasedWallpapers/${wallpaperId}`);
         await set(wallpaperRef, true);
     }
+
+    onDestroy() {
+        this._currentWallpaper.complete();
+    }
 }
