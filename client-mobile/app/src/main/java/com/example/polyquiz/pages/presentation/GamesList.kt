@@ -190,7 +190,6 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
 
         LazyColumn(
             modifier = Modifier
-                .verticalScroll(rememberScrollState())
                 .weight(1f)
                 .padding(16.dp)
         ) {
@@ -256,7 +255,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                             onValueChange = { titleQuery = it },
                             label = { Text("Title") },
                             modifier = Modifier
-                                .fillMaxWidth()
+                                .fillMaxWidth(0.42f)
                                 .padding(bottom = 8.dp),
                             singleLine = true
                         )
@@ -265,13 +264,13 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                             value = authorQuery,
                             onValueChange = { authorQuery = it },
                             label = { Text("Author") },
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth(0.42f),
                             singleLine = true
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Card(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(0.42f),
                         shape = RoundedCornerShape(12.dp),
                         elevation = CardDefaults.cardElevation(2.dp)
                     ) {
