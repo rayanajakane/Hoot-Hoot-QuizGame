@@ -6,6 +6,8 @@ import { AvatarService } from '@app/services/avatar/avatar.service';
 import { MoneyService } from '@app/services/money/money.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
+import { Wallpaper, WallpaperService } from '@app/services/wallpaper/wallpaper.service';
+import { of } from 'rxjs';
 import { ShopPageComponent } from './shop-page.component';
 
 describe('ShopPageComponent', () => {
@@ -13,6 +15,10 @@ describe('ShopPageComponent', () => {
     let fixture: ComponentFixture<ShopPageComponent>;
 
     beforeEach(async () => {
+        const wallpaperSpy = jasmine.createSpyObj('WallpaperService', [], {
+            currentWallpaper$: of(Wallpaper.None),
+        });
+
         await TestBed.configureTestingModule({
             imports: [],
             declarations: [ShopPageComponent],
@@ -22,6 +28,7 @@ describe('ShopPageComponent', () => {
                 { provide: MoneyService, useValue: {} },
                 { provide: NotificationService, useValue: {} },
                 { provide: SocketHandlerService, useValue: {} },
+                { provide: WallpaperService, useValue: wallpaperSpy },
                 { provide: TranslocoService, useValue: {} },
                 { provide: 'TRANSLOCO_TRANSPILER', useValue: {} },
             ],
