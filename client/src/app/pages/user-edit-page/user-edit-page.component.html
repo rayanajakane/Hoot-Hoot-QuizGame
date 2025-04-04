@@ -40,12 +40,12 @@
                             </p>
                         </div>
                         <div id="wallpaper-choices-container">
-                            <p>{{ t('user-edit.chat-wallpapers') }}</p>
+                            <p>{{ t('page.chat-wallpapers') }}</p>
                             <div id="wallpaper-choices">
                                 <div class="wallpaper-mini none-wallpaper" (click)="setWallpaper(wallpaper.None)">
                                     <div class="no-bg-indicator">
                                         <mat-icon>block</mat-icon>
-                                        <span>{{ t('user-edit.no-background') }}</span>
+                                        <span>{{ t('page.no-background') }}</span>
                                     </div>
                                     <div class="selected-indicator" *ngIf="currentWallpaper === wallpaper.None"></div>
                                 </div>
