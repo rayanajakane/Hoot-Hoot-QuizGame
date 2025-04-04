@@ -87,10 +87,6 @@
     </div>
     <div class="controls-container">
         <div id="host-area" *ngIf="context === matchContext.HostView && !this.matchRoomService.isCooldown">
-            <button mat-raised-button *ngIf="this.answerService.isEndGame" color="primary" (click)="routeToResultsPage()">
-                <mat-icon class="material-icons">bar_chart</mat-icon>
-                <p>{{ t('question-area.show-final-results') }}</p>
-            </button>
             <button
                 *ngIf="!this.answerService.isEndGame"
                 mat-raised-button

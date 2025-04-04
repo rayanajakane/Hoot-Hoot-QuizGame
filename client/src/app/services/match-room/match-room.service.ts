@@ -10,6 +10,7 @@ import { ChatService } from '@app/services/chat/chat.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
+import { AnswerEvents } from '@common/events/answer.events';
 import { ChatEvents } from '@common/events/chat.events';
 import { MatchEvents } from '@common/events/match.events';
 import { PartyConfig } from '@common/interfaces/party-config';
@@ -102,6 +103,7 @@ export class MatchRoomService {
             this.onVotingResults();
             this.onCurrentAnswers();
             this.onVoting();
+            this.goToVoting();
         }
     }
 
@@ -121,6 +123,8 @@ export class MatchRoomService {
         this.socketService.socket.removeListener(MatchEvents.RouteToResultsPage);
         this.socketService.socket.removeListener(MatchEvents.CurrentAnswers);
         this.socketService.socket.removeListener(MatchEvents.VoteOnCheater);
+        this.socketService.socket.removeListener(MatchEvents.ShowVotingDialog);
+        this.socketService.socket.removeListener(AnswerEvents.EndGame);
         this.socketService.send(MatchEvents.Disconnect);
         this.matchContextService.resetContext();
         // this.currentAnswers = [];
@@ -251,9 +255,12 @@ export class MatchRoomService {
     }
 
     goToVoting(){
-        if(!this.isCooldown && this.isCheaterMode){
-            this.voteOnCheater();
-        }
+        this.socketService.on(AnswerEvents.EndGame, () => {
+            console.log("End gamew");
+            if(!this.isCooldown && this.isCheaterMode){
+                this.voteOnCheater();
+             }
+        });
     }
 
     goToNextQuestion() {
@@ -280,6 +287,9 @@ export class MatchRoomService {
             }
         });
     }
+
+ 
+
 
     onStartCooldown() {
         this.socketService.on(MatchEvents.StartCooldown, () => {
