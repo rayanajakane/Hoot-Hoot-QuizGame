@@ -13,15 +13,20 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.util.Locale
 
 
 object UsernameSuggestionService {
     val _usernames = MutableStateFlow<List<String>>(emptyList())
     val usernames: Flow<List<String>> = _usernames.asStateFlow()
     var showUsernameDialog by mutableStateOf(false)
+    var currentLang by mutableStateOf(Locale.getDefault().language)
+
     lateinit var translationService: TranslationService
 
-    val apiService = object : CommunicationService("username-suggestion/fr") {
+
+
+    val apiService = object : CommunicationService("username-suggestion") {
         override val apiService: ApiService = retrofit.create(ApiService::class.java)
     }
 
@@ -33,7 +38,7 @@ object UsernameSuggestionService {
             _usernames.update { usernameList }
         },
 
-            onError = { error -> Log.d("UsernameSuggestionService", "Error: $error") })
+            onError = { error -> Log.d("UsernameSuggestionService", "Error: $error") }, endpoint = currentLang)
 
     }
 

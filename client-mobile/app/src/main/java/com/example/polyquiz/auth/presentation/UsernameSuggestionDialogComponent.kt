@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.polyquiz.R
 import java.lang.reflect.Modifier
+import java.util.Locale
 
 @Composable
 fun UsernameSuggestionDialog(
@@ -33,12 +34,18 @@ fun UsernameSuggestionDialog(
 ) {
 
     var selectedUsername by remember { mutableStateOf("") }
+    var currentLang by remember { mutableStateOf(Locale.getDefault().language) }
     val usernameSuggestionsService = UsernameSuggestionService
     val usernameSuggestions: List<String> by usernameSuggestionsService.usernames.collectAsState(
         initial = emptyList()
     )
 
     LaunchedEffect(usernameSuggestionsService.showUsernameDialog) {
+        if(currentLang === "en"){
+            usernameSuggestionsService.currentLang = "eng"
+        } else {
+            usernameSuggestionsService.currentLang = "fr"
+        }
         usernameSuggestionsService.getUsernameSuggestions()
 
     }
