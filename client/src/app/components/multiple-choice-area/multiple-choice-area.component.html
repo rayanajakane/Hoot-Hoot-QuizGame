@@ -3,6 +3,7 @@
         mat-raised-button
         *ngFor="let choice of matchRoomService.currentQuestion.choices; let i = index"
         class="answer"
+        color="basic"
         [class.selected]="isSelected(choice) && !answerService.showFeedback"
         [class.correct]="answerService.showFeedback && isCorrectAnswer(choice)"
         [class.incorrect]="answerService.showFeedback && !isCorrectAnswer(choice) && isSelected(choice)"
@@ -11,4 +12,15 @@
         <p>{{ i + 1 }}. {{ choice.text }}</p>
     </button>
 </div>
-<div id="histogram-container" *ngIf="!matchRoomService.isCooldown && matchContextService.getContext() === contextOptions.HostView"></div>
+<div id="answers-container" *ngIf="!matchRoomService.isCooldown && matchContextService.getContext() === contextOptions.HostView">
+    <button
+        disabled
+        mat-raised-button
+        *ngFor="let choice of matchRoomService.currentQuestion.choices; let i = index"
+        class="answer"
+        [class.correct]="matchRoomService.currentAnswers.includes(choice.text)"
+        (click)="selectChoice(choice)"
+    >
+        <p>{{ i + 1 }}. {{ choice.text }}</p>
+    </button>
+</div>

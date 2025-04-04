@@ -120,14 +120,6 @@ describe('AdminQuestionBankComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should display a message when bank is empty', () => {
-        bankSpy.questions = [];
-        fixture.detectChanges();
-        const dom = fixture.nativeElement;
-        const emptyBankCard = dom.querySelector('.empty-list-card');
-        expect(emptyBankCard).toBeTruthy();
-    });
-
     it('should not display the empty bank message when not empty', () => {
         bankSpy.questions = mockQuestions;
         fixture.detectChanges();

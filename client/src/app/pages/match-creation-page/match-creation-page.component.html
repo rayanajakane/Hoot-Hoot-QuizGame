@@ -1,57 +1,71 @@
-<ng-container *transloco="let t"
-    ><div class="nav">
+<ng-container *transloco="let t">
+    <div class="nav">
         <h1 class="page-title">{{ t('main-page.host-match') }}</h1>
-        <div class="navigation-buttons">
-            <button mat-raised-button routerLink="/home"><mat-icon>home</mat-icon>{{ t('nav.main-page') }}</button>
-        </div>
     </div>
     <div id="match-creation-page">
         <div id="popular-game-list-container"></div>
         <div id="game-list-container">
-            <h2>{{ t('match-creation-page.games-list-label') }}</h2>
+            <h2>{{ t('match-creation-page.games-list') }}</h2>
             <app-pulse-loader *ngIf="isLoadingGames"></app-pulse-loader>
             <h3>{{ t('match-creation-page.popular-games') }}</h3>
             <div class="popular-games-container">
-                <mat-card *ngFor="let game of mostPopularGames" (click)="loadSelectedGame(game)" class="popular-game-card">
+                <mat-card *ngFor="let game of mostPopularGames" (click)="loadSelectedGame(game)" class="popular-game-card clickable-item">
                     <h4>{{ game.title }}</h4>
                     <p>{{ t('match-creation-page.n-matches-played') }} {{ game.nMatchesPlayed }}</p>
                 </mat-card>
             </div>
-            <cdk-virtual-scroll-viewport class="virtual-scroll" itemSize="50">
-                <h3>Tous les jeux</h3>
-                <app-game-list-item
-                    *cdkVirtualFor="let game of games"
-                    [game]="game"
-                    [isAdminMode]="false"
-                    (click)="loadSelectedGame(game)"
-                ></app-game-list-item>
-            </cdk-virtual-scroll-viewport>
+            <div id="search-container">
+                <h3>{{ t('games-search.label') }}</h3>
+                <div id="search-inputs-container">
+                    <mat-form-field appearance="outline" class="search-field">
+                        <mat-label>{{ t('games-search.title') }}</mat-label>
+                        <input matInput [formControl]="titleSearchControl" [placeholder]="t('games-search.title')" />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="search-field">
+                        <mat-label>{{ t('games-search.author') }}</mat-label>
+                        <input matInput [formControl]="authorSearchControl" [placeholder]="t('games-search.author')" />
+                    </mat-form-field>
+                </div>
+            </div>
+            <mat-card class="game-match-card-header card-header-background">
+                <p>{{ t('admin-main-page.game-title') }}</p>
+                <p>{{ t('admin-main-page.author') }}</p>
+            </mat-card>
+            <app-game-list-item
+                *ngFor="let game of searchResults"
+                [game]="game"
+                [isAdminMode]="false"
+                (click)="loadSelectedGame(game)"
+            ></app-game-list-item>
         </div>
 
         <div id="game-details-container">
             <div id="game-details-header">
-                <h2>{{ t('match-creation-page.game-details-label') }}{{ selectedGame ? '"' + selectedGame.title + '"' : '' }}</h2>
+                <h2>{{ t('match-creation-page.game-details') }}{{ selectedGame ? '"' + selectedGame.title + '"' : '' }}</h2>
                 <div id="buttons-container">
                     <button
                         mat-raised-button
                         color="primary"
-                        (click)="isFriendsOnly = false; createMatch(matchContext.HostView)"
+                        (click)="createStandardMatch()"
                         *ngIf="gameIsValid && !isRandomGame"
                         [disabled]="buttonClicked"
                     >
                         {{ t('common.play') }}
                     </button>
+
                     <button
                         mat-raised-button
-                        color="primary"
-                        (click)="isFriendsOnly = true; createMatch(matchContext.HostView)"
+                        color="accent"
+                        (click)="openPartyConfigDialog()"
                         *ngIf="gameIsValid && !isRandomGame"
                         [disabled]="buttonClicked"
                     >
-                        Jouer avec des amis
+                        <mat-icon>settings</mat-icon>
+                        {{ t('match-creation-page.custom-match') }}
                     </button>
                 </div>
             </div>
+
             <cdk-virtual-scroll-viewport class="virtual-scroll" itemSize="50">
                 <div id="game-details" *ngIf="gameIsValid && !isLoadingSelectedGame; else elseBlock">
                     <div>
@@ -71,10 +85,11 @@
                 </div>
 
                 <ng-template #elseBlock>
-                    <span *ngIf="!isLoadingSelectedGame">{{ t('match-creation-page.select-game-label') }}</span>
+                    <span *ngIf="!isLoadingSelectedGame">{{ t('match-creation-page.select-game') }}</span>
                 </ng-template>
 
                 <app-pulse-loader *ngIf="isLoadingSelectedGame"></app-pulse-loader>
             </cdk-virtual-scroll-viewport>
-        </div></div
-></ng-container>
+        </div>
+    </div>
+</ng-container>

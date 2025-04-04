@@ -4,21 +4,27 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.polyquiz.constants.MatchContext
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import com.example.polyquiz.R
+import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.Player
-import com.example.polyquiz.ui.theme.AndroidGreen
-import com.example.polyquiz.ui.theme.BrightRed
-import com.example.polyquiz.ui.theme.PurpleGrey80
-import com.example.polyquiz.ui.theme.GoldenYellow
 
 @Composable
 fun PlayersListComponent(
@@ -28,39 +34,28 @@ fun PlayersListComponent(
     modifier: Modifier = Modifier,
     extraContent: @Composable () -> Unit = {}
 ) {
-    val username = matchRoomService.retrieveUsername()
+    val userId = matchRoomService.userId
     var sortBy by remember { mutableStateOf("score") }
     var sortOrder by remember { mutableStateOf("descending") }
-
-//    val sortedPlayers = remember(players, sortBy, sortOrder) {
-//        players.sortedWith(
-//            when (sortBy) {
-//                "name" -> compareBy { it.username }
-//                "score" -> compareBy { it.score as Comparable<*> }
-//                "state" -> compareBy { it.state }
-//                else -> compareBy<Player> { it.score as Comparable<*> }
-//            }.let { comparator ->
-//                if (sortOrder == "descending") comparator.reversed() else comparator
-//            }
-//        )
-//    }
 
     Column(
         modifier = modifier
             .fillMaxHeight()
             .width(250.dp)
-            .background(PurpleGrey80)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(8.dp)
     ) {
-        Text(text = "Joueurs", fontSize = 20.sp, modifier = Modifier.padding(8.dp))
-
-        if (username == "Organisateur") {
-            SortOptions(sortBy, sortOrder, onSortChange = { sortBy = it }, onOrderChange = { sortOrder = it })
-        }
+        Text(
+            text = stringResource(R.string.players),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(8.dp)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
 
         LazyColumn(modifier = Modifier.weight(1f)) {
             items(players) { player ->
-                PlayerCard(player, context)
+                PlayerCard(Modifier, player, player.photoUrl, context)
             }
         }
 
@@ -76,67 +71,71 @@ fun PlayersListComponent(
 }
 
 @Composable
-fun SortOptions(
-    sortBy: String,
-    sortOrder: String,
-    onSortChange: (String) -> Unit,
-    onOrderChange: (String) -> Unit
+fun PlayerCard(
+    modifier: Modifier,
+    player: Player,
+    url: String,
+    context: MatchContextService,
+    withAvatar: Boolean = false
 ) {
-    Column(modifier = Modifier.padding(8.dp)) {
-        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Trier par:")
-            ButtonGroup(
-                options = listOf("name" to "Nom", "score" to "Score", "state" to "État"),
-                selected = sortBy,
-                onSelected = onSortChange
-            )
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Ordre:")
-            ButtonGroup(
-                options = listOf("ascending" to "ASC", "descending" to "DESC"),
-                selected = sortOrder,
-                onSelected = onOrderChange
-            )
-        }
-    }
-}
-
-@Composable
-fun PlayerCard(player: Player, context: MatchContextService) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .background(Color.White),
-        horizontalArrangement = Arrangement.SpaceBetween
+    Card(
+        shape = RoundedCornerShape(3.dp),
+        colors = CardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceBright,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceBright,
+            disabledContentColor = MaterialTheme.colorScheme.onSurface
+        ),
+        modifier = modifier
     ) {
-        Text(
-            text = player.username,
-            fontSize = 16.sp,
-            color = if (context.getContext() == MatchContext.HOSTVIEW) {
-                when {
-                    !player.isPlaying -> Color.Gray
-                    player.state == "no-interaction" -> AndroidGreen
-                    player.state == "first-interaction" -> GoldenYellow
-                    player.state == "final-answer" -> BrightRed
-                    player.state == "exit" -> Color.Black
-                    else -> Color.Black.copy(alpha = 0.5f)
-                }
-            } else {
-                Color.Black
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (withAvatar) {
+                AsyncImage(
+                    model = url,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape),
+                    placeholder = rememberAsyncImagePainter(model = PresetAvatar.DEFAULT.value)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
             }
-        )
-        Column(horizontalAlignment = Alignment.End) {
-            Text(text = "${player.score} pts", fontSize = 14.sp)
-            Text(text = "(${player.bonusCount}✨)", fontSize = 12.sp)
+            if(!player.isPlaying) {
+                Text(
+                    text = player.username,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                )
+            } else {
+                Text(
+                    text = player.username,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Text(text = "${player.score} pts", fontSize = 14.sp)
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(text = "(${player.bonusCount}✨)", fontSize = 12.sp)
+            }
         }
     }
 }
 
 @Composable
-fun ButtonGroup(options: List<Pair<String, String>>, selected: String, onSelected: (String) -> Unit) {
+fun ButtonGroup(
+    options: List<Pair<String, String>>,
+    selected: String,
+    onSelected: (String) -> Unit
+) {
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         options.forEach { (value, label) ->
             Button(

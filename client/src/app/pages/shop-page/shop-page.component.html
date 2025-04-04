@@ -1,0 +1,25 @@
+<div class="shop-container" *transloco="let t; read: 'shop'">
+    <div class="nav">
+        <h1>{{ 'main-page.shop' | transloco }}</h1>
+    </div>
+
+    <div class="items-grid">
+        <mat-card *ngFor="let item of avatarItems" class="shop-item">
+            <img [src]="item.imageUrl" [alt]="'Avatar ' + item.id" class="avatar-preview" />
+            <div class="item-details">
+                <span class="price">{{ item.price }}$</span>
+                <button
+                    mat-raised-button
+                    color="primary"
+                    (click)="buyAvatar(item)"
+                    [disabled]="item.owned || moneyService.currentBalance < item.price"
+                >
+                    {{ item.owned ? t('owned') : t('buy') }}
+                </button>
+                <span *ngIf="moneyService.currentBalance < item.price && !item.owned" class="error-message">
+                    {{ t('insufficient-funds') }}
+                </span>
+            </div>
+        </mat-card>
+    </div>
+</div>

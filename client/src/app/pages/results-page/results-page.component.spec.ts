@@ -10,6 +10,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { PLAYER_MOCK } from '@app/constants/chat-mocks';
 import { Player } from '@app/interfaces/player';
 import { ResultsPageComponent } from '@app/pages/results-page/results-page.component';
+import { SortByScorePipe } from '@app/pipes/sort-by-score.pipe';
+import { SortPlayersPipe } from '@app/pipes/sort-players.pipe';
 import { ConfettiService } from '@app/services/confetti/confetti.service';
 import { HistogramService } from '@app/services/histogram/histogram.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
@@ -93,6 +95,8 @@ describe('ResultsPageComponent', () => {
                 MockChatComponent,
                 MockPlayersListComponent,
                 MockHistogramComponent,
+                SortByScorePipe,
+                SortPlayersPipe,
             ],
             providers: [
                 { provide: MatchRoomService, useValue: matchRoomServiceSpy },

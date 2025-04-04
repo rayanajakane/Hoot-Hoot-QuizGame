@@ -1,4 +1,4 @@
-<div id="main-container">
+<div id="main-container" *transloco="let t">
     <mat-sidenav-container class="sidenav-container" [hasBackdrop]="false">
         <mat-sidenav #sidenav [mode]="'over'" [position]="'end'">
             <div class="sidenav-close">
@@ -33,7 +33,9 @@
 
         <mat-sidenav-content>
             <div id="header-bar">
-                <h1 class="page-title">{{ state === managementState.GameModify ? 'Modification' : 'Création' }} du jeu</h1>
+                <h1 class="page-title">
+                    {{ state === managementState.GameModify ? t('admin-edit-page.creation-title') : t('admin-edit-page.modification-title') }}
+                </h1>
 
                 <div class="buttons-container">
                     <button
@@ -42,7 +44,8 @@
                         (click)="gameModificationService.handleSubmit()"
                         [disabled]="gameModificationService.gameForm.invalid || game.questions.length === 0"
                     >
-                        <mat-icon>done</mat-icon> {{ state === managementState.GameModify ? 'Appliquer les modifications' : 'Créer le jeu' }}
+                        <mat-icon>done</mat-icon>
+                        {{ state === managementState.GameModify ? t('admin-edit-page.apply-changes') : t('admin-edit-page.create-game') }}
                     </button>
 
                     <button
@@ -52,17 +55,21 @@
                         (click)="gameModificationService.openCreateQuestionDialog()"
                         id="admin-question-creation-form-button"
                     >
-                        <mat-icon>add</mat-icon>Ajouter une nouvelle question
+                        <mat-icon>add</mat-icon>{{ t('admin-edit-page.add-question') }}
                     </button>
 
                     <button class="question-bank-button" mat-raised-button color="primary" (click)="sidenav.toggle()">
-                        <mat-icon>question_mark</mat-icon>Banque de questions
+                        <mat-icon>question_mark</mat-icon>{{ t('admin-main-page.question-bank') }}
                     </button>
 
-                    <button class="cancel-button" mat-raised-button routerLink="/admin/games">
+                    <button class="cancel-button" color="basic" mat-raised-button routerLink="/admin/games">
                         <mat-icon *ngIf="!this.gameModificationService.isPendingChanges">clear</mat-icon>
                         <mat-icon class="pending-changes" *ngIf="this.gameModificationService.isPendingChanges">pending</mat-icon>
-                        Annuler la {{ state === managementState.GameModify ? 'modification' : 'création' }} du jeu
+                        {{
+                            t('admin-edit-page.cancel', {
+                                state: state === managementState.GameModify ? t('admin-edit-page.modification') : t('admin-edit-page.creation')
+                            })
+                        }}
                     </button>
                 </div>
             </div>
@@ -71,23 +78,23 @@
                 <form [formGroup]="gameModificationService.gameForm">
                     <div class="game-form-details item-container">
                         <mat-form-field class="game-title">
-                            <mat-label>Titre</mat-label>
-                            <input matInput id="text" type="text" formControlName="title" />
+                            <mat-label>{{ t('common.title') }}</mat-label>
+                            <input matInput id="text" type="text" formControlName="title" maxLength="50" />
                         </mat-form-field>
 
                         <mat-form-field class="game-description">
-                            <mat-label>Description</mat-label>
-                            <textarea matInput id="description" type="text" formControlName="description"> </textarea>
+                            <mat-label>{{ t('common.desc') }}</mat-label>
+                            <textarea matInput id="description" type="text" formControlName="description" maxLength="100"> </textarea>
                         </mat-form-field>
                     </div>
 
                     <mat-card class="duration-card">
                         <mat-card-content class="duration-slider">
-                            <p>Temps par QCM</p>
+                            <p>{{ t('match-creation-page.time-per-QCM') }}</p>
                             <mat-slider min="10" max="60" step="5" discrete="thumblabel">
                                 <input matSliderThumb [value]="game.duration" formControlName="duration" />
                             </mat-slider>
-                            <p>{{ game.duration }} secondes</p>
+                            <p>{{ game.duration }} {{ t('common.secs') }}</p>
                         </mat-card-content>
                     </mat-card>
                 </form>
@@ -106,8 +113,7 @@
                 >
                     <mat-accordion>
                         <p *ngIf="game.questions.length === 0" class="create-notice">
-                            Le jeu doit contenir au moins 1 question. Cliquez sur "Ajouter une nouvelle question" ou importez une question de la
-                            banque.
+                            {{ t('admin-edit-page.notice') }}
                         </p>
 
                         <app-question-list-item

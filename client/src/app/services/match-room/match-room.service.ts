@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ChatChannel } from '@app/constants/chat-channels';
-import { MatchStatus } from '@app/constants/feedback-messages';
 import { MatchContext } from '@app/constants/states';
 import { Player } from '@app/interfaces/player';
 import { Question } from '@app/interfaces/question';
@@ -11,8 +10,9 @@ import { NotificationService } from '@app/services/notification/notification.ser
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { ChatEvents } from '@common/events/chat.events';
 import { MatchEvents } from '@common/events/match.events';
+import { PartyConfig } from '@common/interfaces/party-config';
 import { UserInfo } from '@common/interfaces/user-info';
-
+import { translate } from '@jsverse/transloco';
 @Injectable({
     providedIn: 'root',
 })
@@ -29,6 +29,9 @@ export class MatchRoomService {
     isHostPlaying: boolean;
     isCooldown: boolean;
     isQuitting: boolean;
+    partyConfig: PartyConfig;
+
+    currentAnswers: string[] = [];
 
     private hostId: string;
     private matchRoomCode: string;
@@ -84,6 +87,7 @@ export class MatchRoomService {
             this.handleError();
             this.onPlayerChatStateToggle();
             this.onRouteToResultsPage();
+            this.onCurrentAnswers();
         }
     }
 
@@ -101,20 +105,30 @@ export class MatchRoomService {
         this.socketService.socket.removeListener(MatchEvents.KickPlayer);
         this.socketService.socket.removeListener(MatchEvents.Error);
         this.socketService.socket.removeListener(MatchEvents.RouteToResultsPage);
+        this.socketService.socket.removeListener(MatchEvents.CurrentAnswers);
         this.socketService.send(MatchEvents.Disconnect);
         this.matchContextService.resetContext();
         // this.socketService.socket.removeListener(MatchEvents.Disconnect);
     }
 
-    createRoom(gameId: string, hostId: string, hostUsername: string, isClassicMode: boolean = true, isFriendsOnly: boolean = false) {
-        this.socketService.send(MatchEvents.CreateRoom, { gameId, hostId, isClassicMode, isFriendsOnly }, (res: { code: string }) => {
-            this.matchRoomCode = res.code;
-            this.username = hostUsername;
-            this.hostId = hostId;
-            this.userId = hostId;
+    createRoom(
+        gameId: string,
+        hostId: string,
+        hostUsername: string,
+        isClassicMode: boolean = true,
+        partyConfig: PartyConfig = { isFriendsOnly: false, isEntryFeeRequired: false },
+    ) {
+        this.socketService.send(MatchEvents.CreateRoom, { gameId, hostId, isClassicMode, partyConfig }, (res: { code: string }) => {
+            if (res) {
+                this.matchRoomCode = res.code;
+                this.username = hostUsername;
+                this.hostId = hostId;
+                this.userId = hostId;
+                this.partyConfig = partyConfig;
 
-            this.sendPlayersData(this.matchRoomCode);
-            this.router.navigateByUrl('/match-room');
+                this.sendPlayersData(this.matchRoomCode);
+                this.router.navigateByUrl('/match-room');
+            }
         });
     }
 
@@ -152,7 +166,6 @@ export class MatchRoomService {
     }
 
     banUser(userId: string) {
-        // TODO: Migrate the logic to server, use UserID instead (need to track Host User ID in match room)
         if (this.userId === this.hostId) {
             const sentInfo: UserInfo = { roomCode: this.matchRoomCode, userId };
             this.socketService.send(MatchEvents.BanUsername, sentInfo);
@@ -200,7 +213,7 @@ export class MatchRoomService {
             this.isCooldown = true;
             const context = this.matchContextService.getContext();
             if (this.isCooldown && context !== MatchContext.TestPage && context !== MatchContext.RandomMode) {
-                this.currentQuestion.text = MatchStatus.PREPARE;
+                this.currentQuestion.text = translate('feedback-messages.prepare');
             }
         });
     }
@@ -262,7 +275,13 @@ export class MatchRoomService {
     }
 
     toggleLock() {
-        // TODO: Migrate the logic to server, use UserID instead (need to track Host User ID in match room)
         this.socketService.send(MatchEvents.ToggleLock, this.matchRoomCode);
+    }
+
+    onCurrentAnswers() {
+        this.socketService.on(MatchEvents.CurrentAnswers, (answer: string[]) => {
+            if (this.userId !== this.hostId) return;
+            this.currentAnswers = answer;
+        });
     }
 }

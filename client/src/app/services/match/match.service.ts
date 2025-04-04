@@ -4,6 +4,7 @@ import { Game } from '@app/interfaces/game';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { CommunicationService } from '@app/services/communication/communication.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
+import { PartyConfig } from '@common/interfaces/party-config';
 import { Subject } from 'rxjs';
 
 @Injectable({
@@ -48,10 +49,10 @@ export class MatchService extends CommunicationService<Game> {
         return this.delete(`backups/${id}`);
     }
 
-    createMatch(isFriendsOnly: boolean = false, isClassicMode: boolean = false) {
+    createMatch(partyConfig: PartyConfig = { isFriendsOnly: false, isEntryFeeRequired: false }, isClassicMode: boolean = false) {
         const hostId = this.authenticationService.userId;
         const hostUsername = this.authenticationService.userDisplayName;
         this.matchRoomService.connect();
-        this.matchRoomService.createRoom(this.currentGame.id, hostId, hostUsername, isClassicMode, isFriendsOnly);
+        this.matchRoomService.createRoom(this.currentGame.id, hostId, hostUsername, isClassicMode, partyConfig);
     }
 }

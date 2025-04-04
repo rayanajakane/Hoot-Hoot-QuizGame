@@ -86,6 +86,15 @@ export class GameService {
         }
     }
 
+    async updateAuthorNames(authorId: string, username: string): Promise<void> {
+        const filterQuery = { authorId: authorId };
+        try {
+            await this.gameModel.updateMany(filterQuery, { $set: { authorName: username } });
+        } catch (error) {
+            return Promise.reject(`${ERROR_DEFAULT} ${error}`);
+        }
+    }
+
     async updateNMatchesPlayed(gameId: string): Promise<Game> {
         const filterQuery = { id: gameId };
         try {

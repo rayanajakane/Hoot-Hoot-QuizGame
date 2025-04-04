@@ -47,24 +47,37 @@
         "language": "Language",
         "upload-avatar": "Upload Avatar",
         "avatar-choices": "Predefined avatars",
+        "avatar-premium": "Premium avatars",
+        "no-premium-avatars": "No available premium avatars",
+        "buy-avatars": "Buy avatars",
         "delete-user": "Delete Profile",
+        "delete-warning": "This operation is irreversible. Do you REALLY want to delete your account?",
         "danger-zone": "Danger Zone",
         "forgot-password": "Forgot Password?",
         "reset-password": "Reset password",
         "sent-email": "Sent Email!",
-        "sent-email-extra-info": "If you already have an account, you will receive an email to reset your password."
+        "sent-email-extra-info": "If you already have an account, you will receive an email to reset your password.",
+        "dark-theme": "Dark theme",
+        "light-theme": "Light theme",
+        "fr": "French",
+        "en": "English"
     },
     "nav": {
-        "main-page": "Main page"
+        "main-page": "Main page",
+        "quit": "Exit"
     },
     "main-page": {
+        "home": "Home",
         "join-match": "Join a match",
         "host-match": "Host a match",
         "admin-game": "Manage games",
-        "edit-profile": "Edit profile",
+        "edit-profile": "My profile",
         "team-name": "Team 201",
         "access-code": "Access code",
-        "friends": "Friends"
+        "friends": "Friends",
+        "rankings": "Rankings",
+        "shop": "Shop",
+        "logout": "Logout"
     },
     "match-creation-page": {
         "games-list": "Games list",
@@ -72,7 +85,9 @@
         "select-game": "Select a game from the games list",
         "time-per-QCM": "Time per QCM:",
         "popular-games": "Popular Games",
-        "n-matches-played": "Played Matches:"
+        "n-matches-played": "Matches Played:",
+        "all-games": "All Games",
+        "custom-match": "Custom match"
     },
     "admin-main-page": {
         "admin-games": "Manage games",
@@ -80,20 +95,86 @@
         "question-bank": "Question bank",
         "existing-games-list": "Existing games list",
         "game-title": "Game title",
-        "last-modification": "Last modification"
+        "last-modification": "Last modification",
+        "author": "Auteur"
     },
     "common": {
         "cancel": "Cancel",
-        "play": "Play"
+        "play": "Play",
+        "title": "Title",
+        "desc": "Description",
+        "secs": "seconds",
+        "yes": "Yes",
+        "no": "No",
+        "warning": "Warning"
     },
     "join": {
         "room-code": "Room Code",
-        "waiting-matches": "Waiting Matches",
+        "waiting-matches": "Pending Matches",
         "unlocked-matches": "Unlocked Matches",
         "locked-matches": "Locked Matches",
-        "playing-matches": "Playing Matches",
+        "playing-matches": "Matches in progress",
         "no-match": "No Match to Display",
         "join-action": "Join"
+    },
+    "wait-page": {
+        "start-soon": "The match will start soon...",
+        "locked-match": "Match unlocked",
+        "unlocked-match": "Match locked",
+        "start-match": "Start Match",
+        "creation": "creation",
+        "modification": "modification",
+        "starting": "Game \"{{title}}\" starts in.."
+    },
+    "admin-edit-page": {
+        "cancel": "Cancel game {{state}}",
+        "creation": "creation",
+        "modification": "modification",
+        "creation-title": "Game creation",
+        "modification-title": "Game modification",
+        "create-game": "Create game",
+        "apply-changes": "Apply changes",
+        "add-question": "Add new question",
+        "notice": "The game must contain at least 1 question. Click on \"Add new question\" or import a question from the bank."
+    },
+    "question-creation-form": {
+        "question": "Question",
+        "question-text": "Question text",
+        "question-type": "Question Type",
+        "upload-image": "Upload an image",
+        "remove-image": "Remove an image",
+        "add-bank": "Add to bank",
+        "add-question-bank": "Add question to bank",
+        "verify-question": "Check if question is valid",
+        "modify-question": "Modify the question",
+        "question-choice": "Answer choice",
+        "delete-choice": "Delete choice",
+        "tooltip-answer-true": "Check to make answer correct",
+        "add-answer-choice": "Add an answer choice",
+        "boundary-low": "Lower boundary",
+        "boundary-low-placeholder": "Lower boundary value",
+        "boundary-high": "Upper boundary",
+        "boundary-high-placeholder": "Upper boundary value",
+        "good-answer": "Good answer",
+        "good-answer-placeholder": "Good answer value",
+        "tolerance-margin": "Tolerance margin",
+        "tolerance-margin-placeholder": "Tolerance margin value",
+        "invalid-bounds": "Lower bound must be smaller than the upper bound!",
+        "invalid-margin": "Margin too big! It should only account for 25% of the interval!",
+        "invalid-type": "Parameters must be integers!",
+        "negative-margin": "The margin can't be negative!",
+        "correct-answer-out-of-bounds": "The correct answer must be included in the bounds!",
+        "invalid-choices-length-error": "You need at least one correct and one incorrect answer!",
+        "required-error": "The question field is required!",
+        "file-big-error": "File too big.",
+        "choices-min-error": "Cannot have less than 2 choices.",
+        "choices-max-error": "Cannot have more than 4 choices."
+    },
+    "shop": {
+        "owned": "✅ Owned",
+        "buy": "Buy",
+        "insufficient-funds": "Insufficient funds",
+        "buy-successfully": "Bought successfully!"
     },
     "friends-search": {
         "search-friend": "Search Friend",
@@ -114,5 +195,135 @@
         "donate-money": "Donate Money",
         "enter-donation-amout": "Enter donation amount",
         "donation-amount": "Donation amount"
+    },
+    "history": {
+        "match-history": "Match History",
+        "victory": "Victory",
+        "defeat": "Defeat",
+        "gaveUp": "Gave Up",
+        "auth-history": "Authentication History",
+        "signin": "Sign In",
+        "signout": "Sign Out",
+        "no-item": "Aucun élément à afficher",
+        "start": "Match Start",
+        "end": "Match End",
+        "result": "Result",
+        "gave-up-label": "Gave Up?",
+        "date": "Date",
+        "action": "Action",
+        "stats-header": "Statistics",
+        "nMatchesPlayed": "Number of Matches Played",
+        "nMatchesWon": "Number of Matches Won",
+        "averageGoodAnswersPercentage": "Average Well Answered Questions",
+        "averageTime": "Average Time",
+        "jan": "Jan",
+        "feb": "Feb",
+        "mar": "Mar",
+        "apr": "Apr",
+        "may": "May",
+        "jun": "Jun",
+        "jul": "Jul",
+        "aug": "Aug",
+        "sep": "Sep",
+        "oct": "Oct",
+        "nov": "Nov",
+        "dec": "Dec",
+        "sun": "Sun",
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat",
+        "grid-label": "Matches Throughout the Year"
+    },
+    "match-config": {
+        "title-label": "Match Configuration",
+        "friends-label": "Match with Friends",
+        "friends-description": "Only your friends can join this match.",
+        "fee-section-label": "Match with Entry Fee",
+        "fee-label": "Entry Fee",
+        "fee-description": "Players will have to pay this fee to join this match.",
+        "cancel": "Cancel",
+        "confirm": "Confirm"
+    },
+    "elo": {
+        "username": "Username",
+        "elo": "Elo",
+        "rank": "Rank"
+    },
+    "bank-status": {
+        "unavailable": "👀 No other valid bank questions are available! 👀",
+        "available": "🖐 Drag and drop a question from the bank into the game! 🖐",
+        "success": "Question successfully added to the bank! 😺",
+        "failure": "The question could not be added. 😿",
+        "duplicate": "This question is already part of the bank! 😾",
+        "modified": "Question modified successfully! 😺",
+        "deleted": "Question deleted successfully! 😺",
+        "unmodified": "Question could not be modified. 😿",
+        "unretrieved": "Failed to get questions 😿",
+        "still": "Failed to delete question 😿"
+    },
+    "question-status": {
+        "verified": "Question verified successfully! 😺",
+        "unverified": "Question not verified 😿",
+        "duplicate": "This question is already part of the game! 😾"
+    },
+    "game-status": {
+        "verified": "Question verified successfully! 😺",
+        "archived": "Question successfully verified and added to the bank! 😺",
+        "duplicate": "This question is already part of the list of questions for this game! 😾",
+        "failure": "Failure to get the game 😿"
+    },
+    "feedback-messages": {
+        "prepare": "Get ready for the next question! ⏳",
+        "pending": "You have unsaved changes. Are you sure you want to quit?",
+        "quit": "You're about to quit the game. Are you sure you want to quit?",
+        "deleted": "The selected game no longer exists 😿",
+        "invisible": "The selected game is no longer visible 😿",
+        "refresh": "Refresh"
+    },
+    "game-modification": {
+        "creation-error": "The game could not be created. 😿 ",
+        "modification-error": "The game could not be modified. 😿 ",
+        "creation-success": "Game created successfully! 😺",
+        "modification-success": "Game modified successfully! 😺"
+    },
+    "admin-question-bank": {
+        "back-page": "Back",
+        "empty-bank": "The question bank is empty!",
+        "click-on": "Click on",
+        "to-add": "to add your first question!",
+        "filter-by": "Filter by",
+        "all": "All"
+    },
+    "question-area": {
+        "wrong-answer": "😔 Wrong answer 😔",
+        "partial-answer": "🆗 Partial answer! You get",
+        "good-answer": "👏 Correct Answer! You get",
+        "bonus-message": "✨ You got a bonus of",
+        "submit": "SUBMIT",
+        "show-final-results": "Show final results",
+        "next-question": "NEXT QUESTION",
+        "pause-timer": "PAUSE TIMER",
+        "start-timer": "START TIMER",
+        "panic-mode": "PANIC MODE",
+        "good-answer-qre": "Correct answer : {{answer}}. Margin is +/- {{margin}}",
+        "choose-estimated": "Chose an estimated value. Margin is +/- {{margin}}",
+        "answer": "Answer",
+        "out-of-bounds": "Value is out of bounds! Must be between {{lowerBound}} and {{upperBound}}"
+    },
+    "players-list": {
+        "players": "Players"
+    },
+    "username-suggestion": {
+        "title": "Usernames Suggestions",
+        "regenerate": "Generate other usernames",
+        "ok": "OK"
+    },
+    "games-search": {
+        "label": "Search Games",
+        "title": "Title",
+        "author": "Author"
     }
 }

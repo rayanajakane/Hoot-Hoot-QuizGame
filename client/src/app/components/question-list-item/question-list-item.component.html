@@ -1,12 +1,4 @@
-<mat-expansion-panel
-    class="question-card"
-    *ngIf="question"
-    [ngClass]="{
-        'color-variant': question.type === 'QRL',
-        'color-variant-2': question.type === 'QRE'
-    }"
-    [expanded]="isExpanded"
->
+<mat-expansion-panel class="question-card" *ngIf="question" [expanded]="isExpanded">
     <mat-expansion-panel-header>
         <mat-panel-title class="question-text">
             <p class="question-text">{{ index }} {{ question.text }}</p>
@@ -16,10 +8,10 @@
             <div class="question-type-container">
                 <i *ngIf="question.type === 'QCM'" class="material-icons">widgets</i>
                 <p *ngIf="question.type === 'QCM'" class="question-type">QCM</p>
-                <i *ngIf="question.type === 'QRL'" class="material-icons">article</i>
-                <p *ngIf="question.type === 'QRL'" class="question-type">QRL</p>
-                <i *ngIf="question.type === 'QRE'" class="material-icons">balance</i>
-                <p *ngIf="question.type === 'QRE'" class="question-type">QRE</p>
+                <i *ngIf="question.type === 'QRL'" class="material-icons color-variant">article</i>
+                <p *ngIf="question.type === 'QRL'" class="question-type color-variant">QRL</p>
+                <i *ngIf="question.type === 'QRE'" class="material-icons color-variant-2">balance</i>
+                <p *ngIf="question.type === 'QRE'" class="question-type color-variant-2">QRE</p>
             </div>
             <div *ngIf="isBankQuestion && question.creatorName" class="creator-name-container">
                 <i class="material-icons">person</i>

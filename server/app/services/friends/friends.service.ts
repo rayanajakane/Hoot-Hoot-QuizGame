@@ -34,15 +34,24 @@ export class FriendsService {
         const friendIds = Object.keys(snapshot.val());
         const friends: UserIdName[] = await Promise.all(
             friendIds.map(async (id) => {
-                const userRecord = await this.firebaseAuthService.getUserById(id);
-                const userSnapshot = await this.database.ref(`users/${id}`).once('value');
-                const userData = userSnapshot.exists() ? userSnapshot.val() : {};
-                return {
-                    id,
-                    name: userRecord.displayName || 'Unknown User',
-                    photoUrl: userRecord.photoURL || '',
-                    isOnline: userData.isOnline || false,
-                };
+                try {
+                    const userRecord = await this.firebaseAuthService.getUserById(id);
+                    const userSnapshot = await this.database.ref(`users/${id}`).once('value');
+                    const userData = userSnapshot.exists() ? userSnapshot.val() : {};
+                    return {
+                        id,
+                        name: userRecord.displayName || 'Unknown User',
+                        photoUrl: userRecord.photoURL || '',
+                        isOnline: userData.isOnline || false,
+                    };
+                } catch (error) {
+                    return {
+                        id,
+                        name: 'Unknown User',
+                        photoUrl: '',
+                        isOnline: false,
+                    };
+                }
             }),
         );
         return friends;
@@ -54,15 +63,24 @@ export class FriendsService {
         const requestIds = Object.keys(snapshot.val());
         const requests: UserIdName[] = await Promise.all(
             requestIds.map(async (id) => {
-                const userRecord = await this.firebaseAuthService.getUserById(id);
-                const userSnapshot = await this.database.ref(`users/${id}`).once('value');
-                const userData = userSnapshot.exists() ? userSnapshot.val() : {};
-                return {
-                    id,
-                    name: userRecord.displayName || 'Unknown User',
-                    photoUrl: userRecord.photoURL || '',
-                    isOnline: userData.isOnline || false,
-                };
+                try {
+                    const userRecord = await this.firebaseAuthService.getUserById(id);
+                    const userSnapshot = await this.database.ref(`users/${id}`).once('value');
+                    const userData = userSnapshot.exists() ? userSnapshot.val() : {};
+                    return {
+                        id,
+                        name: userRecord.displayName || 'Unknown User',
+                        photoUrl: userRecord.photoURL || '',
+                        isOnline: userData.isOnline || false,
+                    };
+                } catch (error) {
+                    return {
+                        id,
+                        name: 'Unknown User',
+                        photoUrl: '',
+                        isOnline: false,
+                    };
+                }
             }),
         );
         return requests;
@@ -74,15 +92,24 @@ export class FriendsService {
         const requestIds = Object.keys(snapshot.val());
         const requests: UserIdName[] = await Promise.all(
             requestIds.map(async (id) => {
-                const userRecord = await this.firebaseAuthService.getUserById(id);
-                const userSnapshot = await this.database.ref(`users/${id}`).once('value');
-                const userData = userSnapshot.exists() ? userSnapshot.val() : {};
-                return {
-                    id,
-                    name: userRecord.displayName || 'Unknown User',
-                    photoUrl: userRecord.photoURL || '',
-                    isOnline: userData.isOnline || false,
-                };
+                try {
+                    const userRecord = await this.firebaseAuthService.getUserById(id);
+                    const userSnapshot = await this.database.ref(`users/${id}`).once('value');
+                    const userData = userSnapshot.exists() ? userSnapshot.val() : {};
+                    return {
+                        id,
+                        name: userRecord.displayName || 'Unknown User',
+                        photoUrl: userRecord.photoURL || '',
+                        isOnline: userData.isOnline || false,
+                    };
+                } catch (error) {
+                    return {
+                        id,
+                        name: 'UnknownUser',
+                        photoUrl: '',
+                        isOnline: false,
+                    };
+                }
             }),
         );
         return requests;
@@ -114,6 +141,16 @@ export class FriendsService {
     async removeFriend(userId: string, friendId: string): Promise<void> {
         await this.database.ref(`users/${userId}/friends/${friendId}`).remove();
         await this.database.ref(`users/${friendId}/friends/${userId}`).remove();
+    }
+
+    async updateDeletedUser(deletedUserId: string) {
+        const listUsersResult = await this.firebaseAuthService.getUsers();
+        listUsersResult.users.forEach(async (user) => {
+            const currentUserId = user.uid;
+            await this.database.ref(`users/${currentUserId}/friends/${deletedUserId}`).remove();
+            await this.database.ref(`users/${currentUserId}/friend_requests_sent/${deletedUserId}`).remove();
+            await this.database.ref(`users/${currentUserId}/friend_requests_received/${deletedUserId}`).remove();
+        });
     }
 
     async getFriendshipErrors(userId: string, isRoomCreation: boolean, friendId: string = ''): Promise<string> {

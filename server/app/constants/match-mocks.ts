@@ -4,6 +4,7 @@ import { Player } from '@app/model/schema/player.schema';
 import { ChoiceTracker } from '@app/model/tally-trackers/choice-tracker/choice-tracker';
 import { AnswerCorrectness } from '@common/constants/answer-correctness';
 import { PlayerState } from '@common/constants/player-states';
+import { PartyConfig } from '@common/interfaces/party-config';
 import { MOCK_MESSAGE } from './chat-mocks';
 import { getMockGame } from './game-mocks';
 import { getMockQuestion } from './question-mocks';
@@ -13,6 +14,7 @@ const MOCK_MESSAGE_INFO = { roomCode: '', message: MOCK_MESSAGE };
 const MOCK_PLAYER: Player = {
     username: '',
     id: '',
+    photoUrl: '',
     answer: new MultipleChoiceAnswer(),
     score: 0,
     answerCorrectness: AnswerCorrectness.WRONG,
@@ -20,6 +22,7 @@ const MOCK_PLAYER: Player = {
     isPlaying: true,
     isChatActive: true,
     socket: undefined,
+    nGoodAnswers: 0,
     state: PlayerState.default,
 };
 const MOCK_MATCH_ROOM: MatchRoom = {
@@ -44,7 +47,7 @@ const MOCK_MATCH_ROOM: MatchRoom = {
     startTime: new Date(),
     qrCodeUrl: '',
     hostId: '',
-    isFriendsOnly: false,
+    partyConfig: {} as PartyConfig,
 };
 
 const MOCK_TEST_MATCH_ROOM: MatchRoom = {
@@ -69,7 +72,7 @@ const MOCK_TEST_MATCH_ROOM: MatchRoom = {
     startTime: new Date(),
     qrCodeUrl: '',
     hostId: '',
-    isFriendsOnly: false,
+    partyConfig: {} as PartyConfig,
 };
 
 const MOCK_RANDOM_MATCH_ROOM: MatchRoom = {
@@ -94,7 +97,7 @@ const MOCK_RANDOM_MATCH_ROOM: MatchRoom = {
     startTime: new Date(),
     qrCodeUrl: '',
     hostId: '',
-    isFriendsOnly: false,
+    partyConfig: {} as PartyConfig,
 };
 
 const MOCK_PLAYER_ROOM: MatchRoom = {
@@ -119,7 +122,7 @@ const MOCK_PLAYER_ROOM: MatchRoom = {
     startTime: new Date(),
     qrCodeUrl: '',
     hostId: '',
-    isFriendsOnly: false,
+    partyConfig: {} as PartyConfig,
 };
 
 const MOCK_ROOM_CODE = 'mockCode';

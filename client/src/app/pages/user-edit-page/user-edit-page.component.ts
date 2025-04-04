@@ -1,13 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { User } from '@angular/fire/auth';
 import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '@app/components/confirm-dialog/confirm-dialog.component';
+import { UsernameSuggestionDialogComponent } from '@app/components/username-suggestion-dialog/username-suggestion-dialog.component';
 import { MAX_LENGTH, MIN_LENGTH } from '@app/constants/authentication';
-import { IMAGE_MAX_FILE_SIZE, PresetAvatar } from '@app/constants/image-constants';
+import { AvatarState, PremiumAvatar, PresetAvatar } from '@app/constants/avatar-constants';
+import { IMAGE_MAX_FILE_SIZE } from '@app/constants/image-constants';
 import { Language } from '@app/interfaces/language';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
+import { AvatarService } from '@app/services/avatar/avatar.service';
+import { HistoryService } from '@app/services/history/history.service';
 import { NotificationService } from '@app/services/notification/notification.service';
+import { Theme, ThemeService } from '@app/services/theme/theme.service';
 import { TranslationService } from '@app/translation/translation.service';
-import { TranslocoService } from '@jsverse/transloco';
+import { UserHistoryInfo } from '@common/interfaces/history-items';
+import { translate, TranslocoService } from '@jsverse/transloco';
 
 export interface UserEditData {
     email: string;
@@ -19,14 +27,36 @@ export interface UserEditData {
     templateUrl: './user-edit-page.component.html',
     styleUrl: './user-edit-page.component.scss',
 })
-export class UserEditPageComponent {
+export class UserEditPageComponent implements OnInit {
     currentUser: User | null;
-    isPresetAvatar = true; // TODO: Determine if we consider an existing avatar to be "preset"
+    avatarState: AvatarState;
+    oldAvatarState: AvatarState;
     minUsernameLength = MIN_LENGTH;
     maxUsernameLength = MAX_LENGTH;
     loadedImageFile: File | null = null;
+    purchasedPremiumAvatars: { [key: string]: PremiumAvatar } = {};
 
-    availableLangs: string[];
+    availableLangs: Language[];
+    availableThemes = Object.values(Theme);
+    themeLabels = {
+        [Theme.DARK]: translate('page.dark-theme'),
+        [Theme.LIGHT]: translate('page.light-theme'),
+    };
+    langLabels = {
+        ['fr']: translate('page.fr'),
+        ['en']: translate('page.en'),
+    };
+    userHistory: UserHistoryInfo = {
+        auth: [],
+        match: [],
+        stats: {
+            nMatchesPlayed: 0,
+            nMatchesWon: 0,
+            averageGoodAnswersPercentage: 0,
+            averageTime: 0,
+        },
+        intensityGrid: Array(365).fill(0),
+    };
 
     form = this.fb.group({
         email: [{ value: this.authenticationService.userEmail, disabled: true }],
@@ -36,6 +66,7 @@ export class UserEditPageComponent {
         ],
         avatar: [this.authenticationService.userAvatarUrl ? this.authenticationService.userAvatarUrl : PresetAvatar.Default],
         currentLang: [this.translationService.currentLangugage],
+        currentTheme: [this.themeService.currentTheme],
     });
 
     // eslint-disable-next-line max-params
@@ -45,9 +76,22 @@ export class UserEditPageComponent {
         public notificationService: NotificationService,
         private translocoService: TranslocoService,
         private translationService: TranslationService,
+        private themeService: ThemeService,
+        private historyService: HistoryService,
+        private readonly avatarService: AvatarService,
+        public dialog: MatDialog,
     ) {
-        this.availableLangs = this.translocoService.getAvailableLangs() as string[];
+        this.availableLangs = this.translationService.getAllLanguages();
+        this.availableThemes = this.themeService.getAvailableThemes() as Theme[];
+
         this.currentUser = this.authenticationService.currentUser;
+
+        this.oldAvatarState = this.getAvatarState(this.authenticationService.userAvatarUrl);
+        this.avatarState = this.oldAvatarState;
+    }
+
+    get currentTheme() {
+        return this.form.controls['currentTheme'];
     }
 
     get username() {
@@ -66,6 +110,70 @@ export class UserEditPageComponent {
         return PresetAvatar;
     }
 
+    get premiumAvatar() {
+        return PremiumAvatar;
+    }
+
+    getThemeLabel(theme: Theme): string {
+        return this.themeLabels[theme];
+    }
+
+    getLangLabel(lang: 'fr' | 'en'): string {
+        return this.langLabels[lang];
+    }
+    async ngOnInit() {
+        if (!this.currentUser) {
+            this.userHistory = {
+                auth: [],
+                match: [],
+                stats: {
+                    nMatchesPlayed: 0,
+                    nMatchesWon: 0,
+                    averageGoodAnswersPercentage: 0,
+                    averageTime: 0,
+                },
+                intensityGrid: Array(365).fill(0),
+            };
+            return;
+        }
+        this.fetchPurchasedAvatars();
+        this.historyService.getUserHistory(this.currentUser.uid).subscribe({
+            next: (userHistory: UserHistoryInfo) => {
+                this.userHistory = userHistory;
+            },
+            error: (error) => {
+                this.userHistory = {
+                    auth: [],
+                    match: [],
+                    stats: {
+                        nMatchesPlayed: 0,
+                        nMatchesWon: 0,
+                        averageGoodAnswersPercentage: 0,
+                        averageTime: 0,
+                    },
+                    intensityGrid: Array(365).fill(0),
+                };
+            },
+        });
+    }
+
+    async fetchPurchasedAvatars() {
+        const purchasedAvatars = await this.avatarService.getPurchasedAvatars();
+        this.purchasedPremiumAvatars = Object.entries(PremiumAvatar)
+            .filter(([key]) => purchasedAvatars.includes(key))
+            .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
+    }
+
+    getAvatarState(avatar: string): AvatarState {
+        if (Object.values(PresetAvatar).includes(avatar as PresetAvatar)) {
+            return AvatarState.Preset;
+        } else if (Object.values(PremiumAvatar).includes(avatar as PremiumAvatar)) {
+            return AvatarState.Premium;
+        } else {
+            return AvatarState.Custom;
+        }
+    }
+
     static isEmptyData(userEditData: UserEditData | undefined): boolean {
         return userEditData?.email === '' && userEditData.username === '' && userEditData.currentLang === null;
     }
@@ -73,23 +181,33 @@ export class UserEditPageComponent {
     async save() {
         this.form.markAllAsTouched();
         if (this.form.valid) {
-            var url: string = this.avatar.value as string;
-            if (!this.isPresetAvatar && (this.avatar.value as string) !== this.authenticationService.userAvatarUrl) {
+            let url: string = this.avatar.value as string;
+            if (this.avatarState === AvatarState.Custom && (this.avatar.value as string) !== this.authenticationService.userAvatarUrl) {
                 const resultUrl = await this.authenticationService.uploadUserAvatar(this.authenticationService.userId, this.loadedImageFile);
                 url = resultUrl !== '' ? resultUrl : this.authenticationService.userAvatarUrl;
-            } else if (this.isPresetAvatar) {
-                // Frees Firebase Storage space if user no longer needs uploaded avatar.
+            } else if (this.avatarState !== AvatarState.Custom && this.oldAvatarState === AvatarState.Custom) {
+                // If the user changes from custom avatar to preset or premium avatar, we need to delete the custom avatar
+                // from Firebase Storage to free up space.
                 this.authenticationService.deleteUserAvatar(this.authenticationService.userId);
             }
-            // TODO: Consider adding the themes
+            this.themeService.setTheme(this.currentTheme.value as Theme);
             this.translationService.setLanguage(this.currentLang.value as string);
 
+            // Reset labels to new language
+            this.themeLabels = {
+                [Theme.DARK]: translate('page.dark-theme'),
+                [Theme.LIGHT]: translate('page.light-theme'),
+            };
+
+            this.langLabels = {
+                ['fr']: translate('page.fr'),
+                ['en']: translate('page.en'),
+            };
             this.authenticationService.editUserProfile(this.username.value as string, url);
             this.form.markAsPristine();
         }
     }
 
-    // TODO: Consider refactoring later to avoid code repetition
     setCustomAvatar(event: Event): void {
         const eventTarget: HTMLInputElement | null = event.target as HTMLInputElement | null;
         if (eventTarget?.files?.[0]) {
@@ -104,13 +222,43 @@ export class UserEditPageComponent {
                 this.loadedImageFile = file;
             });
             reader.readAsDataURL(file);
-            this.isPresetAvatar = false;
+            this.avatarState = AvatarState.Custom;
         }
     }
 
     setPresetAvatar(presetAvatar: PresetAvatar) {
-        this.isPresetAvatar = true;
+        this.avatarState = AvatarState.Preset;
         this.form.get('avatar')?.setValue(presetAvatar);
+    }
+
+    setPremiumAvatar(premiumAvatar: PremiumAvatar) {
+        this.avatarState = AvatarState.Premium;
+        this.form.get('avatar')?.setValue(premiumAvatar);
+    }
+
+    openDeleteDialog() {
+        const data = {
+            icon: 'warning',
+            title: 'common.warning',
+            text: 'page.delete-warning',
+        };
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data,
+        });
+        dialogRef.afterClosed().subscribe((confirm) => {
+            if (confirm) {
+                this.deleteUser();
+            }
+        });
+    }
+
+    openUsernameDialog() {
+        const dialogRef = this.dialog.open(UsernameSuggestionDialogComponent);
+        dialogRef.afterClosed().subscribe((username: string) => {
+            if (username) {
+                this.form.controls['username'].setValue(username);
+            }
+        });
     }
 
     deleteUser() {

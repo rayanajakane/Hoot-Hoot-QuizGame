@@ -1,6 +1,8 @@
 package com.example.polyquiz.match.presentation
 
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -34,6 +36,18 @@ import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.MatchStatus
 import com.example.polyquiz.constants.UserInfo
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material3.Icon
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.sp
+import com.example.polyquiz.R
+import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AnswerCorrectness
 
 @Composable
@@ -47,13 +61,18 @@ fun QuestionArea(
     navigateToResultsPage: () -> Unit,
     modifier: Modifier
 ) {
-
     var room by remember { mutableStateOf(matchRoomService.getRoomCode()) }
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
     var context by remember { mutableStateOf(matchContextService.getContext()) }
     val question by matchRoomService::currentQuestion
     val score by answerService::playerScore
 
-    LaunchedEffect(Unit, MatchRoomService.hasBeenKickedOut) {
+    LaunchedEffect(
+        Unit,
+        MatchRoomService.hasBeenKickedOut,
+        MatchRoomService.isTimeToNavigateToResults
+    ) {
         answerService.resetStateForNewQuestion()
         timeService.listenToTimerEvents()
         answerService.listenToAnswerEvents()
@@ -66,16 +85,33 @@ fun QuestionArea(
                 MatchRoomService.hasBeenKickedOut = false
                 navigateToHome()
             }
+
+            else -> Unit
+        }
+        when (MatchRoomService.isTimeToNavigateToResults) {
+            true -> {
+                navigateToResultsPage();
+            }
+
             else -> Unit
         }
     }
     context = matchContextService.getContext()
 
-    fun routeToResultsPage(){
+    fun routeToResultsPage() {
         matchRoomService.routeToResultsPage()
     }
 
-    Row(modifier = Modifier.fillMaxSize()) {
+    Row(modifier = Modifier
+        .statusBarsPadding()
+        .fillMaxSize()
+        .pointerInput(Unit) {
+            detectTapGestures(onTap = {
+                focusManager.clearFocus()
+                keyboardController?.hide()
+            })
+        }) {
+        ChatComponent(modifier = Modifier, authViewModel = authViewModel)
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -84,9 +120,14 @@ fun QuestionArea(
         ) {
             Spacer(modifier = Modifier.height(24.dp))
 
+
+
             TimerComponent(
                 modifier = Modifier.fillMaxWidth(),
                 timeService = timeService,
+                size = 90.dp,
+                fontSize = 22.sp,
+                stroke = 8.dp
             )
 
             Box(
@@ -101,7 +142,7 @@ fun QuestionArea(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     val questionText =
-                        if (matchRoomService.isCooldown) MatchStatus.PREPARE.value else question?.text
+                        if (matchRoomService.isCooldown) stringResource(R.string.match_prepare) else question?.text
                             ?: ""
 
                     Text(
@@ -130,38 +171,41 @@ fun QuestionArea(
 
                 if (answerService.showFeedback && context === MatchContext.PLAYERVIEW && !matchRoomService.isCooldown) {
                     val (feedbackText, feedbackColor) = when (answerService.answerCorrectness) {
-                        AnswerCorrectness.WRONG -> "\uD83D\uDE14 Mauvaise Réponse \uD83D\uDE14" to Color(
+                        AnswerCorrectness.WRONG -> stringResource(R.string.wrong_answer) to Color(
                             0xFFe91b0c
                         )
 
                         AnswerCorrectness.OK -> {
-                            "\uD83C\uDD97 Réponse partielle! Vous avez obtenu ${(question?.points ?: 0) / 2} points \uD83C\uDD97" to Color(
+                            stringResource(
+                                R.string.partial_answer,
+                                (question?.points ?: 0) / 2
+                            ) to Color(
                                 0xFFf6c811
                             )
                         }
 
                         AnswerCorrectness.GOOD -> {
-                            "\uD83C\uDD97 Réponse correcte! Vous avez obtenu ${question?.points} points \uD83C\uDD97" to Color(
+                            stringResource(R.string.good_answer, question?.points ?: 0) to Color(
                                 0xFF4caf50
                             )
                         }
 
-                        else -> null to null
                     }
 
-                    if (feedbackText != null && feedbackColor != null) {
-                        Text(
-                            text = feedbackText,
-                            style = MaterialTheme.typography.titleMedium,
-                            color = feedbackColor
-                        )
-                    }
+                    Text(
+                        text = feedbackText,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = feedbackColor
+                    )
 
 
                     if (answerService.bonusPoints > 0) {
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = "✨ Vous avez obtenu un bonus de ${answerService.bonusPoints} points!✨",
+                            text = stringResource(
+                                R.string.bonus_message,
+                                answerService.bonusPoints
+                            ),
                             style = MaterialTheme.typography.titleMedium,
                             color = Color.Green
                         )
@@ -191,6 +235,7 @@ fun QuestionArea(
                             modifier = Modifier.fillMaxWidth(0.8f)
                         )
                     }
+
                     QuestionType.ESTIMATED_ANSWER.value -> {
                         EstimatedAnswerArea(
                             answerService,
@@ -217,62 +262,78 @@ fun QuestionArea(
                                     roomCode = matchRoomService.getRoomCode()
                                 )
                             )
-                        }
+                        },
+                        shape = RoundedCornerShape(3.dp)
                     ) {
-                        Text("Soumettre")
+                        Text(stringResource(R.string.submit))
                     }
                 }
             }
 
-            }
-        if(MatchRoomService.isMatchStarted)
-    {
-        PlayersListComponent(
-            matchRoomService = matchRoomService,
-            context = matchContextService,
-            players = matchRoomService.players,
-            modifier = Modifier
-                .width(250.dp)
-                .fillMaxHeight(),
-            extraContent = {
-                Column {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    println(context)
-                    if (context == MatchContext.HOSTVIEW && !matchRoomService.isCooldown  ) {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        if(!answerService.isEndGame) {
-                            Button(onClick = { matchRoomService.goToNextQuestion() }) {
-                                Text("QUESTION SUIVANTE")
-                            }
-                        }
-                        else{
-                            Button(
-                                onClick = {
-                                    routeToResultsPage();
-                                    navigateToResultsPage()},
-                                modifier = Modifier.fillMaxWidth(0.8f),
-                                shape = RoundedCornerShape(8.dp)
-                            ) {
-                                Text("Présenter les résultats finaux")
-                            }
-                        }
-                    }
-
-                    Button(
-                        onClick = {
-                            matchRoomService.isQuitting = true
-                            matchRoomService.disconnectFromRoom()
-                            navigateToHome()
-                        }
-                    ) {
-                        Text("Quitter")
-                    }
-                }
-            }
-        )
-    }
         }
+        if (MatchRoomService.isMatchStarted) {
+            PlayersListComponent(
+                matchRoomService = matchRoomService,
+                context = matchContextService,
+                players = matchRoomService.players,
+                modifier = Modifier
+                    .width(250.dp)
+                    .fillMaxHeight()
+                    .navigationBarsPadding(),
+                extraContent = {
+                    Column {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        if (context == MatchContext.HOSTVIEW && !matchRoomService.isCooldown) {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            if (answerService.isEndGame) {
+                                Log.d("Question area", "is end game")
+                                Button(
+                                    onClick = {
+                                        routeToResultsPage();
+                                        navigateToResultsPage()
+                                    },
+                                    modifier = Modifier.fillMaxWidth(0.8f),
+                                    shape = RoundedCornerShape(8.dp)
+                                ) {
+                                    Icon(
+                                        Icons.Filled.BarChart,
+                                        contentDescription = stringResource(R.string.show_final)
+                                    )
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text(stringResource(R.string.show_final))
+                                }
+                            } else if (answerService.isNextQuestionButtonEnabled) {
+                                Log.d("Question area", "next question enabled")
+                                Button(
+                                    onClick = { matchRoomService.goToNextQuestion() },
+                                    shape = RoundedCornerShape(3.dp)
+                                ) {
+                                    Text(stringResource(R.string.next_question))
+                                }
+                            }
+                        }
 
-
+                        Button(
+                            onClick = {
+                                matchRoomService.isQuitting = true
+                                matchRoomService.disconnectFromRoom()
+                                navigateToHome()
+                            },
+                            shape = RoundedCornerShape(3.dp),
+                        ) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.Logout,
+                                contentDescription = stringResource(R.string.leave)
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(stringResource(R.string.leave))
+                        }
+                    }
+                }
+            )
+        }
     }
+
+
+}
 

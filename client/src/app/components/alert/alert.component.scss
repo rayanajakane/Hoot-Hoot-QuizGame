@@ -1,3 +1,6 @@
+@use '../../../styles' as styles;
+@use '@angular/material' as mat;
+
 .center-alert {
     position: fixed;
     top: 50%;
@@ -9,7 +12,6 @@
 .alert {
     font-size: 30vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #4758b8;
     animation: growAndFade 1s ease forwards;
 }
 

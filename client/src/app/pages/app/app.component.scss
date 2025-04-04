@@ -1,14 +1,46 @@
+.right-panel {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    z-index: 1;
+}
+
+.balance-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: fit-content;
+}
+
+.balance-icon {
+    margin-right: 0.5rem;
+}
+
+.balance-text {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
 .two-columns-layout {
-    display: column;
-    grid-template: 3fr 7fr;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+app-chat {
+    flex: 0 0 20%;
+    max-width: 20%;
 }
 
 .second-column {
-    margin-left: 20vw;
-}
-
-#logout-button {
-    right: 0;
-    margin-right: 0;
-    margin-left: 90vw;
+    flex: 1;
 }

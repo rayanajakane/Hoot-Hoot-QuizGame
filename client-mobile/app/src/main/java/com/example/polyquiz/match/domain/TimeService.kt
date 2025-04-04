@@ -52,7 +52,11 @@ object TimeService {
 
     fun computeTimerProgress(): Float {
         val progress = (counter.value.toFloat() / duration.toFloat()) * 100
-        return progress
+        return if(progress.isNaN()) {
+            0f
+        } else {
+            progress
+        }
     }
 
 }

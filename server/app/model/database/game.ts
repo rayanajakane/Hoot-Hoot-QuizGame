@@ -17,6 +17,14 @@ export class Game {
 
     @ApiProperty()
     @Prop({ required: true })
+    authorId: string; // Saved in case we want to reflect username changes
+
+    @ApiProperty()
+    @Prop({ required: true })
+    authorName: string;
+
+    @ApiProperty()
+    @Prop({ required: true })
     title: string;
 
     @ApiProperty()

@@ -2,6 +2,7 @@ package com.example.polyquiz.http
 
 import com.example.polyquiz.constants.Environment
 import com.google.gson.Gson
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,7 +23,7 @@ abstract class CommunicationService(
 
     protected val retrofit: Retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl(Environment.SERVER_ADDRESS_WITHOUT_API.value + "api/")
+            .baseUrl(Environment.SERVER_LOCAL_ADDRESS.value + "api/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
@@ -109,12 +110,20 @@ abstract class CommunicationService(
                 if (response.isSuccessful) {
                     onSuccess()
                 } else {
-                    onError("Failed with HTTP code: ${response.code()} - ${response.message()}")
+                    val errorMessage = try {
+                        val errorBody = response.errorBody()?.string()
+                        val jsonObject = JSONObject(errorBody ?: "")
+                        jsonObject.optString("message", "Failed with HTTP code: ${response.code()} - ${response.message()}")
+                    } catch (e: Exception) {
+                        "Failed with HTTP code: ${response.code()} - ${response.message()}"
+                    }
+
+                    onError(errorMessage)
                 }
             }
 
             override fun onFailure(call: Call<Void>, t: Throwable) {
-                onError("Network error: ${t}")
+                onError("Network error: ${t.localizedMessage ?: t.toString()}")
                 t.printStackTrace()
             }
         }

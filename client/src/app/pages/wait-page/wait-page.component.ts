@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { PresetAvatar } from '@app/constants/avatar-constants';
 import { MatchContext } from '@app/constants/states';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
@@ -16,6 +17,7 @@ export class WaitPageComponent implements OnInit {
     isLocked: boolean;
     isHostPlaying: boolean;
     qrCodeUrl: string;
+    defaultAvatar = PresetAvatar.Default;
 
     // permit more class parameters to decouple services
     // eslint-disable-next-line max-params

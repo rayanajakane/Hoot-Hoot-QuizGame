@@ -4,7 +4,9 @@ import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatTableModule } from '@angular/material/table';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -49,10 +51,15 @@ import { SortHistoryPipe } from '@app/pipes/sort-history.pipe';
 import { SortPlayersPipe } from '@app/pipes/sort-players.pipe';
 import { TranslocoRootModule } from '@app/transloco-root.module';
 import { FIREBASE_CONFIG } from 'src/environments/firebase-config';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { EloRankingsComponent } from './components/elo-rankings/elo-rankings.component';
 import { FriendsListItemComponent } from './components/friends-list-item/friends-list-item.component';
 import { FriendsSearchComponent } from './components/friends-search/friends-search.component';
+import { PartyConfigDialogComponent } from './components/party-config-dialog/party-config-dialog.component';
+import { UsernameSuggestionDialogComponent } from './components/username-suggestion-dialog/username-suggestion-dialog.component';
 import { JoinMatchPageComponent } from './pages/join-match-page/join-match-page.component';
 import { QuestionGeneratorComponent } from './components/question-generator/question-generator.component';
+import { ShopPageComponent } from './pages/shop-page/shop-page.component';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -103,6 +110,11 @@ import { QuestionGeneratorComponent } from './components/question-generator/ques
         JoinMatchPageComponent,
         FriendsSearchComponent,
         FriendsListItemComponent,
+        PartyConfigDialogComponent,
+        EloRankingsComponent,
+        ConfirmDialogComponent,
+        ShopPageComponent,
+        UsernameSuggestionDialogComponent,
     ],
     imports: [
         AppMaterialModule,
@@ -110,11 +122,13 @@ import { QuestionGeneratorComponent } from './components/question-generator/ques
         BrowserAnimationsModule,
         BrowserModule,
         FormsModule,
+        MatRadioModule,
         HttpClientModule,
         DragDropModule,
         ReactiveFormsModule,
         TranslocoRootModule,
         MatSliderModule,
+        MatTableModule,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [

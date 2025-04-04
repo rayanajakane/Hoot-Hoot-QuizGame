@@ -1,0 +1,22 @@
+<div id="main-container" *transloco="let t">
+    <h1>{{ t('main-page.rankings') }}</h1>
+    <div id="players-list">
+        <mat-card *ngFor="let ranking of eloService.rankings | sortPlayers: 'rating' : 'descending'; let i = index" class="player-card">
+            <div class="username-avatar-container">
+                <div class="player-rank">
+                    <p>{{ i + 1 }}</p>
+                </div>
+                <div class="avatar-container">
+                    <div class="avatar">
+                        <img src="{{ ranking.photoUrl ? ranking.photoUrl : defaultAvatar }}" alt="" />
+                    </div>
+                </div>
+                <p>{{ ranking.username }}</p>
+            </div>
+            <div class="player-performance">
+                <p>{{ ranking.score }} ELO</p>
+            </div>
+        </mat-card>
+    </div>
+</div>
+<app-players-list [players]="eloService.rankings" [canHostToggleChatState]="false"></app-players-list>

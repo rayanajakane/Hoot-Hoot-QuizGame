@@ -19,6 +19,8 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { SinonStubbedInstance, createStubInstance } from 'sinon';
 
+import { FirebaseAuthService } from '@app/modules/firebase/firebase-auth/firebase-auth.service';
+import { HistoryService } from '../history/history.service';
 import { QrCodeService } from '../qr-code/qr-code.service';
 import { AnswerService } from './answer.service';
 
@@ -40,10 +42,14 @@ describe('AnswerService', () => {
     let player2;
     let updateChoiceMock;
     let qrCodeService: SinonStubbedInstance<QrCodeService>;
+    let historyService: SinonStubbedInstance<HistoryService>;
+    let authService: SinonStubbedInstance<FirebaseAuthService>;
     const randomDate = 100000;
 
     beforeEach(async () => {
         qrCodeService = createStubInstance(QrCodeService);
+        historyService = createStubInstance(HistoryService);
+        authService = createStubInstance(FirebaseAuthService);
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 AnswerService,
@@ -56,6 +62,8 @@ describe('AnswerService', () => {
                 LongAnswerStrategy,
                 EstimatedAnswerStrategy,
                 { provide: QrCodeService, useValue: qrCodeService },
+                { provide: HistoryService, useValue: historyService },
+                { provide: FirebaseAuthService, useValue: authService },
             ],
         }).compile();
 

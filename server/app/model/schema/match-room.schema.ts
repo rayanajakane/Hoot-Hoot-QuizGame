@@ -2,6 +2,7 @@ import { Game } from '@app/model/database/game';
 import { Question } from '@app/model/database/question';
 import { ChoiceTracker } from '@app/model/tally-trackers/choice-tracker/choice-tracker';
 import { Histogram } from '@common/interfaces/histogram';
+import { PartyConfig } from '@common/interfaces/party-config';
 import { Socket } from 'socket.io';
 import { Message } from './message.schema';
 import { Player } from './player.schema';
@@ -28,5 +29,6 @@ export interface MatchRoom {
     isClassicMode: boolean;
     startTime: Date;
     qrCodeUrl: string;
-    isFriendsOnly: boolean;
+    partyConfig: PartyConfig;
+    end?: Date;
 }

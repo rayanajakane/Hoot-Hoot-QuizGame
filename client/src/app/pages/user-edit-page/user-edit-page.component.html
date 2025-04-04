@@ -2,7 +2,6 @@
     <div id="main-container">
         <div class="nav">
             <h1>{{ t('page.user-edit') }}</h1>
-            <button mat-raised-button routerLink="/home"><mat-icon>home</mat-icon>Page principale</button>
         </div>
         <div class="content-container">
             <form id="form" [formGroup]="form">
@@ -13,7 +12,7 @@
                                 <img *ngIf="form.get('avatar')!.value" [src]="form.get('avatar')!.value" />
                             </div>
                             <input class="avatar" type="file" #avatar (change)="setCustomAvatar($event)" accept="image/png, image/jpeg" />
-                            <button mat-raised-button color="primary" (click)="avatar.click()">
+                            <button type="button" mat-raised-button color="primary" (click)="avatar.click()">
                                 <mat-icon>upload</mat-icon>{{ t('page.upload-avatar') }}
                             </button>
                         </div>
@@ -24,6 +23,25 @@
                                     <img src="{{ enum.value }}" alt="" />
                                 </div>
                             </div>
+                        </div>
+                        <div id="avatar-choices-container">
+                            <p *ngIf="(purchasedPremiumAvatars | keyvalue).length > 0">{{ t('page.avatar-premium') }}</p>
+                            <div id="avatar-choices">
+                                <div
+                                    class="avatar-mini"
+                                    *ngFor="let enum of purchasedPremiumAvatars | keyvalue"
+                                    (click)="setPremiumAvatar(enum.value)"
+                                >
+                                    <img [src]="enum.value" alt="" />
+                                </div>
+                            </div>
+                            <p *ngIf="(purchasedPremiumAvatars | keyvalue).length === 0" class="no-avatars">
+                                {{ t('page.no-premium-avatars') }}
+                            </p>
+                            <button mat-raised-button color="primary" routerLink="/shop">
+                                <mat-icon>shopping_cart</mat-icon>
+                                {{ t('page.buy-avatars') }}
+                            </button>
                         </div>
                     </div>
                     <div id="form-fields">
@@ -41,10 +59,13 @@
                                 type="username"
                                 name="username"
                                 formControlName="username"
-                                maxlength="200"
+                                maxlength="20"
                                 placeholder=""
                                 id="username-input"
                             />
+                            <button type="button" mat-icon-button matSuffix (click)="openUsernameDialog()">
+                                <mat-icon>auto_fix_high</mat-icon>
+                            </button>
                             <mat-error *ngIf="form.get('username')?.hasError('containsSpecialChar')"
                                 >{{ t('auth.error.username-special-char') }}
                             </mat-error>
@@ -57,15 +78,14 @@
                         </mat-form-field>
                         <mat-form-field id="theme">
                             <mat-label>{{ t('page.theme') }}</mat-label>
-                            <mat-select>
-                                <mat-option value="option1">Option 1</mat-option>
-                                <mat-option value="option2">Option 2</mat-option>
+                            <mat-select formControlName="currentTheme" data-testid="theme-select-test-id">
+                                <mat-option *ngFor="let theme of availableThemes" [value]="theme">{{ getThemeLabel(theme) }}</mat-option>
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field id="language">
                             <mat-label>{{ t('page.language') }}</mat-label>
                             <mat-select formControlName="currentLang" data-testid="language-select-test-id">
-                                <mat-option *ngFor="let lang of availableLangs" [value]="lang">{{ lang }}</mat-option>
+                                <mat-option *ngFor="let lang of availableLangs" [value]="lang">{{ getLangLabel(lang) }}</mat-option>
                             </mat-select>
                         </mat-form-field>
                         <button mat-raised-button color="primary" (click)="save()" id="save-button">{{ t('page.save') }}</button>
@@ -73,7 +93,97 @@
                 </mat-card>
             </form>
             <h2>{{ t('page.danger-zone') }}</h2>
-            <button mat-raised-button color="accent" (click)="deleteUser()" id="delete-button">{{ t('page.delete-user') }}</button>
+            <button mat-raised-button color="warn" (click)="deleteUser()" id="delete-button">{{ t('page.delete-user') }}</button>
+            <h2>{{ t('history.stats-header') }}</h2>
+            <mat-card class="stats-card">
+                <div class="stat">
+                    <p>{{ t('history.nMatchesPlayed') }}</p>
+                    <p>{{ userHistory.stats.nMatchesPlayed }}</p>
+                </div>
+                <div class="stat">
+                    <p>{{ t('history.nMatchesWon') }}</p>
+                    <p>{{ userHistory.stats.nMatchesWon }}</p>
+                </div>
+                <div class="stat">
+                    <p>{{ t('history.averageGoodAnswersPercentage') }}</p>
+                    <p>{{ userHistory.stats.averageGoodAnswersPercentage }} %</p>
+                </div>
+                <div class="stat">
+                    <p>{{ t('history.averageTime') }}</p>
+                    <p>{{ userHistory.stats.averageTime }} s</p>
+                </div>
+            </mat-card>
+            <h2>{{ t('history.grid-label') }}</h2>
+            <div class="grid-labels-container">
+                <div class="months">
+                    <p>{{ t('history.jan') }}</p>
+                    <p>{{ t('history.feb') }}</p>
+                    <p>{{ t('history.mar') }}</p>
+                    <p>{{ t('history.apr') }}</p>
+                    <p>{{ t('history.may') }}</p>
+                    <p>{{ t('history.jun') }}</p>
+                    <p>{{ t('history.jul') }}</p>
+                    <p>{{ t('history.aug') }}</p>
+                    <p>{{ t('history.sep') }}</p>
+                    <p>{{ t('history.oct') }}</p>
+                    <p>{{ t('history.nov') }}</p>
+                    <p>{{ t('history.dec') }}</p>
+                </div>
+                <div class="days">
+                    <p>{{ t('history.sun') }}</p>
+                    <p>{{ t('history.mon') }}</p>
+                    <p>{{ t('history.tue') }}</p>
+                    <p>{{ t('history.wed') }}</p>
+                    <p>{{ t('history.thu') }}</p>
+                    <p>{{ t('history.fri') }}</p>
+                    <p>{{ t('history.sat') }}</p>
+                </div>
+                <div class="grid-container">
+                    <div class="grid-squares" *ngFor="let level of userHistory.intensityGrid">
+                        <div class="square" [ngClass]="'square' + level.toString()"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="grid-legend-container">
+                <div id="grid-legend">
+                    <p>-</p>
+                    <div class="square"></div>
+                    <div class="square square1"></div>
+                    <div class="square square2"></div>
+                    <div class="square square3"></div>
+                    <p>+</p>
+                </div>
+            </div>
+            <h2>{{ t('history.match-history') }}</h2>
+            <p *ngIf="userHistory.match.length === 0" class="no-item-to-display">{{ t('history.no-item') }}</p>
+            <mat-card class="history-match-item header-card card-header-background" *ngIf="userHistory.match.length !== 0">
+                <p>{{ t('history.start') }}</p>
+                <p>{{ t('history.end') }}</p>
+                <p>{{ t('history.result') }}</p>
+                <p>{{ t('history.gave-up-label') }}</p>
+            </mat-card>
+            <div *ngFor="let item of userHistory.match">
+                <mat-card class="history-match-item" color="primary">
+                    <p>{{ item.start | date: 'YYYY-MM-dd HH:mm' }}</p>
+                    <p>{{ item.end | date: 'YYYY-MM-dd HH:mm' }}</p>
+                    <p>{{ item.hasWon ? t('history.victory') : t('history.defeat') }}</p>
+                    <p>{{ item.hasGivenUp ? '✔' : '-' }}</p>
+                </mat-card>
+            </div>
+
+            <h2>{{ t('history.auth-history') }}</h2>
+            <mat-card class="history-auth-item header-card" color="primary">
+                <p>{{ t('history.date') }}</p>
+                <p>{{ t('history.action') }}</p>
+            </mat-card>
+            <div *ngFor="let item of userHistory.auth">
+                <mat-card class="history-auth-item">
+                    <p>{{ item.date | date: 'YYYY-MM-dd HH:mm' }}</p>
+                    <p *ngIf="item.isLogin">{{ t('history.signin') }}</p>
+                    <p *ngIf="!item.isLogin">{{ t('history.signout') }}</p>
+                </mat-card>
+            </div>
         </div>
+        <div></div>
     </div>
 </ng-container>

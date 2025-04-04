@@ -9,10 +9,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.polyquiz.R
 import com.example.polyquiz.constants.AnswerCorrectness
 import com.example.polyquiz.constants.FREE_ANSWER_MAX_LENGTH
 import com.example.polyquiz.constants.MatchContext
@@ -21,7 +23,6 @@ import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.constants.GradesInfo
 import com.example.polyquiz.constants.GradingFeedback
 import com.example.polyquiz.constants.LongAnswerInfo
-import com.example.polyquiz.constants.MatchButtonActions
 
 @Composable
 fun LongAnswerArea(
@@ -34,11 +35,10 @@ fun LongAnswerArea(
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
-        println("gardes${answerService.gradeAnswers}")
         if (matchContext != MatchContext.HOSTVIEW) {
                 if (!answerService.isSelectionEnabled && !answerService.showFeedback) {
                     Text(
-                        text = GradingFeedback.WAITING_FOR_GRADING.value,
+                        text = stringResource(R.string.waiting_grading),
                         fontSize = 18.sp,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
@@ -54,7 +54,7 @@ fun LongAnswerArea(
                         answerService.currentLongAnswer = it
                         answerService.updateLongAnswer()
                     } },
-                    label = { Text("Réponse") },
+                    label = { Text(stringResource(R.string.answer)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(120.dp),
@@ -72,7 +72,7 @@ fun LongAnswerArea(
         } else {
             if (answerService.gradeAnswers) {
                 Text(
-                    text = GradingFeedback.GRADE_PLAYERS.value,
+                    text = stringResource(R.string.grade_players),
                     fontSize = 18.sp,
                     modifier = Modifier.padding(8.dp)
                 )
@@ -96,8 +96,8 @@ fun LongAnswerArea(
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     Text(
-                        text = if (answerService.isGradingComplete) MatchButtonActions.SUBMIT_GRADING.value
-                        else GradingFeedback.PLAYERS_TO_GRADE.value
+                        text = if (answerService.isGradingComplete) stringResource(R.string.submit_grading)
+                        else stringResource(R.string.players_to_grade)
                     )
                 }
             }
@@ -122,9 +122,6 @@ fun AnswerCard(playerAnswer: LongAnswerInfo) {
                     Button(
                         onClick = { playerAnswer.score = option.value.toString()
                                 answerService.handleGrading()},
-//                        colors = ButtonDefaults.buttonColors(
-//                            containerColor = getGradeColor(option)
-//                        )
                     ) {
                         Text("${option.value}%")
                     }
