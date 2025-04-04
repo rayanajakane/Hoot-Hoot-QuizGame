@@ -202,3 +202,49 @@ img {
 .days p {
     display: none;
 }
+
+#wallpaper-choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+}
+
+.wallpaper-mini {
+    width: 80px;
+    height: 50px;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    &:hover {
+        transform: scale(1.05);
+    }
+}
+
+.none-wallpaper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f5f5;
+    position: relative;
+}
+
+.no-bg-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.75rem;
+    color: #666;
+
+    mat-icon {
+        font-size: 1.5rem;
+    }
+}
