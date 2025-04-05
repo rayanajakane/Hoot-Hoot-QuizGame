@@ -256,36 +256,47 @@ fun HomePage(
                             Text(text = stringResource(R.string.friends))
                         }
                     }
-                    ElevatedButton(
-                        onClick = {
-                            navigateToRankingsPage()
-                        },
-                        shape = RoundedCornerShape(3.dp),
-                        modifier = Modifier
-                            .height(55.dp)
-                            .width(164.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceBright,
-                            contentColor = MaterialTheme.colorScheme.onSurface
-                        )
-                    ) {
-                        Icon(
-                            Icons.Filled.Group,
-                            contentDescription = stringResource(R.string.rankings)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = stringResource(R.string.rankings))
-                    }
-                    ElevatedButton(
-                        onClick = { navigateToShopPage() },
-                        modifier = Modifier.padding(top = 16.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.ShoppingCart,
-                            contentDescription = null
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(stringResource(R.string.buy_goodies))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Column {
+                        ElevatedButton(
+                            onClick = {
+                                navigateToRankingsPage()
+                            },
+                            shape = RoundedCornerShape(3.dp),
+                            modifier = Modifier
+                                .height(55.dp)
+                                .width(164.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceBright,
+                                contentColor = MaterialTheme.colorScheme.onSurface
+                            )
+                        ) {
+                            Icon(
+                                Icons.Filled.Group,
+                                contentDescription = stringResource(R.string.rankings)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(text = stringResource(R.string.rankings))
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        ElevatedButton(
+                            onClick = { navigateToShopPage() },
+                            shape = RoundedCornerShape(3.dp),
+                            modifier = Modifier
+                                .height(55.dp)
+                                .width(164.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceBright,
+                                contentColor = MaterialTheme.colorScheme.onSurface
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ShoppingCart,
+                                contentDescription = null
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(stringResource(R.string.buy_goodies))
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
