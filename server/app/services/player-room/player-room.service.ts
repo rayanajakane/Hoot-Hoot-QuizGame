@@ -41,8 +41,9 @@ export class PlayerRoomService {
     recalculateScores(roomCode: string) {
         const totalVotes = Object.values(this.matchRoomService?.votesCount).reduce((total, vote) => total + vote, 0);
         const cheaterUsername = this.matchRoomService.cheaterPlayer.username;
+        const playersPlaying = this.getPlayers(roomCode).filter(player => player.isPlaying);
 
-        if (totalVotes === this.getPlayers(roomCode).length) {
+        if (totalVotes === playersPlaying.length) {
             const cheaterPlayer = this.matchRoomService.cheaterPlayer;
 
             if (!this.matchRoomService.cheaterGetsBonus(cheaterUsername)) {
@@ -77,12 +78,11 @@ export class PlayerRoomService {
             }
         }
 
-        if (totalVotes === this.getPlayers(roomCode).length) {
+        if (totalVotes === playersPlaying.length) {
             if (this.matchRoomService.cheaterGetsBonus(cheaterUsername)) {
                 const player = this.getPlayerByUsername(roomCode, cheaterUsername);
                 player.bonusCount = Math.round(player.bonusCount + player.bonusCount * 0.3);
                 player.score = Math.round(player.score + player.bonusCount);
-
                 const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
                 console.log(feedback);
                 this.matchRoomService.cheaterPlayer.socket.emit(AnswerEvents.Feedback, feedback);

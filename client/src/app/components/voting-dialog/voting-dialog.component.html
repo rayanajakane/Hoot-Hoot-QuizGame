@@ -1,7 +1,7 @@
 <ng-container *transloco="let t">
     <div id="voting-dialog">
-        <h2>{{ t('cheater-mode.voteCheater') }}</h2>
         <div *ngIf="this.matchContextService.getContext() !== matchContext.HostView">
+            <h2>{{ t('cheater-mode.voteCheater') }}</h2>
             <mat-radio-group [(ngModel)]="selectedPlayer">
                 <mat-selection-list *ngFor="let player of matchRoomService.players">
                     <div *ngIf="player.username !== matchRoomService.getUsername()">
@@ -20,6 +20,7 @@
     </div>
 
     <div *ngIf="this.matchContextService.getContext() === matchContext.HostView && this.matchRoomService.votingUsers" class="players-main-container">
+        <h2></h2>
         <mat-list *ngFor="let player of this.matchRoomService.votingUsers" >
                 <p class="player-card">{{t('cheater-mode.playerVoted', {player: player})}}</p>
         </mat-list>

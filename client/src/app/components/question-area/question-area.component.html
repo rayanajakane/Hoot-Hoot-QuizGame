@@ -69,7 +69,7 @@
 
             <div
                 id="submit-button-container"
-                *ngIf="context === matchContext.PlayerView || context === matchContext.TestPage || context === matchContext.RandomMode"
+                *ngIf="context === matchContext.PlayerView || context === matchContext.TestPage || context === matchContext.RandomMode ||context === matchContext.CheaterView"
             >
                 <button mat-raised-button color="primary" id="submit-button" *ngIf="this.answerService.isSelectionEnabled" (click)="submitAnswers()">
                     {{ t('question-area.submit') }}
