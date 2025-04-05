@@ -35,7 +35,7 @@ describe('NotificationService', () => {
 
         service.displayErrorMessage(errorMessage);
 
-        expect(snackBar.open).toHaveBeenCalledWith(errorMessage, '✖', {
+        expect(snackBar.open).toHaveBeenCalledWith('❌ ' + errorMessage, '', {
             duration: 5000,
             panelClass: ['error-snackbar'],
         });
@@ -48,7 +48,7 @@ describe('NotificationService', () => {
 
         service.displaySuccessMessage(successMessage);
 
-        expect(snackBar.open).toHaveBeenCalledWith(successMessage, '✔', {
+        expect(snackBar.open).toHaveBeenCalledWith('✅ ' + successMessage, '', {
             duration: 5000,
             panelClass: ['success-snackbar'],
         });
@@ -82,7 +82,7 @@ describe('NotificationService', () => {
 
         expect(afterOpenSpy).toHaveBeenCalled();
     });
-    
+
     it('should open a pending changes confirmation dialog', () => {
         const pendingChangesConfig: MatDialogConfig<ConfirmDialogData> = {
             data: {
