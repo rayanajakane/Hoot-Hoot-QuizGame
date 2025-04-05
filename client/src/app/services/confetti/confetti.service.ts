@@ -14,7 +14,8 @@ export class ConfettiService {
 
     onWinner(): void {
         this.socketService.on('winner', () => {
-            this.startWinnerConfetti();
+            // TODO: Decide if we do snackbar instead?
+            // this.startWinnerConfetti();
         });
     }
 
