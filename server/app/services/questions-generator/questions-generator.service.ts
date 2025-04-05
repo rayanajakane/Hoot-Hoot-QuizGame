@@ -22,53 +22,64 @@ export class QuestionsGeneratorService {
     private readonly logger = new Logger(QuestionsGeneratorService.name); 
     schema: Schema = {
         type: SchemaType.OBJECT,
-          properties: {
-            Question: {
-              type: SchemaType.STRING,
-              nullable: false,
-            },
-            Choices:{
-                type: SchemaType.ARRAY,
-                minItems: 2,
-                items:{ 
-                    type: SchemaType.OBJECT,
-                    properties: {                  
-                    Text: {
-                    type: SchemaType.STRING,
-                    nullable: false,
+        properties: {
+          Questions: {
+            type: SchemaType.ARRAY,
+            minItems: 4,  
+            items: {
+              type: SchemaType.OBJECT,
+              properties: {
+                Question: {
+                  type: SchemaType.STRING,
+                  nullable: false,
+                },
+                Numericals: {
+                  type: SchemaType.OBJECT,
+                  properties: {
+                    lowerBound: {
+                      type: SchemaType.INTEGER,
+                      nullable: false,
                     },
-                    isCorrect: {  
+                    upperBound: {
+                      type: SchemaType.INTEGER,
+                      nullable: false,
+                    },
+                    exactValue: {
+                      type: SchemaType.INTEGER,
+                      nullable: false,
+                    },
+                    errorMargin: {
+                      type: SchemaType.INTEGER,
+                      nullable: false,
+                    },
+                  },
+                  required: ['lowerBound', 'upperBound', 'exactValue', 'errorMargin'],
+                },
+                Choices: {
+                  type: SchemaType.ARRAY,
+                  minItems: 2,
+                  items: {
+                    type: SchemaType.OBJECT,
+                    properties: {
+                      Text: {
+                        type: SchemaType.STRING,
+                        nullable: false,
+                      },
+                      isCorrect: {
                         type: SchemaType.BOOLEAN,
                         nullable: false,
+                      },
                     },
-                },
-                required: ['Text', 'isCorrect'],
+                    required: ['Text', 'isCorrect'],
+                  },
+                }
+              },
+              required: ['Question'],
             },
-          },
-          Numericals:{
-            type: SchemaType.OBJECT,
-            properties:{
-                lowerBound:{
-                    type: SchemaType.INTEGER,
-                    nullable: false,
-                },
-                upperBound:{
-                    type: SchemaType.INTEGER,
-                    nullable: false,
-                },
-                exactValue:{
-                    type: SchemaType.INTEGER,
-                    nullable: false,
-                },
-                errorMargin:{
-                    type: SchemaType.INTEGER,
-                    nullable: false,
-                },
-            },
-            required: ['lowerBound', 'upperBound', 'exactValue', 'errorMargin'],
           },
         },
-        required: ['Question'],
+        required: ['Questions'],
+ 
       };
     constructor (configService: ConfigService){
         const geminiApiKey = "AIzaSyDtfJfe29-BN22yt8RDUboSdFb7LXWKHyo";

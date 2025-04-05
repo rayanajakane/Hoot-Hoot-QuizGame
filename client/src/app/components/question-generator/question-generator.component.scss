@@ -1,4 +1,43 @@
 mat-form-field {
-    max-width: 400px; 
-    width: 100%;      
+    width: 100%;
+}
+.question-dialog {
+    width: 80vw;
+}
+
+.form-1 {
+    display: flex;
+    flex-direction: column;
+    float: right;
+    gap: 2px;
+    width: 45%;
+}
+
+.question-field {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 100%;
+}
+
+.prompt-input {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 70%;
+}
+
+.type-input {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 50%;
+}
+
+.form-2 {
+    display: flex;
+    flex-direction: column;
+    float: left;
+    gap: 2px;
+    width: 45%;
 }
