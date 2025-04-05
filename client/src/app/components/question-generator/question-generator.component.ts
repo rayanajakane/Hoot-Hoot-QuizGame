@@ -2,11 +2,12 @@ import { Component, EventEmitter, HostListener, Inject, Output } from '@angular/
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TextDialogData } from '@app/interfaces/dialog-data/text-dialog-data';
 import { QuestionCreationFormComponent } from '../question-creation-form/question-creation-form.component';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Choice } from '@app/interfaces/choice';
 import { HttpResponse } from '@angular/common/http';
 import { QuestionService } from '@app/services/question/question.service';
-//import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoService } from '@jsverse/transloco';
+import { translate } from '@jsverse/transloco';
 
 interface GeneratedQuestion {
     question: {
@@ -37,7 +38,7 @@ export class QuestionGeneratorComponent {
     choices: Choice[];
     choicesSecondForm: Choice[];
     allResults: [];
-  
+
     errorMargin: number;
     lowerBound: number;
     upperBound: number;
@@ -47,19 +48,23 @@ export class QuestionGeneratorComponent {
     upperBoundSecondForm: number;
     exactValueSecondForm: number;
     questionSubmitted: boolean = false;
-    fb: FormBuilder;
     numChoices: number = 4;
     selectedQuestion: GeneratedQuestion | null = null;
     QuestionFormGenerated: number = 0;
     index: number = 0;
     parsedAnswerFirstForm: any;
     parsedAnswerSecondForm: any;
-    language: string = "Français";
-    languageToggle: boolean = false;
+    language: string =
+        this.transloco.getActiveLang() === 'fr'
+            ? translate('questions-generations.french')
+            : this.transloco.getActiveLang() === 'en'
+            ? translate('questions-generations.english')
+            : this.transloco.getActiveLang();
     results: [];
     constructor(
         private dialogRef: MatDialogRef<unknown>,
         private questionService: QuestionService,
+        private transloco: TranslocoService,
         @Inject(MAT_DIALOG_DATA) public data: TextDialogData,
     ) {}
 
@@ -70,9 +75,7 @@ export class QuestionGeneratorComponent {
 
     ngOnInit() {
         this.index = 0;
-
     }
-
 
     parseGeneratedAnswer(data: { return: string; sessionId: string }) {
         const result = data.return;
@@ -81,10 +84,6 @@ export class QuestionGeneratorComponent {
         this.setVAluesToForms(parsedData);
         this.answerGenerated = true;
     }
-
-    onLanguageChange() {
-        this.language = this.languageToggle ?  'English': 'Français' ;
-      }
 
     setVAluesToForms(parsedData: any) {
         this.answerGenerated = true;
@@ -166,15 +165,12 @@ export class QuestionGeneratorComponent {
                 errorMargin: errorMargin,
             };
 
-
-
             this.questionTextSecondForm = question;
             this.choicesSecondForm = choices;
             this.lowerBoundSecondForm = lowerBound;
             this.upperBoundSecondForm = upperBound;
             this.exactValueSecondForm = exactValue;
             this.errorMarginSecondForm = errorMargin;
-
         }
     }
 
@@ -195,20 +191,17 @@ export class QuestionGeneratorComponent {
     }
 
     generateQuestion() {
-
         this.questionSubmitted = true;
         this.generateButton = false;
         this.QuestionFormGenerated++;
         var questionSent = this.data.input;
         this.generatedQuestions = [];
-        if(this.language === 'Français'){
-            var questionSent = this.data.input + ' regénérer des questions DIFFERENTES en FRANÇAIS, differentes de celles déjà générées';   
+        if (this.language === translate('questions-generations.french')) {
+            var questionSent = this.data.input + ' regénérer des questions DIFFERENTES en FRANÇAIS, differentes de celles déjà générées';
         }
-        if(this.language === 'English'){
+        if (this.language === translate('questions-generations.english')) {
             var questionSent = this.data.input + ' regenerate DIFFERENT questions in ENGLISH, diferent from those already generated';
         }
-
-
 
         if (this.data.type == 'QCM') {
             questionSent = questionSent + ` avec ${this.numChoices} choix de réponse, une bonne et une mauvaise`;
@@ -230,7 +223,6 @@ export class QuestionGeneratorComponent {
         });
     }
 
-
     validateQREAnswerMargin(lowerBound: number, upperBound: number, exactValue: number, errorMargin: number) {
         const marginValue = (upperBound - lowerBound) * 0.25;
         if (errorMargin >= marginValue) {
@@ -242,8 +234,8 @@ export class QuestionGeneratorComponent {
 
     validateQRELowerBound(lowerBound: number, exactValue: number) {
         if (exactValue <= lowerBound) {
-            if(exactValue === 0){
-                return -Math.round((Math.random() * 100));
+            if (exactValue === 0) {
+                return -Math.round(Math.random() * 100);
             }
             const newLowerBound = exactValue - Math.floor(Math.random() * exactValue);
             return Math.round(newLowerBound);
@@ -251,12 +243,11 @@ export class QuestionGeneratorComponent {
     }
 
     validateQREHigherBound(upperBound: number, exactValue: number) {
-        if(upperBound === 0){
+        if (upperBound === 0) {
             return Math.round(Math.random() + 1);
         }
         if (exactValue >= upperBound) {
             const newUpperBound = exactValue + Math.floor(Math.random() * (exactValue + upperBound));
-
 
             return Math.round(newUpperBound);
         } else return Math.round(upperBound);

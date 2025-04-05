@@ -99,10 +99,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
 
     openQuestionDialog() {
         const dialogRef = this.dialog.open(QuestionGeneratorComponent, {
-            data: {
-                title: 'Veuillez fournir le texte et le type de la question',
-                input: '',
-            },
+            data: {},
         });
 
         dialogRef.componentInstance.questionGenerated.subscribe((generatedQuestion: any) => {

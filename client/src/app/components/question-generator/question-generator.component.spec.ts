@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ManagementState } from '@app/constants/states';
 import { DialogManagement, QuestionService } from '@app/services/question/question.service';
 import { QuestionGeneratorComponent } from './question-generator.component';
+import { getTranslocoModule } from '@app/transloco-testing.module';
 
 describe('QuestionGeneratorComponent', () => {
     let component: QuestionGeneratorComponent;
@@ -12,6 +13,7 @@ describe('QuestionGeneratorComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
+            imports: [getTranslocoModule()],
             declarations: [QuestionGeneratorComponent],
             providers: [
                 { provide: MAT_DIALOG_DATA, useValue: dialogData },

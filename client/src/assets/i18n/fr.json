@@ -335,6 +335,8 @@
         "choice":"Choix",
         "generate-IA": "Générer question  IA",
         "error": "Erreur lors de la génération de la question", 
-        "choice-input": "Entrez les choix"
+        "choice-input": "Entrez les choix",
+        "french": "Français",
+        "english": "Anglais"
     }
 }
