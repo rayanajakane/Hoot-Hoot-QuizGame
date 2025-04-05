@@ -18,7 +18,7 @@ export enum Theme {
     providedIn: 'root',
 })
 export class ThemeService {
-    currentTheme: Theme = Theme.DARK;
+    currentTheme: Theme = Theme.LIGHT;
 
     themeLabels = {
         [Theme.DARK]: translate('page.dark-theme'),
