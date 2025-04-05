@@ -23,7 +23,6 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Server, Socket } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
 
-
 @Injectable()
 export class MatchRoomService {
     matchRooms: MatchRoom[];
@@ -32,7 +31,7 @@ export class MatchRoomService {
     votesCount: { [username: string]: number } = { ['']: 0 };
     isCheaterMode: boolean = false;
     // totalVotes: VotingData[];
-   // totalVotes: { [username: string]: number }[] = [];
+    // totalVotes: { [username: string]: number }[] = [];
     totalVotes: VotingData[] = [{ username: '', numberOfVotes: 0, usersWhoVoted: [] }];
 
     constructor(
@@ -76,9 +75,8 @@ export class MatchRoomService {
 
         const roomCode = this.generateRoomCode();
         const qrCodeUrl = await this.qrCodeService.generateQrCode(roomCode);
-        this.votesCount ={};
+        this.votesCount = {};
         this.totalVotes = [];
-
 
         const newRoom: MatchRoom = {
             code: roomCode,
@@ -190,7 +188,8 @@ export class MatchRoomService {
         }
 
         if (this.votesCount[username]) {
-            if (this.votesCount[username] / total < 0.5) { //moins de moitie, stirctly minus 
+            if (this.votesCount[username] / total < 0.5) {
+                //moins de moitie, stirctly minus
                 return true;
             } else return false;
         }
@@ -223,7 +222,9 @@ export class MatchRoomService {
         this.defineCurrentQuestionAnswer(matchRoomCode, firstQuestion);
         this.removeAnswerField(firstQuestion);
         server.to(matchRoom.hostSocket.id).emit(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
-        server.to(this.cheaterPlayer?.socket.id).emit(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
+        if (this.cheaterPlayer) {
+            server.to(this.cheaterPlayer?.socket.id).emit(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
+        }
         const isClassicMode: boolean = matchRoom.isClassicMode;
         server.in(matchRoomCode).emit(MatchEvents.BeginQuiz, { firstQuestion, gameDuration, isClassicMode });
         this.timeService.startTimer(server, matchRoomCode, matchRoom.questionDuration, ExpiredTimerEvents.QuestionTimerExpired);
