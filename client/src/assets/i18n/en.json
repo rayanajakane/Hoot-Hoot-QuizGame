@@ -248,7 +248,7 @@
         "grid-label": "Matches Played Throughout the Year",
         "less": "Less",
         "more": "More",
-        "matches-played": " matches"
+        "matches-played": " match(es)"
     },
     "match-config": {
         "title-label": "Match Configuration",
