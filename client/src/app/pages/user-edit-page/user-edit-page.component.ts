@@ -59,7 +59,7 @@ export class UserEditPageComponent implements OnInit {
             averageGoodAnswersPercentage: 0,
             averageTime: 0,
         },
-        intensityGrid: this.getDummyGrid(),
+        intensityGrid: this.getBlankGrid(),
     };
 
     form = this.fb.group({
@@ -143,7 +143,7 @@ export class UserEditPageComponent implements OnInit {
                     averageGoodAnswersPercentage: 0,
                     averageTime: 0,
                 },
-                intensityGrid: this.getDummyGrid(),
+                intensityGrid: this.getBlankGrid(),
             };
             return;
         }
@@ -164,13 +164,13 @@ export class UserEditPageComponent implements OnInit {
                         averageGoodAnswersPercentage: 0,
                         averageTime: 0,
                     },
-                    intensityGrid: this.getDummyGrid(),
+                    intensityGrid: this.getBlankGrid(),
                 };
             },
         });
     }
 
-    getDummyGrid() {
+    getBlankGrid() {
         const intensityGrid: IntensityGridItem[] = [];
         const year = new Date().getFullYear();
         const yearStart = new Date(year, 0, 0);
