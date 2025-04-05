@@ -239,8 +239,6 @@ fun UserEditPage(
                     Log.d("Save UserProfile", "URLUpdate: $avatarURLUpdate")
 
                     Log.d("Save UserProfile", "URL Update: $avatarURLUpdate")
-                    // Saves both avatar and or username in one go
-                    authViewModel.updateUserProfile(avatarURLUpdate, usernameUpdate)
 
                 } else {
                     Log.e("Save UserProfile", "Failed to save image. URL was null")
@@ -254,11 +252,13 @@ fun UserEditPage(
             isUpdated = true
 
             Log.d("Save UserProfile", "URL Update: $avatarURLUpdate")
-            // Saves both avatar and or username in one go
-            authViewModel.updateUserProfile(avatarURLUpdate, usernameUpdate)
+
         } else {
             Log.d("Save UserProfile", "Avatar has not changed")
         }
+
+        // Saves both avatar and or username in one go
+        authViewModel.updateUserProfile(avatarURLUpdate, usernameUpdate)
 
         // Change app theme
         if (currentTheme != theme) {
@@ -425,10 +425,13 @@ fun UserEditPage(
                             TextField(
                                 value = username,
                                 onValueChange = {
-                                    if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.setAndUpdateUsername(
-                                        it,
-                                        context,
-                                    )
+                                    if (it.length <= SIZE_CONSTANTS.MAX_USERNAME_LENGTH) {
+                                        username = it
+                                        authViewModel.updateUsername(
+                                            it,
+                                            context
+                                        )
+                                    }
                                 },
                                 isError = usernameError.isNotEmpty(),
                                 singleLine = true,

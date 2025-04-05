@@ -197,7 +197,7 @@ fun SignupPage(
                         TextField(
                             value = username,
                             onValueChange = {
-                                if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) authViewModel.setAndUpdateUsername(
+                                if (it.length <= SIZE_CONSTANTS.MAX_USERNAME_LENGTH) authViewModel.setAndUpdateUsername(
                                     it,
                                     context,
                                 )

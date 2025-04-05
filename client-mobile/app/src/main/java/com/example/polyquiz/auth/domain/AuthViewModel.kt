@@ -15,6 +15,7 @@ import com.example.polyquiz.R
 import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.constants.FriendsEvents
+import com.example.polyquiz.constants.GameEvents
 import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.core.storage.ImageStorage
 import com.example.polyquiz.ui.theme.Theme
@@ -32,9 +33,11 @@ import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.database
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 class AuthViewModel : ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -258,24 +261,62 @@ class AuthViewModel : ViewModel() {
         }
 
         Log.d("Save UserProfile", "Called update profile")
-        val profileUpdates = userProfileChangeRequest {
-            if(url.isNotEmpty()) {
-                photoUri = Uri.parse(url)
-            }
-            if (username.isNotEmpty() && checkUsernameValidity(username)) {
-                displayName = username
-            }
-        }
 
-        user!!.updateProfile(profileUpdates).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
-                Log.d(
-                    "Profile update",
-                    "Used ${avatarURL.value}"
+
+        if (username.isEmpty() || usernameError.value.isNotEmpty()) {
+            Log.e("Save UserProfile", "Invalid username")
+            viewModelScope.launch {
+                SnackbarController.sendEvent(
+                    event = SnackbarEvent(
+                        message = StringValue.StringResource(R.string.invalid_username)
+                    )
                 )
+            }
+            return
+        }
+        val newUsernameRef = getUsernameDatabaseRef(username.lowercase())
+        val oldUsernameRef = getUsernameDatabaseRef(getUsername().lowercase())
+        val oldUsername = getUsername()
+        newUsernameRef.get().addOnSuccessListener { databaseSnapshot: DataSnapshot ->
+            if (databaseSnapshot.exists()) {
+                viewModelScope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.StringResource(R.string.username_already_exists)
+                        )
+                    )
+                }
             } else {
-                Log.e("Profile update", "An error occured...")
+                val profileUpdates = userProfileChangeRequest {
+                    if(url.isNotEmpty()) {
+                        photoUri = Uri.parse(url)
+                    }
+                    displayName = username
+                }
+                user!!.updateProfile(profileUpdates).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        oldUsernameRef.removeValue().addOnCompleteListener { removeTask ->
+                            if(removeTask.isSuccessful) {
+                                Log.d("Delete user", "Deleted username from DB $oldUsername")
+                            } else {
+                                Log.e("Delete user", "Could not delete username from DB")
+                            }
+                        }
+                        newUsernameRef.setValue(username.lowercase())
+                        _username.value = username
+                        SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
+
+                        val authorNameUpdate = UserIdName(id = user!!.uid, name = username)
+                        val authorUpdateObject = JSONObject(Gson().toJson(authorNameUpdate))
+                        SocketHandler.getSocket().emit(GameEvents.UPDATE_AUTHOR_NAME.value, authorUpdateObject)
+                        Log.d(
+                            "Profile update",
+                            "Used $username ${avatarURL.value}"
+                        )
+                    } else {
+                        Log.e("Profile update", "An error occured...")
+                    }
+                }
             }
         }
     }
@@ -293,36 +334,6 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-
-    private fun checkUsernameValidity(username: String): Boolean {
-        var usernameIsValid: Boolean = false
-        if (username.isEmpty() || usernameError.value.isNotEmpty()) {
-            viewModelScope.launch {
-                SnackbarController.sendEvent(
-                    event = SnackbarEvent(
-                        message = StringValue.StringResource(R.string.invalid_username)
-                    )
-                )
-            }
-            return false
-        }
-        val usernameRef = getUsernameDatabaseRef(username.lowercase())
-        usernameRef.get().addOnSuccessListener { databaseSnapshot: DataSnapshot ->
-            if (databaseSnapshot.exists()) {
-                usernameIsValid = false
-                viewModelScope.launch {
-                    SnackbarController.sendEvent(
-                        event = SnackbarEvent(
-                            message = StringValue.StringResource(R.string.username_already_exists)
-                        )
-                    )
-                }
-            } else {
-                usernameIsValid = true
-            }
-        }
-        return usernameIsValid
-    }
 
     fun signIn(email: String, password: String, context: Context) {
         if (email.isEmpty() || password.isEmpty()) {
@@ -390,11 +401,9 @@ class AuthViewModel : ViewModel() {
                 AuthState.Error(StringValue.StringResource(R.string.invalid_username_password))
             return
         }
-        // TODO: Replace spaces? (or simply forbid them?)
         val usernameRef = getUsernameDatabaseRef(username.lowercase())
         usernameRef.get().addOnSuccessListener { databaseSnapshot: DataSnapshot ->
             if (databaseSnapshot.exists()) {
-                // TODO : Make new error text
                 _authState.value =
                     AuthState.Error(StringValue.StringResource(R.string.username_already_exists))
                 Log.e(TAG, StringValue.StringResource(R.string.username_already_exists).toString())
