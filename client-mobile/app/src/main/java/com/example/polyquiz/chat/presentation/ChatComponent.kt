@@ -114,7 +114,7 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
         "Match" -> ChatService.matchRoomMessages.observeAsState().value
         else -> ChatService.generalMessages.observeAsState().value
     }
-    var newMessageText by remember{ mutableStateOf("") }
+    var newMessageText by remember { mutableStateOf("") }
 
     LaunchedEffect(messages?.size) {
         messages?.let { list ->
@@ -263,7 +263,7 @@ fun MessageContainer(message: Message, currentUserId: String, username: String) 
         horizontalAlignment = containerAlignment,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Column(modifier = Modifier.width(containerWidth)) {
+        Column(modifier = Modifier.fillMaxWidth()) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.width(containerWidth)
@@ -282,9 +282,9 @@ fun MessageContainer(message: Message, currentUserId: String, username: String) 
                     text = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(message.date)
                         .toString()
                 )
-                if (message.authorId == currentUserId) {
-                    AvatarImage(message.photoUrl)
-                }
+//                if (message.authorId == currentUserId) {
+//                    AvatarImage(message.photoUrl)
+//                }
             }
             Column(
                 modifier = Modifier
@@ -298,13 +298,19 @@ fun MessageContainer(message: Message, currentUserId: String, username: String) 
                 ) {
                     Text(text = message.text, modifier = Modifier.padding(10.dp))
                 }
-                ReactionsRow(
-                    message,
-                    currentUserId,
-                    username,
-                    MatchRoomService.getRoomCode(),
-                    modifier = Modifier.align(alignment = AbsoluteAlignment.Left)
-                )
+                Row {
+                    ReactionsRow(
+                        message,
+                        currentUserId,
+                        username,
+                        MatchRoomService.getRoomCode()
+                    )
+                    if (message.authorId == currentUserId) {
+                        Spacer(Modifier.width(10.dp))
+                        AvatarImage(message.photoUrl)
+                    }
+                }
+
             }
         }
     }
@@ -403,7 +409,6 @@ fun ReactionsRow(
     userId: String,
     username: String,
     roomCode: String?,
-    modifier: Modifier
 ) {
     Row(
         modifier = Modifier.padding(top = 1.dp),
@@ -438,6 +443,7 @@ fun ReactionsRow(
         }
     }
 }
+
 @Composable
 fun ReactionButton(emoji: String, count: Int, onClick: () -> Unit) {
     var isClicked by remember { mutableStateOf(false) }
