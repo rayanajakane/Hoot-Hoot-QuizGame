@@ -36,6 +36,7 @@ export class QuestionGeneratorComponent {
     answerGenerated: boolean = false;
     choices: Choice[];
     choices1: Choice[];
+    allResults: [];
   
     errorMargin: number;
     lowerBound: number;
@@ -134,7 +135,7 @@ export class QuestionGeneratorComponent {
 
             console.log('parsedAnswe1', this.parsedAnswer2);
         }
-        if (this.index <= 2) {
+        if (this.index <= 6) {
             this.index++;
         } else this.index = 0;
 
@@ -190,7 +191,7 @@ export class QuestionGeneratorComponent {
     regenerateQuestion() {
         this.answerGenerated = false;
         this.generateButton = false;
-        if (this.index <= 2) {
+        if (this.index <= 6) {
             this.index++;
             this.setVAluesToForms(this.results);
         } else {
@@ -207,10 +208,10 @@ export class QuestionGeneratorComponent {
         var questionSent = this.data.input;
         this.generatedQuestions = [];
         if(this.language === 'Français'){
-            var questionSent = this.data.input + ' regénérer des questions DIFFERENTES en FRANÇAIS';
+            var questionSent = this.data.input + ' regénérer des questions DIFFERENTES en FRANÇAIS, differentes de celles déjà générées';   
         }
         if(this.language === 'English'){
-            var questionSent = this.data.input + ' regenerate DIFFERENT questions in ENGLISH';
+            var questionSent = this.data.input + ' regenerate DIFFERENT questions in ENGLISH, diferent from those already generated';
         }
 
 

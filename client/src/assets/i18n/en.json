@@ -325,5 +325,12 @@
         "label": "Search Games",
         "title": "Title",
         "author": "Author"
+    },
+    "questions-generations":{
+        "input": "Please provide a topic or theme to generate questions, and select the desired question type.",
+        "generate": "Generate",
+        "regenerate": "Regenerate other questions",
+        "generating": "Generating questions",
+        "submit": "Submit"
     }
 }

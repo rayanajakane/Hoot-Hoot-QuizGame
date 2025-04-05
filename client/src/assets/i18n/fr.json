@@ -323,5 +323,12 @@
         "label": "Rechercher des jeux",
         "title": "Titre",
         "author": "Auteur"
+    },
+    "questions-generations":{
+        "input": "Veuillez fournir un sujet ou un thème pour générer des questions, et sélectionnez le type de question souhaité ",
+        "generate": "Générer",
+        "regenerate": "Regénérer d'autres questions",
+        "generating": "Génération de questions",
+        "submit": "Soumettre"
     }
 }

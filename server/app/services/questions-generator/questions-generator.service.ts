@@ -25,7 +25,7 @@ export class QuestionsGeneratorService {
         properties: {
           Questions: {
             type: SchemaType.ARRAY,
-            minItems: 4,  
+            minItems: 8,  
             items: {
               type: SchemaType.OBJECT,
               properties: {

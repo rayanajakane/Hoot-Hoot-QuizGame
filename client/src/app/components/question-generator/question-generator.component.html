@@ -1,5 +1,5 @@
 <ng-container *transloco="let t">
-    <h1 mat-dialog-title  *ngIf="!this.QuestionFormGenerated && generateButton">{{ data.title }}</h1>
+    <h1 mat-dialog-title  *ngIf="!this.QuestionFormGenerated && generateButton">{{ t('questions-generations.input') }}</h1>
     <div mat-dialog-content class="question-dialog">
         <mat-form-field *ngIf="!this.QuestionFormGenerated && generateButton" class ="prompt-input">
             <mat-label>{{ data.placeholder }}</mat-label>
@@ -22,14 +22,14 @@
         </p>
 
         <div mat-dialog-actions id="buttons-container" *ngIf="generateButton">
-            <button mat-raised-button (click)="generateQuestion()" color="primary">Générer</button>
+            <button mat-raised-button (click)="generateQuestion()" color="primary">{{ t('questions-generations.generaye') }}</button>
         </div>
 
         <app-pulse-loader *ngIf="!this.answerGenerated && this.questionSubmitted"></app-pulse-loader>
-        <span *ngIf="!this.answerGenerated && this.questionSubmitted">Generating questions</span>
+        <span *ngIf="!this.answerGenerated && this.questionSubmitted">{{ t('questions-generations.generating') }}</span>
 
         <div mat-dialog-actions id="buttons-container" *ngIf="!generateButton && this.answerGenerated">
-            <button mat-raised-button (click)="regenerateQuestion()" color="primary">Regenerer</button>
+            <button mat-raised-button (click)="regenerateQuestion()" color="primary">{{ t('questions-generations.regenerate') }}</button>
         </div>
 
         <div class="form-1" style="float: left" *ngIf="this.answerGenerated">
@@ -50,27 +50,26 @@
                 </div>
             </div>
             <mat-form-field *ngIf="data.type === 'QRE' && questionGenerated">
-                <mat-label>Paramètres estimés</mat-label>
                 <div>
-                    <label>Limite inférieure</label>
+                    <label>{{t('question-creation-form.boundary-low')}}</label>
                     <input matInput [(ngModel)]="lowerBound" />
                 </div>
                 <div>
-                    <label>Limite supérieure</label>
+                    <label>{{t('question-creation-form.boundary-high')}}</label>
                     <input matInput [(ngModel)]="upperBound" />
                 </div>
                 <div>
-                    <label>Réponse exacte</label>
+                    <label>{{t('question-creation-form.good-answer')}}</label>
                     <input matInput [(ngModel)]="exactValue" />
                 </div>
                 <div>
-                    <label>Marque d'erreur</label>
+                    <label>{{t('question-creation-form.tolerance-margin')}}</label>
                     <input matInput [(ngModel)]="errorMargin" />
                 </div>
             </mat-form-field>
 
             <div mat-dialog-actions *ngIf="questionGenerated" id="buttons-container">
-                <button mat-raised-button [mat-dialog-close]="data.input" (click)="this.submitToQuestion1Form()" color="primary">Soumettre</button>
+                <button mat-raised-button [mat-dialog-close]="data.input" (click)="this.submitToQuestion1Form()" color="primary">{{t('questions-generations.submit')}}<</button>
             </div>
         </div>
 
@@ -86,33 +85,32 @@
                 <div *ngFor="let choice of choices1; let i = index">
                     <mat-form-field>
                         <mat-label>Choix {{ i + 1 }}</mat-label>
-                        <input matInput [(ngModel)]="choices1[i].text" placeholder="Entrez le choix" />
+                        <input matInput [(ngModel)]="choices1[i].text"/>
                         <mat-checkbox [(ngModel)]="choices1[i].isCorrect"></mat-checkbox>
                     </mat-form-field>
                 </div>
             </div>
             <mat-form-field *ngIf="data.type === 'QRE'">
-                <mat-label>Paramètres estimés</mat-label>
                 <div>
-                    <label>Limite inférieure</label>
+                    <label>{{t('question-creation-form.boundary-low')}}<</label>
                     <input matInput [(ngModel)]="lowerBound1" />
                 </div>
                 <div>
-                    <label>Limite supérieure</label>
+                    <label>{{t('question-creation-form.boundary-high')}}<</label>
                     <input matInput [(ngModel)]="upperBound1" />
                 </div>
                 <div>
-                    <label>Réponse exacte</label>
+                    <label>{{t('question-creation-form.good-answer')}}<</label>
                     <input matInput [(ngModel)]="exactValue1" />
                 </div>
                 <div>
-                    <label>Marque d'erreur</label>
+                    <label>{{t('question-creation-form.tolerance-margin')}}<</label>
                     <input matInput [(ngModel)]="errorMargin1" />
                 </div>
             </mat-form-field>
 
             <div mat-dialog-actions *ngIf="questionGenerated">
-                <button mat-raised-button [mat-dialog-close]="data.input" (click)="this.submitToQuestion2Form()" color="primary">Soumettre</button>
+                <button mat-raised-button [mat-dialog-close]="data.input" (click)="this.submitToQuestion2Form()" color="primary">{{t('questions-generations.submit')}}<</button>
             </div>
         </div>
     </div>
