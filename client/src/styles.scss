@@ -165,6 +165,14 @@ $pikachu-theme: mat.define-light-theme(
     .success-snackbar {
         white-space: pre-wrap;
     }
+
+    .error-snackbar {
+        white-space: pre-wrap;
+    }
+
+    .success-snackbar {
+        white-space: pre-wrap;
+    }
 }
 
 .dark-theme {
@@ -189,7 +197,7 @@ $pikachu-theme: mat.define-light-theme(
     }
 
     .received-message {
-        background-color: #595c64 !important;
+        background-color: #595c64; // TODO: Check if it's still relevant now that snackbar color has been changed.
     }
 
     .signup-button {
@@ -277,6 +285,18 @@ $pikachu-theme: mat.define-light-theme(
 
     .balance-text {
         color: white;
+    }
+
+    .error-snackbar {
+        color: rgb(23, 22, 22) !important;
+        --mdc-snackbar-supporting-text-color: rgb(23, 22, 22) !important;
+        white-space: pre-wrap;
+    }
+
+    .success-snackbar {
+        color: rgb(23, 22, 22) !important;
+        --mdc-snackbar-supporting-text-color: rgb(23, 22, 22) !important;
+        white-space: pre-wrap;
     }
 }
 // Include theme styles for core and each component used in your app.
