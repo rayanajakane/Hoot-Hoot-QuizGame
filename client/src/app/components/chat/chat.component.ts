@@ -8,6 +8,7 @@ import { AuthenticationService } from '@app/services/authentication/authenticati
 import { ChatService } from '@app/services/chat/chat.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
+import { Theme, ThemeService } from '@app/services/theme/theme.service';
 import { Wallpaper, WallpaperService } from '@app/services/wallpaper/wallpaper.service';
 import { ChatEmoji } from '@common/constants/chat-emojis';
 import { UserIdName } from '@common/interfaces/user-id-name';
@@ -32,6 +33,7 @@ export class ChatComponent implements AfterViewChecked {
         public matchRoomService: MatchRoomService,
         public matchContextService: MatchContextService,
         private wallpaperService: WallpaperService,
+        private themeService: ThemeService,
         private cdr: ChangeDetectorRef,
     ) {
         this.wallpaperService.currentWallpaper$.subscribe((wallpaper) => {
@@ -53,6 +55,10 @@ export class ChatComponent implements AfterViewChecked {
 
     hasBackground(): boolean {
         return this.currentWallpaper !== Wallpaper.None;
+    }
+
+    isDarkTheme(): boolean {
+        return this.themeService.currentTheme === Theme.DARK;
     }
 
     ngAfterViewChecked() {
