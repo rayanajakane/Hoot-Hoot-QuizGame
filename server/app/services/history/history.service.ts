@@ -63,10 +63,16 @@ export class HistoryService {
             }
         });
         const averageMatchCount = matchCount.reduce((a, b) => a + b) / nDaysWithMatches;
+        console.log(averageMatchCount);
         const maxMatchCount = Math.max(...matchCount);
         matchCount.forEach((count, index) => {
             intensityGrid[index].nMatches = count;
             if (count === 0) {
+                intensityGrid[index].intensity = 0;
+            } else if (count <= averageMatchCount) {
+                intensityGrid[index].intensity = 1;
+            } else if (count > averageMatchCount && count != maxMatchCount) {
+                intensityGrid[index].intensity = 2;
                 intensityGrid[index].intensity = 0;
             } else if (count <= averageMatchCount) {
                 intensityGrid[index].intensity = 1;
