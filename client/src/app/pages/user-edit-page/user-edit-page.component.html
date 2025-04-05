@@ -165,19 +165,24 @@
                     <p>{{ t('history.sat') }}</p>
                 </div>
                 <div class="grid-container">
-                    <div class="grid-squares" *ngFor="let level of userHistory.intensityGrid">
-                        <div class="square" [ngClass]="'square' + level.toString()"></div>
+                    <div class="grid-squares" *ngFor="let gridItem of userHistory.intensityGrid; index as i">
+                        <div
+                            class="square"
+                            [matTooltip]="getGridItemInfo(gridItem) + t('history.matches-played')"
+                            matTooltipPosition="above"
+                            [ngClass]="'square' + gridItem.intensity.toString()"
+                        ></div>
                     </div>
                 </div>
             </div>
             <div id="grid-legend-container">
                 <div id="grid-legend">
-                    <p>-</p>
+                    <p>{{ t('history.less') }}</p>
                     <div class="square"></div>
                     <div class="square square1"></div>
                     <div class="square square2"></div>
                     <div class="square square3"></div>
-                    <p>+</p>
+                    <p>{{ t('history.more') }}</p>
                 </div>
             </div>
             <h2>{{ t('history.match-history') }}</h2>
