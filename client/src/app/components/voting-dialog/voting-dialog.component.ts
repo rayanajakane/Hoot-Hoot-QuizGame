@@ -4,10 +4,8 @@ import { MatchContext } from '@app/constants/states';
 import { Player } from '@app/interfaces/player';
 import { VotingData } from '@app/interfaces/voting-data';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
-//import { AnswerService } from '@app/services/answer/answer.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { MatchEvents } from '@common/events/match.events';
-//import { MatRadioButton } from '@angular/material/radio';
 
 @Component({
     selector: 'app-voting-dialog',
@@ -24,7 +22,6 @@ export class VotingDialogComponent {
     currentVotes: number;
     isVotingDisabled: boolean = true;
     usersWhoVoted: string[] = [];
-   // player: Player;
 
     constructor(
         public matchRoomService: MatchRoomService,
@@ -64,9 +61,6 @@ export class VotingDialogComponent {
                 usersWhoVoted: this.voteCounts.usersWhoVoted,
             };
             
-           // this.usersWhoVoted.push(this.voteCounts?.usersWhoVoted);
-
-
 
             this.matchRoomService.sendBackVotesResult(votes);
 

@@ -99,9 +99,7 @@ export class QuestionAreaComponent implements OnInit {
     }
 
     ngOnChanges(): void {
-        console.log('End game');
         if (this.answerService.isEndGame && !this.matchRoomService.isCooldown) {
-            console.log('End game');
             this.matchRoomService.goToVoting();
         }
     }

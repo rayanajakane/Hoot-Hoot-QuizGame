@@ -62,7 +62,6 @@ export class MatchCreationPageComponent implements OnInit {
         private readonly questionService: QuestionService,
         private readonly matchRoomService: MatchRoomService,
         private readonly dialog: MatDialog,
-  
     ) {
         this.gameIsValid = false;
         this.isRandomGame = false;
@@ -145,13 +144,13 @@ export class MatchCreationPageComponent implements OnInit {
     }
 
     hasCorrectType(questions: Question[]): boolean {
-        for (let element of questions) {
-            if (element.type === 'QRL') {
-                this.gameIsValidCheaterMode = false;
-                this.partyConfig.canPlayCheaterMode = false;
-                // this.partyConfig.isCheaterMode = false;
-                console.log('element', element.type);
-                return false;
+        if (questions?.length>0) {
+            for (const element of questions) {
+                if (element.type === 'QRL') {
+                    this.gameIsValidCheaterMode = false;
+                    this.partyConfig.canPlayCheaterMode = false;
+                    return false;
+                }
             }
         }
         this.gameIsValidCheaterMode = true;
@@ -220,7 +219,6 @@ export class MatchCreationPageComponent implements OnInit {
     revalidateGame(): void {
         if (this.selectedGame.isVisible) {
             this.gameIsValid = true;
-            // this.partyConfig.isCheaterMode = true;
             this.partyConfig.canPlayCheaterMode = true;
             this.hasCorrectType(this.selectedGame.questions);
             this.matchService.currentGame = this.selectedGame;
@@ -242,7 +240,6 @@ export class MatchCreationPageComponent implements OnInit {
                         this.matchRoomService.isCheaterMode = false;
                         this.matchService.createMatch(this.partyConfig, true);
                     }
-                    //  this.matchService.createMatch(this.partyConfig);
                 }
             });
         } else {
