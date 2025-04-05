@@ -38,10 +38,28 @@
                             <p *ngIf="(purchasedPremiumAvatars | keyvalue).length === 0" class="no-avatars">
                                 {{ t('page.no-premium-avatars') }}
                             </p>
-                            <button mat-raised-button color="primary" routerLink="/shop">
-                                <mat-icon>shopping_cart</mat-icon>
-                                {{ t('page.buy-avatars') }}
-                            </button>
+                        </div>
+                        <div id="wallpaper-choices-container">
+                            <p>{{ t('page.chat-wallpapers') }}</p>
+                            <div id="wallpaper-choices">
+                                <div class="wallpaper-mini none-wallpaper" (click)="setWallpaper(wallpaper.None)">
+                                    <div class="no-bg-indicator">
+                                        <mat-icon>block</mat-icon>
+                                        <span>{{ t('page.no-background') }}</span>
+                                    </div>
+                                    <div class="selected-indicator" *ngIf="currentWallpaper === wallpaper.None"></div>
+                                </div>
+
+                                <div
+                                    class="wallpaper-mini"
+                                    *ngFor="let wp of purchasedWallpapers | keyvalue"
+                                    (click)="setWallpaper(wp.value)"
+                                    [class.selected]="currentWallpaper === wp.value"
+                                    [hidden]="wp.key === 'None'"
+                                >
+                                    <img [src]="wp.value" alt="" />
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div id="form-fields">
@@ -79,19 +97,27 @@
                         <mat-form-field id="theme">
                             <mat-label>{{ t('page.theme') }}</mat-label>
                             <mat-select formControlName="currentTheme" data-testid="theme-select-test-id">
-                                <mat-option *ngFor="let theme of availableThemes" [value]="theme">{{ getThemeLabel(theme) }}</mat-option>
+                                <mat-option *ngFor="let theme of availableThemes" [value]="theme">{{ t(getThemeLabel(theme)) }}</mat-option>
+                                <mat-option disabled>
+                                    <em>--{{ t('page.premium-themes') }}--</em>
+                                </mat-option>
+                                <mat-option *ngFor="let theme of purchasedThemes" [value]="theme"> {{ t(getThemeLabel(theme)) }} 👑 </mat-option>
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field id="language">
                             <mat-label>{{ t('page.language') }}</mat-label>
                             <mat-select formControlName="currentLang" data-testid="language-select-test-id">
-                                <mat-option *ngFor="let lang of availableLangs" [value]="lang">{{ getLangLabel(lang) }}</mat-option>
+                                <mat-option *ngFor="let lang of availableLangs" [value]="lang">{{ t(getLangLabel(lang)) }}</mat-option>
                             </mat-select>
                         </mat-form-field>
                         <button mat-raised-button color="primary" (click)="save()" id="save-button">{{ t('page.save') }}</button>
                     </div>
                 </mat-card>
             </form>
+            <button mat-raised-button color="primary" routerLink="/shop">
+                <mat-icon>shopping_cart</mat-icon>
+                {{ t('page.buy-goodies') }}
+            </button>
             <h2>{{ t('page.danger-zone') }}</h2>
             <button mat-raised-button color="warn" (click)="deleteUser()" id="delete-button">{{ t('page.delete-user') }}</button>
             <h2>{{ t('history.stats-header') }}</h2>

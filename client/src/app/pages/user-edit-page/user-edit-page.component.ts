@@ -13,6 +13,7 @@ import { AvatarService } from '@app/services/avatar/avatar.service';
 import { HistoryService } from '@app/services/history/history.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { Theme, ThemeService } from '@app/services/theme/theme.service';
+import { Wallpaper, WallpaperService } from '@app/services/wallpaper/wallpaper.service';
 import { TranslationService } from '@app/translation/translation.service';
 import { UserHistoryInfo } from '@common/interfaces/history-items';
 import { translate, TranslocoService } from '@jsverse/transloco';
@@ -37,14 +38,16 @@ export class UserEditPageComponent implements OnInit {
     purchasedPremiumAvatars: { [key: string]: PremiumAvatar } = {};
 
     availableLangs: Language[];
-    availableThemes = Object.values(Theme);
-    themeLabels = {
-        [Theme.DARK]: translate('page.dark-theme'),
-        [Theme.LIGHT]: translate('page.light-theme'),
-    };
+    availableThemes: Theme[];
+    purchasedThemes: Theme[] = [];
+    premiumThemes = [Theme.LUIGI, Theme.MARIO, Theme.SONIC, Theme.PIKACHU];
+
+    purchasedWallpapers: { [key: string]: string } = {};
+    currentWallpaper: Wallpaper;
+
     langLabels = {
-        ['fr']: translate('page.fr'),
-        ['en']: translate('page.en'),
+        ['fr']: 'page.fr',
+        ['en']: 'page.en',
     };
     userHistory: UserHistoryInfo = {
         auth: [],
@@ -79,6 +82,7 @@ export class UserEditPageComponent implements OnInit {
         private themeService: ThemeService,
         private historyService: HistoryService,
         private readonly avatarService: AvatarService,
+        private readonly wallpaperService: WallpaperService,
         public dialog: MatDialog,
     ) {
         this.availableLangs = this.translationService.getAllLanguages();
@@ -88,6 +92,7 @@ export class UserEditPageComponent implements OnInit {
 
         this.oldAvatarState = this.getAvatarState(this.authenticationService.userAvatarUrl);
         this.avatarState = this.oldAvatarState;
+        this.currentWallpaper = this.wallpaperService.currentWallpaper as Wallpaper;
     }
 
     get currentTheme() {
@@ -114,8 +119,12 @@ export class UserEditPageComponent implements OnInit {
         return PremiumAvatar;
     }
 
+    get wallpaper() {
+        return Wallpaper;
+    }
+
     getThemeLabel(theme: Theme): string {
-        return this.themeLabels[theme];
+        return this.themeService.themeLabels[theme];
     }
 
     getLangLabel(lang: 'fr' | 'en'): string {
@@ -137,6 +146,8 @@ export class UserEditPageComponent implements OnInit {
             return;
         }
         this.fetchPurchasedAvatars();
+        this.fetchPurchasedThemes();
+        this.fetchPurchasedWallpapers();
         this.historyService.getUserHistory(this.currentUser.uid).subscribe({
             next: (userHistory: UserHistoryInfo) => {
                 this.userHistory = userHistory;
@@ -162,6 +173,22 @@ export class UserEditPageComponent implements OnInit {
         this.purchasedPremiumAvatars = Object.entries(PremiumAvatar)
             .filter(([key]) => purchasedAvatars.includes(key))
             .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
+    }
+
+    async fetchPurchasedThemes() {
+        const purchasedThemeIds = await this.themeService.getPurchasedThemes();
+        this.purchasedThemes = this.premiumThemes.filter((theme) => purchasedThemeIds.includes(theme.toString()));
+    }
+
+    async fetchPurchasedWallpapers() {
+        const purchasedWallpapers = await this.wallpaperService.getPurchasedWallpapers();
+        this.purchasedWallpapers = {
+            // eslint-disable-next-line quote-props, @typescript-eslint/naming-convention
+            None: Wallpaper.None,
+            ...Object.entries(Wallpaper)
+                .filter(([key]) => key !== 'None' && purchasedWallpapers.includes(key))
+                .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {}),
+        };
     }
 
     getAvatarState(avatar: string): AvatarState {
@@ -192,11 +219,16 @@ export class UserEditPageComponent implements OnInit {
             }
             this.themeService.setTheme(this.currentTheme.value as Theme);
             this.translationService.setLanguage(this.currentLang.value as string);
+            this.wallpaperService.setWallpaper(this.currentWallpaper);
 
             // Reset labels to new language
-            this.themeLabels = {
+            this.themeService.themeLabels = {
                 [Theme.DARK]: translate('page.dark-theme'),
                 [Theme.LIGHT]: translate('page.light-theme'),
+                [Theme.LUIGI]: translate('page.luigi-theme'),
+                [Theme.MARIO]: translate('page.mario-theme'),
+                [Theme.SONIC]: translate('page.sonic-theme'),
+                [Theme.PIKACHU]: translate('page.pikachu-theme'),
             };
 
             this.langLabels = {
@@ -234,6 +266,10 @@ export class UserEditPageComponent implements OnInit {
     setPremiumAvatar(premiumAvatar: PremiumAvatar) {
         this.avatarState = AvatarState.Premium;
         this.form.get('avatar')?.setValue(premiumAvatar);
+    }
+
+    setWallpaper(wallpaperUrl: string) {
+        this.currentWallpaper = wallpaperUrl as Wallpaper;
     }
 
     openDeleteDialog() {

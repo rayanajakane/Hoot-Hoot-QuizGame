@@ -8,6 +8,8 @@ import { AuthenticationService } from '@app/services/authentication/authenticati
 import { ChatService } from '@app/services/chat/chat.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
+import { Theme, ThemeService } from '@app/services/theme/theme.service';
+import { Wallpaper, WallpaperService } from '@app/services/wallpaper/wallpaper.service';
 import { ChatEmoji } from '@common/constants/chat-emojis';
 import { UserIdName } from '@common/interfaces/user-id-name';
 
@@ -21,6 +23,7 @@ export class ChatComponent implements AfterViewChecked {
 
     defaultAvatar = PresetAvatar.Default;
     emoji = ChatEmoji;
+    currentWallpaper: string = Wallpaper.None;
 
     // Allow more constructor parameters to decouple services
     // eslint-disable-next-line max-params
@@ -29,8 +32,14 @@ export class ChatComponent implements AfterViewChecked {
         readonly chatService: ChatService,
         public matchRoomService: MatchRoomService,
         public matchContextService: MatchContextService,
+        private wallpaperService: WallpaperService,
+        private themeService: ThemeService,
         private cdr: ChangeDetectorRef,
-    ) {}
+    ) {
+        this.wallpaperService.currentWallpaper$.subscribe((wallpaper) => {
+            this.currentWallpaper = wallpaper;
+        });
+    }
 
     get messages() {
         return this.chatService.channel === ChatChannel.GENERAL ? this.chatService.generalMessages : this.chatService.matchRoomMessages;
@@ -42,6 +51,14 @@ export class ChatComponent implements AfterViewChecked {
 
     set channel(selectedChannel: string) {
         this.chatService.channel = selectedChannel;
+    }
+
+    hasBackground(): boolean {
+        return this.currentWallpaper !== Wallpaper.None;
+    }
+
+    isDarkTheme(): boolean {
+        return this.themeService.currentTheme === Theme.DARK;
     }
 
     ngAfterViewChecked() {
