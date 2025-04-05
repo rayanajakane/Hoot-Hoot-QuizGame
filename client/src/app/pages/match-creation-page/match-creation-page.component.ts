@@ -236,7 +236,6 @@ export class MatchCreationPageComponent implements OnInit {
                             }),
                         this.matchService.createMatch(this.partyConfig, true);
                     }
-                    //  this.matchService.createMatch(this.partyConfig);
                 }
             });
         } else {
