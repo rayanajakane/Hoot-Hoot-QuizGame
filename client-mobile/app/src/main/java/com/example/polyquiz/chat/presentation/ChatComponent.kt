@@ -61,6 +61,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
@@ -82,7 +83,7 @@ import java.util.Locale
 fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     val username by remember { mutableStateOf(authViewModel.getUsername()) }
     val userId by remember { mutableStateOf(authViewModel.getUserId()) }
-    val avatarURL by remember { mutableStateOf(authViewModel.getAvatarURL())}
+    val avatarURL by remember { mutableStateOf(authViewModel.getAvatarURL()) }
     val roomCode by MatchRoomService.matchRoomCode.collectAsState()
     var selectedChat by remember {
         mutableStateOf(if (roomCode.isNotEmpty()) "Match" else "General")
@@ -97,7 +98,7 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     }
 
     LaunchedEffect(roomCode) {
-        if(roomCode.isNotEmpty()) {
+        if (roomCode.isNotEmpty()) {
             ChatService.channel = ChatChannel.ROOM.value
             selectedChat = "Match"
         } else {
@@ -135,11 +136,12 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
         Column(
             verticalArrangement = Arrangement.SpaceAround,
         ) {
-            Text(
+            TruncatedText(
                 text = username,
                 fontSize = 30.sp,
-                fontWeight = FontWeight(800),
-                modifier = Modifier.padding(20.dp, 20.dp, 20.dp, 0.dp)
+                maxChars = 20,
+                FontWeight(800),
+                Modifier.padding(20.dp, 20.dp, 20.dp, 0.dp)
             )
             ChatSelectionMenu(selectedChat) { newChat -> selectedChat = newChat }
             // REFERENCE: https://youtu.be/P3xQdINdrWY
@@ -269,8 +271,10 @@ fun MessageContainer(message: Message, currentUserId: String, username: String) 
                 }
                 TruncatedText(
                     message.authorUsername,
+                    fontSize = 16.sp,
                     maxChars = 11,
                     FontWeight(600),
+                    Modifier
                 )
                 Text(
                     text = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(message.date)
@@ -465,8 +469,10 @@ fun ReactionButton(emoji: String, count: Int, onClick: () -> Unit) {
 @Composable
 fun TruncatedText(
     text: String,
+    fontSize: TextUnit,
     maxChars: Int,
     fontWeight: FontWeight,
+    modifier: Modifier
 ) {
     val truncatedText = if (text.length > maxChars) {
         text.take(maxChars) + "..."
@@ -476,6 +482,10 @@ fun TruncatedText(
 
     Text(
         text = truncatedText,
+        fontSize = fontSize,
         fontWeight = fontWeight,
+        modifier = modifier,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
     )
 }
