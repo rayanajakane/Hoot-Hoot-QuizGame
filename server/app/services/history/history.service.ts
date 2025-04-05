@@ -16,12 +16,10 @@ export class HistoryService {
         const matchHistory = await this.getMatchHistory(userId);
         let stats;
         let intensityGrid;
+
         if (!matchHistory || matchHistory.length === 0) {
             stats = { nMatchesPlayed: 0, nMatchesWon: 0, averageGoodAnswersPercentage: 0, averageTime: 0 };
-            const year = new Date().getFullYear();
-            const isLeapYear = (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
-            const nDays = isLeapYear ? 366 : 365;
-            intensityGrid = Array(nDays).fill(0);
+            intensityGrid = this.getBlankGrid();
         } else {
             stats = this.getMatchStats(matchHistory);
             intensityGrid = this.getIntensityGrid(matchHistory);
@@ -33,6 +31,22 @@ export class HistoryService {
             intensityGrid,
         };
         return history;
+    }
+
+    getBlankGrid() {
+        const intensityGrid: IntensityGridItem[] = [];
+        const year = new Date().getFullYear();
+        const yearStart = new Date(year, 0, 0);
+        const isLeapYear = (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
+        const nDays = isLeapYear ? 366 : 365;
+        for (let i = 0; i < nDays; i++) {
+            intensityGrid.push({
+                date: new Date(yearStart.getTime() + i * (1000 * 60 * 60 * 24)),
+                intensity: 0,
+                nMatches: 0,
+            });
+        }
+        return intensityGrid;
     }
 
     getIntensityGrid(historyMatchItems: HistoryMatchItem[]) {
@@ -67,11 +81,6 @@ export class HistoryService {
         matchCount.forEach((count, index) => {
             intensityGrid[index].nMatches = count;
             if (count === 0) {
-                intensityGrid[index].intensity = 0;
-            } else if (count <= averageMatchCount) {
-                intensityGrid[index].intensity = 1;
-            } else if (count > averageMatchCount && count != maxMatchCount) {
-                intensityGrid[index].intensity = 2;
                 intensityGrid[index].intensity = 0;
             } else if (count <= averageMatchCount) {
                 intensityGrid[index].intensity = 1;
