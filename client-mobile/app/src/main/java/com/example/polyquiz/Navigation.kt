@@ -318,16 +318,17 @@ fun Navigation(
             val moneyService = remember { MoneyService() }
 
             ShopPage(
-                    authViewModel = authViewModel,
-                    currentUserID = authViewModel.getUserId(),
-                    moneyService = moneyService,
-                    navigateToHome = { navController.navigate(Route.Home) },
-                    navigateToCreate = { navController.navigate(Route.MatchCreation) },
-                    navigateToUserEdit = { navController.navigate(Route.UserEditPage) },
-                    navigateToFriendsPage = { navController.navigate(Route.FriendsSearchScreen) },
-                    navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
-                    navigateToRankingsPage = { navController.navigate(Route.RankingsPage) },
-                    navigateToShop = { navController.navigate(Route.ShopPage) }
+                modifier,
+                authViewModel = authViewModel,
+                currentUserID = authViewModel.getUserId(),
+                moneyService = moneyService,
+                navigateToHome = { navController.navigate(Route.Home) },
+                navigateToCreate = { navController.navigate(Route.MatchCreation) },
+                navigateToUserEdit = { navController.navigate(Route.UserEditPage) },
+                navigateToFriendsPage = { navController.navigate(Route.FriendsSearchScreen) },
+                navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
+                navigateToRankingsPage = { navController.navigate(Route.RankingsPage) },
+                navigateToShop = { navController.navigate(Route.ShopPage) }
             )
         }
     }

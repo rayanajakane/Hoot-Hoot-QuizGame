@@ -2,6 +2,7 @@ package com.example.polyquiz.shop.presentation
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -21,8 +22,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,6 +36,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.money.domain.MoneyService
 import com.example.polyquiz.shop.domain.ShopItem
 import com.example.polyquiz.shop.domain.ShopViewModel
@@ -39,6 +45,7 @@ import com.example.polyquiz.ui.MenuButton
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ShopPage(
+    modifier: Modifier,
     authViewModel: AuthViewModel,
     currentUserID: String,
     moneyService: MoneyService,
@@ -58,6 +65,8 @@ fun ShopPage(
     val wallpaperItems by shopViewModel.wallpaperItems.collectAsState()
     val isLoading by shopViewModel.isLoading.collectAsState()
     val currentBalance by moneyService.currentBalance.collectAsState()
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(currentUserID) {
         moneyService.getCurrentBalance(currentUserID)
@@ -69,86 +78,108 @@ fun ShopPage(
         shopViewModel.initialize(authViewModel)
     }
 
-    Scaffold { paddingValues ->
-        MenuButton(
-            modifier = Modifier,
-            navigateToHome,
-            navigateToCreate,
-            navigateToUserEdit,
-            navigateToFriendsPage,
-            navigateToJoinRoom,
-            navigateToRankingsPage,
-            navigateToShop,
-            signOut = { authViewModel.signOut() }
-        )
-        Column(
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                })
+            }
+    ) {
+        ChatComponent(modifier = modifier, authViewModel = authViewModel)
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp)
+                .imePadding()
         ) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-            ) {
+            Column(modifier = modifier) {
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.AccountBalanceWallet,
-                        contentDescription = "Balance",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "$${currentBalance}",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
+                        text = stringResource(R.string.buy_goodies),
+                        modifier = Modifier.padding(horizontal = 26.dp),
+                        style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold)
+                    )
+                    MenuButton(
+                        modifier = Modifier,
+                        navigateToHome,
+                        navigateToCreate,
+                        navigateToUserEdit,
+                        navigateToFriendsPage,
+                        navigateToJoinRoom,
+                        navigateToRankingsPage,
+                        navigateToShop,
+                        signOut = { authViewModel.signOut() }
                     )
                 }
-            }
+                Column(modifier = Modifier.padding(26.dp, 1.dp)) {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.AccountBalanceWallet,
+                                contentDescription = "Balance",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "$${currentBalance}",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
 
-            if (isLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            } else {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    // Avatars section
-                    ShopSection(
-                        title = stringResource(R.string.avatar_items),
-                        items = avatarItems,
-                        onBuyClick = { shopViewModel.buyAvatar(it) }
-                    )
+                    if (isLoading) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    } else {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState())
+                        ) {
+                            ShopSection(
+                                title = stringResource(R.string.avatar_items),
+                                items = avatarItems,
+                                onBuyClick = { shopViewModel.buyAvatar(it) }
+                            )
 
-                    // Themes section
-                    ShopSection(
-                        title = stringResource(R.string.theme_items),
-                        items = themeItems,
-                        onBuyClick = { shopViewModel.buyTheme(it) }
-                    )
+                            ShopSection(
+                                title = stringResource(R.string.theme_items),
+                                items = themeItems,
+                                onBuyClick = { shopViewModel.buyTheme(it) }
+                            )
 
-                    // Wallpapers section
-                    ShopSection(
-                        title = stringResource(R.string.wallpaper_items),
-                        items = wallpaperItems,
-                        onBuyClick = { shopViewModel.buyWallpaper(it) }
-                    )
+                            ShopSection(
+                                title = stringResource(R.string.wallpaper_items),
+                                items = wallpaperItems,
+                                onBuyClick = { shopViewModel.buyWallpaper(it) }
+                            )
+                        }
+                    }
                 }
             }
         }
