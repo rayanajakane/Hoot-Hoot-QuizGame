@@ -49,7 +49,8 @@
         "avatar-choices": "Predefined avatars",
         "avatar-premium": "Premium avatars",
         "no-premium-avatars": "No available premium avatars",
-        "buy-avatars": "Buy avatars",
+        "premium-themes": "Premium themes",
+        "buy-goodies": "Go to shop",
         "delete-user": "Delete Profile",
         "delete-warning": "This operation is irreversible. Do you REALLY want to delete your account?",
         "danger-zone": "Danger Zone",
@@ -59,6 +60,12 @@
         "sent-email-extra-info": "If you already have an account, you will receive an email to reset your password.",
         "dark-theme": "Dark theme",
         "light-theme": "Light theme",
+        "luigi-theme": "Luigi theme",
+        "mario-theme": "Mario theme",
+        "sonic-theme": "Sonic theme",
+        "pikachu-theme": "Pikachu theme",
+        "chat-wallpapers": "Chat wallpapers",
+        "no-background": "No background",
         "fr": "French",
         "en": "English"
     },
@@ -174,7 +181,10 @@
         "owned": "✅ Owned",
         "buy": "Buy",
         "insufficient-funds": "Insufficient funds",
-        "buy-successfully": "Bought successfully!"
+        "buy-successfully": "Bought successfully!",
+        "avatar-items": "Avatar",
+        "theme-items": "Themes",
+        "wallpaper-items": "Chat Wallpapers"
     },
     "friends-search": {
         "search-friend": "Search Friend",

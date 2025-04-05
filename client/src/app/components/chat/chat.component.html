@@ -1,4 +1,17 @@
-<div id="main-chat-container">
+<div
+    id="main-chat-container"
+    [ngStyle]="
+        hasBackground()
+            ? {
+                  'background-image': isDarkTheme()
+                      ? 'linear-gradient(rgba(0, 0, 0, 0.40), rgba(0, 0, 0, 0.40)), url(' + currentWallpaper + ')'
+                      : 'linear-gradient(rgba(255, 255, 255, 0.70), rgba(255, 255, 255, 0.70)), url(' + currentWallpaper + ')',
+                  'background-size': 'cover',
+                  'background-position': 'center'
+              }
+            : {}
+    "
+>
     <div class="header-row">
         <h2 id="header-title">{{ this.authenticationService.userDisplayName }}</h2>
         <div id="channel-field-container">
