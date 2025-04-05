@@ -57,7 +57,8 @@ fun MatchCreationPage(
     navigateToFriendsPage: () -> Unit,
     navigateToJoinRoom: () -> Unit,
     navigateToLogin: () -> Unit,
-    navigateToRankingsPage: () -> Unit
+    navigateToRankingsPage: () -> Unit,
+    navigateToShopPage: () -> Unit
 ) {
     val authState = authViewModel.authState.observeAsState()
     val scope = rememberCoroutineScope()
@@ -117,6 +118,7 @@ fun MatchCreationPage(
                         navigateToFriendsPage,
                         navigateToJoinRoom,
                         navigateToRankingsPage,
+                        navigateToShopPage,
                         signOut = {
                             authViewModel.signOut()
                             navigateToLogin()

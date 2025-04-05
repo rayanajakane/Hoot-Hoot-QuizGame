@@ -359,6 +359,7 @@ fun UserEditPage(
                         navigateToFriendsPage,
                         navigateToJoinRoom,
                         navigateToRankingsPage,
+                        navigateToShopPage,
                         signOut = {
                             authViewModel.signOut()
                             navigateToLogin()

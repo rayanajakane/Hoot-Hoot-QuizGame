@@ -163,7 +163,8 @@ fun Navigation(
                 },
                 navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
                 navigateToLogin = { navController.navigate(Route.Login) },
-                navigateToRankingsPage = { navController.navigate(Route.RankingsPage) }
+                navigateToRankingsPage = { navController.navigate(Route.RankingsPage) },
+                navigateToShopPage = { navController.navigate(Route.ShopPage) }
             )
         }
         composable<Route.ResultsPage> {
@@ -200,7 +201,8 @@ fun Navigation(
                 navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
                 navigateToMatchPage = { navController.navigate(Route.MatchRoom) },
                 navigateToLogin = { navController.navigate(Route.Login) },
-                navigateToRankingsPage = { navController.navigate(Route.RankingsPage) }
+                navigateToRankingsPage = { navController.navigate(Route.RankingsPage) },
+                navigateToShopPage = { navController.navigate(Route.ShopPage) }
             )
         }
 
@@ -297,7 +299,8 @@ fun Navigation(
                 },
                 navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
                 navigateToLogin = { navController.navigate(Route.Login) },
-                navigateToRankingsPage = { navController.navigate(Route.RankingsPage) }
+                navigateToRankingsPage = { navController.navigate(Route.RankingsPage) },
+                navigateToShop = { navController.navigate(Route.ShopPage) }
             )
         }
         composable<Route.Drawing> {
@@ -324,6 +327,7 @@ fun Navigation(
                     navigateToFriendsPage = { navController.navigate(Route.FriendsSearchScreen) },
                     navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
                     navigateToRankingsPage = { navController.navigate(Route.RankingsPage) },
+                    navigateToShop = { navController.navigate(Route.ShopPage) }
             )
         }
     }

@@ -48,6 +48,7 @@ fun ShopPage(
     navigateToFriendsPage: () -> Unit,
     navigateToJoinRoom: () -> Unit,
     navigateToRankingsPage: () -> Unit,
+    navigateToShop: () -> Unit
 ) {
     val shopViewModel: ShopViewModel = viewModel()
 
@@ -77,6 +78,7 @@ fun ShopPage(
             navigateToFriendsPage,
             navigateToJoinRoom,
             navigateToRankingsPage,
+            navigateToShop,
             signOut = { authViewModel.signOut() }
         )
         Column(

@@ -150,6 +150,7 @@ fun HomePage(
                 navigateToFriendsPage,
                 navigateToJoinRoom,
                 navigateToRankingsPage,
+                navigateToShopPage,
                 signOut = { authViewModel.signOut() }
             )
             Column(

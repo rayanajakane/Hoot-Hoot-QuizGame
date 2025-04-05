@@ -85,6 +85,7 @@ fun JoinMatchPage(
     navigateToMatchPage: () -> Unit,
     navigateToLogin: () -> Unit,
     navigateToRankingsPage: () -> Unit,
+    navigateToShopPage: () -> Unit
 ) {
     var room by remember { mutableStateOf("") }
     val username by remember { mutableStateOf(authViewModel.getUsername()) }
@@ -214,6 +215,7 @@ fun JoinMatchPage(
                         navigateToFriendsPage,
                         navigateToJoinRoom,
                         navigateToRankingsPage,
+                        navigateToShopPage,
                         signOut = {
                             authViewModel.signOut()
                             navigateToLogin()
