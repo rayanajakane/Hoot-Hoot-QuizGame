@@ -160,13 +160,11 @@ export class AuthenticationService {
         }
         if (isValidUsername && isValidAvatarUrl) {
             this.socketHandler.send(FriendsEvents.UpdateData);
-            console.log('Sending...');
             const userIdName: UserIdName = {
                 id: this.userId,
                 name: username,
             };
             this.socketHandler.send(GameEvents.UpdateAuthorName, userIdName);
-            console.log('Sent');
             this.notificationService.displaySuccessMessage(this.translocoService.translate('auth.dialog-feedback.edited'));
         }
     }

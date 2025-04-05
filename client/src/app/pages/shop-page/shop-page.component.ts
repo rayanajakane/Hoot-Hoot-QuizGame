@@ -52,7 +52,6 @@ export class ShopPageComponent implements OnInit {
 
     onAvatarBought() {
         this.socketHandler.on(MoneyEvents.AvatarBought, (item: ShopItem) => {
-            console.log('Avatar bought:', item);
             this.avatarService.purchaseAvatar(item.id);
             const foundAvatar = this.avatarItems.find((avatar) => avatar.id === item.id);
             if (foundAvatar) {
