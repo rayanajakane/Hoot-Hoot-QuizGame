@@ -3,7 +3,6 @@ import { Inject, Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { AuthError } from '@app/services/authentication/auth-error';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { DataSnapshot, get, ref, set, update } from '@firebase/database';
-import { translate } from '@jsverse/transloco';
 
 export enum Theme {
     DARK = 'dark-theme',
@@ -21,12 +20,12 @@ export class ThemeService {
     currentTheme: Theme = Theme.LIGHT;
 
     themeLabels = {
-        [Theme.DARK]: translate('page.dark-theme'),
-        [Theme.LIGHT]: translate('page.light-theme'),
-        [Theme.LUIGI]: translate('page.luigi-theme'),
-        [Theme.MARIO]: translate('page.mario-theme'),
-        [Theme.SONIC]: translate('page.sonic-theme'),
-        [Theme.PIKACHU]: translate('page.pikachu-theme'),
+        [Theme.DARK]: 'page.dark-theme',
+        [Theme.LIGHT]: 'page.light-theme',
+        [Theme.LUIGI]: 'page.luigi-theme',
+        [Theme.MARIO]: 'page.mario-theme',
+        [Theme.SONIC]: 'page.sonic-theme',
+        [Theme.PIKACHU]: 'page.pikachu-theme',
     };
 
     private renderer: Renderer2;
