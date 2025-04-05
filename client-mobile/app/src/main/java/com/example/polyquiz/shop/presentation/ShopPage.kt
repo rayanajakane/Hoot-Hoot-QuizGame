@@ -40,6 +40,7 @@ import com.example.polyquiz.ui.MenuButton
 @Composable
 fun ShopPage(
     authViewModel: AuthViewModel,
+    currentUserID: String,
     moneyService: MoneyService,
     navigateToHome: () -> Unit,
     navigateToCreate: () -> Unit,
@@ -56,6 +57,11 @@ fun ShopPage(
     val wallpaperItems by shopViewModel.wallpaperItems.collectAsState()
     val isLoading by shopViewModel.isLoading.collectAsState()
     val currentBalance by moneyService.currentBalance.collectAsState()
+
+    LaunchedEffect(currentUserID) {
+        moneyService.getCurrentBalance(currentUserID)
+        moneyService.listenForMoneyEvents()
+    }
 
     // Load shop items when screen is shown
     LaunchedEffect(true) {

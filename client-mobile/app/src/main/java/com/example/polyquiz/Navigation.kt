@@ -316,6 +316,7 @@ fun Navigation(
 
             ShopPage(
                     authViewModel = authViewModel,
+                    currentUserID = authViewModel.getUserId(),
                     moneyService = moneyService,
                     navigateToHome = { navController.navigate(Route.Home) },
                     navigateToCreate = { navController.navigate(Route.MatchCreation) },
