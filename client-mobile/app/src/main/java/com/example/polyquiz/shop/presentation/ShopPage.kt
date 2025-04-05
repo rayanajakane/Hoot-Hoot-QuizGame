@@ -85,17 +85,6 @@ fun ShopPage(
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            ElevatedButton(
-                onClick = { navigateToHome() },
-                modifier = Modifier.padding(top = 16.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.ShoppingCart,
-                    contentDescription = null
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(stringResource(R.string.home_page))
-            }
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
