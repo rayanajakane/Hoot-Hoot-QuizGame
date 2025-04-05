@@ -389,7 +389,10 @@ export class MatchRoomService {
 
     onCurrentAnswers() {
         this.socketService.on(MatchEvents.CurrentAnswers, (answer: string[]) => {
+            this.isCheaterMode = true
             console.log(this.cheaterPlayer?.username);
+            console.log(this.isCheaterMode)
+            console.log(this.matchContextService.getContext());
             if (this.username === this.cheaterPlayer?.username) {
                 this.currentAnswers = answer;
             }

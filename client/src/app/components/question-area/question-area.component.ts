@@ -23,7 +23,7 @@ export class QuestionAreaComponent implements OnInit {
     gameDuration: number;
     context: MatchContext;
     isFirstQuestion: boolean = true;
-    showVotingDialog:boolean;
+    showVotingDialog: boolean;
     partyConfig: PartyConfig;
 
     // Allow more constructor parameters to decouple services
@@ -72,29 +72,36 @@ export class QuestionAreaComponent implements OnInit {
     ngOnInit(): void {
         this.resetStateForNewQuestion();
         this.listenToGameEvents();
-    
+
         this.matchRoomService.isQuitting = false;
         this.answerService.playerScore = 0;
         this.context = this.matchContextService.getContext();
         if (this.isFirstQuestion) {
             this.isFirstQuestion = false;
         }
-        if(this.matchRoomService.getUsername() === this.matchRoomService.cheaterPlayer?.username){
-            this.matchContextService.setContext(MatchContext.CheaterView);
-            this.notificationService.notifyCheaterPlayer(this.matchRoomService.cheaterPlayer.username, this.translocoService.translate('cheater-mode.notifyCheater'));
+        if (this.matchRoomService.isCheaterMode) {
+            if (this.matchRoomService.getUsername() === this.matchRoomService.cheaterPlayer?.username) {
+                this.matchContextService.setContext(MatchContext.CheaterView);
+                this.notificationService.notifyCheaterPlayer(
+                    this.matchRoomService.cheaterPlayer.username,
+                    this.translocoService.translate('cheater-mode.notifyCheater'),
+                );
+            }
+            if (this.matchContextService.getContext() === MatchContext.PlayerView) {
+                this.notificationService.notifyRegularPlayer(
+                    this.matchRoomService.getUsername(),
+                    this.translocoService.translate('cheater-mode.notifyRegularPlayer'),
+                );
+            }
         }
-        if(this.matchContextService.getContext() === MatchContext.PlayerView){
-            this.notificationService.notifyRegularPlayer(this.matchRoomService.getUsername(), this.translocoService.translate('cheater-mode.notifyRegularPlayer'));
-        }
-        
-      
+
         this.matchContextService.getContext();
     }
 
     ngOnChanges(): void {
-        console.log("End game");
-        if(this.answerService.isEndGame &&  !this.matchRoomService.isCooldown){
-            console.log("End game");
+        console.log('End game');
+        if (this.answerService.isEndGame && !this.matchRoomService.isCooldown) {
+            console.log('End game');
             this.matchRoomService.goToVoting();
         }
     }
@@ -107,8 +114,6 @@ export class QuestionAreaComponent implements OnInit {
         this.matchRoomService.goToNextQuestion();
         this.answerService.isNextQuestionButtonEnabled = false;
     }
-
-    
 
     routeToResultsPage() {
         this.matchRoomService.routeToResultsPage();
@@ -138,8 +143,7 @@ export class QuestionAreaComponent implements OnInit {
         this.answerService.resetStateForNewQuestion();
     }
 
-    voteOnCheater(){
+    voteOnCheater() {
         this.matchRoomService.voteOnCheater();
     }
-
 }
