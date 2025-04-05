@@ -246,7 +246,7 @@
         "grid-label": "Parties au courant de l'année",
         "less": "Moins",
         "more": "Plus",
-        "matches-played": " parties"
+        "matches-played": " partie(s)"
     },
     "match-config": {
         "title-label": "Configuration de la partie",
