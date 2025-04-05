@@ -46,8 +46,8 @@ export class UserEditPageComponent implements OnInit {
     currentWallpaper: Wallpaper;
 
     langLabels = {
-        ['fr']: translate('page.fr'),
-        ['en']: translate('page.en'),
+        ['fr']: 'page.fr',
+        ['en']: 'page.en',
     };
     userHistory: UserHistoryInfo = {
         auth: [],
