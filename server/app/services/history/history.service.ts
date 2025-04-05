@@ -63,7 +63,6 @@ export class HistoryService {
             }
         });
         const averageMatchCount = matchCount.reduce((a, b) => a + b) / nDaysWithMatches;
-        console.log(averageMatchCount);
         const maxMatchCount = Math.max(...matchCount);
         matchCount.forEach((count, index) => {
             intensityGrid[index].nMatches = count;
