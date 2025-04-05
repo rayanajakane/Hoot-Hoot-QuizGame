@@ -195,8 +195,8 @@
             </mat-card>
             <div *ngFor="let item of userHistory.match">
                 <mat-card class="history-match-item" color="primary">
-                    <p>{{ item.start | date: 'YYYY-MM-dd HH:mm' }}</p>
-                    <p>{{ item.end | date: 'YYYY-MM-dd HH:mm' }}</p>
+                    <p>{{ item.start | date: 'yyyy-MM-dd HH:mm' }}</p>
+                    <p>{{ item.end | date: 'yyyy-MM-dd HH:mm' }}</p>
                     <p>{{ item.hasWon ? t('history.victory') : t('history.defeat') }}</p>
                     <p>{{ item.hasGivenUp ? '✔' : '-' }}</p>
                 </mat-card>
@@ -209,7 +209,7 @@
             </mat-card>
             <div *ngFor="let item of userHistory.auth">
                 <mat-card class="history-auth-item">
-                    <p>{{ item.date | date: 'YYYY-MM-dd HH:mm' }}</p>
+                    <p>{{ item.date | date: 'yyyy-MM-dd HH:mm' }}</p>
                     <p *ngIf="item.isLogin">{{ t('history.signin') }}</p>
                     <p *ngIf="!item.isLogin">{{ t('history.signout') }}</p>
                 </mat-card>

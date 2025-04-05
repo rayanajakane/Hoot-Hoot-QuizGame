@@ -152,6 +152,7 @@ export class UserEditPageComponent implements OnInit {
         this.fetchPurchasedWallpapers();
         this.historyService.getUserHistory(this.currentUser.uid).subscribe({
             next: (userHistory: UserHistoryInfo) => {
+                console.log(userHistory);
                 this.userHistory = userHistory;
             },
             error: (error) => {
@@ -342,6 +343,6 @@ export class UserEditPageComponent implements OnInit {
     }
 
     getGridItemInfo(gridItem: IntensityGridItem) {
-        return `${this.datePipe.transform(gridItem.date, 'YYYY-MM-dd')}: ${gridItem.nMatches}`;
+        return `${this.datePipe.transform(gridItem.date, 'yyyy-MM-dd')}: ${gridItem.nMatches}`;
     }
 }

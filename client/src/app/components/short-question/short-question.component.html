@@ -3,7 +3,7 @@
         <mat-card-header class="short-question-header">
             <mat-card-title>{{ question.points }} points</mat-card-title>
             <mat-card-subtitle [matTooltip]="t('admin-main-page.last-modification')">{{
-                question.lastModification | date: 'YYYY-MM-dd'
+                question.lastModification | date: 'yyyy-MM-dd'
             }}</mat-card-subtitle>
             <p class="question-type">
                 <mat-icon *ngIf="question.type === 'QCM'">widgets</mat-icon>
