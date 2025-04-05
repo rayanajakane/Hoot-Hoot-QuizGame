@@ -82,7 +82,7 @@ export class QuestionsGeneratorService {
  
       };
     constructor (configService: ConfigService){
-        const geminiApiKey = "AIzaSyDtfJfe29-BN22yt8RDUboSdFb7LXWKHyo";
+        const geminiApiKey = configService.get<string>('GEMINI_API_KEY');
         this.googleAI = new GoogleGenerativeAI(geminiApiKey);    
         this.model = this.googleAI.getGenerativeModel({ model: GEMINI_MODEL ,generationConfig :{
             responseMimeType: "application/json",
