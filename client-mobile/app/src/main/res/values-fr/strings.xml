@@ -70,9 +70,9 @@
     <string name="clear_canvas">Réinitialiser le canvas</string>
     <string name="light_theme">Thème clair</string>
     <string name="dark_theme">Thème sombre</string>
+    <string name="username_edit">Veuillez choisir un identifiant</string>
     <string name="your_elo">Votre elo</string>
     <string name="rankings">Classements</string>
-
     <string name="join_match">Joindre une partie</string>
     <string name="host_match">Créer une partie</string>
     <string name="team_name">Équipe 201</string>
@@ -144,4 +144,6 @@
     <string name="entry_fee">Frais d\'entrée</string>
     <string name="entry_fee_message">Les joueurs devront payer ce montant pour rejoindre la partie.</string>
     <string name="prepare">Préparez vous pour la prochaine question! ⏳</string>
+    <string name="regen">Générer d\'autres noms</string>
+    <string name="suggest_names">Suggestions de noms d\'utilisateurs</string>
 </resources>
