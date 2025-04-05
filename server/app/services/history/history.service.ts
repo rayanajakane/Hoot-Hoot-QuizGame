@@ -1,5 +1,5 @@
 import { FirebaseRepositoryService } from '@app/modules/firebase/firebase-repository/firebase-repository.service';
-import { HistoryAuthItem, HistoryMatchItem, UserHistoryInfo } from '@common/interfaces/history-items';
+import { HistoryAuthItem, HistoryMatchItem, IntensityGridItem, UserHistoryInfo } from '@common/interfaces/history-items';
 import { Injectable } from '@nestjs/common';
 import { Database } from 'firebase-admin/lib/database/database';
 
@@ -40,7 +40,16 @@ export class HistoryService {
         const yearStart = new Date(year, 0, 0);
         const isLeapYear = (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
         const nDays = isLeapYear ? 366 : 365;
-        const intensityGrid = Array(nDays).fill(0);
+        const intensityGrid: IntensityGridItem[] = [];
+        let nDaysWithMatches = 0;
+
+        for (let i = 1; i <= nDays; i++) {
+            intensityGrid.push({
+                date: new Date(yearStart.getTime() + i * (1000 * 60 * 60 * 24)),
+                intensity: 0,
+                nMatches: 0,
+            });
+        }
         const matchCount: number[] = Array(nDays).fill(0);
         historyMatchItems.forEach((historyMatchItem) => {
             if (historyMatchItem.end.getFullYear() === year) {
@@ -50,19 +59,22 @@ export class HistoryService {
                     (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(date.getFullYear(), 0, 0)) / 24 / 60 / 60 / 1000 - 1;
 
                 matchCount[index]++;
+                nDaysWithMatches++;
             }
         });
-        const averageMatchCount = matchCount.reduce((a, b) => a + b) / nDays;
+        const averageMatchCount = matchCount.reduce((a, b) => a + b) / nDaysWithMatches;
+        console.log(averageMatchCount);
         const maxMatchCount = Math.max(...matchCount);
         matchCount.forEach((count, index) => {
+            intensityGrid[index].nMatches = count;
             if (count === 0) {
-                intensityGrid[index] = 0;
-            } else if (count < averageMatchCount) {
-                intensityGrid[index] = 1;
-            } else if (count >= averageMatchCount && count != maxMatchCount) {
-                intensityGrid[index] = 2;
+                intensityGrid[index].intensity = 0;
+            } else if (count <= averageMatchCount) {
+                intensityGrid[index].intensity = 1;
+            } else if (count > averageMatchCount && count != maxMatchCount) {
+                intensityGrid[index].intensity = 2;
             } else if (count === maxMatchCount) {
-                intensityGrid[index] = 3;
+                intensityGrid[index].intensity = 3;
             }
         });
         return intensityGrid;
