@@ -3,6 +3,7 @@ package com.example.polyquiz.auth.presentation
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
+import androidx.activity.result.launch
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,9 +33,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.AutoFixNormal
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -59,6 +62,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -84,14 +88,19 @@ import com.example.polyquiz.auth.domain.UsernameSuggestionService
 import com.example.polyquiz.auth.domain.UsernameSuggestionService.showUsernameDialog
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.MatchStats
+import com.example.polyquiz.constants.PremiumAvatar
 import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.constants.SIZE_CONSTANTS
 import com.example.polyquiz.constants.UserHistoryInfo
+import com.example.polyquiz.constants.Wallpaper
 import com.example.polyquiz.core.ThemeService
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.core.TranslationService
+import com.example.polyquiz.shop.domain.PremiumAvatarService
+import com.example.polyquiz.shop.domain.WallpaperService
 import com.example.polyquiz.ui.MenuButton
 import com.example.polyquiz.ui.theme.Theme
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -112,7 +121,8 @@ fun UserEditPage(
     navigateToJoinRoom: () -> Unit,
     navigateToLogin: () -> Unit,
     navigateToCamera: () -> Unit,
-    navigateToRankingsPage: () -> Unit
+    navigateToRankingsPage: () -> Unit,
+    navigateToShopPage: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val translationService = TranslationService
@@ -173,6 +183,11 @@ fun UserEditPage(
         theme = selectedTheme
         Log.d("Theme changer", "Selected $theme")
     }
+    val purchasedAvatars by PremiumAvatarService.purchasedAvatars.collectAsState()
+    val purchasedWallpapers by WallpaperService.purchasedWallpapers.collectAsState()
+    val currentWallpaper by WallpaperService.currentWallpaper.collectAsState()
+    val scope = rememberCoroutineScope()
+
     DisposableEffect(Unit) {
         onDispose {
             authViewModel.setProfileUpdated(false)
@@ -411,6 +426,85 @@ fun UserEditPage(
                                     onClickAvatar
                                 )
                             }
+                            if (purchasedAvatars.isNotEmpty()) {
+                                Text(stringResource(R.string.avatar_items))
+                                Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                                    purchasedAvatars.forEach { avatarId ->
+                                        val premiumAvatar = PremiumAvatar.entries.find { it.name == avatarId }
+                                        if (premiumAvatar != null) {
+                                            ClickableAvatarPlaceholder(
+                                                32.dp,
+                                                premiumAvatar.value,
+                                                onClickAvatar
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                            // Add wallpapers section
+                            Text(stringResource(R.string.wallpaper_items))
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                // No background option
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier
+                                        .size(width = 80.dp, height = 50.dp)
+                                        .clip(RoundedCornerShape(4.dp))
+                                        .background(Color.LightGray)
+                                        .border(
+                                            width = if (currentWallpaper == Wallpaper.None.value) 2.dp else 0.dp,
+                                            color = MaterialTheme.colorScheme.primary,
+                                            shape = RoundedCornerShape(4.dp)
+                                        )
+                                        .clickable {
+                                            scope.launch {
+                                                WallpaperService.setWallpaper(authViewModel, Wallpaper.None.value)
+                                            }
+                                        }
+                                ) {
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Icon(
+                                            imageVector = Icons.Default.Block,
+                                            contentDescription = "No background",
+                                            tint = Color.Gray
+                                        )
+                                        Text(
+                                            text = stringResource(R.string.no_background),
+                                            fontSize = 10.sp,
+                                            color = Color.Gray
+                                        )
+                                    }
+                                }
+
+                                // Purchased wallpapers
+                                purchasedWallpapers.forEach { wallpaperId ->
+                                    val wallpaper = Wallpaper.values().find { it.name == wallpaperId }
+                                    if (wallpaper != null && wallpaper != Wallpaper.None) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(width = 80.dp, height = 50.dp)
+                                                .clip(RoundedCornerShape(4.dp))
+                                                .border(
+                                                    width = if (currentWallpaper == wallpaper.value) 2.dp else 0.dp,
+                                                    color = MaterialTheme.colorScheme.primary,
+                                                    shape = RoundedCornerShape(4.dp)
+                                                )
+                                                .clickable {
+                                                    scope.launch {
+                                                        WallpaperService.setWallpaper(authViewModel, wallpaper.value)
+                                                    }
+                                                }
+                                        ) {
+                                            AsyncImage(
+                                                model = wallpaper.value,
+                                                contentDescription = "Wallpaper",
+                                                contentScale = ContentScale.Crop,
+                                                modifier = Modifier.fillMaxSize()
+                                            )
+                                        }
+                                    }
+                                }
+                            }
                         }
                         Column {
                             TextField(
@@ -535,6 +629,17 @@ fun UserEditPage(
                             }
                         }
                     }
+                }
+                Button(
+                    onClick = { navigateToShopPage() },
+                    modifier = Modifier.padding(top = 16.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ShoppingCart,
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(stringResource(R.string.buy_goodies))
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(

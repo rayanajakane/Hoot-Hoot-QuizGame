@@ -50,4 +50,7 @@ object Route {
 
     @Serializable
     object Drawing
+
+    @Serializable
+    object ShopPage
 }

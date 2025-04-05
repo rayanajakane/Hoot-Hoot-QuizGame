@@ -1,10 +1,12 @@
 package com.example.polyquiz.money.domain
 import com.example.polyquiz.constants.MoneyEvents
+import com.example.polyquiz.shop.domain.ShopItem
 import com.example.vanillaprototype.socket.SocketHandler
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.json.JSONObject
+import com.google.firebase.auth.FirebaseAuth
 
 
 class MoneyService() {
@@ -14,10 +16,21 @@ class MoneyService() {
     private val _currentBalance = MutableStateFlow(0)
     val currentBalance: StateFlow<Int> get() = _currentBalance
 
-    fun listenForMoneyEvents() {
+    private fun getUserId(): String {
+        return FirebaseAuth.getInstance().currentUser?.uid ?: ""
+    }
+
+    fun listenForMoneyEvents(
+        onAvatarBoughtCallback: (ShopItem) -> Unit = {},
+        onThemeBoughtCallback: (ShopItem) -> Unit = {},
+        onWallpaperBoughtCallback: (ShopItem) -> Unit = {}
+    ) {
         onReturnBalance()
         onDonationGiven()
         onDonationReceived()
+        onAvatarBought(onAvatarBoughtCallback)
+        onThemeBought(onThemeBoughtCallback)
+        onWallpaperBought(onWallpaperBoughtCallback)
         handleError()
     }
 
@@ -25,6 +38,9 @@ class MoneyService() {
         mSocket.off(MoneyEvents.RETURN_BALANCE.value)
         mSocket.off(MoneyEvents.DONATION_GIVEN.value)
         mSocket.off(MoneyEvents.DONATION_RECEIVED.value)
+        mSocket.off(MoneyEvents.AVATAR_BOUGHT.value)
+        mSocket.off(MoneyEvents.THEME_BOUGHT.value)
+        mSocket.off(MoneyEvents.WALLPAPER_BOUGHT.value)
         mSocket.off(MoneyEvents.ERROR.value)
     }
 
@@ -78,6 +94,90 @@ class MoneyService() {
 //                    notificationService.displaySuccessMessage("${donationData.from} has donated ${donationData.amount} to you")
                     _currentBalance.value = donationData.newBalance
                     println("${donationData.from} has donated ${donationData.amount} to you")
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
+    fun buyAvatar(item: ShopItem) {
+        val data = JSONObject().apply {
+            put("user", getUserId())
+            put("item", JSONObject().apply {
+                put("id", item.id)
+                put("imageUrl", item.imageUrl)
+                put("price", item.price)
+                put("owned", item.owned)
+            })
+        }
+        println("Buying avatar: ${item.id} for ${item.price}")
+        mSocket.emit(MoneyEvents.BUY_AVATAR.value, data)
+    }
+
+    fun buyTheme(item: ShopItem) {
+        val data = JSONObject().apply {
+            put("user", getUserId())
+            put("item", JSONObject().apply {
+                put("id", item.id)
+                put("imageUrl", item.imageUrl)
+                put("price", item.price)
+                put("owned", item.owned)
+            })
+        }
+        println("Buying theme: ${item.id} for ${item.price}")
+        mSocket.emit(MoneyEvents.BUY_THEME.value, data)
+    }
+
+    fun buyWallpaper(item: ShopItem) {
+        val data = JSONObject().apply {
+            put("user", getUserId())
+            put("item", JSONObject().apply {
+                put("id", item.id)
+                put("imageUrl", item.imageUrl)
+                put("price", item.price)
+                put("owned", item.owned)
+            })
+        }
+        println("Buying wallpaper: ${item.id} for ${item.price}")
+        mSocket.emit(MoneyEvents.BUY_WALLPAPER.value, data)
+    }
+
+    private fun onAvatarBought(callback: (ShopItem) -> Unit) {
+        mSocket.on(MoneyEvents.AVATAR_BOUGHT.value) { args: Array<Any> ->
+            if (args.isNotEmpty()) {
+                val json = args[0].toString()
+                try {
+                    val item = Gson().fromJson(json, ShopItem::class.java)
+                    callback(item)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
+    private fun onThemeBought(callback: (ShopItem) -> Unit) {
+        mSocket.on(MoneyEvents.THEME_BOUGHT.value) { args: Array<Any> ->
+            if (args.isNotEmpty()) {
+                val json = args[0].toString()
+                try {
+                    val item = Gson().fromJson(json, ShopItem::class.java)
+                    callback(item)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
+    private fun onWallpaperBought(callback: (ShopItem) -> Unit) {
+        mSocket.on(MoneyEvents.WALLPAPER_BOUGHT.value) { args: Array<Any> ->
+            if (args.isNotEmpty()) {
+                val json = args[0].toString()
+                try {
+                    val item = Gson().fromJson(json, ShopItem::class.java)
+                    callback(item)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

@@ -70,6 +70,10 @@
     <string name="clear_canvas">Réinitialiser le canvas</string>
     <string name="light_theme">Thème clair</string>
     <string name="dark_theme">Thème sombre</string>
+    <string name="luigi_theme">Luigi Theme</string>
+    <string name="mario_theme">Mario Theme</string>
+    <string name="sonic_theme">Sonic Theme</string>
+    <string name="pikachu_theme">Pikachu Theme</string>
     <string name="username_edit">Veuillez choisir un identifiant</string>
     <string name="your_elo">Votre elo</string>
     <string name="rankings">Classements</string>
@@ -144,6 +148,15 @@
     <string name="entry_fee">Frais d\'entrée</string>
     <string name="entry_fee_message">Les joueurs devront payer ce montant pour rejoindre la partie.</string>
     <string name="prepare">Préparez vous pour la prochaine question! ⏳</string>
+    <string name="already_owned">Déjà acheté</string>
+    <string name="purchase_successful">Acheté avec succès</string>
+    <string name="buy_goodies">Boutique</string>
+    <string name="avatar_items">Avatars Premiums</string>
+    <string name="theme_items">Thèmes Premiums</string>
+    <string name="wallpaper_items">Arrières-plan de clavardage</string>
+    <string name="buy">Acheter</string>
+    <string name="owned">Possédé</string>
+    <string name="no_background">Aucun arrière-plan</string>
     <string name="regen">Générer d\'autres noms</string>
     <string name="suggest_names">Suggestions de noms d\'utilisateurs</string>
 </resources>
