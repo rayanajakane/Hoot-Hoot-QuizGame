@@ -297,8 +297,6 @@ export class MatchRoomService {
     }
 
  
-
-
     onStartCooldown() {
         this.socketService.on(MatchEvents.StartCooldown, () => {
             this.isCooldown = true;
