@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
+import { Theme, ThemeService } from '@app/services/theme/theme.service';
 
 @Component({
     selector: 'app-login-page',
@@ -11,9 +12,13 @@ export class LoginPageComponent implements OnInit {
     email: string = '';
     password: string = '';
 
-    constructor(private readonly authenticationService: AuthenticationService) {}
+    constructor(
+        private readonly authenticationService: AuthenticationService,
+        private themeService: ThemeService,
+    ) {}
 
     ngOnInit() {
+        this.themeService.setTheme(Theme.LIGHT);
         this.autofocus();
     }
 
