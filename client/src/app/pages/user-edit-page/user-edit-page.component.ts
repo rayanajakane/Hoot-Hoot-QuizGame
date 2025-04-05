@@ -152,6 +152,7 @@ export class UserEditPageComponent implements OnInit {
         this.fetchPurchasedWallpapers();
         this.historyService.getUserHistory(this.currentUser.uid).subscribe({
             next: (userHistory: UserHistoryInfo) => {
+                console.log(userHistory.intensityGrid);
                 this.userHistory = userHistory;
             },
             error: (error) => {
