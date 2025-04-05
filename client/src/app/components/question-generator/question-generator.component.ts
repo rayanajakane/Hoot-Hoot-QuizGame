@@ -30,30 +30,30 @@ export class QuestionGeneratorComponent {
     @Output() questionGenerated: EventEmitter<any> = new EventEmitter<any>();
     dialogForm: FormGroup;
     questionText: string;
-    questionText1: string;
+    questionTextSecondForm: string;
     generatedQuestions: GeneratedQuestion[] = [];
     generateButton: boolean = true;
     answerGenerated: boolean = false;
     choices: Choice[];
-    choices1: Choice[];
+    choicesSecondForm: Choice[];
     allResults: [];
   
     errorMargin: number;
     lowerBound: number;
     upperBound: number;
     exactValue: number;
-    errorMargin1: number;
-    lowerBound1: number;
-    upperBound1: number;
-    exactValue1: number;
+    errorMarginSecondForm: number;
+    lowerBoundSecondForm: number;
+    upperBoundSecondForm: number;
+    exactValueSecondForm: number;
     questionSubmitted: boolean = false;
     fb: FormBuilder;
     numChoices: number = 4;
     selectedQuestion: GeneratedQuestion | null = null;
     QuestionFormGenerated: number = 0;
     index: number = 0;
-    parsedAnswer1: any;
-    parsedAnswer2: any;
+    parsedAnswerFirstForm: any;
+    parsedAnswerSecondForm: any;
     language: string = "Français";
     languageToggle: boolean = false;
     results: [];
@@ -88,9 +88,6 @@ export class QuestionGeneratorComponent {
 
     setVAluesToForms(parsedData: any) {
         this.answerGenerated = true;
-        console.log(parsedData.Questions[this.index].Question)
-        console.log(parsedData.Questions)
-        console.log(this.index)
         if (parsedData.Questions[this.index].Question || Array.isArray(parsedData.Questions[this.index].Choices)) {
             const question = parsedData.Questions[this.index].Question.trim();
 
@@ -116,7 +113,7 @@ export class QuestionGeneratorComponent {
                 parsedData.Questions[this.index].Numericals?.errorMargin,
             );
 
-            this.parsedAnswer1 = {
+            this.parsedAnswerFirstForm = {
                 question: question,
                 choices: choices,
                 lowerBound: lowerBound,
@@ -131,9 +128,6 @@ export class QuestionGeneratorComponent {
             this.upperBound = upperBound;
             this.exactValue = exactValue;
             this.errorMargin = errorMargin;
-            console.log('6', this.index);
-
-            console.log('parsedAnswe1', this.parsedAnswer2);
         }
         if (this.index <= 6) {
             this.index++;
@@ -163,7 +157,7 @@ export class QuestionGeneratorComponent {
                 parsedData.Questions[this.index].Numericals?.errorMargin,
             );
 
-            this.parsedAnswer2 = {
+            this.parsedAnswerSecondForm = {
                 question: question,
                 choices: choices,
                 lowerBound: lowerBound,
@@ -174,12 +168,12 @@ export class QuestionGeneratorComponent {
 
 
 
-            this.questionText1 = question;
-            this.choices1 = choices;
-            this.lowerBound1 = lowerBound;
-            this.upperBound1 = upperBound;
-            this.exactValue1 = exactValue;
-            this.errorMargin1 = errorMargin;
+            this.questionTextSecondForm = question;
+            this.choicesSecondForm = choices;
+            this.lowerBoundSecondForm = lowerBound;
+            this.upperBoundSecondForm = upperBound;
+            this.exactValueSecondForm = exactValue;
+            this.errorMarginSecondForm = errorMargin;
 
         }
     }
@@ -247,7 +241,6 @@ export class QuestionGeneratorComponent {
     }
 
     validateQRELowerBound(lowerBound: number, exactValue: number) {
-        console.log(lowerBound, exactValue);
         if (exactValue <= lowerBound) {
             if(exactValue === 0){
                 return -Math.round((Math.random() * 100));
@@ -258,7 +251,6 @@ export class QuestionGeneratorComponent {
     }
 
     validateQREHigherBound(upperBound: number, exactValue: number) {
-        console.log(upperBound, exactValue);
         if(upperBound === 0){
             return Math.round(Math.random() + 1);
         }
@@ -284,14 +276,14 @@ export class QuestionGeneratorComponent {
     }
 
     submitToQuestion1Form() {
-        if (this.parsedAnswer1) {
+        if (this.parsedAnswerFirstForm) {
             const questionData = {
-                question: this.parsedAnswer1.question,
-                choices: this.parsedAnswer1.choices,
-                lowerBound: this.parsedAnswer1.lowerBound,
-                upperBound: this.parsedAnswer1.upperBound,
-                exactValue: this.parsedAnswer1.exactValue,
-                errorMargin: this.parsedAnswer1.errorMargin,
+                question: this.parsedAnswerFirstForm.question,
+                choices: this.parsedAnswerFirstForm.choices,
+                lowerBound: this.parsedAnswerFirstForm.lowerBound,
+                upperBound: this.parsedAnswerFirstForm.upperBound,
+                exactValue: this.parsedAnswerFirstForm.exactValue,
+                errorMargin: this.parsedAnswerFirstForm.errorMargin,
                 type: this.data.type,
             };
 
@@ -300,14 +292,14 @@ export class QuestionGeneratorComponent {
     }
 
     submitToQuestion2Form() {
-        if (this.parsedAnswer1) {
+        if (this.parsedAnswerFirstForm) {
             const questionData = {
-                question: this.parsedAnswer2.question,
-                choices: this.parsedAnswer2.choices,
-                lowerBound: this.parsedAnswer2.lowerBound,
-                upperBound: this.parsedAnswer2.upperBound,
-                exactValue: this.parsedAnswer2.exactValue,
-                errorMargin: this.parsedAnswer2.errorMargin,
+                question: this.parsedAnswerSecondForm.question,
+                choices: this.parsedAnswerSecondForm.choices,
+                lowerBound: this.parsedAnswerSecondForm.lowerBound,
+                upperBound: this.parsedAnswerSecondForm.upperBound,
+                exactValue: this.parsedAnswerSecondForm.exactValue,
+                errorMargin: this.parsedAnswerSecondForm.errorMargin,
                 type: this.data.type,
             };
 

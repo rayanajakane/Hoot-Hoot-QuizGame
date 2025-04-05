@@ -77,35 +77,35 @@
             <div *ngIf="questionText">
                 <mat-form-field class="question-field">
                     <mat-label>{{ data.placeholder }}</mat-label>
-                    <input autofocus cdkFocusInitial matInput [(ngModel)]="questionText1" />
+                    <input autofocus cdkFocusInitial matInput [(ngModel)]="questionTextSecondForm" />
                 </mat-form-field>
             </div>
 
             <div *ngIf="data.type === 'QCM'">
-                <div *ngFor="let choice of choices1; let i = index">
+                <div *ngFor="let choice of choicesSecondForm; let i = index">
                     <mat-form-field>
                         <mat-label>{{t('questions-generations.choice')}}{{ i + 1 }}</mat-label>
-                        <input matInput [(ngModel)]="choices1[i].text"/>
-                        <mat-checkbox [(ngModel)]="choices1[i].isCorrect"></mat-checkbox>
+                        <input matInput [(ngModel)]="choicesSecondForm[i].text"/>
+                        <mat-checkbox [(ngModel)]="choicesSecondForm[i].isCorrect"></mat-checkbox>
                     </mat-form-field>
                 </div>
             </div>
             <mat-form-field *ngIf="data.type === 'QRE'">
                 <div>
                     <label>{{t('question-creation-form.boundary-low')}}</label>
-                    <input matInput [(ngModel)]="lowerBound1" />
+                    <input matInput [(ngModel)]="lowerBoundSecondForm" />
                 </div>
                 <div>
                     <label>{{t('question-creation-form.boundary-high')}}</label>
-                    <input matInput [(ngModel)]="upperBound1" />
+                    <input matInput [(ngModel)]="upperBoundSecondForm" />
                 </div>
                 <div>
                     <label>{{t('question-creation-form.good-answer')}}</label>
-                    <input matInput [(ngModel)]="exactValue1" />
+                    <input matInput [(ngModel)]="exactValueSecondForm" />
                 </div>
                 <div>
                     <label>{{t('question-creation-form.tolerance-margin')}}</label>
-                    <input matInput [(ngModel)]="errorMargin1" />
+                    <input matInput [(ngModel)]="errorMarginSecondForm" />
                 </div>
             </mat-form-field>
 
