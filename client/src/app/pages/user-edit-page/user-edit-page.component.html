@@ -97,17 +97,17 @@
                         <mat-form-field id="theme">
                             <mat-label>{{ t('page.theme') }}</mat-label>
                             <mat-select formControlName="currentTheme" data-testid="theme-select-test-id">
-                                <mat-option *ngFor="let theme of availableThemes" [value]="theme">{{ getThemeLabel(theme) }}</mat-option>
+                                <mat-option *ngFor="let theme of availableThemes" [value]="theme">{{ t(getThemeLabel(theme)) }}</mat-option>
                                 <mat-option disabled>
                                     <em>--{{ t('page.premium-themes') }}--</em>
                                 </mat-option>
-                                <mat-option *ngFor="let theme of purchasedThemes" [value]="theme"> {{ getThemeLabel(theme) }} 👑 </mat-option>
+                                <mat-option *ngFor="let theme of purchasedThemes" [value]="theme"> {{ t(getThemeLabel(theme)) }} 👑 </mat-option>
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field id="language">
                             <mat-label>{{ t('page.language') }}</mat-label>
                             <mat-select formControlName="currentLang" data-testid="language-select-test-id">
-                                <mat-option *ngFor="let lang of availableLangs" [value]="lang">{{ getLangLabel(lang) }}</mat-option>
+                                <mat-option *ngFor="let lang of availableLangs" [value]="lang">{{ t(getLangLabel(lang)) }}</mat-option>
                             </mat-select>
                         </mat-form-field>
                         <button mat-raised-button color="primary" (click)="save()" id="save-button">{{ t('page.save') }}</button>
