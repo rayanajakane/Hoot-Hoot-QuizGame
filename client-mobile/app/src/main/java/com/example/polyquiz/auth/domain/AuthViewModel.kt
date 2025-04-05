@@ -15,6 +15,7 @@ import com.example.polyquiz.R
 import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.constants.FriendsEvents
+import com.example.polyquiz.constants.GameEvents
 import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.core.storage.ImageStorage
 import com.example.polyquiz.ui.theme.Theme
@@ -32,9 +33,11 @@ import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.database
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 class AuthViewModel : ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -302,6 +305,10 @@ class AuthViewModel : ViewModel() {
                         newUsernameRef.setValue(username.lowercase())
                         _username.value = username
                         SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
+
+                        val authorNameUpdate = UserIdName(id = user!!.uid, name = username)
+                        val authorUpdateObject = JSONObject(Gson().toJson(authorNameUpdate))
+                        SocketHandler.getSocket().emit(GameEvents.UPDATE_AUTHOR_NAME.value, authorUpdateObject)
                         Log.d(
                             "Profile update",
                             "Used $username ${avatarURL.value}"
