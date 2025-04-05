@@ -23,7 +23,6 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Server, Socket } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
 
-
 @Injectable()
 export class MatchRoomService {
     matchRooms: MatchRoom[];
@@ -32,7 +31,7 @@ export class MatchRoomService {
     votesCount: { [username: string]: number } = { ['']: 0 };
     isCheaterMode: boolean = false;
     // totalVotes: VotingData[];
-   // totalVotes: { [username: string]: number }[] = [];
+    // totalVotes: { [username: string]: number }[] = [];
     totalVotes: VotingData[] = [{ username: '', numberOfVotes: 0, usersWhoVoted: [] }];
 
     constructor(
@@ -76,7 +75,7 @@ export class MatchRoomService {
 
         const roomCode = this.generateRoomCode();
         const qrCodeUrl = await this.qrCodeService.generateQrCode(roomCode);
-        this.votesCount ={};
+        this.votesCount = {};
         this.totalVotes = [];
 
         const newRoom: MatchRoom = {
