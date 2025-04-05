@@ -2,18 +2,24 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoginPageComponent } from '@app/pages/login-page/login-page.component';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
+import { ThemeService } from '@app/services/theme/theme.service';
 import SpyObj = jasmine.SpyObj;
 
 describe('LoginPageComponent', () => {
     let component: LoginPageComponent;
     let fixture: ComponentFixture<LoginPageComponent>;
     let authenticationServiceSpy: SpyObj<AuthenticationService>;
+    let themeSpy: SpyObj<ThemeService>;
 
     beforeEach(() => {
         const authenticationSpy = jasmine.createSpyObj('AuthenticationService', ['signIn']);
+        themeSpy = jasmine.createSpyObj('ThemeService', ['setTheme']);
         TestBed.configureTestingModule({
             declarations: [LoginPageComponent],
-            providers: [{ provide: AuthenticationService, useValue: authenticationSpy }],
+            providers: [
+                { provide: AuthenticationService, useValue: authenticationSpy },
+                { provide: ThemeService, useValue: themeSpy },
+            ],
         });
         fixture = TestBed.createComponent(LoginPageComponent);
         component = fixture.componentInstance;
