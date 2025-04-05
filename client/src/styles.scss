@@ -113,6 +113,12 @@ $pikachu-theme: mat.define-light-theme(
         border-radius: 1em 1em 0.15em 1em;
     }
 
+    .received-message {
+        background-color: #f5f5f5;
+        color: #000;
+        border-radius: 1em 1em 1em 0.15em;
+    }
+
     .friends-section {
         background: #f9f9f9;
         h3 {
@@ -212,6 +218,12 @@ $pikachu-theme: mat.define-light-theme(
         background-color: #5b6feb;
         color: black;
         border-radius: 1em 1em 0.15em 1em;
+    }
+
+    .received-message {
+        background-color: #212121;
+        color: white;
+        border-radius: 1em 1em 1em 0.15em;
     }
 
     .sidenav-container {
@@ -318,6 +330,12 @@ $pikachu-theme: mat.define-light-theme(
         border-radius: 1em 1em 0.15em 1em;
     }
 
+    .received-message {
+        background-color: #c2e5c1;
+        color: #000;
+        border-radius: 1em 1em 1em 0.15em;
+    }
+
     .sidenav-container {
         background-color: #e7f5e6 !important;
     }
@@ -407,6 +425,12 @@ $pikachu-theme: mat.define-light-theme(
         border-radius: 1em 1em 0.15em 1em;
     }
 
+    .received-message {
+        background-color: #f5f5f5;
+        color: #000;
+        border-radius: 1em 1em 1em 0.15em;
+    }
+
     .friends-section {
         background: #fff6ed;
         h3 {
@@ -466,6 +490,12 @@ $pikachu-theme: mat.define-light-theme(
         background-color: mat.get-color-from-palette(sonic.$m2-primary, 500);
         color: white;
         border-radius: 1em 1em 0.15em 1em;
+    }
+
+    .received-message {
+        background-color: #f5f5f5;
+        color: #000;
+        border-radius: 1em 1em 1em 0.15em;
     }
 
     .friends-section {
@@ -534,6 +564,12 @@ $pikachu-theme: mat.define-light-theme(
         background-color: mat.get-color-from-palette(pikachu.$m2-primary, 500);
         color: black;
         border-radius: 1em 1em 0.15em 1em;
+    }
+
+    .received-message {
+        background-color: #f5f5f5;
+        color: #000;
+        border-radius: 1em 1em 1em 0.15em;
     }
 
     .friends-section {
