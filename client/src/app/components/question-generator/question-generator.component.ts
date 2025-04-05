@@ -81,11 +81,11 @@ export class QuestionGeneratorComponent {
         const result = data.return;
         const parsedData = JSON.parse(result);
         this.results = parsedData;
-        this.setVAluesToForms(parsedData);
+        this.setValuesToForms(parsedData);
         this.answerGenerated = true;
     }
 
-    setVAluesToForms(parsedData: any) {
+    setValuesToForms(parsedData: any) {
         this.answerGenerated = true;
         if (parsedData.Questions[this.index].Question || Array.isArray(parsedData.Questions[this.index].Choices)) {
             const question = parsedData.Questions[this.index].Question.trim();
@@ -183,7 +183,7 @@ export class QuestionGeneratorComponent {
         this.generateButton = false;
         if (this.index <= 6) {
             this.index++;
-            this.setVAluesToForms(this.results);
+            this.setValuesToForms(this.results);
         } else {
             this.index = 0;
             this.generateQuestion();
