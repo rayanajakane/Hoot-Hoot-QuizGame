@@ -79,7 +79,6 @@ export class QuestionAreaComponent implements OnInit {
         if (this.isFirstQuestion) {
             this.isFirstQuestion = false;
         }
-
         if (this.matchRoomService.isCheaterMode) {
             if (this.matchRoomService.getUsername() === this.matchRoomService.cheaterPlayer?.username) {
                 this.matchContextService.setContext(MatchContext.CheaterView);
@@ -102,20 +101,17 @@ export class QuestionAreaComponent implements OnInit {
 
     // ngOnChanges(): void {
     //     if (this.answerService.isEndGame && !this.matchRoomService.isCooldown) {
-    //         this.matchRoomService.goToVoting();
     //     }
     // }
 
-    submitAnswers(): void {
-        this.answerService.submitAnswer({ userId: this.matchRoomService.getUserId(), roomCode: this.matchRoomService.getRoomCode() });
+    ngOnChanges(): void {
+        console.log('End game');
     }
 
     goToNextQuestion() {
         this.matchRoomService.goToNextQuestion();
         this.answerService.isNextQuestionButtonEnabled = false;
     }
-
-    
 
     routeToResultsPage() {
         this.matchRoomService.routeToResultsPage();

@@ -69,12 +69,7 @@
 
             <div
                 id="submit-button-container"
-                *ngIf="
-                    context === matchContext.PlayerView ||
-                    context === matchContext.TestPage ||
-                    context === matchContext.RandomMode ||
-                    context === matchContext.CheaterView
-                "
+                *ngIf="context === matchContext.PlayerView || context === matchContext.TestPage || context === matchContext.RandomMode"
             >
                 <button mat-raised-button color="primary" id="submit-button" *ngIf="this.answerService.isSelectionEnabled" (click)="submitAnswers()">
                     {{ t('question-area.submit') }}
@@ -180,9 +175,6 @@
                     </div>
                 </button>
             </div>
-        </div>
-        <div *ngIf="context === matchContext.HostView && !this.matchRoomService.isCooldown && this.matchRoomService.isCheaterMode">
-            <p></p>
         </div>
         <button mat-raised-button class="exit-button" color="primary" routerLink="/home" (click)="quitGame()">
             <mat-icon class="material-icons">logout</mat-icon>
