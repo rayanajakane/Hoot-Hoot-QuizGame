@@ -331,6 +331,9 @@
         "generate": "Generate",
         "regenerate": "Regenerate other questions",
         "generating": "Generating questions",
-        "submit": "Submit"
+        "submit": "Submit",
+        "language": "The question language",
+        "choice-number": "Number of answer choices",
+        "choice":"Choice"
     }
 }

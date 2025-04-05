@@ -328,7 +328,10 @@
         "input": "Veuillez fournir un sujet ou un thème pour générer des questions, et sélectionnez le type de question souhaité ",
         "generate": "Générer",
         "regenerate": "Regénérer d'autres questions",
-        "generating": "Génération de questions",
-        "submit": "Soumettre"
+        "generating": "Génération des questions",
+        "submit": "Soumettre",
+        "language": "La langue de la question",
+        "choice-number": "Nombre de choix de réponses",
+        "choice":"Choix"
     }
 }

@@ -236,6 +236,7 @@ export class QuestionGeneratorComponent {
         });
     }
 
+
     validateQREAnswerMargin(lowerBound: number, upperBound: number, exactValue: number, errorMargin: number) {
         const marginValue = (upperBound - lowerBound) * 0.25;
         if (errorMargin >= marginValue) {
@@ -248,19 +249,25 @@ export class QuestionGeneratorComponent {
     validateQRELowerBound(lowerBound: number, exactValue: number) {
         console.log(lowerBound, exactValue);
         if (exactValue <= lowerBound) {
+            if(exactValue === 0){
+                return -Math.round((Math.random() * 100));
+            }
             const newLowerBound = exactValue - Math.floor(Math.random() * exactValue);
-            return newLowerBound;
-        } else return lowerBound;
+            return Math.round(newLowerBound);
+        } else return Math.round(lowerBound);
     }
 
     validateQREHigherBound(upperBound: number, exactValue: number) {
         console.log(upperBound, exactValue);
+        if(upperBound === 0){
+            return Math.round(Math.random() + 1);
+        }
         if (exactValue >= upperBound) {
             const newUpperBound = exactValue + Math.floor(Math.random() * (exactValue + upperBound));
 
 
-            return newUpperBound;
-        } else return upperBound;
+            return Math.round(newUpperBound);
+        } else return Math.round(upperBound);
     }
 
     generateChoiceFields() {

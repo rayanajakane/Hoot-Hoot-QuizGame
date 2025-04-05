@@ -20,6 +20,14 @@ mat-form-field {
     width: 100%;
 }
 
+.generating-question{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 35px; 
+    width: 100%;
+    text-align: center;
+}
 .prompt-input {
     display: flex;
     flex-direction: column;
