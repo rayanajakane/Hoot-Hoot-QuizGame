@@ -42,7 +42,6 @@ import com.example.polyquiz.shop.domain.ShopItem
 import com.example.polyquiz.shop.domain.ShopViewModel
 import com.example.polyquiz.ui.MenuButton
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ShopPage(
     modifier: Modifier,
@@ -73,6 +72,7 @@ fun ShopPage(
     }
 
     LaunchedEffect(true) {
+        println("initializing shopviewmodel")
         shopViewModel.initialize(authViewModel)
     }
 

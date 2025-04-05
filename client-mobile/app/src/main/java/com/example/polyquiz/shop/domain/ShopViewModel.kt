@@ -1,5 +1,6 @@
 package com.example.polyquiz.shop.domain
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.polyquiz.R
@@ -20,6 +21,8 @@ import kotlinx.coroutines.launch
 import StringValue
 
 class ShopViewModel : ViewModel() {
+    private val TAG = "ShopViewModel"
+
     private val _avatarItems = MutableStateFlow<List<ShopItem>>(emptyList())
     val avatarItems: StateFlow<List<ShopItem>> = _avatarItems
 
@@ -40,31 +43,71 @@ class ShopViewModel : ViewModel() {
         ThemeService.loadPurchasedThemes(authViewModel)
 
         moneyService.listenForMoneyEvents(
-            onAvatarBoughtCallback = { onItemBought(it, "avatar") },
-            onThemeBoughtCallback = { onItemBought(it, "theme") },
-            onWallpaperBoughtCallback = { onItemBought(it, "wallpaper") }
+            onAvatarBoughtCallback = { onItemBought(it, authViewModel, "avatar") },
+            onThemeBoughtCallback = { onItemBought(it, authViewModel, "theme") },
+            onWallpaperBoughtCallback = { onItemBought(it, authViewModel, "wallpaper") }
         )
 
         loadShopItems()
     }
 
-    private fun onItemBought(item: ShopItem, type: String) {
+    private fun onItemBought(item: ShopItem, authViewModel: AuthViewModel, type: String) {
         when (type) {
             "avatar" -> {
+                println("Updating purchased avatars")
                 PremiumAvatarService.updatePurchasedAvatars(item.id)
                 updateAvatarItem(item.id, true)
             }
             "theme" -> {
+                println("Updating purchased themes")
                 ThemeService.updatePurchasedThemes(item.id)
                 updateThemeItem(item.id, true)
             }
             "wallpaper" -> {
+                println("Updating purchased wallpapers")
                 WallpaperService.updatePurchasedWallpapers(item.id)
                 updateWallpaperItem(item.id, true)
             }
         }
 
         viewModelScope.launch {
+            try {
+                when (type) {
+                    "avatar" -> {
+                        val avatarRef = authViewModel.getPurchasedAvatarsRef().child(item.id)
+                        avatarRef.setValue(true)
+                            .addOnSuccessListener {
+                                Log.d(TAG, "Avatar purchase saved to Firebase: ${item.id}")
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e(TAG, "Failed to save avatar purchase", e)
+                            }
+                    }
+                    "theme" -> {
+                        val themeRef = authViewModel.getPurchasedThemesRef().child(item.id)
+                        themeRef.setValue(true)
+                            .addOnSuccessListener {
+                                Log.d(TAG, "Theme purchase saved to Firebase: ${item.id}")
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e(TAG, "Failed to save theme purchase", e)
+                            }
+                    }
+                    "wallpaper" -> {
+                        val wallpaperRef = authViewModel.getPurchasedWallpapersRef().child(item.id)
+                        wallpaperRef.setValue(true)
+                            .addOnSuccessListener {
+                                Log.d(TAG, "Wallpaper purchase saved to Firebase: ${item.id}")
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e(TAG, "Failed to save wallpaper purchase", e)
+                            }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error saving purchase to Firebase", e)
+            }
+
             SnackbarController.sendEvent(
                 SnackbarEvent(
                     message = StringValue.StringResource(R.string.purchase_successful)
