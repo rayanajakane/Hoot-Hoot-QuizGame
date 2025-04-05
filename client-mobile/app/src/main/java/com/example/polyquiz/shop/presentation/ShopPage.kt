@@ -59,7 +59,6 @@ fun ShopPage(
 ) {
     val shopViewModel: ShopViewModel = viewModel()
 
-    // State
     val avatarItems by shopViewModel.avatarItems.collectAsState()
     val themeItems by shopViewModel.themeItems.collectAsState()
     val wallpaperItems by shopViewModel.wallpaperItems.collectAsState()
@@ -73,7 +72,6 @@ fun ShopPage(
         moneyService.listenForMoneyEvents()
     }
 
-    // Load shop items when screen is shown
     LaunchedEffect(true) {
         shopViewModel.initialize(authViewModel)
     }
