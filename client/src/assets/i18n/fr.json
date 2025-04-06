@@ -333,6 +333,8 @@
         "vote":"Voter" ,
         "voteCheater":"Votez pour le tricheur",
         "notifyRegularPlayer": "Vous avez le rôle de joueur régulier dans cette partie",
-        "playerVoted": "\"{{player}}\" a voté"
+        "playerVoted": "\"{{player}}\" a voté",
+        "players-still-voting": "Joueurs en train de voter",
+        "players-voted": "Tous les joueurs ont voté"
     }
 }

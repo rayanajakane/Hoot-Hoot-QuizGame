@@ -4,23 +4,25 @@
         *ngIf="
             this.matchContextService.getContext() === context.HostView ||
             (this.matchContextService.getContext() !== context.HostView && this.matchContextService.getContext() === context.RandomMode) ||
-            ((this.matchContextService.getContext() !== context.HostView) && (this.matchRoomService.isCheaterMode))
+            (this.matchContextService.getContext() !== context.HostView && this.matchRoomService.isCheaterMode)
         "
     >
         <h2>{{ t('players-list.players') }}</h2>
         <div *ngIf="this.matchContextService.getContext() === context.HostView">
             <div *ngFor="let player of this.players | sortPlayers: 'score' : 'descending'" class="player-card">
-                <p [ngClass]="[player.isPlaying ? '' : 'inactive-player']">{{ player.username }}</p>
+                <div class="username">
+                    <p [ngClass]="[player.isPlaying ? '' : 'inactive-player']">{{ player.username }}</p>
+                    <p *ngIf="player.username === this.matchRoomService.cheaterPlayer?.username" class="cheater-tag">
+                        {{ t('cheater-mode.cheater') }}
+                    </p>
+                </div>
                 <div class="player-performance">
                     <p>{{ player.score }} pts</p>
                     <p>({{ player.bonusCount }}✨)</p>
-                    <span *ngIf="player.username === this.matchRoomService.cheaterPlayer?.username" class="cheater-tag"
-                        ><p>{{ t('cheater-mode.cheater') }}</p></span>
-                    >
                 </div>
             </div>
         </div>
-        <div *ngIf="(this.matchContextService.getContext() !== context.HostView && this.matchRoomService.isCheaterMode)">
+        <div *ngIf="this.matchContextService.getContext() !== context.HostView && this.matchRoomService.isCheaterMode">
             <div *ngFor="let player of this.players | sortPlayers: 'score' : 'descending'" class="player-card">
                 <p [ngClass]="[player.isPlaying ? '' : 'inactive-player']">{{ player.username }}</p>
                 <div class="player-performance">

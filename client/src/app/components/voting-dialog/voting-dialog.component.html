@@ -1,28 +1,48 @@
 <ng-container *transloco="let t">
-    <div id="voting-dialog">
+    <div id="main-container">
         <div *ngIf="this.matchContextService.getContext() !== matchContext.HostView">
             <h2>{{ t('cheater-mode.voteCheater') }}</h2>
-            <mat-radio-group [(ngModel)]="selectedPlayer">
-                <mat-selection-list *ngFor="let player of matchRoomService.players">
-                    <div *ngIf="player.username !== matchRoomService.getUsername()">
-                        <mat-radio-button [value]="player.username">
-                            <label>{{ player.username }}</label>
-                        </mat-radio-button>
-                    </div>
-                </mat-selection-list>
-            </mat-radio-group>
-            <div id="vote-button">
-                <button mat-raised-button color="primary" [disabled]="!this.isVotingDisabled" (click)="onVote()">
-                    <p>{{ t('cheater-mode.vote') }}</p>
-                </button>
+            <div id="players-list">
+                <mat-radio-group [(ngModel)]="selectedPlayer">
+                    <mat-card *ngFor="let player of matchRoomService.players" class="player-card">
+                        <div *ngIf="player.username !== matchRoomService.getUsername()">
+                            <mat-radio-button [value]="player.username">
+                                <div class="avatar-container">
+                                    <div class="avatar">
+                                        <img src="{{ player.photoUrl ? player.photoUrl : defaultAvatar }}" alt="" />
+                                    </div>
+                                    <p class="player-username">{{ player.username }}</p>
+                                </div>
+                            </mat-radio-button>
+                        </div>
+                    </mat-card>
+                </mat-radio-group>
+                <div id="vote-button">
+                    <button mat-raised-button color="primary" [disabled]="!this.isVotingDisabled || !selectedPlayer" (click)="onVote()">
+                        <p>{{ t('cheater-mode.vote') }}</p>
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div *ngIf="this.matchContextService.getContext() === matchContext.HostView && this.matchRoomService.votingUsers" class="players-main-container">
-        <h2></h2>
-        <mat-list *ngFor="let player of this.matchRoomService.votingUsers" >
-                <p class="player-card">{{t('cheater-mode.playerVoted', {player: player})}}</p>
-        </mat-list>
+        <div *ngIf="this.matchContextService.getContext() === matchContext.HostView && this.matchRoomService.votingUsers">
+            <app-pulse-loader *ngIf="this.playersPlaying.length != this.totalVotesOfActivePlayers"> </app-pulse-loader>
+            <p *ngIf="this.playersPlaying.length != this.totalVotesOfActivePlayers" class="host-text">{{ t('cheater-mode.players-still-voting') }}</p>
+
+            <p *ngIf="this.playersPlaying.length == this.totalVotesOfActivePlayers" class="host-text">{{ t('cheater-mode.players-voted') }}</p>
+            <div id="players-list">
+                <mat-card *ngFor="let player of this.matchRoomService.votingUsers" class="player-card">
+                    <p class="player-card">{{ t('cheater-mode.playerVoted', { player: player }) }}</p>
+                </mat-card>
+            </div>
+        </div>
+
+        <div id="results-button" *ngIf="this.matchContextService.getContext() === matchContext.HostView && !this.matchRoomService.isCooldown">
+            <button mat-raised-button *ngIf="this.answerSerivce.isEndGame" color="primary" (click)="routeToResultsPage()">
+                <mat-icon class="material-icons">bar_chart</mat-icon>
+                <p>{{ t('question-area.show-final-results') }}</p>
+            </button>
+        </div>
     </div>
+    <app-players-list [players]="this.matchRoomService.players"></app-players-list>
 </ng-container>

@@ -1,6 +1,6 @@
 import { CHAT_REACTIVATED } from '@app/constants/chat-state-messages';
 import { ExpiredTimerEvents } from '@app/constants/expired-timer-events';
-import { BAN_PLAYER, NO_MORE_HOST, NO_MORE_PLAYERS } from '@app/constants/match-errors';
+import { BAN_PLAYER, LESS_THAN_3_PLAYERS, NO_MORE_HOST, NO_MORE_PLAYERS } from '@app/constants/match-errors';
 import { Game } from '@app/model/database/game';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
 import { Player, VotingData } from '@app/model/schema/player.schema';
@@ -155,6 +155,7 @@ export class MatchGateway implements OnGatewayDisconnect {
     @SubscribeMessage(MatchEvents.SendUpdatedScores)
     sendUpdatedScores(@ConnectedSocket() socket: Socket, @MessageBody() roomCode) {
         this.playerRoomService.recalculateScores(roomCode);
+        this.handleSendPlayersData(roomCode);
     }
 
     returnAllMatches() {
@@ -316,6 +317,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         }
         const room = this.matchRoomService.getRoom(roomCode);
         const isRoomEmpty = this.isRoomEmpty(room);
+        const lessthanThreePlayers = this.isRoomLessThanThreePlayers(room);
         const isOnePlayerLeft = this.isOnePlayerLeft(room);
 
         if (room.partyConfig.isEntryFeeRequired) {
@@ -334,6 +336,13 @@ export class MatchGateway implements OnGatewayDisconnect {
             this.deleteRoom(roomCode);
             return;
         }
+
+        if(this.matchRoomService.isCheaterMode && room.isPlaying && lessthanThreePlayers ) {
+            this.sendError(roomCode, LESS_THAN_3_PLAYERS);
+            this.deleteRoom(roomCode);
+            return;
+        }
+
         if (isRoomEmpty && (!room.hostSocket.connected || !room.hostSocket.rooms.has(roomCode))) {
             this.deleteRoom(roomCode);
             return;
@@ -360,6 +369,10 @@ export class MatchGateway implements OnGatewayDisconnect {
 
     private isRoomEmpty(room: MatchRoom) {
         return room.players.every((player) => !player.isPlaying);
+    }
+
+   private isRoomLessThanThreePlayers(room: MatchRoom) {
+        return room.players.filter((player) => player.isPlaying).length < 3;
     }
 
     private isOnePlayerLeft(room: MatchRoom) {

@@ -16,6 +16,7 @@
             <mat-label>{{ t('question-area.answer') }}</mat-label>
             <input matInput type="text" [formControl]="currentLongAnswerControl" (input)="onInputChange()" [class.error]="isOutOfBounds" />
         </mat-form-field>
+        <p *ngIf="(matchContextService.getContext() === contextOptions.CheaterView || this.matchRoomService.cheaterPlayer) && !answerService.feedback" class="hint-text" > {{matchRoomService.currentAnswers[0]}} </p>
 
         <p *ngIf="isOutOfBounds" class="error-message">{{ t('question-area.out-of-bounds', { lowerBound: lowerBound, upperBound: upperBound }) }}</p>
 
@@ -26,8 +27,9 @@
             </mat-slider>
             <span class="bound-label">{{ upperBound }}</span>
         </div>
-        <p *ngIf="matchContextService.getContext() === contextOptions.CheaterView && !answerService.feedback" > {{matchRoomService.currentAnswers[0]}} </p>
+
     </div>
+    
     <div id="estimated-answer-area" *ngIf="matchContextService.getContext() === contextOptions.HostView">
         <mat-form-field appearance="outline" class="number-input">
             <mat-label>Réponse</mat-label>

@@ -37,9 +37,6 @@ export class WaitPageComponent implements OnInit {
     get isHost() {
         return this.matchContextService.getContext() === MatchContext.HostView;
     }
-    get isCheater() {
-        return this.matchContextService.getContext() === MatchContext.CheaterView;
-    }
 
     get currentGame() {
         return this.matchService.currentGame;
@@ -52,13 +49,10 @@ export class WaitPageComponent implements OnInit {
 
         if (this.isHost) {
             this.matchRoomService.gameTitle = this.currentGame.title;
-        } else {
-            if (!this.matchContextService.getContext()) {
+        } 
+        else {
                 this.matchContextService.setContext(MatchContext.PlayerView);
-            }
-            if (this.matchRoomService.cheaterPlayer) {
-                this.matchContextService.setContext(MatchContext.CheaterView);
-            }
+
         }
     }
 

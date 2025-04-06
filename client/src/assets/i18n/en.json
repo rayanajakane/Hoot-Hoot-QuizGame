@@ -334,6 +334,8 @@
         "vote":"Vote",
         "voteCheater":"Vote for the cheater",
         "notifyRegularPlayer": "You are a regular player",
-        "playerVoted": "\"{{player}}\" has voted"
+        "playerVoted": "\"{{player}}\" has voted",
+        "players-still-voting": "Players are still voting",
+        "players-voted": "All players have voted"
     }
 }

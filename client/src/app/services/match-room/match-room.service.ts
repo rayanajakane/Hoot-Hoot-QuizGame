@@ -40,6 +40,7 @@ export class MatchRoomService {
     partyConfig: PartyConfig;
     votingUsers: string [] = [];
     currentAnswers: string[] = [];
+    startedVote: boolean = false;
 
 
 
@@ -104,7 +105,7 @@ export class MatchRoomService {
             this.onCurrentAnswers();
             this.onVoting();
             this.onUsersWhoVoted();
-            this.goToVoting();
+            //this.goToVoting();
         }
     }
 
@@ -258,13 +259,6 @@ export class MatchRoomService {
         });
     }
 
-    goToVoting(){
-        this.socketService.on(AnswerEvents.EndGame, () => {
-            if(!this.isCooldown && this.isCheaterMode){
-                this.voteOnCheater();
-             }
-        });
-    }
 
     goToNextQuestion() {
         this.socketService.send(MatchEvents.GoToNextQuestion, this.matchRoomCode);
@@ -290,11 +284,6 @@ export class MatchRoomService {
         this.socketService.on(MatchEvents.SendBackVotesResults, (data: { [username: string]: number } ) => {
             this.votesResults = data;
             console.log(data);
-            let totalVotes = Object.values(this?.votesResults).reduce((total, vote) => total + vote, 0);
-            const playersPlaying = this.players.filter(player => player.isPlaying);
-            if(totalVotes=== playersPlaying.length){
-                this.routeToResultsPage();
-            }
         });
     }
 
@@ -357,7 +346,7 @@ export class MatchRoomService {
     }
 
     resetCheaterPlayerValue() {
-        if (this.cheaterPlayer) {
+        if (this.cheaterPlayer?.username != '') {
             this.cheaterPlayer = {
                 username: '',
                 id: '',
@@ -369,6 +358,7 @@ export class MatchRoomService {
                 state: '',
             };
         }
+        this.startedVote = false;
     }
 
     onRouteToResultsPage() {
@@ -391,9 +381,7 @@ export class MatchRoomService {
 
     onCurrentAnswers() {
         this.socketService.on(MatchEvents.CurrentAnswers, (answer: string[]) => {
-            //this.isCheaterMode = true
-            console.log(this.cheaterPlayer?.username);
-            console.log(this.isCheaterMode)
+
             console.log(this.matchContextService.getContext());
             if (this.username === this.cheaterPlayer?.username) {
                 this.currentAnswers = answer;

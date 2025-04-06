@@ -110,6 +110,7 @@ export class AnswerService {
             player.socket.emit(AnswerEvents.Feedback, feedback);
             player.answerCorrectness = AnswerCorrectness.WRONG;
         });
+       
 
         matchRoom.hostSocket.emit(AnswerEvents.Feedback);
         if (matchRoom.gameLength === 1 + matchRoom.currentQuestionIndex) matchRoom.hostSocket.emit(AnswerEvents.EndGame);
