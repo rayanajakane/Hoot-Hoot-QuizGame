@@ -7,9 +7,13 @@ import com.example.vanillaprototype.socket.SocketHandler
 import com.example.polyquiz.constants.TimerEvents
 import com.example.polyquiz.constants.TimerInfo
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 object TimeService {
-    var isTimerPaused: Boolean = false
+    private val _isTimerPaused = MutableStateFlow(false)
+    val isTimerPaused: StateFlow<Boolean> get() = _isTimerPaused
+
     private var counter: MutableState<Int> = mutableStateOf(0)
     private var initialValue: Int = 0
     private val mSocket = SocketHandler.getSocket()
@@ -25,6 +29,10 @@ object TimeService {
         set(newTime) {
             counter.value = newTime
         }
+
+    fun setIsTimerPaused(value: Boolean) {
+        _isTimerPaused.value = value
+    }
 
     fun listenToTimerEvents() {
         handleTimer()
@@ -48,6 +56,11 @@ object TimeService {
         val roomCodeObject = mapOf("roomCode" to roomCode)
         val roomJsonObject = Gson().toJson(roomCodeObject)
         mSocket.emit(TimerEvents.STOP_TIMER.value, roomJsonObject);
+    }
+
+    fun pauseTimer(roomCode: String) {
+        _isTimerPaused.value = !_isTimerPaused.value
+        mSocket.emit(TimerEvents.PAUSE_TIMER.value, roomCode)
     }
 
     fun computeTimerProgress(): Float {

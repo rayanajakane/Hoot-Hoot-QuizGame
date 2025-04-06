@@ -312,61 +312,6 @@ fun MessageContainer(message: Message, currentUserId: String, username: String) 
             }
         }
     }
-//    Column(
-//        horizontalAlignment = containerAlignment,
-//        modifier = Modifier.fillMaxWidth()
-//    ) {
-//        Column(modifier = Modifier.fillMaxWidth()) {
-//            Row(
-//                horizontalArrangement = Arrangement.SpaceBetween,
-//                modifier = Modifier.width(containerWidth)
-//            ) {
-//                if (message.authorId != currentUserId) {
-//                    AvatarImage(message.photoUrl)
-//                }
-//                TruncatedText(
-//                    message.authorUsername,
-//                    fontSize = 16.sp,
-//                    maxChars = 11,
-//                    FontWeight(600),
-//                    Modifier
-//                )
-//                Text(
-//                    text = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(message.date)
-//                        .toString()
-//                )
-////                if (message.authorId == currentUserId) {
-////                    AvatarImage(message.photoUrl)
-////                }
-//            }
-//            Column(
-//                modifier = Modifier
-//                    .padding(top = 10.dp)
-//                    .align(alignment = AbsoluteAlignment.Left)
-//            ) {
-//                Card(
-//                    colors = CardDefaults.cardColors(containerColor = containerColor),
-//                    shape = containerCorner,
-//                    modifier = Modifier.width(containerWidth)
-//                ) {
-//                    Text(text = message.text, modifier = Modifier.padding(10.dp))
-//                }
-//                Row {
-//                    ReactionsRow(
-//                        message,
-//                        currentUserId,
-//                        username,
-//                        MatchRoomService.getRoomCode()
-//                    )
-//                    if (message.authorId == currentUserId) {
-//                        Spacer(Modifier.width(10.dp))
-//                        AvatarImage(message.photoUrl)
-//                    }
-//                }
-//
-//            }
-//        }
-//    }
 }
 
 

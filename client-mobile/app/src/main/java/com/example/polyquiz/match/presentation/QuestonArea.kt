@@ -41,8 +41,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.pointerInput
@@ -84,6 +87,7 @@ fun QuestionArea(
     val scope = rememberCoroutineScope()
 
     val hasImage = !question?.pictureUrl.isNullOrEmpty()
+    val isTimerPaused by TimeService.isTimerPaused.collectAsState()
 
     LaunchedEffect (matchRoomService.isCheaterMode){
         if (matchRoomService.isCheaterMode) {
@@ -322,8 +326,6 @@ fun QuestionArea(
                     }
                 }
 
-
-
                 Spacer(modifier = Modifier.height(24.dp))
             }
 
@@ -422,6 +424,25 @@ fun QuestionArea(
                                 ) {
                                     Text(stringResource(R.string.next_question))
                                 }
+                            } else if (!answerService.isNextQuestionButtonEnabled) {
+                                Button(
+                                    onClick = {
+                                        timeService.pauseTimer(matchRoomService.getRoomCode())
+
+                                    },
+                                    shape = RoundedCornerShape(3.dp)
+                                ) {
+                                    if (isTimerPaused) {
+                                        Icon(Icons.Filled.PlayArrow, contentDescription = stringResource(R.string.start_timer))
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(stringResource(R.string.start_timer))
+                                    } else {
+                                        Icon(Icons.Filled.Pause, contentDescription = stringResource(R.string.pause_timer))
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(stringResource(R.string.pause_timer))
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
                             }
                             else if (answerService.isEndGame && MatchRoomService.isCheaterMode ) {
                                 Log.d("Voting Area", "next question enabled")
@@ -454,5 +475,7 @@ fun QuestionArea(
             )
         }
     }
+
+
 }
 
