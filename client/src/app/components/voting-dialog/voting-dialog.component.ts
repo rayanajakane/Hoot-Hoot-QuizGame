@@ -48,6 +48,10 @@ export class VotingDialogComponent {
         return MatchContext;
     }
 
+    handleDisconnect() {
+        this.matchRoomService.disconnectFromRoom();
+    }
+
     setTheCheaterView() {
         if (this.matchContextService.getContext() === MatchContext.HostView) {
             for (let player of this.matchRoomService.players) {

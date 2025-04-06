@@ -247,6 +247,9 @@ export class MatchRoomService {
         this.removeAnswerField(nextQuestion);
         server.in(matchRoomCode).emit(MatchEvents.GoToNextQuestion, nextQuestion);
         server.to(matchRoom.hostSocket.id).emit(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
+        if (this.cheaterPlayer) {
+            server.to(this.cheaterPlayer?.socket.id).emit(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
+        }
         this.timeService.startTimer(server, matchRoomCode, matchRoom.questionDuration, ExpiredTimerEvents.QuestionTimerExpired);
     }
 

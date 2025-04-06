@@ -317,7 +317,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         }
         const room = this.matchRoomService.getRoom(roomCode);
         const isRoomEmpty = this.isRoomEmpty(room);
-        const lessthanThreePlayers = this.isRoomLessThanThreePlayers(room);
+       // const lessthanThreePlayers = this.isRoomLessThanThreePlayers(room);
         const isOnePlayerLeft = this.isOnePlayerLeft(room);
 
         if (room.partyConfig.isEntryFeeRequired) {
@@ -325,7 +325,8 @@ export class MatchGateway implements OnGatewayDisconnect {
                 await this.partyService.leaveParty(player.id, roomCode);
                 const currPlayerBalance = await this.moneyService.getCurrentBalance(player.id);
                 this.server.in(socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
-            } else if (isOnePlayerLeft) {
+            } 
+            else if (isOnePlayerLeft) {
                 this.timeService.expireTimer(roomCode, this.server, ExpiredTimerEvents.QuestionTimerExpired);
                 await this.routeToResultsPage({} as Socket, roomCode);
             }
@@ -337,11 +338,11 @@ export class MatchGateway implements OnGatewayDisconnect {
             return;
         }
 
-        if(this.matchRoomService.isCheaterMode && room.isPlaying && lessthanThreePlayers ) {
-            this.sendError(roomCode, LESS_THAN_3_PLAYERS);
-            this.deleteRoom(roomCode);
-            return;
-        }
+        // if(this.matchRoomService.isCheaterMode && room.isPlaying && lessthanThreePlayers ) {
+        //     this.sendError(roomCode, LESS_THAN_3_PLAYERS);
+        //     this.deleteRoom(roomCode);
+        //     return;
+        // }
 
         if (isRoomEmpty && (!room.hostSocket.connected || !room.hostSocket.rooms.has(roomCode))) {
             this.deleteRoom(roomCode);

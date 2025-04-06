@@ -36,11 +36,18 @@
                 </mat-card>
             </div>
         </div>
-
-        <div id="results-button" *ngIf="this.matchContextService.getContext() === matchContext.HostView && !this.matchRoomService.isCooldown">
+        <div class="results-button">
+        <div *ngIf="this.matchContextService.getContext() === matchContext.HostView && !this.matchRoomService.isCooldown">
             <button mat-raised-button *ngIf="this.answerSerivce.isEndGame" color="primary" (click)="routeToResultsPage()">
                 <mat-icon class="material-icons">bar_chart</mat-icon>
                 <p>{{ t('question-area.show-final-results') }}</p>
+            </button>
+        </div>
+        </div>
+        <div class="controls-container">
+            <button mat-raised-button class="exit-button" color="primary" (click)="handleDisconnect()" routerLink="/home">
+                <mat-icon class="material-icons">logout</mat-icon>
+                <p>QUITTER</p>
             </button>
         </div>
     </div>

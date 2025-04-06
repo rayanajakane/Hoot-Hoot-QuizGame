@@ -38,11 +38,9 @@ export class MatchRoomService {
     totalVotes: VotingData[] = [{ username: '', numberOfVotes: 0, usersWhoVoted: [] }];
     votesResults: { [username: string]: number };
     partyConfig: PartyConfig;
-    votingUsers: string [] = [];
+    votingUsers: string[] = [];
     currentAnswers: string[] = [];
     startedVote: boolean = false;
-
-
 
     private hostId: string;
     private matchRoomCode: string;
@@ -58,8 +56,8 @@ export class MatchRoomService {
         private readonly notificationService: NotificationService,
         private readonly matchContextService: MatchContextService,
         private chatService: ChatService,
-      //  private readonly dialog: MatDialog,
-    ) {
+    ) //  private readonly dialog: MatDialog,
+    {
         this.hasEnteredRoom = false;
     }
 
@@ -250,6 +248,8 @@ export class MatchRoomService {
     }
 
     onBeginQuiz() {
+        console.log('user', this.userId);
+        console.log(this.cheaterPlayer?.id);
         this.socketService.on(MatchEvents.BeginQuiz, (data: { firstQuestion: Question; gameDuration: number; isClassicMode: boolean }) => {
             this.isWaitOver = true;
             this.currentQuestion = data.firstQuestion;
@@ -258,7 +258,6 @@ export class MatchRoomService {
             this.router.navigate(['/play-match'], { state: { question: firstQuestion, duration: gameDuration } });
         });
     }
-
 
     goToNextQuestion() {
         this.socketService.send(MatchEvents.GoToNextQuestion, this.matchRoomCode);
@@ -275,19 +274,18 @@ export class MatchRoomService {
     }
 
     onUsersWhoVoted() {
-        this.socketService.on(MatchEvents.SendVotingUsers, (user:string) => {
-            console.log("Voted",this.votingUsers);
+        this.socketService.on(MatchEvents.SendVotingUsers, (user: string) => {
+            console.log('Voted', this.votingUsers);
             this.votingUsers.push(user);
         });
     }
     onVotingResults() {
-        this.socketService.on(MatchEvents.SendBackVotesResults, (data: { [username: string]: number } ) => {
+        this.socketService.on(MatchEvents.SendBackVotesResults, (data: { [username: string]: number }) => {
             this.votesResults = data;
             console.log(data);
         });
     }
 
- 
     onStartCooldown() {
         this.socketService.on(MatchEvents.StartCooldown, () => {
             this.isCooldown = true;
@@ -381,13 +379,11 @@ export class MatchRoomService {
 
     onCurrentAnswers() {
         this.socketService.on(MatchEvents.CurrentAnswers, (answer: string[]) => {
-
-            console.log(this.matchContextService.getContext());
-            if (this.username === this.cheaterPlayer?.username) {
+            if (this.userId === this.hostId || this.userId === this.cheaterPlayer?.id) {
+                console.log('Current answers:', answer);
                 this.currentAnswers = answer;
             }
-            if (this.userId !== this.hostId) return;
-            this.currentAnswers = answer;
+           // return;
         });
     }
 }

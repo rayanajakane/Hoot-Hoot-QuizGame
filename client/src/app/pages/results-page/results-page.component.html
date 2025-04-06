@@ -9,12 +9,10 @@
                             <img src="{{ player.photoUrl ? player.photoUrl : defaultAvatar }}" alt="" />
                         </div>
                     </div>
-                    <div class="username">
                         <p [ngClass]="[player.isPlaying ? '' : 'inactive-player']">{{ player.username }}</p>
                         <p *ngIf="player.username === this.matchRoomService.cheaterPlayer?.username" class="cheater-tag">
                             {{ t('cheater-mode.cheater') }}
                         </p>
-                    </div>
 
                 </div>
                 <div class="player-performance">

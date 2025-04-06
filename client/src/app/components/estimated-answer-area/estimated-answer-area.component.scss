@@ -18,8 +18,9 @@
     max-width: 50vw;
 }
 
-.text{
-    font-size: 50px;
+.hint-text{
+    font-size: 20px;
+    margin-left: 1rem;
 }
 
 .correct-answer {
@@ -44,7 +45,8 @@
 .number-input {
     width: 120px; // Approximately 5 digits + some padding
     margin: 0 auto;
-    display: block;
+   // display: block;
+    display: inline-block;
 }
 
 ::ng-deep .number-input .mat-mdc-text-field-wrapper {
