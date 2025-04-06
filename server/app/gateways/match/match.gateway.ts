@@ -357,11 +357,15 @@ export class MatchGateway implements OnGatewayDisconnect {
     }
 
     deleteRoom(matchRoomCode: string) {
-        this.server.to(matchRoomCode).emit(MatchEvents.HostQuitMatch);
-        this.server.in(matchRoomCode).socketsLeave(matchRoomCode);
+        this.triggerLeaveMatchForAll(matchRoomCode);
         this.matchRoomService.deleteRoom(matchRoomCode);
         console.log(`Deleting room ${matchRoomCode}`); // For debugging purposes
         this.returnAllMatches();
+    }
+
+    triggerLeaveMatchForAll(matchRoomCode: string) {
+        this.server.to(matchRoomCode).emit(MatchEvents.HostQuitMatch);
+        this.server.in(matchRoomCode).socketsLeave(matchRoomCode);
     }
 
     handleSendPlayersData(matchRoomCode: string) {
@@ -381,6 +385,6 @@ export class MatchGateway implements OnGatewayDisconnect {
     }
 
     private isOnePlayerLeft(room: MatchRoom) {
-        return room.players.filter((player) => player.isPlaying).length === 1;
+        return room.players.filter((player) => player.isPlaying || player.socket.rooms.has(room.code)).length === 1;
     }
 }
