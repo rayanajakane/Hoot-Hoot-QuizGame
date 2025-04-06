@@ -8,6 +8,7 @@ import { HOST_CONFLICT, INVALID_CODE } from '@app/constants/match-login-errors';
 import {
     MOCK_MATCH_ROOM,
     MOCK_PLAYER,
+    MOCK_PLAYER_ROOM,
     MOCK_RANDOM_MATCH_ROOM,
     MOCK_ROOM_CODE,
     MOCK_TEST_MATCH_ROOM,
@@ -68,6 +69,8 @@ describe('MatchGateway', () => {
         socket = createStubInstance<Socket>(Socket);
         server = createStubInstance<Server>(Server);
         eloSpy = createStubInstance(EloService);
+
+        stub(socket, 'rooms').value(new Set([]));
 
         const module: TestingModule = await Test.createTestingModule({
             providers: [
@@ -172,7 +175,6 @@ describe('MatchGateway', () => {
         expect(result).toEqual({ code: MOCK_RANDOM_MATCH_ROOM.code });
     });
 
-    /*
     it('isRoomEmpty() should return true if room is empty', () => {
         const room = { ...MOCK_PLAYER_ROOM };
         room.players[0].isPlaying = false;
@@ -191,11 +193,11 @@ describe('MatchGateway', () => {
     it('isRoomEmpty() should return false if room is not empty', () => {
         const room = { ...MOCK_PLAYER_ROOM };
         room.players[0].isPlaying = true;
+        stub(socket, 'rooms').value(new Set([MOCK_PLAYER_ROOM.code]));
         room.players[0].socket = socket;
         const result = gateway['isRoomEmpty'](room);
         expect(result).toBe(false);
     });
-    */
 
     it('toggleLock() should call toggleLock', () => {
         const toggleSpy = jest.spyOn(matchRoomSpy, 'toggleLock').mockReturnThis();
