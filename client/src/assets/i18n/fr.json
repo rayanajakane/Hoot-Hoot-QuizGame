@@ -343,7 +343,7 @@
         "language": "La langue de la question",
         "choice-number": "Nombre de choix de réponses",
         "choice":"Choix",
-        "generate-IA": "Générer question  IA",
+        "generate-IA": "Générer question IA",
         "error": "Erreur lors de la génération de la question", 
         "choice-input": "Entrez les choix",
         "french": "Français",
