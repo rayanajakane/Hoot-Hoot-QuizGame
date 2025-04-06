@@ -64,6 +64,7 @@ export class PlayerRoomService {
     }
 
     deletePlayerBySocket(socketId: string): string {
+        console.log('Delete player by socket');
         let foundPlayer: Player;
         let foundMatchRoom: MatchRoom;
         this.matchRoomService.matchRooms.forEach((matchRoom: MatchRoom) => {
@@ -74,6 +75,8 @@ export class PlayerRoomService {
                 foundMatchRoom = foundPlayer ? matchRoom : undefined;
             }
         });
+        console.log(`Found Player: ${foundPlayer}`);
+        console.log(`Found MatchRoom: ${foundPlayer}`);
         if (foundPlayer && foundMatchRoom && !foundMatchRoom.isPlaying) {
             this.deletePlayer(foundMatchRoom.code, foundPlayer.id);
         } else if (foundPlayer && foundMatchRoom && foundMatchRoom.isPlaying) {
@@ -111,6 +114,7 @@ export class PlayerRoomService {
     }
 
     makePlayerInactive(matchRoomCode: string, userId: string): void {
+        console.log('Making player inactive');
         const roomIndex = this.matchRoomService.getRoomIndex(matchRoomCode);
         const playerIndex = this.matchRoomService.getRoom(matchRoomCode).players.findIndex((player: Player) => {
             return player.id === userId;
@@ -120,14 +124,17 @@ export class PlayerRoomService {
             this.matchRoomService.matchRooms[roomIndex].players[playerIndex].isPlaying = false;
             this.matchRoomService.matchRooms[roomIndex].activePlayers--;
         }
+        console.log(this.matchRoomService.matchRooms[roomIndex].players);
     }
 
     deletePlayer(matchRoomCode: string, userId: string): void {
+        console.log('Deleting player');
         const roomIndex = this.matchRoomService.getRoomIndex(matchRoomCode);
         this.matchRoomService.matchRooms[roomIndex].activePlayers--;
         this.matchRoomService.matchRooms[roomIndex].players = this.matchRoomService.matchRooms[roomIndex].players.filter((player) => {
             return player.id !== userId;
         });
+        console.log(this.matchRoomService.matchRooms[roomIndex].players);
     }
 
     getBannedPlayers(matchRoomCode: string): string[] {
