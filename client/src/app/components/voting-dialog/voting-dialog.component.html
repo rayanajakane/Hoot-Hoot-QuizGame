@@ -31,18 +31,21 @@
 
             <p *ngIf="this.playersPlaying.length == this.totalVotesOfActivePlayers" class="host-text">{{ t('cheater-mode.players-voted') }}</p>
             <div id="players-list">
-                <mat-card *ngFor="let player of this.matchRoomService.votingUsers" class="player-card">
-                    <p class="player-card">{{ t('cheater-mode.playerVoted', { player: player }) }}</p>
+                <mat-card *ngFor="let player of this.playersPlaying" class="player-card">
+                    <p>{{ player.username }}</p>
+                    <p class="player-card" *ngIf="this.matchRoomService.votingUsers.includes(player.username)">
+                        {{ t('cheater-mode.playerVoted', { player: player.username }) }}
+                    </p>
                 </mat-card>
             </div>
         </div>
         <div class="results-button">
-        <div *ngIf="this.matchContextService.getContext() === matchContext.HostView && !this.matchRoomService.isCooldown">
-            <button mat-raised-button *ngIf="this.answerSerivce.isEndGame" color="primary" (click)="routeToResultsPage()">
-                <mat-icon class="material-icons">bar_chart</mat-icon>
-                <p>{{ t('question-area.show-final-results') }}</p>
-            </button>
-        </div>
+            <div *ngIf="this.matchContextService.getContext() === matchContext.HostView && !this.matchRoomService.isCooldown">
+                <button mat-raised-button *ngIf="this.answerSerivce.isEndGame" color="primary" (click)="routeToResultsPage()">
+                    <mat-icon class="material-icons">bar_chart</mat-icon>
+                    <p>{{ t('question-area.show-final-results') }}</p>
+                </button>
+            </div>
         </div>
         <div class="controls-container">
             <button mat-raised-button class="exit-button" color="primary" (click)="handleDisconnect()" routerLink="/home">

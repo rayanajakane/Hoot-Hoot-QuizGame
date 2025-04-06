@@ -58,9 +58,7 @@ export class PlayerRoomService {
                     playersWhoVotedForCheater.forEach((voterUsername: string) => {
                         const player = this.getPlayerByUsername(roomCode, voterUsername);
                         if (player) {
-                            player.bonusCount = Math.round(cheaterScore * 0.3);
-
-                            player.score = Math.round(player.score + player.bonusCount);
+                            player.score = Math.round(player.score + cheaterScore * 0.3);
                             const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
                             console.log(feedback);
                             this.getPlayerByUsername(roomCode, voterUsername).socket.emit(AnswerEvents.Feedback, feedback);
@@ -80,8 +78,7 @@ export class PlayerRoomService {
 
             if (this.matchRoomService.cheaterGetsBonus(cheaterUsername)) {
                 const player = this.getPlayerByUsername(roomCode, cheaterUsername);
-                player.bonusCount = Math.round(player.bonusCount + player.bonusCount * 0.3);
-                player.score = Math.round(player.score + player.bonusCount);
+                player.score = Math.round(player.score + player.score*0.3);
                 const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
                 console.log(feedback);
                 this.matchRoomService.cheaterPlayer.socket.emit(AnswerEvents.Feedback, feedback);

@@ -30,14 +30,13 @@ export class VotingDialogComponent {
     constructor(
         public matchRoomService: MatchRoomService,
         public answerSerivce: AnswerService,
-        public matchContextService: MatchContextService,
-    ) //   private dialog: MatDialog,
-    {}
+        public matchContextService: MatchContextService, //   private dialog: MatDialog,
+    ) {}
     get playersPlaying() {
         return this.matchRoomService.players.filter((player) => player.isPlaying);
     }
 
-    get totalVotesOfActivePlayers(){
+    get totalVotesOfActivePlayers() {
         return Object.values(this?.matchRoomService.votesResults).reduce((total, vote) => total + vote, 0);
     }
 
