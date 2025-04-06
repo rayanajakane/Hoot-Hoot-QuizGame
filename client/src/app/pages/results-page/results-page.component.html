@@ -13,10 +13,6 @@
                         <p *ngIf="player.username === this.matchRoomService.cheaterPlayer?.username" class="cheater-tag">
                             {{ t('cheater-mode.cheater') }}
                         </p>
-
-                </div>
-                <div class="player-performance">
-                    <p>{{ player.score }} pts</p>
                     <p>({{ player.bonusCount }}✨)</p>
                 </div>
                 <p *ngIf="this.matchRoomService.isCheaterMode">

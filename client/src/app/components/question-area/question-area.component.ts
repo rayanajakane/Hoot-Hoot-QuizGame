@@ -79,6 +79,7 @@ export class QuestionAreaComponent implements OnInit {
         if (this.isFirstQuestion) {
             this.isFirstQuestion = false;
         }
+
         if (this.matchRoomService.isCheaterMode) {
             if (this.matchRoomService.getUsername() === this.matchRoomService.cheaterPlayer?.username) {
                 this.matchContextService.setContext(MatchContext.CheaterView);
