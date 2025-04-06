@@ -243,7 +243,10 @@
         "thu": "Jeu",
         "fri": "Ven",
         "sat": "Sam",
-        "grid-label": "Parties au courant de l'année"
+        "grid-label": "Parties au courant de l'année",
+        "less": "Moins",
+        "more": "Plus",
+        "matches-played": " partie(s)"
     },
     "match-config": {
         "title-label": "Configuration de la partie",

@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCard } from '@angular/material/card';
@@ -29,6 +30,7 @@ describe('UserEditPageComponent', () => {
                 { provide: AuthenticationService, useValue: authenticationSpy },
                 { provide: HistoryService, useValue: historySpy },
                 { provide: WallpaperService, useValue: wallpaperSpy },
+                DatePipe,
             ],
         }).compileComponents();
 
