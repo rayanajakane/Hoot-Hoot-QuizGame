@@ -3,11 +3,14 @@ package com.example.polyquiz.chat.presentation
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
@@ -137,6 +140,8 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceAround,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.weight(1f)
         ) {
             TruncatedText(
                 text = username,
@@ -146,14 +151,14 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                 Modifier.padding(20.dp, 20.dp, 20.dp, 0.dp)
             )
             ChatSelectionMenu(selectedChat) { newChat -> selectedChat = newChat }
+            Spacer(modifier = Modifier.height(8.dp))
             // REFERENCE: https://youtu.be/P3xQdINdrWY
             // To handle the situation where there would be no message to display.
             messages?.let {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     modifier = Modifier
-                        .weight(1f)
-                        .padding(20.dp, 20.dp, 20.dp, 0.dp),
+                        .weight(1f),
                 ) {
                     itemsIndexed(it) { _: Int, message: Message ->
                         MessageContainer(message, userId, username)
@@ -259,38 +264,32 @@ fun MessageContainer(message: Message, currentUserId: String, username: String) 
             bottomStart = 10.dp
         )
     }
-    Column(
-        horizontalAlignment = containerAlignment,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.width(containerWidth)
-            ) {
-                if (message.authorId != currentUserId) {
-                    AvatarImage(message.photoUrl)
-                }
-                TruncatedText(
-                    message.authorUsername,
-                    fontSize = 16.sp,
-                    maxChars = 11,
-                    FontWeight(600),
-                    Modifier
-                )
-                Text(
-                    text = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(message.date)
-                        .toString()
-                )
-//                if (message.authorId == currentUserId) {
-//                    AvatarImage(message.photoUrl)
-//                }
+    Row(modifier = Modifier.fillMaxSize()) {
+        // Avatar box if not author
+        if (message.authorId != currentUserId) {
+            Box(modifier = Modifier.align(Alignment.Bottom).padding(bottom = 20.dp, start = 10.dp)) {
+                AvatarImage(message.photoUrl)
             }
-            Column(
-                modifier = Modifier
-                    .padding(top = 10.dp)
-                    .align(alignment = AbsoluteAlignment.Left)
-            ) {
+        }
+        // Message box
+        Box(modifier = Modifier.weight(1f)) {
+            Column(modifier = Modifier.align(Alignment.Center)) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.width(containerWidth)
+                ) {
+                    TruncatedText(
+                        message.authorUsername,
+                        fontSize = 16.sp,
+                        maxChars = 11,
+                        FontWeight(600),
+                        Modifier
+                    )
+                    Text(
+                        text = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(message.date)
+                            .toString()
+                    )
+                }
                 Card(
                     colors = CardDefaults.cardColors(containerColor = containerColor),
                     shape = containerCorner,
@@ -298,22 +297,76 @@ fun MessageContainer(message: Message, currentUserId: String, username: String) 
                 ) {
                     Text(text = message.text, modifier = Modifier.padding(10.dp))
                 }
-                Row {
-                    ReactionsRow(
-                        message,
-                        currentUserId,
-                        username,
-                        MatchRoomService.getRoomCode()
-                    )
-                    if (message.authorId == currentUserId) {
-                        Spacer(Modifier.width(10.dp))
-                        AvatarImage(message.photoUrl)
-                    }
-                }
-
+                ReactionsRow(
+                    message,
+                    currentUserId,
+                    username,
+                    MatchRoomService.getRoomCode()
+                )
+            }
+        }
+        // Avatar box if author
+        if (message.authorId == currentUserId) {
+            Box(modifier = Modifier.align(Alignment.Bottom).padding(bottom = 20.dp, end = 10.dp)) {
+                AvatarImage(message.photoUrl)
             }
         }
     }
+//    Column(
+//        horizontalAlignment = containerAlignment,
+//        modifier = Modifier.fillMaxWidth()
+//    ) {
+//        Column(modifier = Modifier.fillMaxWidth()) {
+//            Row(
+//                horizontalArrangement = Arrangement.SpaceBetween,
+//                modifier = Modifier.width(containerWidth)
+//            ) {
+//                if (message.authorId != currentUserId) {
+//                    AvatarImage(message.photoUrl)
+//                }
+//                TruncatedText(
+//                    message.authorUsername,
+//                    fontSize = 16.sp,
+//                    maxChars = 11,
+//                    FontWeight(600),
+//                    Modifier
+//                )
+//                Text(
+//                    text = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(message.date)
+//                        .toString()
+//                )
+////                if (message.authorId == currentUserId) {
+////                    AvatarImage(message.photoUrl)
+////                }
+//            }
+//            Column(
+//                modifier = Modifier
+//                    .padding(top = 10.dp)
+//                    .align(alignment = AbsoluteAlignment.Left)
+//            ) {
+//                Card(
+//                    colors = CardDefaults.cardColors(containerColor = containerColor),
+//                    shape = containerCorner,
+//                    modifier = Modifier.width(containerWidth)
+//                ) {
+//                    Text(text = message.text, modifier = Modifier.padding(10.dp))
+//                }
+//                Row {
+//                    ReactionsRow(
+//                        message,
+//                        currentUserId,
+//                        username,
+//                        MatchRoomService.getRoomCode()
+//                    )
+//                    if (message.authorId == currentUserId) {
+//                        Spacer(Modifier.width(10.dp))
+//                        AvatarImage(message.photoUrl)
+//                    }
+//                }
+//
+//            }
+//        }
+//    }
 }
 
 
@@ -396,7 +449,7 @@ fun AvatarImage(photoUrl: String?) {
         model = photoUrl,
         contentDescription = "Avatar",
         modifier = Modifier
-            .size(40.dp)
+            .size(50.dp)
             .clip(CircleShape),
         contentScale = ContentScale.Crop,
         placeholder = rememberAsyncImagePainter(model = PresetAvatar.DEFAULT.value)
