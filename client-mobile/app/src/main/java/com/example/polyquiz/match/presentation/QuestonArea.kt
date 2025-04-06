@@ -47,6 +47,7 @@ import androidx.compose.material.icons.filled.PriorityHigh
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.pointerInput
@@ -61,6 +62,7 @@ import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AnswerCorrectness
+import kotlinx.coroutines.launch
 import com.example.polyquiz.constants.AnswerEvents
 import com.example.polyquiz.match.domain.AnswerService.showFeedback
 import kotlinx.coroutines.launch
@@ -90,6 +92,16 @@ fun QuestionArea(
     val hasImage = !question?.pictureUrl.isNullOrEmpty()
     val isTimerPaused by TimeService.isTimerPaused.collectAsState()
     val isPanicking by TimeService.isPanicking.collectAsState()
+
+    LaunchedEffect(isPanicking) {
+        scope.launch {
+            SnackbarController.sendEvent(
+                event = SnackbarEvent(
+                    message = StringValue.StringResource(R.string.sign_out_feedback)
+                )
+            )
+        }
+    }
 
     LaunchedEffect (matchRoomService.isCheaterMode){
         if (matchRoomService.isCheaterMode) {

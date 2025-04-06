@@ -64,6 +64,18 @@ object TimeService {
         mSocket.emit(TimerEvents.PANIC_TIMER.value, roomCode)
     }
 
+    fun onPauseTimer() {
+        mSocket.on(TimerEvents.PAUSE_TIMER.value) {
+            _isTimerPaused.value = !_isTimerPaused.value
+        }
+    }
+
+    fun onPanicTimer() {
+        mSocket.on(TimerEvents.PANIC_TIMER.value) {
+            _isPanicking.value = true
+        }
+    }
+
     fun computeTimerProgress(): Float {
         val progress = (counter.value.toFloat() / duration.toFloat()) * 100
         return if(progress.isNaN()) {
