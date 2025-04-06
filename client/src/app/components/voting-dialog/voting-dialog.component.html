@@ -53,6 +53,13 @@
                 <p>QUITTER</p>
             </button>
         </div>
+        </div>
+        <div class="controls-container">
+            <button mat-raised-button class="exit-button" color="primary" (click)="handleDisconnect()" routerLink="/home">
+                <mat-icon class="material-icons">logout</mat-icon>
+                <p>QUITTER</p>
+            </button>
+        </div>
     </div>
     <app-players-list [players]="this.matchRoomService.players"></app-players-list>
 </ng-container>

@@ -347,11 +347,11 @@ export class MatchGateway implements OnGatewayDisconnect {
         console.log(`Room host has roomCode: ${room.hostSocket.rooms.has(roomCode)}`);
         console.log(`Is room empty: ${isRoomEmpty}`);
 
-        if(this.matchRoomService.isCheaterMode && room.isPlaying && lessthanThreePlayers ) {
-            this.sendError(roomCode, LESS_THAN_3_PLAYERS);
-            this.deleteRoom(roomCode);
-            return;
-        }
+        // if(this.matchRoomService.isCheaterMode && room.isPlaying && lessthanThreePlayers ) {
+        //     this.sendError(roomCode, LESS_THAN_3_PLAYERS);
+        //     this.deleteRoom(roomCode);
+        //     return;
+        // }
 
         if (isRoomEmpty && (!room.hostSocket.connected || !room.hostSocket.rooms.has(roomCode))) {
             this.deleteRoom(roomCode);
