@@ -111,11 +111,10 @@
                 <p>{{ t('question-area.show-final-results') }}</p>
             </button>
             <button
-                *ngIf="!this.answerService.isEndGame"
+                *ngIf="!this.answerService.isEndGame && this.answerService.isNextQuestionButtonEnabled"
                 mat-raised-button
                 color="primary"
                 (click)="goToNextQuestion()"
-                [disabled]="!this.answerService.isNextQuestionButtonEnabled"
             >
                 <mat-icon class="material-icons">skip_next</mat-icon>
                 <p>{{ t('question-area.next-question') }}</p>
