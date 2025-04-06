@@ -2,7 +2,7 @@ import { ExpiredTimerEvents } from '@app/constants/expired-timer-events';
 import { GradingEvents } from '@app/constants/grading-events';
 import { PlayerEvents } from '@app/constants/player-events';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
-import { Player } from '@app/model/schema/player.schema';
+import { Player, VotingData } from '@app/model/schema/player.schema';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { PlayerRoomService } from '@app/services/player-room/player-room.service';
 import { QuestionStrategyContext } from '@app/services/question-strategy-context/question-strategy-context.service';
@@ -61,6 +61,12 @@ export class AnswerService {
         this.questionStrategyContext.calculateScore(matchRoom, players, grades);
     }
 
+    calculateScoreCheaterMode(roomCode: string, player, bonus) {
+        if (player.username === this.matchRoomService.cheaterPlayer.username) {
+            player.score += bonus;
+        }
+    }
+
     submitAnswer(userId: string, roomCode: string) {
         const player: Player = this.playerService.getPlayerById(roomCode, userId);
         const matchRoom = this.getRoom(roomCode);
@@ -100,9 +106,11 @@ export class AnswerService {
         const players: Player[] = this.playerService.getPlayers(roomCode);
         players.forEach((player: Player) => {
             const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness, correctAnswer };
+            // console.log('feedback', feedback.score);
             player.socket.emit(AnswerEvents.Feedback, feedback);
             player.answerCorrectness = AnswerCorrectness.WRONG;
         });
+       
 
         matchRoom.hostSocket.emit(AnswerEvents.Feedback);
         if (matchRoom.gameLength === 1 + matchRoom.currentQuestionIndex) matchRoom.hostSocket.emit(AnswerEvents.EndGame);

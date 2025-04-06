@@ -63,6 +63,7 @@ export class AnswerService {
         this.onEndGame();
         this.onTimesUp();
         this.onGradeAnswers();
+        this.goToVoting();
         this.onNextQuestion();
     }
 
@@ -81,6 +82,18 @@ export class AnswerService {
         this.currentLongAnswer = '';
         this.timeService.isPanicModeDisabled = false;
         this.timeService.isTimerPaused = false;
+    }
+
+    goToVoting(){
+        this.socketService.on(AnswerEvents.EndGame, () => {
+            if(!this.matchRoomService.isCooldown && this.showFeedback && this.matchRoomService.isCheaterMode){
+                this.matchRoomService.startedVote = true;
+                setTimeout(() => {
+                    this.matchRoomService.voteOnCheater();
+                },3000);
+                this.matchRoomService.startedVote = false;
+             }
+        });
     }
 
     selectChoice(choice: string, userInfo: UserInfo) {
@@ -107,6 +120,7 @@ export class AnswerService {
 
     onFeedback() {
         this.socketService.on(AnswerEvents.Feedback, (feedback: Feedback) => {
+            console.log(feedback);
             this.feedback = feedback;
             this.showFeedback = true;
             this.isNextQuestionButtonEnabled = true;
@@ -118,6 +132,24 @@ export class AnswerService {
     onBonusPoints() {
         this.socketService.on(AnswerEvents.Bonus, (bonus: number) => {
             this.bonusPoints = bonus;
+            console.log("this",this.bonusPoints);
+        });
+    }
+
+    cheaterGetsBonus() {
+        const totalVotes = this.matchRoomService.totalVotes.reduce((total, voteData) => total + voteData.numberOfVotes, 0);
+        if (this.matchRoomService.cheaterPlayer.username === this.matchRoomService.votesData.username) {
+            if (this.matchRoomService.votesData.numberOfVotes / totalVotes <= 0.5) {
+                console.log(this.matchRoomService.votesData.numberOfVotes / totalVotes);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    onCheaterFinalScores() {
+        this.socketService.on(MatchEvents.VoteOnCheater, (bonus: number) => {
+            this.bonusPoints += this.bonusPoints * 0.3;
         });
     }
 

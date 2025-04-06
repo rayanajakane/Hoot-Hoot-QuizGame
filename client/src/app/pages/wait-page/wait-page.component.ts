@@ -49,10 +49,10 @@ export class WaitPageComponent implements OnInit {
 
         if (this.isHost) {
             this.matchRoomService.gameTitle = this.currentGame.title;
-        } else {
-            if (!this.matchContextService.getContext()) {
+        } 
+        else {
                 this.matchContextService.setContext(MatchContext.PlayerView);
-            }
+
         }
     }
 
@@ -67,7 +67,13 @@ export class WaitPageComponent implements OnInit {
     }
 
     startMatch() {
-        this.matchRoomService.startMatch();
+        if (!this.matchRoomService.isCheaterMode) {
+            this.matchRoomService.startMatch();
+        }
+
+        if (this.matchRoomService.isCheaterMode) {
+            this.matchRoomService.startMatchCheaterMode();
+        }
     }
 
     quitGame() {

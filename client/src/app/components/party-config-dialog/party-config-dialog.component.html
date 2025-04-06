@@ -24,6 +24,18 @@
                 <p class="helper-text">{{ t('match-config.fee-description') }}</p>
             </div>
         </div>
+
+        <div class="config-section">
+            <mat-slide-toggle *ngIf="partyConfig.canPlayCheaterMode" [(ngModel)]="partyConfig.isCheaterMode">{{
+                t('match-config.cheater-mode')
+            }}</mat-slide-toggle>
+
+            <button *ngIf="partyConfig.canPlayCheaterMode" mat-icon-button (click)="this.showCheaterModeDescription = !this.showCheaterModeDescription" class="info-button">
+                <mat-icon>info</mat-icon>
+            </button>
+
+            <p class="helper-text" *ngIf="showCheaterModeDescription">{{ t('match-config.cheater-mode-description') }}</p>
+        </div>
     </div>
     <div mat-dialog-actions align="end">
         <button mat-button (click)="onCancel()">

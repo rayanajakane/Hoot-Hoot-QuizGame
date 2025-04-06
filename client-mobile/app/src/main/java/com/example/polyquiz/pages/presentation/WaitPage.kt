@@ -103,6 +103,8 @@ fun WaitPage(
     }
 
     fun isHost(): Boolean {
+//        println(MatchRoomService.hostId)
+//        println( MatchRoomService.hostId == authViewModel.getUserId())
         return MatchRoomService.hostId == authViewModel.getUserId()
     }
 

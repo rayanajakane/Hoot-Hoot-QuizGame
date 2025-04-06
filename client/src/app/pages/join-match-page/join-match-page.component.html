@@ -40,6 +40,10 @@
                                 <i class="material-icons">people</i>
                                 <span>Amis uniquement</span>
                             </div>
+                            <div *ngIf="match.partyConfig?.isCheaterMode" class="match-flag friends-only">
+                                <i class="material-icons"></i>
+                                <span>{{t('match-config.cheater-mode')}}</span>
+                            </div>
 
                             <div *ngIf="match.partyConfig?.isEntryFeeRequired" class="match-flag entry-fee">
                                 <i class="material-icons">attach_money</i>
@@ -67,9 +71,15 @@
                             </div>
 
                             <div *ngIf="match.partyConfig?.isFriendsOnly" class="match-flag friends-only">
-                                <i class="material-icons">people</i>
+                                <i class="material-icons"></i>
                                 <span>Amis uniquement</span>
                             </div>
+
+                            <div *ngIf="match.partyConfig?.isCheaterMode" class="match-flag friends-only">
+                                <i class="material-icons">thief</i>
+                                <span>{{t('match-config.cheater-mode')}}</span>
+                            </div>
+
 
                             <div *ngIf="match.partyConfig?.isEntryFeeRequired" class="match-flag entry-fee">
                                 <i class="material-icons">attach_money</i>
@@ -97,6 +107,11 @@
                         <div *ngIf="match.partyConfig?.isFriendsOnly" class="match-flag friends-only">
                             <i class="material-icons">people</i>
                             <span>Amis uniquement</span>
+                        </div>
+
+                        <div *ngIf="match.partyConfig?.isCheaterMode" class="match-flag friends-only">
+                            <i class="material-icons"></i>
+                            <span>{{t('match-config.cheater-mode')}}</span>
                         </div>
 
                         <div *ngIf="match.partyConfig?.isEntryFeeRequired" class="match-flag entry-fee">

@@ -43,6 +43,7 @@ export class MultipleChoiceAreaComponent implements OnInit {
         this.resetStateForNewQuestion();
     }
 
+
     selectChoice(choice: Choice): void {
         if (this.answerService.isSelectionEnabled) {
             this.answerService.showFeedback = false;

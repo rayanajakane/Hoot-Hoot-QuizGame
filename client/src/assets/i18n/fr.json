@@ -108,6 +108,7 @@
     "common": {
         "cancel": "Annuler",
         "play": "Jouer",
+        "play.modeCheater": "Jouer en mode tricheur",
         "title": "Titre",
         "desc": "Description",
         "secs": "secondes",
@@ -248,6 +249,8 @@
     "match-config": {
         "title-label": "Configuration de la partie",
         "friends-label": "Partie entre amis uniquement",
+        "cheater-mode": "Partie en mode tricheur",
+        "cheater-mode-description": "Pour jouer en mode tricheur : le jeu ne doit pas contenir de question de type réponse longue et doit comporter au moins trois joueurs",
         "friends-description": "Seuls vos amis pourront rejoindre cette partie.",
         "fee-section-label": "Partie avec prix d'entrée",
         "fee-label": "Frais d'entrée",
@@ -333,5 +336,15 @@
         "label": "Rechercher des jeux",
         "title": "Titre",
         "author": "Auteur"
+    },
+    "cheater-mode":{
+        "notifyCheater":"Vous êtes le/la tricheur/tricheuse de cette partie",
+        "cheater": "Tricheur",
+        "vote":"Voter" ,
+        "voteCheater":"Votez pour le tricheur",
+        "notifyRegularPlayer": "Vous avez le rôle de joueur régulier dans cette partie",
+        "playerVoted": "\"{{player}}\" a voté",
+        "players-still-voting": "Joueurs en train de voter",
+        "players-voted": "Tous les joueurs ont voté"
     }
 }

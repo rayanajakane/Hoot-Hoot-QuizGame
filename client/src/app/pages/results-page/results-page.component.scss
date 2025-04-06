@@ -16,6 +16,7 @@
     border-radius: 1rem;
 }
 
+
 #buttons-container {
     display: flex;
     flex-direction: column;
@@ -36,7 +37,7 @@
 }
 
 .player-card {
-    display: flex;
+    //display: flex;
     flex-direction: row;
     justify-content: space-between;
     padding-left: 1rem;
@@ -50,11 +51,10 @@
 }
 
 .username-avatar-container {
-    display: flex;
+    display: grid;
     flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 1rem;
+    align-items: left;
+    grid-template-columns: 1fr 1fr 1fr;
 }
 
 .avatar-container {
