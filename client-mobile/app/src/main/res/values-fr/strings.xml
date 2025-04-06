@@ -162,6 +162,7 @@
     <string name="no_background">Aucun arrière-plan</string>
     <string name="regen">Générer d\'autres noms</string>
     <string name="suggest_names">Suggestions de noms d\'utilisateurs</string>
+    <string name="panic_mode_activated">❗ MODE PANIQUE ACTIVÉ! ❗</string>
     <string name="cheater_mode_notify_cheater">Vous êtes le/la tricheur/tricheuse de cette partie</string>
     <string name="cheater_mode_cheater">Tricheur/se</string>
     <string name="cheater_mode_vote">Voter</string>
@@ -175,7 +176,6 @@
     <string name="cheater_mode">Mode tricheur</string>
     <string name="cheater_mode_players_min">Ce mode nécessite au moins 3 joueurs</string>
     <string name="cheater_mode_players_info">Pour jouer en mode tricheur : le jeu ne doit pas contenir de question de type réponse longue et doit comporter au moins trois joueurs</string>
-
     <string name="switch_camera">Changer camera</string>
     <string name="game_author">"Auteur: "</string>
 </resources>

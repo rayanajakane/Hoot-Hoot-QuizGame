@@ -327,6 +327,7 @@
         "choose-estimated": "Choisissez une valeur estimée. La marge est de +/- {{margin}}",
         "answer": "Réponse",
         "out-of-bounds": "Valeur hors limites ! Doit être entre {{lowerBound}} et {{upperBound}}",
+        "panic-mode-activated": "❗ MODE PANIQUE ACTIVÉ! ❗",
         "show-voting-button": "Aller vers la page de vote"
     },
     "players-list": {

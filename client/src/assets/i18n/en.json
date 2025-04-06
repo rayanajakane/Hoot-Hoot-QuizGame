@@ -328,6 +328,7 @@
         "choose-estimated": "Chose an estimated value. Margin is +/- {{margin}}",
         "answer": "Answer",
         "out-of-bounds": "Value is out of bounds! Must be between {{lowerBound}} and {{upperBound}}",
+        "panic-mode-activated": "❗ PANIC MODE ACTIVATED! ❗",
         "show-voting-button": "Go to voting page"
     },
     "players-list": {

@@ -94,13 +94,16 @@ fun QuestionArea(
     val isPanicking by TimeService.isPanicking.collectAsState()
 
     LaunchedEffect(isPanicking) {
-        scope.launch {
-            SnackbarController.sendEvent(
-                event = SnackbarEvent(
-                    message = StringValue.StringResource(R.string.sign_out_feedback)
+        if(isPanicking) {
+            scope.launch {
+                SnackbarController.sendEvent(
+                    event = SnackbarEvent(
+                        message = StringValue.StringResource(R.string.panic_mode_activated)
+                    )
                 )
-            )
+            }
         }
+
     }
 
     LaunchedEffect (matchRoomService.isCheaterMode){
