@@ -6,5 +6,6 @@ enum class TimerEvents(val value: String) {
     PAUSE_TIMER("pauseTimer"),
     RESUME_TIMER("resumeTimer"),
     TIMER("timer"),
+    PANIC_TIMER("panicTimer"),
     DISABLE_PANIC_TIMER("disablePanicTimer"),
 }

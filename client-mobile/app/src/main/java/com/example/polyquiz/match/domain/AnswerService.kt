@@ -132,6 +132,7 @@ object AnswerService {
         isEndGame = false
         currentLongAnswer = ""
         TimeService.setIsTimerPaused(false)
+        TimeService.setIsPanicking(false)
     }
 
     fun sendGrades() {

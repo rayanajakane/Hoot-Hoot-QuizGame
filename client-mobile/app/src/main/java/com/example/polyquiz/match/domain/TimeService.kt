@@ -1,6 +1,5 @@
 package com.example.polyquiz.match.domain
 
-import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.example.vanillaprototype.socket.SocketHandler
@@ -13,6 +12,9 @@ import kotlinx.coroutines.flow.StateFlow
 object TimeService {
     private val _isTimerPaused = MutableStateFlow(false)
     val isTimerPaused: StateFlow<Boolean> get() = _isTimerPaused
+
+    private val _isPanicking = MutableStateFlow(false)
+    val isPanicking: StateFlow<Boolean> get() = _isPanicking
 
     private var counter: MutableState<Int> = mutableStateOf(0)
     private var initialValue: Int = 0
@@ -34,6 +36,10 @@ object TimeService {
         _isTimerPaused.value = value
     }
 
+    fun setIsPanicking(value: Boolean) {
+        _isPanicking.value = value
+    }
+
     fun listenToTimerEvents() {
         handleTimer()
     }
@@ -47,20 +53,15 @@ object TimeService {
             }
         }
     }
-    fun startTimer(roomCode: String, time: Int) {
-        val timeCodeObject = mapOf("roomCode" to roomCode, "time" to time)
-        val timeJsonObject = Gson().toJson(timeCodeObject)
-        mSocket.emit(TimerEvents.START_TIMER.value, timeJsonObject);
-    }
-    fun stopTimer(roomCode: String) {
-        val roomCodeObject = mapOf("roomCode" to roomCode)
-        val roomJsonObject = Gson().toJson(roomCodeObject)
-        mSocket.emit(TimerEvents.STOP_TIMER.value, roomJsonObject);
-    }
 
     fun pauseTimer(roomCode: String) {
         _isTimerPaused.value = !_isTimerPaused.value
         mSocket.emit(TimerEvents.PAUSE_TIMER.value, roomCode)
+    }
+
+    fun triggerPanicTimer(roomCode: String) {
+        _isPanicking.value = true
+        mSocket.emit(TimerEvents.PANIC_TIMER.value, roomCode)
     }
 
     fun computeTimerProgress(): Float {

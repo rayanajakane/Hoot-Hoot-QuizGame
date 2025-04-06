@@ -43,6 +43,7 @@ import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.PriorityHigh
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.collectAsState
@@ -88,6 +89,7 @@ fun QuestionArea(
 
     val hasImage = !question?.pictureUrl.isNullOrEmpty()
     val isTimerPaused by TimeService.isTimerPaused.collectAsState()
+    val isPanicking by TimeService.isPanicking.collectAsState()
 
     LaunchedEffect (matchRoomService.isCheaterMode){
         if (matchRoomService.isCheaterMode) {
@@ -223,6 +225,7 @@ fun QuestionArea(
                             .padding(top = 16.dp)
                     )
 
+
                 } else {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         val questionText =
@@ -329,7 +332,6 @@ fun QuestionArea(
                 Spacer(modifier = Modifier.height(24.dp))
             }
 
-
             if (!matchRoomService.isCooldown) {
                 when (question?.type) {
                     QuestionType.MULTIPLE_CHOICE.value -> {
@@ -433,14 +435,38 @@ fun QuestionArea(
                                     shape = RoundedCornerShape(3.dp)
                                 ) {
                                     if (isTimerPaused) {
-                                        Icon(Icons.Filled.PlayArrow, contentDescription = stringResource(R.string.start_timer))
+                                        Icon(
+                                            Icons.Filled.PlayArrow,
+                                            contentDescription = stringResource(R.string.start_timer)
+                                        )
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Text(stringResource(R.string.start_timer))
                                     } else {
-                                        Icon(Icons.Filled.Pause, contentDescription = stringResource(R.string.pause_timer))
+                                        Icon(
+                                            Icons.Filled.Pause,
+                                            contentDescription = stringResource(R.string.pause_timer)
+                                        )
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Text(stringResource(R.string.pause_timer))
                                     }
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Button(
+                                    onClick = {
+                                        timeService.triggerPanicTimer(matchRoomService.getRoomCode())
+
+                                    },
+                                    enabled = !isPanicking,
+                                    shape = RoundedCornerShape(3.dp)
+                                ) {
+
+                                    Icon(
+                                        Icons.Filled.PriorityHigh,
+                                        contentDescription = stringResource(R.string.panic_mode)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(stringResource(R.string.panic_mode))
+
                                 }
                                 Spacer(modifier = Modifier.height(8.dp))
                             }
