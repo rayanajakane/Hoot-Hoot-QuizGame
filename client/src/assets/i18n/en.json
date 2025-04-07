@@ -340,12 +340,15 @@
         "not-enough-money": "You don't have enough money to make this transaction.",
         "donation-amount-exceeded": "With this donation, you will exceed the maximum amount of money allowed to send.",
         "invalid-amount": "The amount is invalid, it must be a positive number.",
-        "zero-amount": "The amount shouldn't be equal to 0."
+        "zero-amount": "The amount is invalid, it must be a positive number larger than 0."
     },
     "match-errors": {
         "ban_player": "The host banned you from the match.",
         "no_more_host": "The host left the match.",
-        "no_more_players": "There are no more players in the match."
+        "no_more_players": "There are no more players in the match.",
+        "locked-room": "The match is locked.",
+        "invalid-code": "The access code is invalid.",
+        "banned-player": "You have been banned from this match."
     },
     "match-friends-errors": {
         "not_friends_with_host": "You are not friends with the host.",
@@ -359,7 +362,7 @@
         "error-question-not-found": "The question has not been found.",
         "error-question-same-title-bank": "The question already exists in the question bank.",
         "error-invalid-question": "The question is invalid: ",
-        "error-default": "Error."
+        "error-default": "Error"
     },
     "game-validation-errors": {
         "error-repeat-choices": "There shouldn't be any repeated choices in the same question.",

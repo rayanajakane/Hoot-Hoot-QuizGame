@@ -339,12 +339,15 @@
         "not-enough-money": "Vous n'avez pas assez d'argent pour effectuer cette transaction.",
         "donation-amount-exceeded": "Avec cette donation, vous dépassez la limite quotidienne.",
         "invalid-amount": "Le montant est invalide, il doit être un nombre positif.",
-        "zero-amount": "Le montant ne peut pas être 0"
+        "zero-amount": "Le montant est invalide, il doit être un nombre positif supérieur à 0."
     },
     "match-errors": {
         "ban_player": "L'organisateur vous a banni.",
         "no_more_host": "L'organisateur a quitté la partie.",
-        "no_more_players": "Il n'y a plus de joueurs dans la partie."
+        "no_more_players": "Il n'y a plus de joueurs dans la partie.",
+        "locked-room": "La partie est verrouillée.",
+        "invalid-code": "Le code est invalide.",
+        "banned-player": "Vous avez été banni de cette partie."
     },
     "match-friends-errors": {
         "not_friends_with_host": "Vous n'êtes pas ami avec l'hôte.",
@@ -358,7 +361,26 @@
         "error-question-not-found": "La question est introuvable.",
         "error-question-same-title-bank": "La question existe déjà dans la banque.",
         "error-invalid-question": "La question est invalide: ",
-        "error-default": "Error."
+        "error-default": "Erreur"
+    },
+    "game-validation-errors": {
+        "error-repeat-choices": "Il ne doit pas y avoir de choix répétés dans la même question.",
+        "error-choices-number": "Il doit y avoir entre 2 et 4 choix dans une question.",
+        "error-points": "Le nombre de points doit être entre 10 et 100.",
+        "error-empty-question": "Le texte de la ne peut pas être vide.",
+        "error-choices-ratio": "Il doit y avoir au moins un choix correct et un choix incorrect.",
+        "error-empty-title": "Le titre du jeu ne peut pas être vide.",
+        "error-empty-description": "La description du jeu ne peut pas être vide.",
+        "error-duration": "La durée du jeu doit être comprise entre 10 et 60 secondes.",
+        "error-question-number": "Le jeu doit contenir au moins une question.",
+        "error-question-type": "Le type de la question doit être soit QCM, QRL ou QRE.",
+        "error-invalid-bounds": "La borne inférieure doit être inférieure à la borne supérieure.",
+        "error-margin-too-big": "La marge doit être positive et inférieure à 25 % de l'intervalle.",
+        "error-answer-out-of-bounds": "La réponse correcte doit se situer entre les bornes.",
+        "error-answer-not-integer": "La réponse correcte doit être un nombre entier.",
+        "error-lower-bound-not-integer": "La borne inférieure doit être un nombre entier.",
+        "error-upper-bound-not-integer": "La borne supérieure doit être un nombre entier.",
+        "error-margin-not-integer": "La marge doit être un nombre entier."
     },
     "username-suggestion": {
         "title": "Suggestions de noms d'utilisateurs",

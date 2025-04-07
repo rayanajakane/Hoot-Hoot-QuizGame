@@ -70,7 +70,7 @@ export class GameService {
                 return Promise.reject(`${ERROR_INVALID_GAME}\n${errorMessages.join('\n')}`);
             }
         } catch (error) {
-            return Promise.reject(`${ERROR_DEFAULT} ${ERROR_WRONG_FORMAT}`);
+            return Promise.reject(`${ERROR_DEFAULT}\n${ERROR_WRONG_FORMAT}`);
         }
     }
 
@@ -82,7 +82,7 @@ export class GameService {
             await this.gameModel.updateOne(filterQuery, gameToToggleVisibility);
             return gameToToggleVisibility;
         } catch (error) {
-            return Promise.reject(`${ERROR_DEFAULT} ${error}`);
+            return Promise.reject(`${ERROR_DEFAULT}\n${error}`);
         }
     }
 
@@ -127,7 +127,7 @@ export class GameService {
             });
             return game;
         } catch (error) {
-            return Promise.reject(`${ERROR_DEFAULT} ${error}`);
+            return Promise.reject(`${ERROR_DEFAULT}\n${error}`);
         }
     }
 
@@ -136,13 +136,13 @@ export class GameService {
         try {
             game = await this.getGameById(gameId);
         } catch (error) {
-            return Promise.reject(`${ERROR_DEFAULT} ${error}`);
+            return Promise.reject(`${ERROR_DEFAULT}\n${error}`);
         }
         try {
             await this.gameModel.deleteOne({ id: gameId });
             return game;
         } catch (error) {
-            return Promise.reject(`${ERROR_DEFAULT} ${error}`);
+            return Promise.reject(`${ERROR_DEFAULT}\n${error}`);
         }
     }
 }

@@ -58,13 +58,13 @@ export class MatchGateway implements OnGatewayDisconnect {
         let errorMessage = [];
         errorMessage = errorMessage.concat(codeErrors);
         errorMessage = errorMessage.concat(usernameErrors);
-        console.log('Joining room', matchRoom.partyConfig);
+        console.log('Joining room', matchRoom.partyConfig, data.userId);
         if (matchRoom.partyConfig.isFriendsOnly || matchRoom.partyConfig.isEntryFeeRequired) {
             const partyErrors = await this.partyService.canJoinParty(data.userId, data.roomCode);
-            errorMessage.concat(partyErrors);
+            errorMessage = errorMessage.concat(partyErrors);
         }
 
-        if (errorMessage) {
+        if (errorMessage.length > 0) {
             this.sendError(socket.id, errorMessage);
         } else {
             socket.join(data.roomCode);
@@ -75,6 +75,7 @@ export class MatchGateway implements OnGatewayDisconnect {
             }
             const newPlayer = await this.playerRoomService.addPlayer(socket, data.roomCode, data.userId, data.username);
             this.returnAllMatches();
+            console.log('New player', newPlayer.username);
             return { code: data.roomCode, username: newPlayer.username, userId: newPlayer.id };
         }
     }
@@ -91,14 +92,14 @@ export class MatchGateway implements OnGatewayDisconnect {
         if (data.partyConfig) {
             if (data.partyConfig.isFriendsOnly) {
                 const friendshipErrors = await this.friendService.getFriendshipErrors(data.hostId, true);
-                if (friendshipErrors) {
+                if (friendshipErrors.length > 0) {
                     this.sendError(socket.id, friendshipErrors);
                     return;
                 }
             }
             if (data.partyConfig.isEntryFeeRequired) {
                 const moneyErrors = await this.moneyService.getMoneyError(data.hostId, data.partyConfig.entryFeeAmount);
-                if (moneyErrors) {
+                if (moneyErrors.length > 0) {
                     this.sendError(socket.id, moneyErrors);
                     return;
                 }
@@ -379,6 +380,7 @@ export class MatchGateway implements OnGatewayDisconnect {
     }
 
     sendError(socketId: string, error: string[]) {
+        console.log('Sending error:', error);
         this.server.to(socketId).emit(MatchEvents.Error, error);
     }
 
