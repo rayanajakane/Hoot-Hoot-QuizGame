@@ -65,11 +65,9 @@ export class MoneyService {
     }
 
     handleError() {
-        this.socketHandler.on(MoneyEvents.Error, (error: string) => {
-            const errorMessage = 'money-errors.' + error.split('\n')[0];
-            console.log(errorMessage);
-            console.log(typeof errorMessage);
-            this.notificationService.displayErrorMessage(translate(errorMessage));
+        this.socketHandler.on(MoneyEvents.Error, (error: string[]) => {
+            const displayMessage = error.map((message) => translate(message.trim())).join('\n');
+            this.notificationService.displayErrorMessage(displayMessage);
         });
     }
 }

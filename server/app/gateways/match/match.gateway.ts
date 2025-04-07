@@ -360,6 +360,7 @@ export class MatchGateway implements OnGatewayDisconnect {
     }
 
     sendError(socketId: string, error: string[]) {
+        console.log('Sending error:', error);
         this.server.to(socketId).emit(MatchEvents.Error, error);
     }
 
