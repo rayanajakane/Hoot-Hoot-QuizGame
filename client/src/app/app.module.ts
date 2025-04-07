@@ -60,6 +60,7 @@ import { PartyConfigDialogComponent } from './components/party-config-dialog/par
 import { UsernameSuggestionDialogComponent } from './components/username-suggestion-dialog/username-suggestion-dialog.component';
 import { JoinMatchPageComponent } from './pages/join-match-page/join-match-page.component';
 import { VotingDialogComponent } from './components/voting-dialog/voting-dialog.component';
+import { QuestionGeneratorComponent } from './components/question-generator/question-generator.component';
 import { ShopPageComponent } from './pages/shop-page/shop-page.component';
 /**
  * Main module that is used in main.ts.
@@ -74,6 +75,7 @@ import { ShopPageComponent } from './pages/shop-page/shop-page.component';
         AdminQuestionBankComponent,
         ShortQuestionComponent,
         QuestionCreationFormComponent,
+        QuestionGeneratorComponent,
         DialogConfirmComponent,
         AdminEditPageComponent,
         ChatComponent,

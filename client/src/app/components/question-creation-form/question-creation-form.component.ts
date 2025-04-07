@@ -1,8 +1,9 @@
 /* eslint-disable max-lines */
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+//import { HttpResponse } from '@angular/common/http';
 import { Component, EventEmitter, Inject, Input, OnChanges, OnInit, Optional, Output, SimpleChanges } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { IMAGE_MAX_FILE_SIZE } from '@app/constants/image-constants';
 import { MAX_CHOICES, MIN_CHOICES, SNACK_BAR_DISPLAY_TIME, VALID_MARGIN_FRACTION } from '@app/constants/question-creation';
@@ -11,6 +12,8 @@ import { Question } from '@app/interfaces/question';
 import { BankService } from '@app/services/bank/bank.service';
 import { QuestionService } from '@app/services/question/question.service';
 import { QuestionType } from '@common/constants/question-types';
+import { QuestionGeneratorComponent } from '../question-generator/question-generator.component';
+import { Choice } from '@app/interfaces/choice';
 import { translate } from '@jsverse/transloco';
 
 export interface DialogManagement {
@@ -34,15 +37,19 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
     checked: boolean;
     disabled: boolean;
     notificationShown: boolean = false;
+
+    dialogForm: FormGroup;
     loadedImageFile: File | null = null;
 
     // Allow more constructor parameters to reduce logic in the component
     // eslint-disable-next-line max-params
     constructor(
         private readonly snackBar: MatSnackBar,
-        private readonly formBuilder: FormBuilder,
+        readonly formBuilder: FormBuilder,
         private questionService: QuestionService,
         public bankService: BankService,
+        private dialog: MatDialog,
+
         @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: DialogManagement,
     ) {
         this.initializeForm();
@@ -57,6 +64,51 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
 
     get managementState(): typeof ManagementState {
         return ManagementState;
+    }
+
+    handleGeneratedQuestion(generatedQuestion: any) {
+        this.questionForm.get('text')?.setValue(generatedQuestion.question);
+        this.questionForm.get('type')?.setValue(generatedQuestion.type);
+
+        if (generatedQuestion.type === QuestionType.MultipleChoice) {
+            this.questionForm.get('type')?.setValue(QuestionType.MultipleChoice);
+            const choicesArray = this.questionForm.get('choices') as FormArray;
+            choicesArray?.clear();
+
+            generatedQuestion.choices?.forEach((choice: Choice) => {
+                choicesArray.push(
+                    this.formBuilder.group({
+                        text: choice.text,
+                        isCorrect: choice.isCorrect,
+                    }),
+                );
+            });
+        }
+
+        if (generatedQuestion.type === QuestionType.EstimatedAnswer) {
+            if (this.questionForm.get('type')?.value === QuestionType.EstimatedAnswer) {
+                this.questionForm.get('type')?.setValue(QuestionType.EstimatedAnswer);
+                const estimatedParams = this.questionForm.get('estimatedParameters') as FormGroup;
+                estimatedParams.get('lowerBound')?.setValue(generatedQuestion.lowerBound);
+                estimatedParams.get('upperBound')?.setValue(generatedQuestion.upperBound);
+                estimatedParams.get('correctAnswer')?.setValue(generatedQuestion.exactValue);
+                estimatedParams.get('margin')?.setValue(generatedQuestion.errorMargin);
+            }
+        }
+    }
+
+    openQuestionDialog() {
+        const dialogRef = this.dialog.open(QuestionGeneratorComponent, {
+            data: {},
+        });
+
+        dialogRef.componentInstance.questionGenerated.subscribe((generatedQuestion: any) => {
+            this.handleGeneratedQuestion(generatedQuestion);
+        });
+    }
+
+    closeDialog() {
+        this.dialog.closeAll();
     }
 
     buildChoices(): FormGroup {
@@ -115,6 +167,38 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         this.snackBar.open(message, undefined, {
             duration,
         });
+    }
+
+    parseGeneratedAnswer(data: { return: string; sessionId: string }) {
+        const result = data.return;
+        const parsedData = JSON.parse(result);
+        if (parsedData.Question && Array.isArray(parsedData.Choices)) {
+            const question = parsedData.Question.trim();
+
+            const choices = parsedData.Choices.map((choice: { isCorrect: boolean; Text: string }) => ({
+                text: choice.Text,
+                isCorrect: choice.isCorrect,
+            }));
+
+            const lowerBound = parsedData.Numericals?.lowerBound;
+            const upperBound = parsedData.Numericals?.upperBound;
+            const exactValue = parsedData.Numericals?.exactValue;
+            const errorMargin = parsedData.Numericals?.errorMargin;
+
+            return [
+                {
+                    question: question,
+                    choices: choices,
+                    lowerBound: lowerBound,
+                    upperBound: upperBound,
+                    exactValue: exactValue,
+                    errorMargin: errorMargin,
+                },
+            ];
+        } else {
+            this.openSnackBar('Erreur lors de la génération de la question', 5000);
+            return [];
+        }
     }
 
     ngOnInit(): void {

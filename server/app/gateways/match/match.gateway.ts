@@ -315,8 +315,6 @@ export class MatchGateway implements OnGatewayDisconnect {
             return;
         }
         const room = this.matchRoomService.getRoom(roomCode);
-        const isRoomEmpty = this.isRoomEmpty(room);
-       // const lessthanThreePlayers = this.isRoomLessThanThreePlayers(room);
         const isOnePlayerLeft = this.isOnePlayerLeft(room);
 
         if (room.partyConfig.isEntryFeeRequired) {
@@ -331,6 +329,7 @@ export class MatchGateway implements OnGatewayDisconnect {
             }
         }
         socket.leave(roomCode);
+        const isRoomEmpty = this.isRoomEmpty(room);
         if (room.isPlaying && isRoomEmpty) {
             this.sendError(roomCode, NO_MORE_PLAYERS);
             this.deleteRoom(roomCode);
