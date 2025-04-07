@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Player } from '@app/interfaces/player';
-import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { EloEvents } from '@common/events/elo.events';
 

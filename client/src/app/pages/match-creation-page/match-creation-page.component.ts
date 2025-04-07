@@ -233,7 +233,11 @@ export class MatchCreationPageComponent implements OnInit {
                                 isEntryFeeRequired: this.partyConfig.isEntryFeeRequired,
                                 entryFeeAmount: this.partyConfig.entryFeeAmount,
                                 isCheaterMode: this.partyConfig.isCheaterMode,
+                                canPlayCheaterMode: this.partyConfig.canPlayCheaterMode,
                             }),
+                        );
+                    } else {
+                        this.matchRoomService.isCheaterMode = false;
                         this.matchService.createMatch(this.partyConfig, true);
                     }
                 }

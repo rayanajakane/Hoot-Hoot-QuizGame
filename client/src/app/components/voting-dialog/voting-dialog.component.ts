@@ -68,30 +68,6 @@ export class VotingDialogComponent {
         this.matchRoomService.routeToResultsPage();
     }
 
-    ngOnInit() {
-        this.setTheCheaterView();
-    }
-    get matchContext(): typeof MatchContext {
-        return MatchContext;
-    }
-
-    setTheCheaterView() {
-        if (this.matchContextService.getContext() === MatchContext.HostView) {
-            for (let player of this.matchRoomService.players) {
-                this.matchRoomService.votesResults[player.username] ? this.matchRoomService.votesResults[player.username] : 0;
-                console.log(this.matchRoomService.votesResults);
-                this.currentVotes = this.matchRoomService.votesResults[player.username];
-            }
-        }
-    }
-
-    routeToResultsPage() {
-        if (this.matchRoomService.isCheaterMode) {
-            this.matchRoomService.socketService.socket.emit(MatchEvents.SendUpdatedScores, this.matchRoomService.getRoomCode());
-        }
-        this.matchRoomService.routeToResultsPage();
-    }
-
     onVote() {
         if (this.selectedPlayer) {
             if (!this.voteCounts.username) {
@@ -111,9 +87,6 @@ export class VotingDialogComponent {
             this.voteCounts.numberOfVotes = this.matchRoomService.votesData?.numberOfVotes;
         }
 
-
-        this.isVotingDisabled = false;
-        this.matchRoomService.socketService.socket.emit(MatchEvents.SendUpdatedScores, this.matchRoomService.getRoomCode());
         this.isVotingDisabled = false;
     }
 }

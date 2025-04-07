@@ -80,54 +80,6 @@
             <app-audio-player [audioUrl]=""></app-audio-player>
         </div>
     </div>
-    <div>
-        <app-audio-player [audioUrl]=""></app-audio-player>
-    </div>
-
-<div class="controls-container">
-    <div id="host-area" *ngIf="context === matchContext.HostView && !this.matchRoomService.isCooldown">
-        <button mat-raised-button *ngIf="this.answerService.isEndGame" color="primary" (click)="routeToResultsPage()">
-            <mat-icon class="material-icons">bar_chart</mat-icon>
-            <p>Présenter les résultats finaux</p>
-        </button>
-        <button
-            *ngIf="!this.answerService.isEndGame"
-            mat-raised-button
-            color="primary"
-            (click)="goToNextQuestion()"
-            [disabled]="!this.answerService.isNextQuestionButtonEnabled"
-        >
-            <mat-icon class="material-icons">skip_next</mat-icon>
-            <p>QUESTION SUIVANTE</p>
-        </button>
-        <div id="timer-controls" *ngIf="!answerService.showFeedback && !answerService.gradeAnswers">
-            <button mat-raised-button id="pause-button" (click)="pauseTimer()" (click)="timeService.togglePauseStatus()" [disabled]="time === 0">
-                <div class="timer-button-description">
-                    <mat-icon *ngIf="!timeService.isTimerPaused">pause</mat-icon>
-                    <p *ngIf="!timeService.isTimerPaused">SUSPENDRE LA MINUTERIE</p>
-                </div>
-                <div class="timer-button-description">
-                    <mat-icon *ngIf="timeService.isTimerPaused">play_arrow</mat-icon>
-                    <p *ngIf="timeService.isTimerPaused">PARTIR LA MINUTERIE</p>
-                </div>
-            </button>
-
-            <button
-                mat-raised-button
-                id="panic-button"
-                color="accent"
-                [disabled]="this.timeService.isPanicModeDisabled || this.timeService.isPanicking"
-                (click)="triggerPanicTimer()"
-            >
-                <button mat-raised-button color="primary" id="submit-button" *ngIf="this.answerService.isSelectionEnabled" (click)="submitAnswers()">
-                    {{ t('question-area.submit') }}
-                </button>
-            </div>
-        </div>
-        <div>
-            <app-audio-player [audioUrl]=""></app-audio-player>
-        </div>
-    </div>
     <div class="controls-container">
         <div id="host-area" *ngIf="context === matchContext.HostView && !this.matchRoomService.isCooldown">
             <button mat-raised-button *ngIf="this.answerService.isEndGame && !this.matchRoomService.isCheaterMode" color="primary" (click)="routeToResultsPage()">
@@ -135,10 +87,11 @@
                 <p>{{ t('question-area.show-final-results') }}</p>
             </button>
             <button
-                *ngIf="!this.answerService.isEndGame && this.answerService.isNextQuestionButtonEnabled"
+                *ngIf="!this.answerService.isEndGame"
                 mat-raised-button
                 color="primary"
                 (click)="goToNextQuestion()"
+                [disabled]="!this.answerService.isNextQuestionButtonEnabled"
             >
                 <mat-icon class="material-icons">skip_next</mat-icon>
                 <p>{{ t('question-area.next-question') }}</p>
@@ -183,18 +136,3 @@
     </div>
     <app-players-list [players]="this.matchRoomService.players" *ngIf="context !== matchContext.TestPage"></app-players-list>
 </ng-container>
-    <div *ngIf="context === matchContext.HostView && !this.matchRoomService.isCooldown && this.matchRoomService.isCheaterMode">
-        <button mat-raised-button *ngIf="this.answerService.isEndGame" color="primary" (click)="voteOnCheater()">
-            <mat-icon class="material-icons">bar_chart</mat-icon>
-            <p>Voter pour le tricheur</p>
-        </button>
-    </div>
-    <div *ngIf="context === matchContext.CheaterView && !this.matchRoomService.isCooldown">
-        <app-voting-dialog *ngIf="showVotingDialog" [players]="matchRoomService.players"></app-voting-dialog>
-    </div>
-    <button mat-raised-button class="exit-button" color="primary" routerLink="/home" (click)="quitGame()">
-        <mat-icon class="material-icons">logout</mat-icon>
-        <p>QUITTER</p>
-    </button>
-</div>
-<app-players-list [players]="this.matchRoomService.players" *ngIf="context !== matchContext.TestPage"></app-players-list>
