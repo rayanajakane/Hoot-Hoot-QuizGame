@@ -161,7 +161,6 @@ export class MatchRoomService {
     }
     onSelectedCheater() {
         this.socketService.on(MatchEvents.SendCheater, (data: { player: string }) => {
-            //TO DO: ADD ERROR HANDLING
             const cheaterPlayer = this.getPlayerByUsername(data.player);
             if (cheaterPlayer) {
                 this.cheaterPlayer = cheaterPlayer;
@@ -377,7 +376,6 @@ export class MatchRoomService {
     onCurrentAnswers() {
         this.socketService.on(MatchEvents.CurrentAnswers, (answer: string[]) => {
             if (this.userId === this.hostId || this.userId === this.cheaterPlayer?.id) {
-                console.log('Current answers:', answer);
                 this.currentAnswers = answer;
             }
             // return;

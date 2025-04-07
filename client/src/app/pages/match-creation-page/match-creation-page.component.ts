@@ -258,9 +258,8 @@ export class MatchCreationPageComponent implements OnInit {
     }
 
     createMatchCheaterMode(context: MatchContext) {
-        this.buttonClicked = true; //we can set it here
+        this.buttonClicked = true; 
         this.matchRoomService.isCheaterMode = true;
-        console.log('cheater', this.matchRoomService.isCheaterMode);
         this.matchContextService.setContext(context);
         this.reloadSelectedGame();
     }

@@ -106,7 +106,6 @@ export class AnswerService {
         const players: Player[] = this.playerService.getPlayers(roomCode);
         players.forEach((player: Player) => {
             const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness, correctAnswer };
-            // console.log('feedback', feedback.score);
             player.socket.emit(AnswerEvents.Feedback, feedback);
             player.answerCorrectness = AnswerCorrectness.WRONG;
         });

@@ -160,8 +160,6 @@ export class MatchRoomService {
 
         const roomIndex = this.getRoomIndex(matchRoomCode);
         this.matchRooms[roomIndex].startTime = new Date();
-        console.log('dow e go here');
-
         this.timeService.startTimer(server, matchRoomCode, COUNTDOWN_TIME, ExpiredTimerEvents.CountdownTimerExpired);
     }
 
@@ -169,8 +167,6 @@ export class MatchRoomService {
         const players = this.getRoom(roomCode).players;
         if (players && players.length > 0) {
             const randomIndex = Math.floor(Math.random() * players.length);
-            //onsole.log("all players", players)
-            console.log('rando', players[randomIndex].username);
             this.cheaterPlayer = players[randomIndex];
             return players[randomIndex];
         } else {
@@ -179,7 +175,6 @@ export class MatchRoomService {
     }
 
     cheaterGetsBonus(username) {
-        // TO DO: USE THE TOTAL DEFINED IN MATCH GATEWAY
         let total = 0;
         for (const voteData of this.totalVotes) {
             for (const username in voteData) {
@@ -254,7 +249,6 @@ export class MatchRoomService {
 
     sendCheaterPlayer(server: Server, matchRoomCode: string, player: string) {
         const matchRoom: MatchRoom = this.getRoom(matchRoomCode);
-        // TO DO: FIX SYNTAX
         server.in(matchRoomCode).emit(MatchEvents.SendCheater, { player });
     }
 
