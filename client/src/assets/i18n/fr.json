@@ -303,8 +303,10 @@
     "game-modification": {
         "creation-error": "Le jeu n'a pas pu être créé. 😿 ",
         "modification-error": "Le jeu n'a pas pu être modifié. 😿 ",
-        "creation-success": "Jeu créé' avec succès! 😺",
-        "modification-success": "Jeu modifié avec succès! 😺"
+        "creation-success": "Jeu créé avec succès! 😺",
+        "modification-success": "Jeu modifié avec succès! 😺",
+        "rename-game": "Veillez renommer le jeu",
+        "title": "Nouveau titre"
     },
     "admin-question-bank": {
         "back-page": "Page précédente",
@@ -362,7 +364,10 @@
         "error-question-not-found": "La question est introuvable.",
         "error-question-same-title-bank": "La question existe déjà dans la banque.",
         "error-invalid-question": "La question est invalide: ",
-        "error-default": "Erreur"
+        "error-default": "Erreur",
+        "error-could-not-add": "Le jeu n'a pas pu être ajouté. 😿",
+        "error-could-not-delete": "Le jeu n'a pas pu être supprimé. 😿",
+        "error-could-not-get": "Le jeu n'a pas pu être récupéré. 😿"
     },
     "game-validation-errors": {
         "error-repeat-choices": "Il ne doit pas y avoir de choix répétés dans la même question.",
