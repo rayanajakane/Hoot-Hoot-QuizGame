@@ -227,8 +227,14 @@ export class GameModificationService {
                 this.isLoadingBank = false;
             },
             // TODO : Server sends transloco code
-            error: (error: HttpErrorResponse) =>
-                this.notificationService.displayErrorMessage(`${translate('bank-status.unretrieved')}\n ${error.message}`),
+            error: (error: HttpErrorResponse) => {
+                const message = error.message || '';
+                const displayMessage = message
+                    .split('\n')
+                    .map((line) => translate(line.trim()))
+                    .join('\n');
+                this.notificationService.displayErrorMessage(`${translate('bank-status.unretrieved')}\n ${displayMessage}`);
+            },
         });
     }
 
@@ -301,8 +307,14 @@ export class GameModificationService {
                     this.addQuestionToBank(newQuestion);
                 }
             },
-            error: (error: HttpErrorResponse) =>
-                this.notificationService.displayErrorMessage(`${translate('question-status.unverified')} \n ${error.message}`),
+            error: (error: HttpErrorResponse) => {
+                const message = error.message || '';
+                const displayMessage = message
+                    .split('\n')
+                    .map((line) => translate(line.trim()))
+                    .join('\n');
+                this.notificationService.displayErrorMessage(`${translate('question-status.unverified')}\n${displayMessage}`);
+            },
         });
     }
 

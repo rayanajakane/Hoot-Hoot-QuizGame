@@ -8,7 +8,7 @@ import { Database } from 'firebase-admin/lib/database/database';
 @Injectable()
 export class MoneyService {
     private database: Database;
-    private readonly DAILY_DONATION_LIMIT = 500;
+    private readonly DAILY_DONATION_LIMIT = 10000;
 
     constructor(
         private readonly firebaseService: FirebaseRepositoryService,

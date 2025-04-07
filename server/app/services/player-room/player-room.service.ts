@@ -87,7 +87,7 @@ export class PlayerRoomService {
     }
 
     async addPlayer(playerSocket: Socket, matchRoomCode: string, newid: string, newUsername: string): Promise<Player> {
-        if (this.getUsernameErrors(matchRoomCode, newUsername)) {
+        if (this.getUsernameErrors(matchRoomCode, newUsername).length > 0) {
             return undefined;
         }
 
@@ -222,11 +222,11 @@ export class PlayerRoomService {
         return !!this.getPlayerById(matchRoomCode, this.matchRoomService.getRoom(matchRoomCode).hostId);
     }
 
-    getUsernameErrors(matchRoomCode: string, userId: string): string {
-        let errors = '';
+    getUsernameErrors(matchRoomCode: string, userId: string): string[] {
+        let errors = [];
         const errorConditions: Map<string, boolean> = new Map([[BANNED_PLAYER, this.isBannedPlayer(matchRoomCode, userId)]]);
         errorConditions.forEach((hasError: boolean, message: string) => {
-            if (hasError) errors += message;
+            if (hasError) errors.push(message);
         });
         return errors;
     }
