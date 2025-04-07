@@ -96,6 +96,14 @@ fun EstimatedAnswerArea(
                 enabled = !isDisabled,
                 isError = isOutOfBounds
             )
+            if(matchContext === MatchContext.CHEATERVIEW){
+                Text(
+                text = (matchRoomService.currentAnswers[0]),
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
+
 
             if (isOutOfBounds) {
                 Text(

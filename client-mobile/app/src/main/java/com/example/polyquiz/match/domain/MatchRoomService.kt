@@ -18,12 +18,16 @@ import androidx.compose.ui.res.stringResource
 import com.example.polyquiz.R
 import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.constants.ChatEvents
+import com.example.polyquiz.constants.LongAnswerInfo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import com.example.polyquiz.constants.Route
 import com.example.polyquiz.constants.VotingData
-import com.example.polyquiz.pages.presentation.VotingDialogComponent
+import com.example.polyquiz.pages.presentation.VotingPage
 import com.example.polyquiz.elo.domain.EloService
+import com.example.polyquiz.match.domain.AnswerService.gradeAnswers
+import com.example.polyquiz.match.domain.AnswerService.playersAnswers
+import com.google.gson.reflect.TypeToken
 
 @SuppressLint("StaticFieldLeak")
 object MatchRoomService {
@@ -41,6 +45,7 @@ object MatchRoomService {
     var isLocked by mutableStateOf(false)
     var gameTitle: String = ""
     var gameDuration: Int = 0
+    var currentAnswers: MutableList<String> = mutableListOf()
     var partyConfig by mutableStateOf(PartyConfig(false, false, 0, false, false))
     var currentQuestion by mutableStateOf<Question?>(null)
     var isHostPlaying by mutableStateOf(true)
@@ -96,6 +101,7 @@ false, false,""
             onVoting()
             onVotingResults()
             onSelectedCheater()
+            onCurrentAnswers()
 
 //            onPlayerChatStateToggle()
             onRouteToResultsPage()
@@ -134,20 +140,25 @@ false, false,""
     fun startMatchCheaterMode(){
         isCheaterMode = true;
         isMatchStarted = true;
-        socket.emit(MatchEvents.START_MATCH_CHEATER_MODE.value, matchRoomCode)
+        socket.emit(MatchEvents.START_MATCH_CHEATER_MODE.value, matchRoomCode.value)
 
     }
 
     fun onSelectedCheater(){
         socket.on(MatchEvents.SEND_CHEATER.value){ args ->
-            getPlayerByUsername(args.toString())?.let { player ->
-                cheaterPlayer = player
+            if(args.isNotEmpty()) {
+                val jsonString = (args[0] as? JSONObject)?.toString() ?: ""
+                val jsonObject = JSONObject(jsonString)
+                val playerName = jsonObject.optString("player")
+                val  player = getPlayerByUsername(playerName);
+                cheaterPlayer = player!!;
             }
         }
     }
 
     fun onMatchCheaterModeStarted() {
         socket.on(MatchEvents.CHEATER_MODE_MATCH_STARTING.value) { args ->
+            isCheaterMode = true;
             if (args.isNotEmpty()) {
                 val data = args[0] as JSONObject
                 if (data.optBoolean("start", false)) {
@@ -162,30 +173,31 @@ false, false,""
 
     fun onVoting() {
         socket.on(MatchEvents.SHOW_VOTING_DIALOG.value) {
-            println("voting${MatchContextService.getContext()}")
-
             if (MatchContextService.getContext() !== MatchContext.HOSTVIEW) {
                // showVotingDialog()
                 showVotingDialogState = true
             }
 
-
-            println("voting${showVotingDialogState}")
         }
     }
 
 
     fun voteOnCheater() {
-        socket.emit(MatchEvents.VOTE_ON_CHEATER.value, matchRoomCode)
+        socket.emit(MatchEvents.VOTE_ON_CHEATER.value, matchRoomCode.value)
     }
 
-//    fun onCurrentAnswers() {
-//        socket.on(MatchEvents.CURRENT_ANSWERS.value) { answer: List<String> ->
-//            if (username == cheaterPlayer?.username) {
-//                currentAnswers = answer.toMutableList()
-//            }
-//        }
-//    }
+    fun onCurrentAnswers() {
+        socket.on(MatchEvents.CURRENT_ANSWERS.value) { args ->
+            if (userId == hostId || userId == cheaterPlayer?.id) {
+                if (args.isNotEmpty() && args[0] != null) {
+                    currentAnswers = Gson().fromJson(
+                        args[0].toString(),
+                        object : TypeToken<List<String>>() {}.type
+                    )
+                }
+            }
+        }
+    }
 
     fun onVotingResults() {
         socket.on(MatchEvents.SEND_BACK_VOTES_RESULTS.value) { args ->
@@ -230,6 +242,9 @@ false, false,""
     fun getPlayerByUsername(username: String): Player? =
         players.find { it.username == username }
 
+        fun sendPlayersData(roomCode: String) {
+            socket.emit(MatchEvents.SEND_PLAYERS_DATA.value, roomCode)
+        }
     fun joinRoom(roomCode: String, username: String, userId:String) {
         Log.d("Join room", "Hostid : $hostId")
         val sentInfo = JSONObject().apply {
@@ -252,9 +267,7 @@ false, false,""
     }
 
 
-    fun sendPlayersData(roomCode: String) {
-        socket.emit(MatchEvents.SEND_PLAYERS_DATA.value, roomCode)
-    }
+
 
     fun banUsername(userId: String) {
         if (this.userId == this.hostId) {
