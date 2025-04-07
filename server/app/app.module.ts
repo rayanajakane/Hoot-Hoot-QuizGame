@@ -30,6 +30,8 @@ import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MongooseModule } from '@nestjs/mongoose';
+import { QuestionsGeneratorController } from './controllers/questions-generator/questions-generator.controller';
+import { QuestionsGeneratorService } from './services/questions-generator/questions-generator.service';
 import { HistoryController } from './controllers/history/history.controller';
 import { EloGateway } from './gateways/elo/elo.gateway';
 import { UsernameSuggestionController } from './controllers/username-suggestion/username-suggestion.controller';
@@ -57,7 +59,7 @@ import { UsernameSuggestionService } from './services/username-suggestion/userna
         EventEmitterModule.forRoot(),
         FirebaseModule,
     ],
-    controllers: [GameController, QuestionController, MatchController, BackupController, HistoryController, UsernameSuggestionController],
+    controllers: [GameController, QuestionController, MatchController, BackupController, QuestionsGeneratorController,  HistoryController, UsernameSuggestionController],
     providers: [
         Logger,
         ChatService,
@@ -82,8 +84,10 @@ import { UsernameSuggestionService } from './services/username-suggestion/userna
         FriendsService,
         FriendsGateway,
         QrCodeService,
+        QuestionsGeneratorService,
         MoneyService,
         MoneyGateway,
+        QuestionsGeneratorService,
         PartyService,
         HistoryService,
         EloService,
