@@ -336,7 +336,8 @@
         "not-enough-money": "You don't have enough money to make this transaction.",
         "donation-amount-exceeded": "With this donation, you will exceed the maximum amount of money allowed to send.",
         "invalid-amount": "The amount is invalid, it must be a positive number.",
-        "zero-amount": "The amount is invalid, it must be a positive number larger than 0."
+        "zero-amount": "The amount is invalid, it must be a positive number larger than 0.",
+        "not-friends": "You can only send money to your friends."
     },
     "match-errors": {
         "ban_player": "The host banned you from the match.",
