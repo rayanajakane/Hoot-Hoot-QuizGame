@@ -52,7 +52,6 @@ export class ShopPageComponent implements OnInit {
 
     onAvatarBought() {
         this.socketHandler.on(MoneyEvents.AvatarBought, (item: ShopItem) => {
-            console.log('Avatar bought:', item);
             this.avatarService.purchaseAvatar(item.id);
             const foundAvatar = this.avatarItems.find((avatar) => avatar.id === item.id);
             if (foundAvatar) {
@@ -75,7 +74,6 @@ export class ShopPageComponent implements OnInit {
 
     onThemeBought() {
         this.socketHandler.on(MoneyEvents.ThemeBought, (item: ShopItem) => {
-            console.log('Theme bought:', item);
             this.themeService.purchaseTheme(item.id);
             const foundTheme = this.themeItems.find((theme) => theme.id === item.id);
             if (foundTheme) {
@@ -94,7 +92,6 @@ export class ShopPageComponent implements OnInit {
 
     onWallpaperBought() {
         this.socketHandler.on(MoneyEvents.WallpaperBought, (item: ShopItem) => {
-            console.log('Wallpaper bought:', item);
             this.wallpaperService.purchaseWallpaper(item.id);
             const foundWallpaper = this.wallpaperItems.find((wallpaper) => wallpaper.id === item.id);
             if (foundWallpaper) {

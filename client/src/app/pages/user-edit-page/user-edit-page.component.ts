@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { User } from '@angular/fire/auth';
 import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
@@ -15,7 +16,7 @@ import { NotificationService } from '@app/services/notification/notification.ser
 import { Theme, ThemeService } from '@app/services/theme/theme.service';
 import { Wallpaper, WallpaperService } from '@app/services/wallpaper/wallpaper.service';
 import { TranslationService } from '@app/translation/translation.service';
-import { UserHistoryInfo } from '@common/interfaces/history-items';
+import { IntensityGridItem, UserHistoryInfo } from '@common/interfaces/history-items';
 import { translate, TranslocoService } from '@jsverse/transloco';
 
 export interface UserEditData {
@@ -58,7 +59,7 @@ export class UserEditPageComponent implements OnInit {
             averageGoodAnswersPercentage: 0,
             averageTime: 0,
         },
-        intensityGrid: Array(365).fill(0),
+        intensityGrid: this.getBlankGrid(),
     };
 
     form = this.fb.group({
@@ -84,6 +85,7 @@ export class UserEditPageComponent implements OnInit {
         private readonly avatarService: AvatarService,
         private readonly wallpaperService: WallpaperService,
         public dialog: MatDialog,
+        public datePipe: DatePipe,
     ) {
         this.availableLangs = this.translationService.getAllLanguages();
         this.availableThemes = this.themeService.getAvailableThemes() as Theme[];
@@ -141,7 +143,7 @@ export class UserEditPageComponent implements OnInit {
                     averageGoodAnswersPercentage: 0,
                     averageTime: 0,
                 },
-                intensityGrid: Array(365).fill(0),
+                intensityGrid: this.getBlankGrid(),
             };
             return;
         }
@@ -162,10 +164,26 @@ export class UserEditPageComponent implements OnInit {
                         averageGoodAnswersPercentage: 0,
                         averageTime: 0,
                     },
-                    intensityGrid: Array(365).fill(0),
+                    intensityGrid: this.getBlankGrid(),
                 };
             },
         });
+    }
+
+    getBlankGrid() {
+        const intensityGrid: IntensityGridItem[] = [];
+        const year = new Date().getFullYear();
+        const yearStart = new Date(year, 0, 0);
+        const isLeapYear = (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
+        const nDays = isLeapYear ? 366 : 365;
+        for (let i = 0; i < nDays; i++) {
+            intensityGrid.push({
+                date: new Date(yearStart.getTime() + i * (1000 * 60 * 60 * 24)),
+                intensity: 0,
+                nMatches: 0,
+            });
+        }
+        return intensityGrid;
     }
 
     async fetchPurchasedAvatars() {
@@ -321,5 +339,9 @@ export class UserEditPageComponent implements OnInit {
 
             return null;
         };
+    }
+
+    getGridItemInfo(gridItem: IntensityGridItem) {
+        return `${this.datePipe.transform(gridItem.date, 'yyyy-MM-dd')}: ${gridItem.nMatches}`;
     }
 }

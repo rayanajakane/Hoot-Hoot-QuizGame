@@ -21,10 +21,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.polyquiz.constants.IntensityGridItem
 import java.util.Locale
 
 @Composable
-fun IntensityGrid(intensityGrid: List<Number>) {
+fun IntensityGrid(intensityGrid: List<IntensityGridItem>) {
     if (intensityGrid.isEmpty()) return
 
     val chunkedData = intensityGrid.chunked(7)
@@ -84,12 +85,12 @@ fun IntensityGrid(intensityGrid: List<Number>) {
                                 modifier = Modifier
                                     .size(columnWidth)
                                     .background(
-                                        when (level.toInt()) {
-                                            0 -> Color(0xFFEBEDF0)
+                                        when (level.intensity.toInt()) {
+                                            0 -> Color(0xFFEBEDF0).copy(alpha = 0.6f)
                                             1 -> Color(0xFFC6E48B)
                                             2 -> Color(0xFF7BC96F)
                                             3 -> Color(0xFF196127)
-                                            else -> Color.Gray
+                                            else -> Color(0xFFEBEDF0).copy(alpha = 0.6f)
                                         }
                                     )
                             )
@@ -108,7 +109,7 @@ fun IntensityGrid(intensityGrid: List<Number>) {
         modifier = Modifier.padding(horizontal = 8.dp)
     ) {
         Text("-")
-        Box(Modifier.size(20.dp).background(Color(0xFFEBEDF0)))
+        Box(Modifier.size(20.dp).background(Color(0xFFEBEDF0).copy(alpha = 0.6f)))
         Box(Modifier.size(20.dp).background(Color(0xFFC6E48B)))
         Box(Modifier.size(20.dp).background(Color(0xFF7BC96F)))
         Box(Modifier.size(20.dp).background(Color(0xFF196127)))

@@ -16,14 +16,14 @@ export class NotificationService {
     ) {}
 
     displayErrorMessage(errorMessage: string): MatSnackBarRef<TextOnlySnackBar> {
-        return this.openSnackBar(errorMessage, '✖', {
+        return this.openSnackBar('❌ ' + errorMessage, '', {
             duration: NOTFICATION_DURATION,
             panelClass: ['error-snackbar'],
         });
     }
 
     displaySuccessMessage(successMessage: string): MatSnackBarRef<TextOnlySnackBar> {
-        return this.openSnackBar(successMessage, '✔', {
+        return this.openSnackBar('✅ ' + successMessage, '', {
             duration: NOTFICATION_DURATION,
             panelClass: ['success-snackbar'],
         });

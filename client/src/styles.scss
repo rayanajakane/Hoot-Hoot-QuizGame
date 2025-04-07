@@ -157,6 +157,22 @@ $pikachu-theme: mat.define-light-theme(
     .error-message {
         color: mat.get-color-from-palette($warn);
     }
+
+    .error-snackbar {
+        white-space: pre-wrap;
+    }
+
+    .success-snackbar {
+        white-space: pre-wrap;
+    }
+
+    .error-snackbar {
+        white-space: pre-wrap;
+    }
+
+    .success-snackbar {
+        white-space: pre-wrap;
+    }
 }
 
 .dark-theme {
@@ -177,11 +193,11 @@ $pikachu-theme: mat.define-light-theme(
     }
 
     .mdc-snackbar__label {
-        color: white !important;
+        color: white; // TODO: Check if it's still relevant now that snackbar color has been changed.
     }
 
     .received-message {
-        background-color: #595c64 !important;
+        background-color: #595c64; // TODO: Check if it's still relevant now that snackbar color has been changed.
     }
 
     .signup-button {
@@ -271,9 +287,25 @@ $pikachu-theme: mat.define-light-theme(
         color: white;
     }
 
-    .error-message {
-        color: mat.get-color-from-palette($warn-dark);
+    .error-snackbar {
+        color: rgb(23, 22, 22) !important;
+        --mdc-snackbar-supporting-text-color: rgb(23, 22, 22) !important;
+        white-space: pre-wrap;
     }
+
+    .success-snackbar {
+        color: rgb(23, 22, 22) !important;
+        --mdc-snackbar-supporting-text-color: rgb(23, 22, 22) !important;
+        white-space: pre-wrap;
+    }
+}
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($dark-theme);
+
+.error-message {
+    color: mat.get-color-from-palette($warn-dark);
 }
 
 .luigi-theme {
@@ -678,18 +710,6 @@ body {
 
 .buttons-rack {
     flex-direction: column;
-}
-
-.error-snackbar {
-    --mdc-snackbar-container-color: #cc0000;
-    --mat-snack-bar-button-color: white;
-    white-space: pre-wrap;
-}
-
-.success-snackbar {
-    --mdc-snackbar-container-color: #4bb543;
-    --mat-snack-bar-button-color: white;
-    white-space: pre-wrap;
 }
 
 .custom-placeholder {

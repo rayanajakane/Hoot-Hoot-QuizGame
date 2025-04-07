@@ -245,7 +245,10 @@
         "thu": "Thu",
         "fri": "Fri",
         "sat": "Sat",
-        "grid-label": "Matches Throughout the Year"
+        "grid-label": "Matches Played Throughout the Year",
+        "less": "Less",
+        "more": "More",
+        "matches-played": " match(es)"
     },
     "match-config": {
         "title-label": "Match Configuration",

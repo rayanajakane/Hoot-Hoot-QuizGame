@@ -2,7 +2,13 @@ export interface UserHistoryInfo {
     auth: HistoryAuthItem[];
     match: HistoryMatchItem[];
     stats: MatchStats;
-    intensityGrid: number[];
+    intensityGrid: IntensityGridItem[];
+}
+
+export interface IntensityGridItem {
+    date: Date;
+    intensity: number;
+    nMatches: number;
 }
 
 export interface HistoryAuthItem {
