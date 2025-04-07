@@ -58,6 +58,7 @@
     <string name="mario_theme">Mario Theme</string>
     <string name="sonic_theme">Sonic Theme</string>
     <string name="pikachu_theme">Pikachu Theme</string>
+    <string name="premium_themes">Premium themes</string>
     <string name="popular_games">Popular Games</string>
     <string name="games_list">Games List</string>
     <string name="no_games_available">There are no games available </string>

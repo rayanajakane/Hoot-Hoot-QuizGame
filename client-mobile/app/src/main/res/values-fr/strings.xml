@@ -74,6 +74,7 @@
     <string name="mario_theme">Mario Theme</string>
     <string name="sonic_theme">Sonic Theme</string>
     <string name="pikachu_theme">Pikachu Theme</string>
+    <string name="premium_themes">Thèmes Premiums</string>
     <string name="username_edit">Veuillez choisir un identifiant</string>
     <string name="your_elo">Votre elo</string>
     <string name="rankings">Classements</string>

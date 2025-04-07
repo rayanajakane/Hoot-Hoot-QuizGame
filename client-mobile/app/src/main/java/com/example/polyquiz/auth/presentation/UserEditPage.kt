@@ -75,6 +75,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -135,7 +136,11 @@ fun UserEditPage(
     val keyboardController = LocalSoftwareKeyboardController.current
     val availableThemes = mapOf(
         Theme.LIGHT to stringResource(R.string.light_theme),
-        Theme.DARK to stringResource(R.string.dark_theme)
+        Theme.DARK to stringResource(R.string.dark_theme),
+        Theme.LUIGI to stringResource(R.string.luigi_theme),
+        Theme.MARIO to stringResource(R.string.mario_theme),
+        Theme.SONIC to stringResource(R.string.sonic_theme),
+        Theme.PIKACHU to stringResource(R.string.pikachu_theme)
     )
     val availableLangs =
         mapOf("en" to stringResource(R.string.english), "fr" to stringResource(R.string.french))
@@ -186,6 +191,19 @@ fun UserEditPage(
     val purchasedAvatars by PremiumAvatarService.purchasedAvatars.collectAsState()
     val purchasedWallpapers by WallpaperService.purchasedWallpapers.collectAsState()
     val currentWallpaper by WallpaperService.currentWallpaper.collectAsState()
+    val purchasedThemes by ThemeService.purchasedThemes.collectAsState()
+    val availablePremiumThemes = remember(purchasedThemes) {
+        ThemeService.getPremiumThemes().filter { theme ->
+            purchasedThemes.contains(ThemeService.themeToString(theme))
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        WallpaperService.initialize(authViewModel)
+        PremiumAvatarService.initialize(authViewModel)
+        ThemeService.loadPurchasedThemes(authViewModel)
+    }
+
     val scope = rememberCoroutineScope()
 
     DisposableEffect(Unit) {
@@ -571,7 +589,7 @@ fun UserEditPage(
                                 Text(text = usernameError, color = Color.Red)
                             }
                             Spacer(modifier = Modifier.height(8.dp))
-                            ThemeDropdown(context, availableThemes, currentTheme, onClickTheme)
+                            ThemeDropdown(context, availableThemes, availablePremiumThemes, currentTheme, onClickTheme)
                             Spacer(modifier = Modifier.height(8.dp))
                             ExposedDropdownMenuBox(
                                 expanded = expandedLang,
@@ -886,6 +904,7 @@ fun UserEditPage(
 fun ThemeDropdown(
     context: android.content.Context,
     themes: Map<Theme, String>,
+    premiumThemes: List<Theme>,
     currentTheme: Theme,
     onClick: (Theme) -> Unit
 ) {
@@ -916,25 +935,57 @@ fun ThemeDropdown(
             onDismissRequest = { expandedTheme = false }
         ) {
             themes.keys.forEach { theme ->
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            theme.displayName.asString(context),
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                    },
-                    onClick = {
-                        onClick(theme)
-                        selectedTheme = theme
-                        textFieldStateTheme.setTextAndPlaceCursorAtEnd(
-                            theme.displayName.asString(
-                                context
+                if (theme == Theme.LIGHT || theme == Theme.DARK) {
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                theme.displayName.asString(context),
+                                style = MaterialTheme.typography.bodyLarge
                             )
-                        )
-                        expandedTheme = false
-                    },
-                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                        },
+                        onClick = {
+                            onClick(theme)
+                            selectedTheme = theme
+                            textFieldStateTheme.setTextAndPlaceCursorAtEnd(
+                                theme.displayName.asString(
+                                    context
+                                )
+                            )
+                            expandedTheme = false
+                        },
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                    )
+                }
+            }
+            if (premiumThemes.isNotEmpty()) {
+                DropdownMenuText(
+                    text = stringResource(R.string.premium_themes),
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontStyle = FontStyle.Italic,
+                        color = MaterialTheme.colorScheme.outline
+                    )
                 )
+
+                premiumThemes.forEach { theme ->
+                    DropdownMenuItem(
+                        text = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    theme.displayName.asString(context),
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                                Spacer(Modifier.width(4.dp))
+                                Text("👑", fontSize = 14.sp)
+                            }
+                        },
+                        onClick = {
+                            onClick(theme)
+                            selectedTheme = theme
+                            expandedTheme = false
+                        },
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                    )
+                }
             }
         }
     }
@@ -1042,6 +1093,22 @@ fun DeleteDialog(
                 Text(stringResource(R.string.cancel))
             }
         }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DropdownMenuText(
+    text: String,
+    modifier: Modifier = Modifier,
+    style: TextStyle = MaterialTheme.typography.bodyMedium
+) {
+    Text(
+        text = text,
+        modifier = modifier.padding(
+            vertical = 8.dp
+        ),
+        style = style
     )
 }
 
