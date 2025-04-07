@@ -1,8 +1,5 @@
 <div id="main-container" *transloco="let t">
-    <div
-        id="estimated-answer-area"
-        *ngIf="matchContextService.getContext() === contextOptions.PlayerView && matchContextService.getContext() !== contextOptions.CheaterView"
-    >
+    <div id="estimated-answer-area" *ngIf="matchContextService.getContext() !== contextOptions.HostView">
         <p *ngIf="answerService.showFeedback" class="correct-answer">
             {{
                 t('question-area.good-answer-qre', {
@@ -19,8 +16,8 @@
             <mat-label>{{ t('question-area.answer') }}</mat-label>
             <input matInput type="text" [formControl]="currentLongAnswerControl" (input)="onInputChange()" [class.error]="isOutOfBounds" />
         </mat-form-field>
-        <p *ngIf="matchContextService.getContext() === contextOptions.CheaterView || this.matchRoomService.cheaterPlayer" class="hint-text">
-            {{ matchRoomService.currentAnswers[0] }}
+        <p *ngIf="matchContextService.getContext() === contextOptions.CheaterView || this.matchRoomService.cheaterPlayer.username === this.matchRoomService.getUsername()" class="hint-text">
+            {{ t('cheater-mode.answer-hint', { answer: matchRoomService.currentAnswers[0]}) }}
         </p>
         <p *ngIf="isOutOfBounds" class="error-message">{{ t('question-area.out-of-bounds', { lowerBound: lowerBound, upperBound: upperBound }) }}</p>
 
@@ -32,6 +29,7 @@
             <span class="bound-label">{{ upperBound }}</span>
         </div>
     </div>
+
     <div id="estimated-answer-area" *ngIf="matchContextService.getContext() === contextOptions.HostView">
         <mat-form-field appearance="outline" class="number-input">
             <mat-label>Réponse</mat-label>

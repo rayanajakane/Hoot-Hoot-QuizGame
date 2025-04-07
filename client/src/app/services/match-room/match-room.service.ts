@@ -39,6 +39,7 @@ export class MatchRoomService {
     votesResults: { [username: string]: number };
     partyConfig: PartyConfig;
     votingUsers: string[] = [];
+    userVoted: string;
     currentAnswers: string[] = [];
     startedVote: boolean = false;
 
@@ -259,15 +260,6 @@ export class MatchRoomService {
         });
     }
 
-    goToVoting(){
-        this.socketService.on(AnswerEvents.EndGame, () => {
-            console.log("End gamew");
-            if(!this.isCooldown && this.isCheaterMode){
-                this.voteOnCheater();
-             }
-        });
-    }
-
     goToNextQuestion() {
         this.socketService.send(MatchEvents.GoToNextQuestion, this.matchRoomCode);
     }
@@ -285,11 +277,13 @@ export class MatchRoomService {
     onUsersWhoVoted() {
         this.socketService.on(MatchEvents.SendVotingUsers, (user: string) => {
             console.log('Voted', this.votingUsers);
+            
+            this.userVoted = user;
+            console.log("user", this.userVoted)
             this.votingUsers.push(user);
         });
     }
     onVotingResults() {
-        //const totalVotes = Object.values(this?.votesResults).reduce((total, vote) => total + vote, 0);
         this.socketService.on(MatchEvents.SendBackVotesResults, (data: { [username: string]: number }) => {
             this.votesResults = data;
             console.log(data);

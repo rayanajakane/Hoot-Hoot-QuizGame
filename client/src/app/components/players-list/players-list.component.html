@@ -31,14 +31,5 @@
                 </div>
             </div>
         </div>
-        <div *ngIf="this.matchContextService.getContext() !== context.HostView && this.matchRoomService.isCheaterMode">
-            <div *ngFor="let player of this.players | sortPlayers: 'score' : 'descending'" class="player-card">
-                <p [ngClass]="[player.isPlaying ? '' : 'inactive-player']">{{ player.username }}</p>
-                <div class="player-performance">
-                    <p>{{ player.score }} pts</p>
-                    <p>({{ player.bonusCount }}✨)</p>
-                </div>
-            </div>
-        </div>
     </div>
 </ng-container>

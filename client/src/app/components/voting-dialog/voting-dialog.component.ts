@@ -86,7 +86,6 @@ export class VotingDialogComponent {
             this.matchRoomService.sendBackVotesResult(votes);
             this.voteCounts.numberOfVotes = this.matchRoomService.votesData?.numberOfVotes;
         }
-
         this.isVotingDisabled = false;
     }
 }

@@ -252,7 +252,7 @@
     "match-config": {
         "title-label": "Configuration de la partie",
         "friends-label": "Partie entre amis uniquement",
-        "cheater-mode": "Partie en mode tricheur",
+        "cheater-mode": "Mode tricheur",
         "cheater-mode-description": "Pour jouer en mode tricheur : le jeu ne doit pas contenir de question de type réponse longue et doit comporter au moins trois joueurs",
         "friends-description": "Seuls vos amis pourront rejoindre cette partie.",
         "fee-section-label": "Partie avec prix d'entrée",
@@ -345,6 +345,7 @@
         "cheater": "Tricheur",
         "vote":"Voter" ,
         "voteCheater":"Votez pour le tricheur",
+        "answer-hint": "Indice pour la réponse: \"{{answer}}\"",
         "notifyRegularPlayer": "Vous avez le rôle de joueur régulier dans cette partie",
         "playerVoted": "\"{{player}}\" a voté",
         "players-still-voting": "Joueurs en train de voter",

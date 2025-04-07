@@ -31,11 +31,8 @@
 
             <p *ngIf="this.playersPlaying.length == this.totalVotesOfActivePlayers" class="host-text">{{ t('cheater-mode.players-voted') }}</p>
             <div id="players-list">
-                <mat-card *ngFor="let player of this.playersPlaying" class="player-card">
-                    <p>{{ player.username }}</p>
-                    <p class="player-card" *ngIf="this.matchRoomService.votingUsers.includes(player.username)">
-                        {{ t('cheater-mode.playerVoted', { player: player.username }) }}
-                    </p>
+                <mat-card *ngFor="let player of this.matchRoomService.votingUsers" class="player-card">
+                    <p class="player-username">{{ t('cheater-mode.playerVoted', { player: player }) }}</p>
                 </mat-card>
             </div>
         </div>
