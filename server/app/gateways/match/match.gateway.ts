@@ -3,6 +3,8 @@ import { ExpiredTimerEvents } from '@app/constants/expired-timer-events';
 import { BAN_PLAYER, NO_MORE_HOST, NO_MORE_PLAYERS } from '@app/constants/match-errors';
 import { Game } from '@app/model/database/game';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
+import { Player } from '@app/model/schema/player.schema';
+import { EloService } from '@app/services/elo/elo.service';
 import { Player, VotingData } from '@app/model/schema/player.schema';
 import { AnswerService } from '@app/services/answer/answer.service';
 // import { HistogramService } from '@app/services/histogram/histogram.service';
@@ -16,11 +18,9 @@ import { PartyService } from '@app/services/party/party.service';
 import { PlayerRoomService } from '@app/services/player-room/player-room.service';
 import { TimeService } from '@app/services/time/time.service';
 import { PlayerState } from '@common/constants/player-states';
-import { AnswerEvents } from '@common/events/answer.events';
 import { ChatEvents } from '@common/events/chat.events';
 import { MatchEvents } from '@common/events/match.events';
 import { MoneyEvents } from '@common/events/money.events';
-import { Feedback } from '@common/interfaces/feedback';
 import { PartyConfig } from '@common/interfaces/party-config';
 import { UserInfo } from '@common/interfaces/user-info';
 import { Injectable } from '@nestjs/common';
@@ -46,8 +46,8 @@ export class MatchGateway implements OnGatewayDisconnect {
         private readonly timeService: TimeService,
         private historyService: HistoryService,
         private readonly partyService: PartyService,
-
         private readonly eventEmitter: EventEmitter2,
+        private readonly eloService: EloService,
     ) {}
 
     @SubscribeMessage(MatchEvents.JoinRoom)
@@ -174,6 +174,12 @@ export class MatchGateway implements OnGatewayDisconnect {
                 this.server.in(player.socket.id).emit(ChatEvents.ChatReactivated, CHAT_REACTIVATED);
             }
         });
+        try {
+            await this.eloService.updateEloForMatch(matchRoomCode);
+            console.log(`Elo ratings updated for match: ${matchRoomCode}`);
+        } catch (error) {
+            console.error(`Failed to update Elo ratings for match: ${matchRoomCode}`, error);
+        }
     }
 
     @SubscribeMessage(MatchEvents.ToggleLock)

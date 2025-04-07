@@ -1,7 +1,7 @@
 package com.example.polyquiz.match.presentation
 
-import android.service.autofill.FieldClassification.Match
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.material3.AlertDialog
@@ -17,6 +17,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.ui.res.stringResource
+import com.example.polyquiz.R
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.PartyConfig
 
@@ -41,7 +43,7 @@ fun PartyConfigDialog(
                     contentDescription = null
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Configuration de la partie")
+                Text(text = stringResource(R.string.match_config))
             }
         },
         text = {
@@ -50,7 +52,7 @@ fun PartyConfigDialog(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Partie entre amis uniquement")
+                    Text(text = stringResource(R.string.between_friends))
                     Spacer(modifier = Modifier.weight(1f))
                     Switch(
                         checked = partyConfig.isFriendsOnly,
@@ -59,7 +61,7 @@ fun PartyConfigDialog(
                 }
                 if (partyConfig.isFriendsOnly) {
                     Text(
-                        text = "Seuls vos amis pourront rejoindre cette partie.",
+                        text = stringResource(R.string.only_friends),
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(start = 16.dp)
                     )
@@ -69,7 +71,7 @@ fun PartyConfigDialog(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Partie payante")
+                    Text(text = stringResource(R.string.with_fee))
                     Spacer(modifier = Modifier.weight(1f))
                     Switch(
                         checked = partyConfig.isEntryFeeRequired,
@@ -81,7 +83,7 @@ fun PartyConfigDialog(
                     OutlinedTextField(
                         value = feeText,
                         onValueChange = { feeText = it },
-                        label = { Text("Frais d'entrée") },
+                        label = { Text(stringResource(R.string.entry_fee)) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
@@ -113,14 +115,15 @@ fun PartyConfigDialog(
                 onClick = {
                     onConfirm(partyConfig.copy(entryFeeAmount = feeValue))
                 },
-                enabled = isValid
+                enabled = isValid,
+                shape = RoundedCornerShape(3.dp)
             ) {
-                Text(text = "Confirmer")
+                Text(text = stringResource(R.string.confirm))
             }
         },
         dismissButton = {
             TextButton(onClick = onCancel) {
-                Text(text = "Annuler")
+                Text(text = stringResource(R.string.cancel))
             }
         }
     )
