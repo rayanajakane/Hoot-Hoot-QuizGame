@@ -135,10 +135,10 @@ class ShopViewModel : ViewModel() {
             val premiumThemes = arrayOf(Theme.LUIGI, Theme.MARIO, Theme.SONIC, Theme.PIKACHU)
             val themes = premiumThemes.map { theme ->
                 ShopItem(
-                    id = theme.name,
+                    id = ThemeService.themeToString(theme),
                     imageUrl = getThemeImage(theme),
                     price = THEME_PRICE,
-                    owned = ThemeService.purchasedThemes.value.contains(theme.name)
+                    owned = ThemeService.purchasedThemes.value.contains(ThemeService.themeToString(theme))
                 )
             }
             _themeItems.value = themes

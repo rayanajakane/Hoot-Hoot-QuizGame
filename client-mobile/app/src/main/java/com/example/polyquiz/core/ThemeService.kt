@@ -83,6 +83,17 @@ object ThemeService {
         }
     }
 
+    fun themeToString(theme: Theme): String {
+        return when(theme) {
+            Theme.LIGHT -> "light-theme"
+            Theme.DARK -> "dark-theme"
+            Theme.LUIGI -> "luigi-theme"
+            Theme.MARIO -> "mario-theme"
+            Theme.SONIC -> "sonic-theme"
+            Theme.PIKACHU -> "pikachu-theme"
+        }
+    }
+
     fun getPremiumThemes(): List<Theme> {
         return listOf(Theme.LUIGI, Theme.MARIO, Theme.SONIC, Theme.PIKACHU)
     }
