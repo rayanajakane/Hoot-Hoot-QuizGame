@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import StringValue
+import kotlinx.coroutines.delay
 
 class ShopViewModel : ViewModel() {
     private val TAG = "ShopViewModel"
@@ -37,7 +38,12 @@ class ShopViewModel : ViewModel() {
 
     private val moneyService = MoneyService()
 
-    fun initialize(authViewModel: AuthViewModel) {
+    private val _dataInitialized = MutableStateFlow(false)
+    val dataInitialized: StateFlow<Boolean> = _dataInitialized
+
+    suspend fun initialize(authViewModel: AuthViewModel) {
+        _isLoading.value = true
+
         WallpaperService.initialize(authViewModel)
         PremiumAvatarService.initialize(authViewModel)
         ThemeService.loadPurchasedThemes(authViewModel)
@@ -48,7 +54,10 @@ class ShopViewModel : ViewModel() {
             onWallpaperBoughtCallback = { onItemBought(it, authViewModel, "wallpaper") }
         )
 
+        delay(500)
+
         loadShopItems()
+        _dataInitialized.value = true
     }
 
     private fun onItemBought(item: ShopItem, authViewModel: AuthViewModel, type: String) {
@@ -118,7 +127,6 @@ class ShopViewModel : ViewModel() {
 
     fun loadShopItems() {
         viewModelScope.launch {
-            _isLoading.value = true
 
             // Load premium avatars
             val avatars = PremiumAvatar.entries.map { avatar ->

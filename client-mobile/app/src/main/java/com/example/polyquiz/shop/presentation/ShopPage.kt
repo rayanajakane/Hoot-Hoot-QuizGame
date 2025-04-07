@@ -62,6 +62,7 @@ fun ShopPage(
     val themeItems by shopViewModel.themeItems.collectAsState()
     val wallpaperItems by shopViewModel.wallpaperItems.collectAsState()
     val isLoading by shopViewModel.isLoading.collectAsState()
+    val dataInitialized by shopViewModel.dataInitialized.collectAsState()
     val currentBalance by moneyService.currentBalance.collectAsState()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -71,9 +72,18 @@ fun ShopPage(
         moneyService.listenForMoneyEvents()
     }
 
-    LaunchedEffect(true) {
-        println("initializing shopviewmodel")
+    LaunchedEffect(Unit) {
         shopViewModel.initialize(authViewModel)
+    }
+
+    if (isLoading || !dataInitialized) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+        return
     }
 
     Row(
