@@ -25,9 +25,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import com.example.polyquiz.R
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.fastForEach
-import com.example.polyquiz.R
 
 @Composable
 fun ColumnScope.CanvasControls(

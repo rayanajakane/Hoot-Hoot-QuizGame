@@ -17,7 +17,6 @@ import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.Route
 import com.example.polyquiz.elo.presentation.RankingsPage
 import com.example.polyquiz.core.avatarDrawing.DrawingScreen
-import com.example.polyquiz.core.avatarDrawing.DrawingScreen
 import com.example.polyquiz.match.domain.AnswerService
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
