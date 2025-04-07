@@ -12,8 +12,8 @@ import {
     MOCK_RANDOM_MATCH_ROOM,
     MOCK_ROOM_CODE,
     MOCK_TEST_MATCH_ROOM,
-    MOCK_USERNAME,
     MOCK_USER_INFO,
+    MOCK_USERNAME,
 } from '@app/constants/match-mocks';
 import { MatchGateway } from '@app/gateways/match/match.gateway';
 import { Player } from '@app/model/schema/player.schema';
@@ -33,7 +33,7 @@ import { ChatEvents } from '@common/events/chat.events';
 import { MatchEvents } from '@common/events/match.events';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
-import { SinonStubbedInstance, createStubInstance, stub } from 'sinon';
+import { createStubInstance, SinonStubbedInstance, stub } from 'sinon';
 import { BroadcastOperator, Server, Socket } from 'socket.io';
 
 describe('MatchGateway', () => {
@@ -67,6 +67,8 @@ describe('MatchGateway', () => {
         socket = createStubInstance<Socket>(Socket);
         server = createStubInstance<Server>(Server);
         eloSpy = createStubInstance(EloService);
+
+        stub(socket, 'rooms').value(new Set([]));
 
         const module: TestingModule = await Test.createTestingModule({
             providers: [
@@ -173,6 +175,7 @@ describe('MatchGateway', () => {
     it('isRoomEmpty() should return true if room is empty', () => {
         const room = { ...MOCK_PLAYER_ROOM };
         room.players[0].isPlaying = false;
+        room.players[0].socket = socket;
         const result = gateway['isRoomEmpty'](room);
         expect(result).toBe(true);
     });
@@ -187,6 +190,8 @@ describe('MatchGateway', () => {
     it('isRoomEmpty() should return false if room is not empty', () => {
         const room = { ...MOCK_PLAYER_ROOM };
         room.players[0].isPlaying = true;
+        stub(socket, 'rooms').value(new Set([MOCK_PLAYER_ROOM.code]));
+        room.players[0].socket = socket;
         const result = gateway['isRoomEmpty'](room);
         expect(result).toBe(false);
     });
@@ -252,27 +257,19 @@ describe('MatchGateway', () => {
     it('deleteRoom() should disconnect all sockets and delete the match room', () => {
         const deleteSpy = jest.spyOn(matchRoomSpy, 'deleteRoom').mockReturnThis();
         const returnSpy = jest.spyOn(gateway, 'returnAllMatches').mockReturnThis();
-        server.in.returns({
-            socketsLeave: (code) => {
-                return null;
-            },
-        } as BroadcastOperator<unknown, unknown>);
+        const triggerSpy = jest.spyOn(gateway, 'triggerLeaveMatchForAll').mockReturnThis();
 
-        server.to.returns({
-            emit: (event: string) => {
-                expect(event).toEqual(MatchEvents.HostQuitMatch);
-            },
-        } as BroadcastOperator<unknown, unknown>);
         gateway.deleteRoom('');
         expect(deleteSpy).toHaveBeenCalled();
         expect(returnSpy).toHaveBeenCalled();
+        expect(triggerSpy).toHaveBeenCalled();
     });
 
     it('handleDisconnect() should disconnect host and all other players and delete the match room if the host disconnects', () => {
         const mockRoom = MOCK_MATCH_ROOM;
         mockRoom.players = [];
         matchRoomSpy.getRoomCodeByHostSocket.returns(MOCK_ROOM_CODE);
-
+        mockRoom.hostSocket = socket;
         matchRoomSpy.getRoom.resolves(mockRoom);
         jest.spyOn(gateway as any, 'isRoomEmpty').mockReturnThis();
         const sendErrorSpy = jest.spyOn(gateway, 'sendError').mockReturnThis();
@@ -284,8 +281,10 @@ describe('MatchGateway', () => {
 
     it('handleDisconnect() should disconnect host and delete room if no more players in results page', () => {
         const mockRoom = { ...MOCK_MATCH_ROOM };
+        mockRoom.hostSocket = socket;
         const mockPlayer = { ...MOCK_PLAYER };
         mockPlayer.isPlaying = false;
+        mockPlayer.socket = socket;
         mockRoom.players = [mockPlayer];
         mockRoom.currentQuestionIndex = 1;
         mockRoom.gameLength = 1;
@@ -298,9 +297,12 @@ describe('MatchGateway', () => {
 
     it('handleDisconnect() should disconnect host and not delete room if players in results page', () => {
         const mockRoom = { ...MOCK_MATCH_ROOM };
+        mockRoom.hostSocket = socket;
         const mockPlayer = { ...MOCK_PLAYER };
         mockPlayer.isPlaying = true;
         mockRoom.players = [mockPlayer];
+        stub(socket, 'rooms').value(new Set([MOCK_MATCH_ROOM.code]));
+        mockRoom.players[0].socket = socket;
         mockRoom.currentQuestionIndex = 1;
         mockRoom.gameLength = 1;
         matchRoomSpy.getRoomCodeByHostSocket.returns(MOCK_ROOM_CODE);
@@ -317,14 +319,20 @@ describe('MatchGateway', () => {
         const returnSpy = jest.spyOn(gateway, 'returnAllMatches').mockReturnThis();
         const room = { ...MOCK_MATCH_ROOM };
         const mockPlayer: Player = { ...MOCK_PLAYER };
+        room.hostSocket = socket;
+        room.isPlaying = true;
+        room.hostSocket.connected = true;
+        stub(socket, 'rooms').value(new Set([MOCK_MATCH_ROOM.code]));
         room.players.push(mockPlayer);
-        matchRoomSpy.getRoom.returns(MOCK_MATCH_ROOM);
+        matchRoomSpy.getRoom.returns(room);
         const handleSpy = jest.spyOn(gateway, 'handleSendPlayersData').mockReturnThis();
-        // const sendDisconnectMessageSpy = jest.spyOn(gateway, 'sendMessageOnDisconnect').mockReturnThis();
+        const triggerSpy = jest.spyOn(gateway, 'triggerLeaveMatchForAll').mockReturnThis();
+        jest.spyOn(gateway as any, 'isOnePlayerLeft').mockReturnValue(false);
+        jest.spyOn(gateway as any, 'isRoomEmpty').mockReturnValue(false);
         gateway.handleDisconnect(socket);
         expect(handleSpy).toHaveBeenCalled();
-        // expect(sendDisconnectMessageSpy).toHaveBeenCalled();
         expect(returnSpy).toHaveBeenCalled();
+        expect(triggerSpy).not.toHaveBeenCalled();
     });
 
     it('handleDisconnect() should disconnect the player and delete the room if player is last one in the room', () => {
@@ -337,50 +345,52 @@ describe('MatchGateway', () => {
         const mockPlayer: Player = { ...MOCK_PLAYER };
         mockPlayer.isPlaying = false;
         room.players = [mockPlayer];
+        room.players[0].socket = socket;
         matchRoomSpy.getRoom.returns(room);
         const deleteSpy = jest.spyOn(gateway, 'deleteRoom').mockReturnThis();
-        // const sendDisconnectMessageSpy = jest.spyOn(gateway, 'sendMessageOnDisconnect').mockReturnThis();
+        jest.spyOn(gateway, 'triggerLeaveMatchForAll').mockReturnThis();
         gateway.handleDisconnect(socket);
         expect(deleteSpy).toHaveBeenCalled();
-        // expect(sendDisconnectMessageSpy).not.toHaveBeenCalled();
     });
 
     it('handleDisconnect() should disconnect the player disconnect host as well if there are no more players', () => {
         matchRoomSpy.getRoomCodeByHostSocket.returns(undefined);
         const mockRoomToDelete = MOCK_MATCH_ROOM;
+        mockRoomToDelete.hostSocket = socket;
         mockRoomToDelete.players = [];
         mockRoomToDelete.isPlaying = true;
+        stub(socket, 'rooms').value(new Set([MOCK_MATCH_ROOM.code]));
         playerRoomSpy.deletePlayerBySocket.returns(MOCK_ROOM_CODE);
         playerRoomSpy.getPlayerBySocket.returns(MOCK_PLAYER);
         matchRoomSpy.getRoom.returns(mockRoomToDelete);
         const errorSpy = jest.spyOn(gateway, 'sendError').mockReturnThis();
         const handleSpy = jest.spyOn(gateway, 'handleSendPlayersData').mockReturnThis();
         const deleteSpy = jest.spyOn(gateway, 'deleteRoom').mockReturnThis();
-        // const sendDisconnectMessageSpy = jest.spyOn(gateway, 'sendMessageOnDisconnect').mockReturnThis();
+        jest.spyOn(gateway, 'triggerLeaveMatchForAll').mockReturnThis();
         gateway.handleDisconnect(socket);
         expect(errorSpy).toHaveBeenCalled();
         expect(handleSpy).not.toHaveBeenCalled();
         expect(deleteSpy).toHaveBeenCalled();
-        // expect(sendDisconnectMessageSpy).not.toHaveBeenCalled();
     });
 
     it('handleDisconnect() should do nothing if there is no corresponding roomCode for the player', () => {
         matchRoomSpy.getRoomCodeByHostSocket.returns(undefined);
         const mockRoomToDelete = MOCK_MATCH_ROOM;
         mockRoomToDelete.players = [];
+        mockRoomToDelete.hostSocket = socket;
         mockRoomToDelete.isPlaying = true;
+        stub(socket, 'rooms').value(new Set([MOCK_MATCH_ROOM.code]));
         playerRoomSpy.deletePlayerBySocket.returns(undefined);
         playerRoomSpy.getPlayerBySocket.returns(undefined);
         const errorSpy = jest.spyOn(gateway, 'sendError').mockReturnThis();
         jest.spyOn(matchRoomSpy, 'getRoom').mockReturnThis();
         const handleSpy = jest.spyOn(gateway, 'handleSendPlayersData').mockReturnThis();
         const deleteSpy = jest.spyOn(gateway, 'deleteRoom').mockReturnThis();
-        // const sendDisconnectMessageSpy = jest.spyOn(gateway, 'sendMessageOnDisconnect').mockReturnThis();
+        jest.spyOn(gateway, 'triggerLeaveMatchForAll').mockReturnThis();
         gateway.handleDisconnect(socket);
         expect(handleSpy).not.toHaveBeenCalled();
         expect(errorSpy).not.toHaveBeenCalled();
         expect(deleteSpy).not.toHaveBeenCalled();
-        // expect(sendDisconnectMessageSpy).not.toHaveBeenCalled();
     });
 
     it('handleSendPlayersData() should emit a fetch event to the match room with a list of stringified players', () => {

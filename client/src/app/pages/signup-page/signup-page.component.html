@@ -36,6 +36,7 @@
                                 maxlength="200"
                                 autofocus
                                 cdkFocusInitial
+                                id="email-input"
                             />
                             <mat-error *ngIf="form.get('email')?.hasError('required')">{{ t('auth.error.invalid-email') }} </mat-error>
                             <mat-error *ngIf="form.get('email')?.hasError('email')">{{ t('auth.error.invalid-email') }} </mat-error>

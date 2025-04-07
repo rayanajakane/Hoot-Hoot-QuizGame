@@ -1,4 +1,5 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { DatePipe } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
@@ -135,6 +136,7 @@ import { ShopPageComponent } from './pages/shop-page/shop-page.component';
         { provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: tooltipOptions },
         provideFirebaseApp(() => initializeApp(FIREBASE_CONFIG)),
         provideAuth(() => getAuth()),
+        DatePipe,
     ],
     exports: [],
     bootstrap: [AppComponent],
