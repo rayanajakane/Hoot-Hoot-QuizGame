@@ -3,10 +3,10 @@
     <div mat-dialog-content class="question-dialog">
         <mat-form-field *ngIf="!this.QuestionFormGenerated && generateButton" class="prompt-input">
             <mat-label>{{ data.placeholder }}</mat-label>
-            <input autofocus cdkFocusInitial matInput [(ngModel)]="data.input" />
+            <input autofocus cdkFocusInitial matInput name="input" [(ngModel)]="data.input" [placeholder]="t('question-creation-form.question')"/>
         </mat-form-field>
-        <mat-form-field *ngIf="!this.QuestionFormGenerated && generateButton" class="type-input">
-            <mat-select [(ngModel)]="data.type" name="type">
+        <mat-form-field *ngIf="!this.QuestionFormGenerated && generateButton" class="type-input"  name="type" >
+            <mat-select [(ngModel)]="data.type" [placeholder]="t('question-creation-form.question-type')">
                 <mat-option *ngFor="let type of ['QCM', 'QRL', 'QRE']" [value]="type">{{ type }}</mat-option>
             </mat-select>
         </mat-form-field>
@@ -25,7 +25,7 @@
         </mat-form-field>
 
         <div mat-dialog-actions id="buttons-container" *ngIf="generateButton">
-            <button mat-raised-button (click)="generateQuestion()" color="primary">{{ t('questions-generations.generate') }}</button>
+            <button mat-raised-button (click)="generateQuestion()" color="primary"[disabled]=" !(data.input && data.type)" >{{ t('questions-generations.generate') }}</button>
         </div>
 
         <app-pulse-loader *ngIf="!this.answerGenerated && this.questionSubmitted"></app-pulse-loader>

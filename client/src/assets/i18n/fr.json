@@ -347,6 +347,7 @@
         "error": "Erreur lors de la génération de la question", 
         "choice-input": "Entrez les choix",
         "french": "Français",
-        "english": "Anglais"
+        "english": "Anglais",
+        "question-input": "Veuillez écrire la question"
     }
 }

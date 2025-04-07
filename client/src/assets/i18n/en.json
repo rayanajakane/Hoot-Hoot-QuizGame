@@ -345,6 +345,7 @@
         "language": "The question language",
         "choice-number": "Number of answer choices",
         "choice":"Choice",
+        "question-input": "Enter the question",
         "generate-IA": "Generate questions with IA",
         "error": "Error while generating questions", 
         "choice-input": "Enter the choice",

@@ -38,7 +38,6 @@ export class QuestionGeneratorComponent {
     choices: Choice[];
     choicesSecondForm: Choice[];
     allResults: [];
-
     errorMargin: number;
     lowerBound: number;
     upperBound: number;

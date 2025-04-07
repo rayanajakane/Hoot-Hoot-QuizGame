@@ -46,6 +46,13 @@
     height: 1rem;
 }
 
+.button-container {
+    display: flex; 
+    justify-content: flex-start; 
+    gap: 1rem;
+    margin-top: 1rem; 
+}
+
 .pointer-on-hover {
     cursor: pointer;
 }
