@@ -4,6 +4,7 @@ import { AuthenticationService } from '@app/services/authentication/authenticati
 import { JoinMatchService } from '@app/services/join-match/join-match.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { MatchPageInfo } from '@common/interfaces/match-page-info';
+import { translate } from '@jsverse/transloco';
 @Component({
     selector: 'app-join-match-page',
     standalone: false,
@@ -44,8 +45,10 @@ export class JoinMatchPageComponent {
                 this.joinMatchService.validateUsername(this.authenticationService.userDisplayName, this.authenticationService.userId);
             },
             error: (error: HttpErrorResponse) => {
-                this.notificationService.displayErrorMessage(`${JSON.parse(error.error)['message']}`);
-                this.joinMatchService.matchRoomCode = '';
+                console.error(error);
+                const message = JSON.parse(error.error)['message'];
+                const displayMessage = translate(message);
+                this.notificationService.displayErrorMessage(`${displayMessage}`);
             },
         });
     }

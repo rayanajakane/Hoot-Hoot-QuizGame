@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { MatchEvents } from '@common/events/match.events';
 import { MatchPageInfo } from '@common/interfaces/match-page-info';
+import { translate } from '@jsverse/transloco';
 import { environment } from 'src/environments/environment';
 import { NotificationService } from '../notification/notification.service';
 import { SocketHandlerService } from '../socket-handler/socket-handler.service';
@@ -74,7 +75,9 @@ export class JoinMatchService {
                 this.addPlayerToMatchRoom(matchRoomCode, username, userId);
             },
             error: (error: HttpErrorResponse) => {
-                this.notificationService.displayErrorMessage(`${JSON.parse(error.error)['message']}`);
+                const message = JSON.parse(error.error)['message'];
+                const displayMessage = translate(message);
+                this.notificationService.displayErrorMessage(`${displayMessage}`);
             },
         });
     }

@@ -48,7 +48,7 @@ export class QuestionService {
             await this.questionModel.create(question);
             return question;
         } catch (error) {
-            return Promise.reject(`${ERROR_DEFAULT} ${error}`);
+            return Promise.reject(`${ERROR_DEFAULT}\n${error}`);
         }
     }
 
@@ -66,7 +66,7 @@ export class QuestionService {
             await this.questionModel.updateOne(filterQuery, question);
             return question;
         } catch (error) {
-            return Promise.reject(`${ERROR_DEFAULT} ${error}`);
+            return Promise.reject(`${ERROR_DEFAULT}\n${error}`);
         }
     }
 
@@ -81,7 +81,7 @@ export class QuestionService {
             });
             return question;
         } catch (error) {
-            return Promise.reject(`${ERROR_DEFAULT} ${error}`);
+            return Promise.reject(`${ERROR_DEFAULT}\n${error}`);
         }
     }
 

@@ -1,5 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
+import { translate } from '@jsverse/transloco';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -29,8 +30,9 @@ export class CommunicationService<T> {
     getById(id: string, endpoint: string = '') {
         return this.http.get<T>(`${this.serverUrl}/${this.baseUrl}/${endpoint}/${id}`).pipe(catchError(this.handleError<T>()));
     }
-    //we have to send a string so add | any 
-    add(payload: T|any, endpoint: string = ''): Observable<HttpResponse<string>> {
+
+    add(payload: T, endpoint: string = ''): Observable<HttpResponse<string>> {
+        console.log('caca');
         return this.http
             .post(`${this.serverUrl}/${this.baseUrl}/${endpoint}`, payload, this.httpOptions)
             .pipe(catchError(this.handleError<HttpResponse<string>>()));
@@ -56,7 +58,12 @@ export class CommunicationService<T> {
 
     handleError<E>(): (error: HttpErrorResponse) => Observable<E> {
         return (error: HttpErrorResponse) => {
-            return throwError(() => new Error(`${JSON.parse(error.error)['message']}`));
+            const message = JSON.parse(error.error)['message'];
+            const displayMessage = message
+                .split('\n')
+                .map((line: string) => translate(line.trim()))
+                .join('\n');
+            return throwError(() => new Error(displayMessage));
         };
     }
 }

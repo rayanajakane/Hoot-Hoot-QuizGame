@@ -27,7 +27,7 @@ export class MoneyGateway {
         data.amount = Number.isInteger(roundedAmount) ? Math.trunc(roundedAmount) : roundedAmount;
         console.log('Donating money:', data);
         const moneyErrors = await this.moneyService.getMoneyError(data.user, data.amount, true);
-        if (moneyErrors) {
+        if (moneyErrors.length > 0) {
             this.sendError(client.id, moneyErrors);
             return;
         }

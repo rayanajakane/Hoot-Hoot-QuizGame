@@ -38,7 +38,14 @@ export class BankService {
                 this.questions = this.questions.filter((question: Question) => question.id !== questionId);
                 this.notificationService.displaySuccessMessage(`${translate('bank-status.deleted')}`);
             },
-            error: (error: HttpErrorResponse) => this.notificationService.displayErrorMessage(`${translate('bank-status.still')}\n ${error.message}`),
+            error: (error: HttpErrorResponse) => {
+                const message = error.message || '';
+                const displayMessage = message
+                    .split('\n')
+                    .map((line) => translate(line.trim()))
+                    .join('\n');
+                this.notificationService.displayErrorMessage(`${translate('bank-status.still')}\n ${displayMessage}`);
+            },
         });
     }
 
