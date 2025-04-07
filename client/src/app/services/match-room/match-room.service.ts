@@ -56,9 +56,8 @@ export class MatchRoomService {
         private readonly router: Router,
         private readonly notificationService: NotificationService,
         private readonly matchContextService: MatchContextService,
-        private chatService: ChatService,
-    ) //  private readonly dialog: MatDialog,
-    {
+        private chatService: ChatService, //  private readonly dialog: MatDialog,
+    ) {
         this.hasEnteredRoom = false;
     }
 
@@ -249,8 +248,6 @@ export class MatchRoomService {
     }
 
     onBeginQuiz() {
-        console.log('user', this.userId);
-        console.log(this.cheaterPlayer?.id);
         this.socketService.on(MatchEvents.BeginQuiz, (data: { firstQuestion: Question; gameDuration: number; isClassicMode: boolean }) => {
             this.isWaitOver = true;
             this.currentQuestion = data.firstQuestion;
@@ -276,17 +273,13 @@ export class MatchRoomService {
 
     onUsersWhoVoted() {
         this.socketService.on(MatchEvents.SendVotingUsers, (user: string) => {
-            console.log('Voted', this.votingUsers);
-            
             this.userVoted = user;
-            console.log("user", this.userVoted)
             this.votingUsers.push(user);
         });
     }
     onVotingResults() {
         this.socketService.on(MatchEvents.SendBackVotesResults, (data: { [username: string]: number }) => {
             this.votesResults = data;
-            console.log(data);
         });
     }
 
@@ -387,7 +380,7 @@ export class MatchRoomService {
                 console.log('Current answers:', answer);
                 this.currentAnswers = answer;
             }
-           // return;
+            // return;
         });
     }
 }

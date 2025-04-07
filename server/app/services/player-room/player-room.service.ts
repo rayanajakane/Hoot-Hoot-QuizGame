@@ -70,7 +70,6 @@ export class PlayerRoomService {
                     player.score = Math.round(player.score - 0.3 * player.score);
 
                     const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
-                    console.log(feedback);
 
                     this.getPlayerByUsername(roomCode, player.username).socket.emit(AnswerEvents.Feedback, feedback);
                 }
@@ -80,7 +79,6 @@ export class PlayerRoomService {
                 const player = this.getPlayerByUsername(roomCode, cheaterUsername);
                 player.score = Math.round(player.score + player.score*0.3);
                 const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
-                console.log(feedback);
                 this.matchRoomService.cheaterPlayer.socket.emit(AnswerEvents.Feedback, feedback);
             }
         }

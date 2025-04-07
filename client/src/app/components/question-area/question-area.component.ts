@@ -10,7 +10,6 @@ import { NotificationService } from '@app/services/notification/notification.ser
 import { TimeService } from '@app/services/time/time.service';
 import { AnswerCorrectness } from '@common/constants/answer-correctness';
 import { QuestionType } from '@common/constants/question-types';
-//import { MatchEvents } from '@common/events/match.events';
 import { PartyConfig } from '@common/interfaces/party-config';
 import { TranslocoService } from '@jsverse/transloco';
 @Component({
@@ -90,7 +89,6 @@ export class QuestionAreaComponent implements OnInit {
                 );
             }
             if (this.matchContextService.getContext() === MatchContext.PlayerView) {
-                console.log(this.matchRoomService.getUsername());
                 this.notificationService.notifyRegularPlayer(
                     this.matchRoomService.getUsername(),
                     this.translocoService.translate('cheater-mode.notifyRegularPlayer'),
@@ -100,12 +98,6 @@ export class QuestionAreaComponent implements OnInit {
 
         this.matchContextService.getContext();
     }
-
-    // ngOnChanges(): void {
-    //     if (this.answerService.isEndGame && !this.matchRoomService.isCooldown) {
-    //         this.matchRoomService.goToVoting();
-    //     }
-    // }
 
     submitAnswers(): void {
         this.answerService.submitAnswer({ userId: this.matchRoomService.getUserId(), roomCode: this.matchRoomService.getRoomCode() });

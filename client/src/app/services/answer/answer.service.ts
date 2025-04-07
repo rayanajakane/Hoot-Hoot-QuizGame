@@ -120,7 +120,6 @@ export class AnswerService {
 
     onFeedback() {
         this.socketService.on(AnswerEvents.Feedback, (feedback: Feedback) => {
-            console.log(feedback);
             this.feedback = feedback;
             this.showFeedback = true;
             this.isNextQuestionButtonEnabled = true;
@@ -132,7 +131,6 @@ export class AnswerService {
     onBonusPoints() {
         this.socketService.on(AnswerEvents.Bonus, (bonus: number) => {
             this.bonusPoints = bonus;
-            console.log("this",this.bonusPoints);
         });
     }
 
@@ -140,7 +138,6 @@ export class AnswerService {
         const totalVotes = this.matchRoomService.totalVotes.reduce((total, voteData) => total + voteData.numberOfVotes, 0);
         if (this.matchRoomService.cheaterPlayer.username === this.matchRoomService.votesData.username) {
             if (this.matchRoomService.votesData.numberOfVotes / totalVotes <= 0.5) {
-                console.log(this.matchRoomService.votesData.numberOfVotes / totalVotes);
                 return true;
             }
         }
