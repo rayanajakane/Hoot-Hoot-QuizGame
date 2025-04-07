@@ -39,7 +39,7 @@ export class GameService extends CommunicationService<Game> {
                     .split('\n')
                     .map((line) => translate(line.trim()))
                     .join(' ');
-                this.notificationService.displayErrorMessage(`Échec d'obtention des jeux 😿\n  ${displayMessage}`);
+                this.notificationService.displayErrorMessage(`${translate('request-errors.error-could-not-get')}\n  ${displayMessage}`);
             },
         });
     }
@@ -57,7 +57,7 @@ export class GameService extends CommunicationService<Game> {
                     .split('\n')
                     .map((line) => translate(line.trim()))
                     .join(' ');
-                this.notificationService.displayErrorMessage(`Échec de supression du jeu 😿\n ${displayMessage}`);
+                this.notificationService.displayErrorMessage(`${translate('request-errors.error-could-not-delete')}\n ${displayMessage}`);
             },
         });
     }
@@ -74,10 +74,12 @@ export class GameService extends CommunicationService<Game> {
                 }
                 newGame.isVisible = false;
                 this.games.push(newGame);
-                this.notificationService.displaySuccessMessage('Jeu ajouté avec succès! 😺');
+                //TODO: transalte
+                this.notificationService.displaySuccessMessage(translate('game-modification.creation-success'));
             },
+
             error: (error: HttpErrorResponse) => {
-                if (error.message === 'Un jeu du même titre existe déjà.' || error.status === HttpStatusCode.Conflict) {
+                if (error.message === translate('request-errors.error-game-same-title') || error.status === HttpStatusCode.Conflict) {
                     this.openDialog(newGame);
                 } else {
                     const message = error.message || '';
@@ -85,15 +87,17 @@ export class GameService extends CommunicationService<Game> {
                         .split('\n')
                         .map((line) => translate(line.trim()))
                         .join(' ');
-                    this.notificationService.displayErrorMessage(`Le jeu n'a pas pu être ajouté. 😿 \n ${displayMessage}`);
+                    //TODO: transalte
+                    this.notificationService.displayErrorMessage(`${translate('request-errors.error-could-not-add')} \n ${displayMessage}`);
                 }
             },
         });
     }
 
     openDialog(newGame: Game): void {
+        //TODO: transalte
         const dialogRef = this.dialog.open(DialogTextInputComponent, {
-            data: { input: '', title: 'Veillez renommer le jeu.', placeholder: 'Nouveau titre' },
+            data: { input: '', title: translate('game-modification.rename-game'), placeholder: translate('game-modification.title') },
         });
 
         dialogRef.afterClosed().subscribe((result: string) => {

@@ -303,7 +303,9 @@
         "creation-error": "The game could not be created. 😿 ",
         "modification-error": "The game could not be modified. 😿 ",
         "creation-success": "Game created successfully! 😺",
-        "modification-success": "Game modified successfully! 😺"
+        "modification-success": "Game modified successfully! 😺",
+        "rename-game": "Rename the game",
+        "title": "New title"
     },
     "admin-question-bank": {
         "back-page": "Back",
@@ -361,7 +363,10 @@
         "error-question-not-found": "The question has not been found.",
         "error-question-same-title-bank": "The question already exists in the question bank.",
         "error-invalid-question": "The question is invalid: ",
-        "error-default": "Error"
+        "error-default": "Error",
+        "error-could-not-add": "The question could not be added. 😿",
+        "error-could-not-delete": "The question could not be deleted. 😿",
+        "error-could-not-get": "The question could not be retrieved. 😿"
     },
     "game-validation-errors": {
         "error-repeat-choices": "There shouldn't be any repeated choices in the same question.",

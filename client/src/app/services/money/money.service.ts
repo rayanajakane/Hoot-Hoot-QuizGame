@@ -51,6 +51,7 @@ export class MoneyService {
     onDonationGiven() {
         this.socketHandler.on(MoneyEvents.DonationGiven, (data: { to: string; amount: number; newBalance: number }) => {
             this.notificationService.displaySuccessMessage(`You have donated ${data.amount} to ${data.to}`);
+            //TODO: transalte
             this.currentBalance = data.newBalance;
         });
     }
@@ -58,6 +59,7 @@ export class MoneyService {
     onDonationReceived() {
         this.socketHandler.on(MoneyEvents.DonationReceived, (data: { from: string; amount: number; newBalance: number }) => {
             this.notificationService.displaySuccessMessage(`${data.from} has donated ${data.amount} to you`);
+            //TODO: transalte
             this.currentBalance = data.newBalance;
         });
     }
