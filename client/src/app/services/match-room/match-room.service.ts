@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-//import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ChatChannel } from '@app/constants/chat-channels';
 import { MatchContext } from '@app/constants/states';
@@ -103,7 +102,6 @@ export class MatchRoomService {
             this.onCurrentAnswers();
             this.onVoting();
             this.onUsersWhoVoted();
-            //this.goToVoting();
         }
     }
 
@@ -132,7 +130,6 @@ export class MatchRoomService {
         this.isCheaterMode = false;
         this.votingUsers = [];
         // this.currentAnswers = [];
-        // this.socketService.socket.removeListener(MatchEvents.Disconnect);
     }
 
     sendBackVotesResult(voteData: VotingData) {

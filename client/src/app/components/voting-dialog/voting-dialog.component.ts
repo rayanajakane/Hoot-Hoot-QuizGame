@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-//import { MatDialog } from '@angular/material/dialog';
 import { MatchContext } from '@app/constants/states';
 import { Player } from '@app/interfaces/player';
 import { VotingData } from '@app/interfaces/voting-data';
@@ -8,7 +7,6 @@ import { MatchContextService } from '@app/services/match-context/match-context.s
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { MatchEvents } from '@common/events/match.events';
 import { PresetAvatar } from '@app/constants/avatar-constants';
-//import { MatchEvents } from '@common/events/match.events';
 
 @Component({
     selector: 'app-voting-dialog',
@@ -30,7 +28,7 @@ export class VotingDialogComponent {
     constructor(
         public matchRoomService: MatchRoomService,
         public answerSerivce: AnswerService,
-        public matchContextService: MatchContextService, //   private dialog: MatDialog,
+        public matchContextService: MatchContextService, 
     ) {}
     get playersPlaying() {
         return this.matchRoomService.players.filter((player) => player.isPlaying);

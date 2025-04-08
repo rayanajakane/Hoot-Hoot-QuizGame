@@ -30,8 +30,6 @@ export class MatchRoomService {
     cheaterPlayer: Player;
     votesCount: { [username: string]: number } = { ['']: 0 };
     isCheaterMode: boolean = false;
-    // totalVotes: VotingData[];
-    // totalVotes: { [username: string]: number }[] = [];
     totalVotes: VotingData[] = [{ username: '', numberOfVotes: 0, usersWhoVoted: [] }];
 
     constructor(
@@ -316,7 +314,6 @@ export class MatchRoomService {
         const matchRoom: MatchRoom = this.getRoom(matchRoomCode);
         return matchRoom.game.questions[matchRoom.currentQuestionIndex];
     }
-    //totalVotes: VotingData[] = [{ username: '', numberOfVotes: 0, usersWhoVoted: [] }];
 
     declareWinner(matchRoomCode: string): Player[] {
         const matchRoom = this.getRoom(matchRoomCode);
