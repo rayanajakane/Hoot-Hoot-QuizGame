@@ -2,10 +2,10 @@ package com.example.polyquiz.constants
 
 enum class Wallpaper(val value: String) {
     None("none"),
-    Mario("https://mario.nintendo.com/static/fd723b2893d4d2b39ef71bfdb4e3329c/579b4/mario-background.png"),
-    Luigi("https://purepng.com/public/uploads/large/purepng.com-luigimariofictional-charactervideo-gamefranchisenintendodesigner-1701528631379ubgt6.png"),
-    Sonic("https://www.pixelstalk.net/wp-content/uploads/2016/04/Sonic-wallpaper-HD-pictures-images-download.jpg"),
-    Shadow("https://www.pixelstalk.net/wp-content/uploads/2016/08/Shadow-The-Hedgehog-Background-HD-Free.jpg")
+    WHITE("https://images.unsplash.com/photo-1741467355504-d2df0dd3ae5d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
+    CLOUDS("https://images.unsplash.com/photo-1738682081595-7bac257f60cd?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
+    WATER("https://images.unsplash.com/photo-1738869748479-fdcb2b782715?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
+    MOUNTAINS("https://images.unsplash.com/photo-1738597452982-5759da74f68d?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")
 }
 
 const val WALLPAPER_PRICE = 30
