@@ -50,16 +50,16 @@ export class MoneyService {
 
     onDonationGiven() {
         this.socketHandler.on(MoneyEvents.DonationGiven, (data: { to: string; amount: number; newBalance: number }) => {
-            this.notificationService.displaySuccessMessage(`You have donated ${data.amount} to ${data.to}`);
-            //TODO: transalte
+            this.notificationService.displaySuccessMessage(`${translate('money-status.donation-sent', { to: data.to, amount: data.amount })}`);
             this.currentBalance = data.newBalance;
         });
     }
 
     onDonationReceived() {
         this.socketHandler.on(MoneyEvents.DonationReceived, (data: { from: string; amount: number; newBalance: number }) => {
-            this.notificationService.displaySuccessMessage(`${data.from} has donated ${data.amount} to you`);
-            //TODO: transalte
+            this.notificationService.displaySuccessMessage(
+                `${translate('money-status.donation-received', { from: data.from, amount: data.amount })}`,
+            );
             this.currentBalance = data.newBalance;
         });
     }
