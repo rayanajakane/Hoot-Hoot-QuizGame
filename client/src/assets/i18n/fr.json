@@ -344,6 +344,10 @@
         "zero-amount": "Le montant est invalide, il doit être un nombre positif supérieur à 0.",
         "not-friends": "Vous ne pouvez pas donner de l'argent à quelqu'un qui n'est pas dans votre liste d'amis."
     },
+    "money-status": {
+        "donation-received": "{{from}} vous a donné {{amount}} $.",
+        "donation-sent": "Vous avez donné {{amount}} $ à {{to}}."
+    },
     "match-errors": {
         "ban_player": "L'organisateur vous a banni.",
         "no_more_host": "L'organisateur a quitté la partie.",

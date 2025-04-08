@@ -72,7 +72,7 @@ export class MoneyService {
         return true;
     }
 
-    async getMoneyError(uid: string, amount: number, isDonation: boolean = false): Promise<string[]> {
+    async getMoneyError(uid: string, amount: number, isDonation: boolean = false, friendId: string = ''): Promise<string[]> {
         const errors: string[] = [];
         const balance = await this.getCurrentBalance(uid);
 
@@ -94,7 +94,7 @@ export class MoneyService {
             }
 
             const friends = await this.friendService.getFriendsList(uid);
-            const isFriend = friends.some((friend) => friend.id === uid);
+            const isFriend = friends.some((friend) => friend.id === friendId);
             if (!isFriend) {
                 errors.push(NOT_FRIENDS);
             }
