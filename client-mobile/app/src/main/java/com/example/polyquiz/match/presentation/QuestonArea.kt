@@ -371,7 +371,7 @@ fun QuestionArea(
                         Spacer(modifier = Modifier.height(16.dp))
                         if (context == MatchContext.HOSTVIEW && !matchRoomService.isCooldown) {
                             Spacer(modifier = Modifier.height(16.dp))
-                            if (answerService.isEndGame) {
+                            if (answerService.isEndGame && !matchRoomService.isCheaterMode) {
                                 Log.d("Question area", "is end game")
                                 Button(
                                     onClick = {

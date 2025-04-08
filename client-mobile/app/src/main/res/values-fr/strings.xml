@@ -147,7 +147,7 @@
     <string name="regen">Générer d\'autres noms</string>
     <string name="suggest_names">Suggestions de noms d\'utilisateurs</string>
     <string name="cheater_mode_notify_cheater">Vous êtes le/la tricheur/tricheuse de cette partie</string>
-    <string name="cheater_mode_cheater">Tricheur</string>
+    <string name="cheater_mode_cheater">Tricheur/se</string>
     <string name="cheater_mode_vote">Voter</string>
     <string name="cheater_mode_vote_cheater">Votez pour le tricheur</string>
     <string name="cheater_mode_answer_hint">Indice pour la réponse: \"{{answer}}\"</string>

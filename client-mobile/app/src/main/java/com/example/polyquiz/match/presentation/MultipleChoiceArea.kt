@@ -99,10 +99,11 @@ fun MultipleChoiceArea(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
+
                     ChoiceButton(
                         firstIndex,
                         choices,
-                        selectedStates ,
+                        selectedStates,
                         answerService,
                         matchRoomService,
                         matchContext,
@@ -154,9 +155,6 @@ fun ChoiceButton(
             selectedStates[index] && !showFeedback -> DarkGrey
             else -> LightGray
         }
-if(matchContext == MatchContext.HOSTVIEW){
-
-}
         Button(
             onClick = {
                 if (answerService.isSelectionEnabled) {
@@ -182,7 +180,9 @@ if(matchContext == MatchContext.HOSTVIEW){
             modifier = modifier
                 .height(100.dp)
                 .padding(8.dp)
-        ) {
+        )
+
+        {
             Text(
                 text = "${index + 1}. ${choice.text}",
                 color = if (!selectedStates[index]) Color.Black else Color.Unspecified

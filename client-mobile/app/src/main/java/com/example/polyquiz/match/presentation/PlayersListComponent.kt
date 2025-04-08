@@ -78,8 +78,10 @@ fun PlayerCard(
     player: Player,
     url: String,
     context: MatchContextService,
-    withAvatar: Boolean = false
+    withAvatar: Boolean = false,
+    inResultsPage: Boolean = false,
 ) {
+    println("isResultsPage$inResultsPage")
     Card(
         shape = RoundedCornerShape(3.dp),
         colors = CardColors(
@@ -108,6 +110,7 @@ fun PlayerCard(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
             }
+
             if (!player.isPlaying) {
                 Text(
                     text = player.username,
@@ -140,23 +143,22 @@ fun PlayerCard(
                 }
             }
 
-            if (MatchRoomService.isCheaterMode && MatchRoomService.isTimeToNavigateToResults) {
-                Row(horizontalArrangement = Arrangement.Center) {
+            if (MatchRoomService.isCheaterMode && MatchRoomService.isTimeToNavigateToResults && inResultsPage) {
+                Row(horizontalArrangement = Arrangement.Absolute.Center) {
                     if (MatchRoomService.votesResults[player.username] == null) {
                         Text(
-                            text = "Votes: ${0}",
-                            fontSize = 10.sp
+                            text = " Votes: ${0}",
+                            fontSize = 14.sp
                         )
                     } else {
                         Text(
-
-                            text = "Votes: ${MatchRoomService.votesResults[player.username]}",
-                            fontSize = 10.sp
+                            text = " Votes: ${MatchRoomService.votesResults[player.username]}",
+                            fontSize = 14.sp
                         )
                     }
+
                 }
             }
-
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 Text(text = "${player.score} pts", fontSize = 14.sp)
                 Spacer(modifier = Modifier.width(4.dp))

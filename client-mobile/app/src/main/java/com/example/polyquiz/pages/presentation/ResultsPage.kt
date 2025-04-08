@@ -89,7 +89,8 @@ fun ResultsPage(
                         player,
                         player.photoUrl,
                         context = matchContextService,
-                        withAvatar = true
+                        withAvatar = true,
+                        inResultsPage = true,
                     )
                 }
             }
