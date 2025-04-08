@@ -217,8 +217,6 @@ fun ChoiceButton(
                     )
                 }
             }
-
-
         }
     }
 }

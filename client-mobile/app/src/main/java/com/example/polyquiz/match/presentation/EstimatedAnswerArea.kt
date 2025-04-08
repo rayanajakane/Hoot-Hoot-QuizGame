@@ -128,9 +128,12 @@ fun EstimatedAnswerArea(
             )
             if (matchContext === MatchContext.CHEATERVIEW) {
                 Text(
-                    text = (matchRoomService.currentAnswers[0]),
+                    text = stringResource(R.string.cheater_mode_answer_hint) + matchRoomService.currentAnswers[0],
                     fontSize = 16.sp,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier
+                        .width(180.dp)
+                        .padding(vertical = 8.dp)
+                        .align(Alignment.CenterHorizontally),
                 )
             }
 

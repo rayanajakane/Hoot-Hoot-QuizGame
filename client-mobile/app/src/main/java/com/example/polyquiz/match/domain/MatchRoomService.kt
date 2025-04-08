@@ -63,7 +63,6 @@ object MatchRoomService {
     var errorMsg by mutableStateOf("")
     var navigateToVotingPage by mutableStateOf(false)
    var votingUsers = MutableStateFlow<List<String>>(emptyList())
-   // var votingUsersFlow = _votingUsers.asStateFlow()
 
     var userVoted by mutableStateOf("")
     var votesResults = mutableMapOf<String, Int>()
@@ -78,20 +77,13 @@ object MatchRoomService {
 
     var isCheaterMode by mutableStateOf(false)
     var votesData by mutableStateOf(VotingData("", 0, mutableListOf("")))
-
     var totalVotes: MutableList<VotingData> = mutableListOf()
-
-
-    //    private var matchRoomCode: String = ""
     private var hasEnteredRoom = false
-
     private val _matchRoomCode = MutableStateFlow("")
     val matchRoomCode: StateFlow<String> get() = _matchRoomCode
 
     val socket = SocketHandler.getSocket()
-
-    val mSocket = SocketHandler.getSocket()
-
+    
     val socketId: String
         get() = socket.id() ?: ""
 
@@ -214,10 +206,7 @@ object MatchRoomService {
     fun onVoting() {
 
         socket.on(MatchEvents.SHOW_VOTING_DIALOG.value) {
-            //   if (MatchContextService.getContext() !== MatchContext.HOSTVIEW) {
-            // showVotingDialog()
             navigateToVotingPage = true
-            //  }
         }
     }
 
@@ -444,7 +433,6 @@ object MatchRoomService {
         isPlaying = false
         isCooldown = false
        votingUsers = MutableStateFlow(emptyList())
-        //votingUsers = mutableListOf<String>()
         userVoted = ""
         votesResults = mutableMapOf<String, Int>()
         startedVote = false
