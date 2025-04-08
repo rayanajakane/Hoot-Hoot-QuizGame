@@ -329,7 +329,7 @@
         "answer": "Answer",
         "out-of-bounds": "Value is out of bounds! Must be between {{lowerBound}} and {{upperBound}}",
         "panic-mode-activated": "❗ PANIC MODE ACTIVATED! ❗",
-        "show-voting-button": "Go to voting page"
+        "show-voting-button":  "Go to voting page"
     },
     "players-list": {
         "players": "Players"

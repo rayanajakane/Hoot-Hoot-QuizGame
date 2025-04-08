@@ -328,7 +328,7 @@
         "answer": "Réponse",
         "out-of-bounds": "Valeur hors limites ! Doit être entre {{lowerBound}} et {{upperBound}}",
         "panic-mode-activated": "❗ MODE PANIQUE ACTIVÉ! ❗",
-        "show-voting-button": "Aller vers la page de vote"
+        "show-voting-button":  "Aller vers la page de vote"
     },
     "players-list": {
         "players": "Joueurs"
@@ -364,7 +364,7 @@
         "submit": "Soumettre",
         "language": "La langue de la question",
         "choice-number": "Nombre de choix de réponses",
-        "choice": "Choix",
+        "choice":  "Choix",
         "generate-IA": "Générer question IA",
         "error": "Erreur lors de la génération de la question",
         "choice-input": "Entrez les choix",
