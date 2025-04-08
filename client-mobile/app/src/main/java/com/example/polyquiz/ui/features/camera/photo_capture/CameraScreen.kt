@@ -184,16 +184,7 @@ fun QRCameraContent(onQrScanned: (String) -> Unit) {
 
                     previewView
                 },
-                // Makes sure that cameraView takes all the space it can get after text took its space
-                modifier = Modifier.weight(1f)
-            )
-            Text(
-                text = code,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(32.dp)
+                modifier = Modifier.fillMaxWidth()
             )
         }
 
