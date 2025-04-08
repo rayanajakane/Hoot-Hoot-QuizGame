@@ -148,4 +148,13 @@
     <string name="cancel">Annuler</string>
     <string name="regen">Générer d\'autres noms</string>
     <string name="suggest_names">Suggestions de noms d\'utilisateurs</string>
+    <string name="cheater_mode_notify_cheater">Vous êtes le/la tricheur/tricheuse de cette partie</string>
+    <string name="cheater_mode_cheater">Tricheur</string>
+    <string name="cheater_mode_vote">Voter</string>
+    <string name="cheater_mode_vote_cheater">Votez pour le tricheur</string>
+    <string name="cheater_mode_answer_hint">Indice pour la réponse: \"{{answer}}\"</string>
+    <string name="cheater_mode_notify_regular_player">Vous avez le rôle de joueur régulier dans cette partie</string>
+    <string name="cheater_mode_player_voted">\"{{player}}\" a voté</string>
+    <string name="cheater_mode_players_still_voting">Joueurs en train de voter</string>
+    <string name="cheater_mode_players_voted">Tous les joueurs ont voté</string>
 </resources>

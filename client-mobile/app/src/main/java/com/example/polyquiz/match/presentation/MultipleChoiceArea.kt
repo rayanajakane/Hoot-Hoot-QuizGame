@@ -40,12 +40,18 @@ import com.example.polyquiz.ui.theme.LightGray
 fun MultipleChoiceArea(
     choices: List<Choice>,
     answerService: AnswerService,
-    matchRoomService : MatchRoomService,
+    matchRoomService: MatchRoomService,
     matchContext: MatchContext,
     modifier: Modifier = Modifier
 ) {
+
+    val selectedStates =
+        remember { mutableStateListOf<Boolean>().apply { addAll(List(choices.size) { false }) } }
+    val rows = (choices.size + 1) / 2
+
     if (matchContext == MatchContext.PLAYERVIEW || matchContext == MatchContext.CHEATERVIEW) {
-        val selectedStates = remember { mutableStateListOf<Boolean>().apply { addAll(List(choices.size) { false }) } }
+        val selectedStates =
+            remember { mutableStateListOf<Boolean>().apply { addAll(List(choices.size) { false }) } }
         val rows = (choices.size + 1) / 2
 
         Column(modifier = modifier) {
@@ -56,10 +62,64 @@ fun MultipleChoiceArea(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    ChoiceButton(firstIndex, choices, selectedStates, answerService, matchRoomService, matchContext, Modifier.weight(1f))
+                    ChoiceButton(
+                        firstIndex,
+                        choices,
+                        selectedStates,
+                        answerService,
+                        matchRoomService,
+                        matchContext,
+                        Modifier.weight(1f)
+                    )
 
                     if (firstIndex + 1 < choices.size) {
-                        ChoiceButton(firstIndex + 1, choices, selectedStates, answerService, matchRoomService, matchContext, Modifier.weight(1f))
+                        ChoiceButton(
+                            firstIndex + 1,
+                            choices,
+                            selectedStates,
+                            answerService,
+                            matchRoomService,
+                            matchContext,
+                            Modifier.weight(1f)
+                        )
+                    } else {
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                }
+            }
+        }
+    }
+
+    if (matchContext == MatchContext.HOSTVIEW) {
+        Column(modifier = modifier) {
+            for (rowIndex in 0 until rows) {
+                val firstIndex = rowIndex * 2
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    ChoiceButton(
+                        firstIndex,
+                        choices,
+                        selectedStates ,
+                        answerService,
+                        matchRoomService,
+                        matchContext,
+                        Modifier.weight(1f)
+                    )
+
+                    if (firstIndex + 1 < choices.size) {
+                        ChoiceButton(
+                            firstIndex + 1,
+                            choices,
+                            selectedStates,
+                            answerService,
+                            matchRoomService,
+                            matchContext,
+                            Modifier.weight(1f)
+
+                        )
                     } else {
                         Spacer(modifier = Modifier.weight(1f))
                     }
@@ -85,11 +145,18 @@ fun ChoiceButton(
         val choice = choices[index]
         val buttonColor = when {
             showFeedback && feedback.correctAnswer.orEmpty().contains(choice.text) -> AndroidGreen
-            showFeedback && selectedStates[index] && !feedback.correctAnswer.orEmpty().contains(choice.text) -> BrightRed
+            matchRoomService.currentAnswers.orEmpty()
+                .contains(choice.text) && matchContext === MatchContext.HOSTVIEW -> AndroidGreen
+
+            showFeedback && selectedStates[index] && !feedback.correctAnswer.orEmpty()
+                .contains(choice.text) -> BrightRed
+
             selectedStates[index] && !showFeedback -> DarkGrey
             else -> LightGray
         }
+if(matchContext == MatchContext.HOSTVIEW){
 
+}
         Button(
             onClick = {
                 if (answerService.isSelectionEnabled) {
@@ -135,6 +202,22 @@ fun ChoiceButton(
                     )
                 }
             }
+
+            Box(modifier = Modifier.fillMaxSize()) {
+                if (matchContext == MatchContext.HOSTVIEW &&
+                    matchRoomService.currentAnswers.orEmpty().contains(choice.text)
+                ) {
+                    Icon(
+                        tint = AndroidGreen,
+                        imageVector = Icons.Default.CheckCircle,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(4.dp)
+                    )
+                }
+            }
+
 
         }
     }

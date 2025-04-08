@@ -64,6 +64,7 @@ fun QuestionArea(
     authViewModel: AuthViewModel,
     navigateToHome: () -> Unit,
     navigateToResultsPage: () -> Unit,
+    navigateToVotingPage : () -> Unit,
     modifier: Modifier
 ) {
     var room by remember { mutableStateOf(matchRoomService.getRoomCode()) }
@@ -79,7 +80,8 @@ fun QuestionArea(
         Unit,
         MatchRoomService.hasBeenKickedOut,
         MatchRoomService.isTimeToNavigateToResults,
-        MatchRoomService.isCheaterMode
+        MatchRoomService.isCheaterMode,
+        MatchRoomService.navigateToVotingPage
     ) {
         answerService.resetStateForNewQuestion()
         timeService.listenToTimerEvents()
@@ -91,6 +93,13 @@ fun QuestionArea(
             if(matchRoomService.username == matchRoomService.cheaterPlayer?.username){
                 matchContextService.setContext(MatchContext.CHEATERVIEW);
             }
+        }
+
+        when (MatchRoomService.navigateToVotingPage){
+            true -> {
+                navigateToVotingPage();
+            }
+            else -> Unit
         }
 
         when (MatchRoomService.hasBeenKickedOut) {

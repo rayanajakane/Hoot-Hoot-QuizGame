@@ -146,4 +146,13 @@
     <string name="prepare">Get ready for the next question! ⏳</string>
     <string name="regen">Generate other usernames</string>
     <string name="suggest_names">Username Suggestions</string>
+    <string name="cheater_mode_notify_cheater">You are the cheater in this game</string>
+    <string name="cheater_mode_cheater">Cheater</string>
+    <string name="cheater_mode_vote">Vote</string>
+    <string name="cheater_mode_vote_cheater">Vote for the cheater</string>
+    <string name="cheater_mode_answer_hint">Hint for the answer: \"{{answer}}\"</string>
+    <string name="cheater_mode_notify_regular_player">You have the role of a regular player in this game</string>
+    <string name="cheater_mode_player_voted">\"{{player}}\" has voted</string>
+    <string name="cheater_mode_players_still_voting">Players still voting</string>
+    <string name="cheater_mode_players_voted">All players have voted</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.example.polyquiz.match.domain
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import com.example.polyquiz.constants.AnswerCorrectness
 import com.example.polyquiz.constants.AnswerEvents
@@ -17,7 +19,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.constants.MatchContext
 import org.json.JSONObject
+import java.util.Timer
+import kotlin.concurrent.schedule
 
 object AnswerService {
     var playersAnswers by mutableStateOf<List<LongAnswerInfo>>(emptyList())
@@ -43,6 +48,7 @@ object AnswerService {
         onTimesUp()
         onGradeAnswers()
         onNextQuestion()
+        goToVoting()
     }
 
     // TODO : fix on feedback pl0x : args is empty and or null
@@ -50,8 +56,12 @@ object AnswerService {
     fun onFeedback() {
         Log.d("answer service", "called onFeedback")
         Log.d("answer socket", "Socket is null? : id=${mSocket.id()} and ${mSocket.isActive}, and connected= ${mSocket.connected()}")
+        // HAD TO MODIFY THIS CAUSE WHEN WE SEND THE FEEDBACK FROM THE SERVER TO THE HOST, THE ARGS ARE EMPTY AND FEEDBACK IS NEVER TRUE.
         mSocket.on(AnswerEvents.FEEDBACK.value) { args ->
             Log.d("answer socket", " args is empty : ${args.isEmpty()}")
+            if(MatchContextService.getContext() === MatchContext.HOSTVIEW){
+                showFeedback = true
+            }
             if (args.isNotEmpty() && args[0] != null) {
                 val jsonObject = JSONObject(args[0].toString())
 
@@ -149,6 +159,22 @@ object AnswerService {
         val choiceInfoStringified = Gson().toJson(choiceInfo)
         val choiceInfoJsonObject = JSONObject(choiceInfoStringified)
         mSocket.emit(AnswerEvents.SELECT_CHOICE.value, choiceInfoJsonObject)
+    }
+
+    fun goToVoting(){
+        mSocket.on(AnswerEvents.END_GAME.value){
+            if(!MatchRoomService.isCooldown && showFeedback && MatchRoomService.isCheaterMode ){
+                MatchRoomService.startedVote = true;
+//                Handler().postDelayed({
+//                    MatchRoomService.voteOnCheater()
+//                }, 2000)
+                Timer().schedule(2000) {
+                    MatchRoomService.voteOnCheater()
+                }
+               // MatchRoomService.voteOnCheater();
+            }
+            MatchRoomService.startedVote = false;
+        }
     }
 
     fun deselectChoice(choice: String, userInfo: UserInfo) {

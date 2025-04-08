@@ -30,4 +30,5 @@ enum class MatchEvents(val value: String) {
     SEND_BACK_VOTES_RESULTS("sendBackVotesResults"),
     SEND_UPDATED_SCORES("sendUpdatedScores"),
     CHEATER_MODE_MATCH_STARTING("CheaterModeMatchStarting"),
+    SEND_VOTING_USERS("sendVotingUsers"),
 }

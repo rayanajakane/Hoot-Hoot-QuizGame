@@ -34,12 +34,42 @@ fun EstimatedAnswerArea(
     var isInputCleared by remember { mutableStateOf(answer.isEmpty()) }
     var isOutOfBounds by remember { mutableStateOf(false) }
     val isDisabled = answerService.showFeedback
+    val isDisableHostView = matchContext == MatchContext.HOSTVIEW
 
     Column(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
+
+        if (matchContext === MatchContext.HOSTVIEW) {
+            OutlinedTextField(
+                value = MatchRoomService.currentAnswers[0],
+                onValueChange = {},
+                label = { Text(stringResource(R.string.answer)) },
+                modifier = Modifier
+                    .width(180.dp)
+                    .padding(vertical = 8.dp)
+                    .align(Alignment.CenterHorizontally),
+                singleLine = true,
+                enabled = false,
+                isError = isOutOfBounds
+            )
+            Slider(
+                value = MatchRoomService.currentAnswers[0].toFloat(),
+                onValueChange = {
+                    sliderValue = it
+                    isInputCleared = false
+                    val newValue = it.toInt().toString()
+                    answer = newValue
+                    answerService.currentLongAnswer = newValue
+                    answerService.updateLongAnswer()
+                },
+                valueRange = lowerBound..upperBound,
+                modifier = Modifier.weight(1f),
+                enabled = false
+            )
+        }
         if (matchContext != MatchContext.HOSTVIEW) {
             Text(
                 text = if (isDisabled) {
@@ -96,9 +126,9 @@ fun EstimatedAnswerArea(
                 enabled = !isDisabled,
                 isError = isOutOfBounds
             )
-            if(matchContext === MatchContext.CHEATERVIEW){
+            if (matchContext === MatchContext.CHEATERVIEW) {
                 Text(
-                text = (matchRoomService.currentAnswers[0]),
+                    text = (matchRoomService.currentAnswers[0]),
                     fontSize = 16.sp,
                     modifier = Modifier.padding(start = 8.dp)
                 )

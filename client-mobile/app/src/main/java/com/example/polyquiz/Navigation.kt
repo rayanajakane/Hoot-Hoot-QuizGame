@@ -27,6 +27,7 @@ import com.example.polyquiz.pages.presentation.JoinMatchPage
 import com.example.polyquiz.pages.presentation.MatchCreationPage
 import com.example.polyquiz.pages.presentation.WaitPage
 import com.example.polyquiz.friends.presentation.FriendsSearchScreen
+import com.example.polyquiz.pages.presentation.VotingPage
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.ui.features.camera.MainCameraScreen
 import com.plcoding.drawinginjetpackcompose.DrawingViewModel
@@ -104,6 +105,9 @@ fun Navigation(
                 matchContextService = MatchContextService,
                 matchRoomService = MatchRoomService,
                 timeService = TimeService,
+                navigateToVotingPage = {
+                    navController.navigate(Route.VotingPage)
+                },
                 answerService = AnswerService
             )
         }
@@ -169,6 +173,21 @@ fun Navigation(
                 players = players,
                 modifier = modifier
             )
+        }
+
+        composable<Route.VotingPage> {
+            VotingPage(
+                authViewModel,
+                players = players,
+                matchRoomService = MatchRoomService,
+                matchContextService = MatchContextService,
+                onVote = {},
+                navigateToResultsPage = {navController.navigate(Route.ResultsPage)},
+                navigateToHome = {
+                    navController.navigate(Route.Home)
+                },
+            )
+
         }
 
         composable<Route.JoinMatchPage> {
