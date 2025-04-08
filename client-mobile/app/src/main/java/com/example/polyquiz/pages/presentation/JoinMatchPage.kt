@@ -34,6 +34,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -69,12 +70,14 @@ import com.example.polyquiz.match.domain.JoinMatchService.matchInfos
 import com.example.polyquiz.match.domain.JoinMatchService.matchesInfos
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.ui.MenuButton
+import com.example.polyquiz.ui.features.camera.CameraViewModel
 import kotlinx.coroutines.launch
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun JoinMatchPage(
     modifier: Modifier,
+    cameraViewModel: CameraViewModel,
     authViewModel: AuthViewModel,
     navigateToHome: () -> Unit,
     navigateToCreate: () -> Unit,
@@ -85,10 +88,12 @@ fun JoinMatchPage(
     navigateToMatchPage: () -> Unit,
     navigateToLogin: () -> Unit,
     navigateToRankingsPage: () -> Unit,
+    navigateToCamera: () -> Unit,
 ) {
     var room by remember { mutableStateOf("") }
     val username by remember { mutableStateOf(authViewModel.getUsername()) }
     val userId by remember { mutableStateOf(authViewModel.getUserId()) }
+    val scannedCode by cameraViewModel.scannedCode.collectAsState()
     val scope = rememberCoroutineScope()
     val shouldNavigate = rememberUpdatedState(MatchRoomService.timeToGoToWaitPage)
     val errorMessage by remember {
@@ -141,6 +146,8 @@ fun JoinMatchPage(
     DisposableEffect(Unit) {
         onDispose {
             joinMatchService.stopReturningAllMatches()
+            cameraViewModel.setScannedCode(null)
+
         }
     }
 
@@ -173,6 +180,13 @@ fun JoinMatchPage(
             }
         )
     }
+
+    LaunchedEffect(scannedCode) {
+        scannedCode?.let {
+            submitCode(scannedCode!!)
+        }
+    }
+
 
     fun joinRoom(code: String) {
         submitCode(code)
@@ -245,9 +259,9 @@ fun JoinMatchPage(
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         Button(
-                            enabled = false,
                             onClick = {
-                                TODO()
+                                cameraViewModel.setCameraContent(true)
+                                navigateToCamera()
                             }, shape = RoundedCornerShape(3.dp), modifier = Modifier.height(55.dp)
                         ) {
                             Text(text = stringResource(R.string.scan_qr))
