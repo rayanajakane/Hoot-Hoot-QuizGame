@@ -61,7 +61,7 @@ fun VotingPage(
     var voteCounts by remember { mutableStateOf(VotingData("", 0, mutableListOf())) }
     var totalVotes by remember { mutableStateOf(0) }
     val playersPlaying = remember(players) { players.filter { it.isPlaying } }
-    //  val totalVotesOfActivePlayers = remember(playersPlaying) { playersPlaying.size - 1 }
+  //  val totalVotesOfActivePlayers = remember(playersPlaying) { playersPlaying.size - 1 }
     val currentVotes = remember(matchRoomService.votesResults) {
         matchRoomService.votesResults.values.sum()
     }
@@ -86,7 +86,7 @@ fun VotingPage(
     }
 
     LaunchedEffect(MatchRoomService.userVoted) {
-        if (MatchRoomService.userVoted.isNotEmpty()) {
+        if(MatchRoomService.userVoted.isNotEmpty()) {
             votedPlayers.add(MatchRoomService.userVoted)
         }
     }
@@ -175,33 +175,32 @@ fun VotingPage(
                     }
                 }
             }
-        }
-        //Spacer(modifier = Modifier.height(16.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End
-        ) {
-            if (context === MatchContext.HOSTVIEW && !matchRoomService.isCooldown) {
-                Button(
-                    onClick = {
-                        MatchRoomService.socket.emit(
-                            MatchEvents.SEND_UPDATED_SCORES.value,
-                            MatchRoomService.matchRoomCode.value
+
+            //Spacer(modifier = Modifier.height(16.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End
+            ) {
+                if (context === MatchContext.HOSTVIEW && !matchRoomService.isCooldown) {
+                    Button(
+                        onClick = {
+                            MatchRoomService.socket.emit(
+                                MatchEvents.SEND_UPDATED_SCORES.value, MatchRoomService.matchRoomCode.value
+                            )
+                            matchRoomService.routeToResultsPage();
+                            navigateToResultsPage();
+                        },
+                        //enabled = AnswerService.isEndGame,
+                        shape = RoundedCornerShape(5.dp),
+                       // shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Icon(
+                            Icons.Filled.BarChart,
+                            contentDescription = stringResource(R.string.show_final)
                         )
-                        matchRoomService.routeToResultsPage();
-                        navigateToResultsPage();
-                    },
-                    //enabled = AnswerService.isEndGame,
-                    shape = RoundedCornerShape(5.dp),
-                    // shape = RoundedCornerShape(8.dp)
-                ) {
-                    Icon(
-                        Icons.Filled.BarChart,
-                        contentDescription = stringResource(R.string.show_final)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(stringResource(R.string.show_final))
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(stringResource(R.string.show_final))
+                    }
                 }
-            }
 //                Button(
 //                    onClick = {
 //                        matchRoomService.isQuitting = true
@@ -218,7 +217,7 @@ fun VotingPage(
 //                    Text(stringResource(R.string.leave))
 //                }
 
-
+            }
         }
         PlayersListComponent(
             matchRoomService = matchRoomService,
