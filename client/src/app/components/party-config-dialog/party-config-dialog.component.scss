@@ -1,5 +1,7 @@
 .config-section {
     margin-bottom: 20px;
+    flex-direction: row; 
+    align-items: center;
 }
 
 .fee-section {
@@ -13,8 +15,10 @@
     margin-left: 5px;
 }
 .info-button {
-    margin-left: 5px; 
+ position:absolute;
+ margin-top: -7px;
 }
 mat-form-field {
     width: 100%;
+    float: right;
 }

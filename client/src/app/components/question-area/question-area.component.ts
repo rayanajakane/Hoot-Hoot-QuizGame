@@ -6,10 +6,12 @@ import { AnswerService } from '@app/services/answer/answer.service';
 import { AudioPlayerService } from '@app/services/audio-player/audio-player.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
+import { NotificationService } from '@app/services/notification/notification.service';
 import { TimeService } from '@app/services/time/time.service';
 import { AnswerCorrectness } from '@common/constants/answer-correctness';
 import { QuestionType } from '@common/constants/question-types';
 import { PartyConfig } from '@common/interfaces/party-config';
+import { TranslocoService } from '@jsverse/transloco';
 @Component({
     selector: 'app-question-area',
     templateUrl: './question-area.component.html',
@@ -21,7 +23,7 @@ export class QuestionAreaComponent implements OnInit {
     gameDuration: number;
     context: MatchContext;
     isFirstQuestion: boolean = true;
-    showVotingDialog:boolean;
+    showVotingDialog: boolean;
     partyConfig: PartyConfig;
 
     // Allow more constructor parameters to decouple services
@@ -31,7 +33,9 @@ export class QuestionAreaComponent implements OnInit {
         public timeService: TimeService,
         public answerService: AnswerService,
         public audioService: AudioPlayerService,
+        public notificationService: NotificationService,
         public router: Router,
+        private translocoService: TranslocoService,
         private readonly matchContextService: MatchContextService,
     ) {}
 
@@ -68,15 +72,30 @@ export class QuestionAreaComponent implements OnInit {
     ngOnInit(): void {
         this.resetStateForNewQuestion();
         this.listenToGameEvents();
+
         this.matchRoomService.isQuitting = false;
         this.answerService.playerScore = 0;
         this.context = this.matchContextService.getContext();
         if (this.isFirstQuestion) {
             this.isFirstQuestion = false;
         }
-        if(this.matchRoomService.getUsername() === this.matchRoomService.cheaterPlayer?.username){
-            this.matchContextService.setContext(MatchContext.CheaterView);
+
+        if (this.matchRoomService.isCheaterMode) {
+            if (this.matchRoomService.getUsername() === this.matchRoomService.cheaterPlayer?.username) {
+                this.matchContextService.setContext(MatchContext.CheaterView);
+                this.notificationService.notifyCheaterPlayer(
+                    this.matchRoomService.cheaterPlayer.username,
+                    this.translocoService.translate('cheater-mode.notifyCheater'),
+                );
+            }
+            if (this.matchContextService.getContext() === MatchContext.PlayerView) {
+                this.notificationService.notifyRegularPlayer(
+                    this.matchRoomService.getUsername(),
+                    this.translocoService.translate('cheater-mode.notifyRegularPlayer'),
+                );
+            }
         }
+
         this.matchContextService.getContext();
     }
 
@@ -117,8 +136,7 @@ export class QuestionAreaComponent implements OnInit {
         this.answerService.resetStateForNewQuestion();
     }
 
-    voteOnCheater(){
+    voteOnCheater() {
         this.matchRoomService.voteOnCheater();
     }
-
 }

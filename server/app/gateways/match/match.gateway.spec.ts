@@ -16,7 +16,9 @@ import {
     MOCK_USERNAME,
 } from '@app/constants/match-mocks';
 import { MatchGateway } from '@app/gateways/match/match.gateway';
+import { Answer } from '@app/model/answer-types/abstract-answer/answer';
 import { Player } from '@app/model/schema/player.schema';
+import { AnswerService } from '@app/services/answer/answer.service';
 import { EloService } from '@app/services/elo/elo.service';
 import { FriendsService } from '@app/services/friends/friends.service';
 import { HistoryService } from '@app/services/history/history.service';
@@ -52,12 +54,14 @@ describe('MatchGateway', () => {
     let eventEmitter: EventEmitter2;
     let historySpy: SinonStubbedInstance<HistoryService>;
     let eloSpy: SinonStubbedInstance<EloService>;
+    let answerSpy: SinonStubbedInstance<AnswerService>;
 
     beforeEach(async () => {
         // histogramSpy = createStubInstance(HistogramService);
         historySpy = createStubInstance(HistoryService);
         matchRoomSpy = createStubInstance(MatchRoomService);
         matchBackupSpy = createStubInstance(MatchBackupService);
+        answerSpy = createStubInstance(AnswerService);
         timeSpy = createStubInstance(TimeService);
         // historySpy = createStubInstance(HistoryService);
         playerRoomSpy = createStubInstance(PlayerRoomService);
@@ -83,6 +87,7 @@ describe('MatchGateway', () => {
                 { provide: PartyService, useValue: partySpy },
                 { provide: HistoryService, useValue: historySpy },
                 { provide: EloService, useValue: eloSpy },
+                {provide: AnswerService, useValue: answerSpy},
                 // { provide: HistoryService, useValue: historySpy },
                 EventEmitter2,
             ],
@@ -141,7 +146,7 @@ describe('MatchGateway', () => {
             gameId: MOCK_MATCH_ROOM.game.id,
             hostId: MOCK_PLAYER.id,
             isClassicMode: true,
-            partyConfig: { isFriendsOnly: false, isEntryFeeRequired: false, entryFeeAmount: 0 },
+            partyConfig: { isFriendsOnly: false, isEntryFeeRequired: false, entryFeeAmount: 0, isCheaterMode: false, canPlayCheaterMode: false },
         });
         expect(socket.join.calledOnce).toBeTruthy();
         expect(result).toEqual({ code: MOCK_MATCH_ROOM.code });
@@ -153,7 +158,7 @@ describe('MatchGateway', () => {
             gameId: MOCK_TEST_MATCH_ROOM.game.id,
             hostId: MOCK_PLAYER.id,
             isClassicMode: true,
-            partyConfig: { isFriendsOnly: false, isEntryFeeRequired: false, entryFeeAmount: 0 },
+            partyConfig: { isFriendsOnly: false, isEntryFeeRequired: false, entryFeeAmount: 0, isCheaterMode: false, canPlayCheaterMode: false },
         });
         expect(socket.join.calledOnce).toBeTruthy();
         expect(result).toEqual({ code: MOCK_TEST_MATCH_ROOM.code });
@@ -166,7 +171,7 @@ describe('MatchGateway', () => {
             gameId: MOCK_RANDOM_MATCH_ROOM.game.id,
             hostId: MOCK_PLAYER.id,
             isClassicMode: true,
-            partyConfig: { isFriendsOnly: false, isEntryFeeRequired: false, entryFeeAmount: 0 },
+            partyConfig: { isFriendsOnly: false, isEntryFeeRequired: false, entryFeeAmount: 0, isCheaterMode: false, canPlayCheaterMode: false },
         });
         expect(socket.join.calledOnce).toBeTruthy();
         expect(result).toEqual({ code: MOCK_RANDOM_MATCH_ROOM.code });
@@ -438,7 +443,7 @@ describe('MatchGateway', () => {
                 isPlaying: true,
                 gameTitle: '',
                 nPlayers: 1,
-                partyConfig: { isFriendsOnly: false, isEntryFeeRequired: false, entryFeeAmount: 0 },
+                partyConfig: { isFriendsOnly: false, isEntryFeeRequired: false, entryFeeAmount: 0, isCheaterMode: false, canPlayCheaterMode: false },
             },
             {
                 code: '1234',
@@ -446,7 +451,7 @@ describe('MatchGateway', () => {
                 isPlaying: true,
                 gameTitle: '',
                 nPlayers: 1,
-                partyConfig: { isFriendsOnly: false, isEntryFeeRequired: false, entryFeeAmount: 0 },
+                partyConfig: { isFriendsOnly: false, isEntryFeeRequired: false, entryFeeAmount: 0 , isCheaterMode: false, canPlayCheaterMode: false},
             },
         ];
         const allMatchesSpy = jest.spyOn(matchRoomSpy, 'getAllMatchesInfo').mockReturnValue(mockMatches);

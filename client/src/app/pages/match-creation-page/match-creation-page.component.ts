@@ -20,6 +20,7 @@ import { PartyConfig } from '@common/interfaces/party-config';
 import { translate } from '@jsverse/transloco';
 
 const N_POPULAR_GAMES = 3;
+const MINIMUM_PLAYERS = 3;
 
 @Component({
     selector: 'app-match-creation-page',
@@ -142,30 +143,30 @@ export class MatchCreationPageComponent implements OnInit {
         return true;
     }
 
-    hasCorrectType(questions: Question[]) {
-        questions.forEach((element) => {
-            if (element.type === 'QRL') {
-                this.gameIsValidCheaterMode = false;
-                this.partyConfig.canPlayCheaterMode =false;
-               // this.partyConfig.isCheaterMode = false;
-
-                return false;
+    hasCorrectType(questions: Question[]): boolean {
+        if (questions?.length>0) {
+            for (const element of questions) {
+                if (element.type === 'QRL') {
+                    this.gameIsValidCheaterMode = false;
+                    this.partyConfig.canPlayCheaterMode = false;
+                    return false;
+                }
             }
-            this.gameIsValidCheaterMode = true;
-            this.partyConfig.canPlayCheaterMode =true;
-           // this.partyConfig.isCheaterMode = true;
-            return true;
-        });
-        return false;
+        }
+        this.gameIsValidCheaterMode = true;
+        this.partyConfig.canPlayCheaterMode = true;
+        return true;
     }
 
-    // hasEnoughPlayers(playersCount: number) {
-    //     if (playersCount < MINIMUM_PLAYERS) {
-    //         this.gameIsValidCheaterMode = false;
-    //         return false;
-    //     }
-    //     return true;
-    // }
+    hasEnoughPlayers(playersCount: number) {
+        if (playersCount < MINIMUM_PLAYERS) {
+            this.gameIsValidCheaterMode = false;
+            this.partyConfig.canPlayCheaterMode = false;
+            return false;
+        }
+        this.partyConfig.canPlayCheaterMode = true;
+        return true;
+    }
 
     loadSelectedGame(selectedGame: Game): void {
         this.isRandomGame = false;
@@ -218,29 +219,27 @@ export class MatchCreationPageComponent implements OnInit {
     revalidateGame(): void {
         if (this.selectedGame.isVisible) {
             this.gameIsValid = true;
-           // this.partyConfig.isCheaterMode = true;
-           this.partyConfig.canPlayCheaterMode =true;
+            this.partyConfig.canPlayCheaterMode = true;
             this.hasCorrectType(this.selectedGame.questions);
             this.matchService.currentGame = this.selectedGame;
             this.matchService.saveBackupGame(this.selectedGame.id).subscribe((response: HttpResponse<string>) => {
                 if (response.body) {
                     const backupGame = JSON.parse(response.body);
                     this.matchService.currentGame = backupGame;
-                    if (this.partyConfig.canPlayCheaterMode && this.hasCorrectType(backupGame.questions)) {
-                        console.log(this.gameIsValidCheaterMode);
+                    if (this.partyConfig.canPlayCheaterMode && this.hasCorrectType(backupGame.questions) && this.partyConfig.isCheaterMode) {
                         this.matchService.createMatch(
                             (this.partyConfig = {
                                 isFriendsOnly: this.partyConfig.isFriendsOnly,
                                 isEntryFeeRequired: this.partyConfig.isEntryFeeRequired,
                                 entryFeeAmount: this.partyConfig.entryFeeAmount,
-                                isCheaterMode:this.partyConfig.isCheaterMode,
+                                isCheaterMode: this.partyConfig.isCheaterMode,
                                 canPlayCheaterMode: this.partyConfig.canPlayCheaterMode,
                             }),
                         );
                     } else {
+                        this.matchRoomService.isCheaterMode = false;
                         this.matchService.createMatch(this.partyConfig, true);
                     }
-                    //  this.matchService.createMatch(this.partyConfig);
                 }
             });
         } else {
@@ -259,7 +258,7 @@ export class MatchCreationPageComponent implements OnInit {
     }
 
     createMatchCheaterMode(context: MatchContext) {
-        this.buttonClicked = true; //we can set it here
+        this.buttonClicked = true; 
         this.matchRoomService.isCheaterMode = true;
         this.matchContextService.setContext(context);
         this.reloadSelectedGame();
@@ -278,16 +277,17 @@ export class MatchCreationPageComponent implements OnInit {
         dialogRef.afterClosed().subscribe((result) => {
             if (result) {
                 this.partyConfig = result;
-                console.log("match", this.partyConfig.isCheaterMode)
-                if(this.partyConfig.isCheaterMode){
+                console.log('match', this.partyConfig.isCheaterMode);
+                if (this.partyConfig.isCheaterMode) {
+                    this.matchRoomService.isCheaterMode = true;
                     this.createMatchCheaterMode(this.matchContext.HostView);
-                }
-                else this.createMatch(this.matchContext.HostView);
+                } else this.createMatch(this.matchContext.HostView);
             }
         });
     }
 
     createStandardMatch(): void {
+        this.matchRoomService.isCheaterMode = false;
         this.partyConfig = {
             isFriendsOnly: false,
             isEntryFeeRequired: false,

@@ -23,7 +23,6 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Server, Socket } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
 
-
 @Injectable()
 export class MatchRoomService {
     matchRooms: MatchRoom[];
@@ -31,8 +30,6 @@ export class MatchRoomService {
     cheaterPlayer: Player;
     votesCount: { [username: string]: number } = { ['']: 0 };
     isCheaterMode: boolean = false;
-    // totalVotes: VotingData[];
-   // totalVotes: { [username: string]: number }[] = [];
     totalVotes: VotingData[] = [{ username: '', numberOfVotes: 0, usersWhoVoted: [] }];
 
     constructor(
@@ -76,9 +73,8 @@ export class MatchRoomService {
 
         const roomCode = this.generateRoomCode();
         const qrCodeUrl = await this.qrCodeService.generateQrCode(roomCode);
-        this.votesCount ={};
+        this.votesCount = {};
         this.totalVotes = [];
-
 
         const newRoom: MatchRoom = {
             code: roomCode,
@@ -143,6 +139,7 @@ export class MatchRoomService {
 
     startMatch(socket: Socket, server: Server, matchRoomCode: string) {
         if (!this.canStartMatch(matchRoomCode)) return;
+        this.isCheaterMode = false;
         const gameTitle = this.getGameTitle(matchRoomCode);
         const gameInfo: GameInfo = { start: true, gameTitle };
         socket.to(matchRoomCode).emit(MatchEvents.MatchStarting, gameInfo);
@@ -161,8 +158,6 @@ export class MatchRoomService {
 
         const roomIndex = this.getRoomIndex(matchRoomCode);
         this.matchRooms[roomIndex].startTime = new Date();
-        console.log('dow e go here');
-
         this.timeService.startTimer(server, matchRoomCode, COUNTDOWN_TIME, ExpiredTimerEvents.CountdownTimerExpired);
     }
 
@@ -170,8 +165,6 @@ export class MatchRoomService {
         const players = this.getRoom(roomCode).players;
         if (players && players.length > 0) {
             const randomIndex = Math.floor(Math.random() * players.length);
-            //onsole.log("all players", players)
-            console.log('rando', players[randomIndex].username);
             this.cheaterPlayer = players[randomIndex];
             return players[randomIndex];
         } else {
@@ -180,7 +173,6 @@ export class MatchRoomService {
     }
 
     cheaterGetsBonus(username) {
-        // TO DO: USE THE TOTAL DEFINED IN MATCH GATEWAY
         let total = 0;
         for (const voteData of this.totalVotes) {
             for (const username in voteData) {
@@ -222,6 +214,9 @@ export class MatchRoomService {
         this.defineCurrentQuestionAnswer(matchRoomCode, firstQuestion);
         this.removeAnswerField(firstQuestion);
         server.to(matchRoom.hostSocket.id).emit(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
+        if (this.cheaterPlayer) {
+            server.to(this.cheaterPlayer?.socket.id).emit(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
+        }
         const isClassicMode: boolean = matchRoom.isClassicMode;
         server.in(matchRoomCode).emit(MatchEvents.BeginQuiz, { firstQuestion, gameDuration, isClassicMode });
         this.timeService.startTimer(server, matchRoomCode, matchRoom.questionDuration, ExpiredTimerEvents.QuestionTimerExpired);
@@ -244,12 +239,14 @@ export class MatchRoomService {
         this.removeAnswerField(nextQuestion);
         server.in(matchRoomCode).emit(MatchEvents.GoToNextQuestion, nextQuestion);
         server.to(matchRoom.hostSocket.id).emit(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
+        if (this.cheaterPlayer) {
+            server.to(this.cheaterPlayer?.socket.id).emit(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
+        }
         this.timeService.startTimer(server, matchRoomCode, matchRoom.questionDuration, ExpiredTimerEvents.QuestionTimerExpired);
     }
 
     sendCheaterPlayer(server: Server, matchRoomCode: string, player: string) {
         const matchRoom: MatchRoom = this.getRoom(matchRoomCode);
-        // TO DO: FIX SYNTAX
         server.in(matchRoomCode).emit(MatchEvents.SendCheater, { player });
     }
 
@@ -270,6 +267,10 @@ export class MatchRoomService {
 
     resetPlayerSubmissionCount(matchRoomCode: string) {
         this.getRoom(matchRoomCode).submittedPlayers = 0;
+    }
+
+    resetCheaterPlayer() {
+        this.cheaterPlayer = null;
     }
 
     incrementCurrentQuestionIndex(matchRoomCode: string) {
@@ -313,7 +314,6 @@ export class MatchRoomService {
         const matchRoom: MatchRoom = this.getRoom(matchRoomCode);
         return matchRoom.game.questions[matchRoom.currentQuestionIndex];
     }
-    //totalVotes: VotingData[] = [{ username: '', numberOfVotes: 0, usersWhoVoted: [] }];
 
     declareWinner(matchRoomCode: string): Player[] {
         const matchRoom = this.getRoom(matchRoomCode);

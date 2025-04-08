@@ -26,6 +26,7 @@ import { NotificationService } from '@app/services/notification/notification.ser
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { TimeService } from '@app/services/time/time.service';
 import { AnswerCorrectness } from '@common/constants/answer-correctness';
+import { TranslocoService } from '@jsverse/transloco';
 import { Socket } from 'socket.io-client';
 import spyObj = jasmine.SpyObj;
 
@@ -149,6 +150,8 @@ describe('QuestionAreaComponent', () => {
                 { provide: MatchContextService, useValue: questionContextSpy },
                 { provide: NotificationService, useValue: notificationServiceSpy },
                 { provide: TimeService, useValue: timerSpy },
+                { provide: TranslocoService, useValue: jasmine.createSpyObj('TranslocoService', ['translate']) },
+                { provide: 'TRANSLOCO_TRANSPILER', useValue: {} },
             ],
         }).compileComponents();
 

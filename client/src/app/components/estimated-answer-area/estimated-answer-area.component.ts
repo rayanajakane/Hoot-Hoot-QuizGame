@@ -13,6 +13,7 @@ import { Subscription } from 'rxjs';
 })
 export class EstimatedAnswerAreaComponent implements OnInit, OnDestroy {
     currentLongAnswerControl: FormControl;
+    currentAnswer: FormControl;
     lowerBound: number;
     upperBound: number;
     isOutOfBounds: boolean = false;
@@ -24,7 +25,7 @@ export class EstimatedAnswerAreaComponent implements OnInit, OnDestroy {
         public answerService: AnswerService,
     ) {}
 
-    get contextOptions(): typeof MatchContext {
+    get contextOptions(): typeof MatchContext {        
         return MatchContext;
     }
 

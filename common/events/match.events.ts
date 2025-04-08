@@ -27,5 +27,6 @@ export enum MatchEvents {
     ShowVotingDialog = 'showVotingDialog',
     SendVotesResults  = 'sendVotesResults',
     SendBackVotesResults = 'sendBackVotesResults',
+    SendVotingUsers='sendVotingUsers',
     SendUpdatedScores = 'sendUpdatedScores'
 }

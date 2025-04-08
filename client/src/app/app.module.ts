@@ -61,6 +61,8 @@ import { UsernameSuggestionDialogComponent } from './components/username-suggest
 import { JoinMatchPageComponent } from './pages/join-match-page/join-match-page.component';
 import { ShopPageComponent } from './pages/shop-page/shop-page.component';
 import { VotingDialogComponent } from './components/voting-dialog/voting-dialog.component';
+import { QuestionGeneratorComponent } from './components/question-generator/question-generator.component';
+
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -74,6 +76,7 @@ import { VotingDialogComponent } from './components/voting-dialog/voting-dialog.
         AdminQuestionBankComponent,
         ShortQuestionComponent,
         QuestionCreationFormComponent,
+        QuestionGeneratorComponent,
         DialogConfirmComponent,
         AdminEditPageComponent,
         ChatComponent,
@@ -116,6 +119,7 @@ import { VotingDialogComponent } from './components/voting-dialog/voting-dialog.
         ConfirmDialogComponent,
         ShopPageComponent,
         UsernameSuggestionDialogComponent,
+        VotingDialogComponent,
     ],
     imports: [
         AppMaterialModule,

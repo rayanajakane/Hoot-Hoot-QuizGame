@@ -255,7 +255,7 @@
         "friends-label": "Match with Friends",
         "friends-description": "Only your friends can join this match.",
         "fee-section-label": "Match with Entry Fee",
-        "cheater-mode": "Match in Cheater Mode",
+        "cheater-mode": "Cheater Mode",
         "cheater-mode-description": "To play in this mode: the game should not contain a question of type long answer, and must contain at least three players",
         "fee-label": "Entry Fee",
         "fee-description": "Players will have to pay this fee to join this match.",
@@ -340,5 +340,32 @@
         "label": "Search Games",
         "title": "Title",
         "author": "Author"
+    },
+    "cheater-mode":{
+        "notifyCheater":"You are the cheater",
+        "cheater": "Cheater",
+        "vote":"Vote",
+        "voteCheater":"Vote for the cheater",
+        "notifyRegularPlayer": "You are a regular player",
+        "playerVoted": "\"{{player}}\" has voted",
+        "answer-hint": "Answer Hint: \"{{answer}}\"",
+        "players-still-voting": "Players are still voting",
+        "players-voted": "All players have voted"
+    },
+    "questions-generations":{
+        "input": "Please provide a topic or theme to generate questions, and select the desired question type.",
+        "generate": "Generate",
+        "regenerate": "Regenerate other questions",
+        "generating": "Generating questions",
+        "submit": "Submit",
+        "language": "The question language",
+        "choice-number": "Number of answer choices",
+        "choice":"Choice",
+        "question-input": "Enter the question",
+        "generate-IA": "Generate questions with IA",
+        "error": "Error while generating questions", 
+        "choice-input": "Enter the choice",
+        "french": "French",
+        "english": "English"
     }
 }

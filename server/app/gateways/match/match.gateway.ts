@@ -1,12 +1,11 @@
 import { CHAT_REACTIVATED } from '@app/constants/chat-state-messages';
 import { ExpiredTimerEvents } from '@app/constants/expired-timer-events';
-import { BAN_PLAYER, NO_MORE_HOST, NO_MORE_PLAYERS } from '@app/constants/match-errors';
+import { BAN_PLAYER, LESS_THAN_3_PLAYERS, NO_MORE_HOST, NO_MORE_PLAYERS } from '@app/constants/match-errors';
 import { Game } from '@app/model/database/game';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
-import { Player } from '@app/model/schema/player.schema';
-import { EloService } from '@app/services/elo/elo.service';
 import { Player, VotingData } from '@app/model/schema/player.schema';
 import { AnswerService } from '@app/services/answer/answer.service';
+import { EloService } from '@app/services/elo/elo.service';
 // import { HistogramService } from '@app/services/histogram/histogram.service';
 // import { HistoryService } from '@app/services/history/history.service';
 import { FriendsService } from '@app/services/friends/friends.service';
@@ -46,6 +45,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         private readonly timeService: TimeService,
         private historyService: HistoryService,
         private readonly partyService: PartyService,
+        private readonly playerService: PlayerRoomService,
         private readonly eventEmitter: EventEmitter2,
         private readonly eloService: EloService,
     ) {}
@@ -56,7 +56,6 @@ export class MatchGateway implements OnGatewayDisconnect {
         const codeErrors = this.matchRoomService.getRoomCodeErrors(data.roomCode);
         const usernameErrors = this.playerRoomService.getUsernameErrors(data.roomCode, data.userId);
         let errorMessage = codeErrors + usernameErrors;
-        console.log('Joining room', matchRoom.partyConfig);
         if (matchRoom.partyConfig.isFriendsOnly || matchRoom.partyConfig.isEntryFeeRequired) {
             const partyErrors = await this.partyService.canJoinParty(data.userId, data.roomCode);
             errorMessage += partyErrors;
@@ -67,10 +66,8 @@ export class MatchGateway implements OnGatewayDisconnect {
         } else {
             socket.join(data.roomCode);
             if (matchRoom.partyConfig.isEntryFeeRequired) {
-                console.log('Joining party');
                 await this.partyService.joinParty(data.userId, data.roomCode);
                 const currPlayerBalance = await this.moneyService.getCurrentBalance(data.userId);
-                console.log('Returning balance', currPlayerBalance);
                 this.server.to(socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
             }
             const newPlayer = await this.playerRoomService.addPlayer(socket, data.roomCode, data.userId, data.username);
@@ -127,6 +124,7 @@ export class MatchGateway implements OnGatewayDisconnect {
     @SubscribeMessage(MatchEvents.SendVotesResults)
     sendResults(@ConnectedSocket() socket: Socket, @MessageBody() newVotesCount: VotingData) {
         this.matchRoomService.totalVotes.push(newVotesCount);
+
         const username = newVotesCount.username;
         const newVoteCount = newVotesCount.numberOfVotes;
         let votesCount = this.matchRoomService.votesCount;
@@ -136,14 +134,17 @@ export class MatchGateway implements OnGatewayDisconnect {
         } else {
             votesCount[username] = newVoteCount;
         }
+        this.server.to(this.roomCode).emit(MatchEvents.SendBackVotesResults, votesCount);
+        this.server.to(this.roomCode).emit(MatchEvents.SendVotingUsers, newVotesCount.usersWhoVoted);
+
     }
 
-    @SubscribeMessage(MatchEvents.SendBackVotesResults)
-    sendBackVotes(@ConnectedSocket() socket: Socket) {}
+
 
     @SubscribeMessage(MatchEvents.SendUpdatedScores)
     sendUpdatedScores(@ConnectedSocket() socket: Socket, @MessageBody() roomCode) {
         this.playerRoomService.recalculateScores(roomCode);
+        this.handleSendPlayersData(roomCode);
     }
 
     returnAllMatches() {
@@ -311,7 +312,8 @@ export class MatchGateway implements OnGatewayDisconnect {
                 await this.partyService.leaveParty(player.id, roomCode);
                 const currPlayerBalance = await this.moneyService.getCurrentBalance(player.id);
                 this.server.in(socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
-            } else if (isOnePlayerLeft) {
+            } 
+            else if (isOnePlayerLeft) {
                 this.timeService.expireTimer(roomCode, this.server, ExpiredTimerEvents.QuestionTimerExpired);
                 await this.routeToResultsPage({} as Socket, roomCode);
             }
@@ -323,9 +325,23 @@ export class MatchGateway implements OnGatewayDisconnect {
             this.deleteRoom(roomCode);
             return;
         }
+
+        // if(this.matchRoomService.isCheaterMode && room.isPlaying && lessthanThreePlayers ) {
+        //     this.sendError(roomCode, LESS_THAN_3_PLAYERS);
+        //     this.deleteRoom(roomCode);
+        //     return;
+        // }
+
         console.log(`Room host socket connected: ${room.hostSocket.connected}`);
         console.log(`Room host has roomCode: ${room.hostSocket.rooms.has(roomCode)}`);
         console.log(`Is room empty: ${isRoomEmpty}`);
+
+        // if(this.matchRoomService.isCheaterMode && room.isPlaying && lessthanThreePlayers ) {
+        //     this.sendError(roomCode, LESS_THAN_3_PLAYERS);
+        //     this.deleteRoom(roomCode);
+        //     return;
+        // }
+
         if (isRoomEmpty && (!room.hostSocket.connected || !room.hostSocket.rooms.has(roomCode))) {
             this.deleteRoom(roomCode);
             return;
@@ -356,6 +372,10 @@ export class MatchGateway implements OnGatewayDisconnect {
 
     private isRoomEmpty(room: MatchRoom) {
         return room.players.every((player) => !player.isPlaying || !player.socket.rooms.has(room.code));
+    }
+
+   private isRoomLessThanThreePlayers(room: MatchRoom) {
+        return room.players.filter((player) => player.isPlaying || player.socket.rooms.has(room.code)).length < 3;
     }
 
     private isOnePlayerLeft(room: MatchRoom) {

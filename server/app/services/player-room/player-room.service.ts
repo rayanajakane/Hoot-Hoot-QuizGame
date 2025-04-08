@@ -41,12 +41,13 @@ export class PlayerRoomService {
     recalculateScores(roomCode: string) {
         const totalVotes = Object.values(this.matchRoomService?.votesCount).reduce((total, vote) => total + vote, 0);
         const cheaterUsername = this.matchRoomService.cheaterPlayer.username;
-
-        if (totalVotes === this.getPlayers(roomCode).length) {
+        const playersPlaying = this.getPlayers(roomCode).filter((player) => player.isPlaying);
+        if (totalVotes >= 3) {
             const cheaterPlayer = this.matchRoomService.cheaterPlayer;
 
             if (!this.matchRoomService.cheaterGetsBonus(cheaterUsername)) {
                 const cheaterVotes = this.matchRoomService.votesCount[cheaterUsername];
+                console.log('cheaterVotes', cheaterVotes);
 
                 if (cheaterVotes) {
                     const cheaterScore = this.getPlayerById(roomCode, cheaterPlayer.id).score;
@@ -57,34 +58,27 @@ export class PlayerRoomService {
                     playersWhoVotedForCheater.forEach((voterUsername: string) => {
                         const player = this.getPlayerByUsername(roomCode, voterUsername);
                         if (player) {
-                            player.bonusCount = Math.round(cheaterScore * 0.3);
-                            const players: Player[] = this.getPlayers(roomCode);
-                            players.forEach((player: Player) => {
-                                player.score = Math.round(player.score + player.bonusCount);
-                                const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
-                                console.log(feedback);
-                                this.getPlayerByUsername(roomCode, voterUsername).socket.emit(AnswerEvents.Feedback, feedback);
-                            });
+                            player.score = Math.round(player.score + cheaterScore * 0.3);
+                            const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
+                            console.log(feedback);
+                            this.getPlayerByUsername(roomCode, voterUsername).socket.emit(AnswerEvents.Feedback, feedback);
                         }
                     });
 
                     const players: Player[] = this.getPlayers(roomCode);
                     const player = this.getPlayerByUsername(roomCode, cheaterUsername);
                     player.score = Math.round(player.score - 0.3 * player.score);
+
                     const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
+
                     this.getPlayerByUsername(roomCode, player.username).socket.emit(AnswerEvents.Feedback, feedback);
                 }
             }
-        }
 
-        if (totalVotes === this.getPlayers(roomCode).length) {
             if (this.matchRoomService.cheaterGetsBonus(cheaterUsername)) {
                 const player = this.getPlayerByUsername(roomCode, cheaterUsername);
-                player.bonusCount = Math.round(player.bonusCount + player.bonusCount * 0.3);
-                player.score = Math.round(player.score + player.bonusCount);
-
+                player.score = Math.round(player.score + player.score*0.3);
                 const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
-                console.log(feedback);
                 this.matchRoomService.cheaterPlayer.socket.emit(AnswerEvents.Feedback, feedback);
             }
         }

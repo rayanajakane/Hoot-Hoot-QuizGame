@@ -1,26 +1,40 @@
-<div id="main-container">
-    <h1>Résultats</h1>
-    <div id="players-list">
-        <mat-card *ngFor="let player of this.players | sortPlayers: 'score' : 'descending'" class="player-card">
-            <div class="username-avatar-container">
-                <div class="avatar-container">
-                    <div class="avatar">
-                        <img src="{{ player.photoUrl ? player.photoUrl : defaultAvatar }}" alt="" />
+<ng-container *transloco="let t">
+    <div id="main-container">
+        <h1>Résultats</h1>
+        <div id="players-list">
+            <mat-card *ngFor="let player of this.players | sortPlayers: 'score' : 'descending'" class="player-card">
+                <div class="username-avatar-container">
+                    <div class="avatar-container">
+                        <div class="avatar">
+                            <img src="{{ player.photoUrl ? player.photoUrl : defaultAvatar }}" alt="" />
+                        </div>
                     </div>
+
+                    <span class="username">
+                        <p [ngClass]="[player.isPlaying ? '' : 'inactive-player']">{{ player.username }}</p>
+                        <p *ngIf="player.id === this.matchRoomService.cheaterPlayer?.id" class="cheater-tag">
+                            {{ t('cheater-mode.cheater') }}
+                        </p>
+                    </span>
                 </div>
-                <p [ngClass]="[player.isPlaying ? '' : 'inactive-player']">{{ player.username }}</p>
-            </div>
-            <div class="player-performance">
-                <p>{{ player.score }} pts</p>
-                <p>({{ player.bonusCount }}✨)</p>
-            </div>
-        </mat-card>
+                <div class="vote">
+                    <p *ngIf="this.matchRoomService.isCheaterMode">
+                        Votes: {{ this.matchRoomService.votesResults[player.username] ? this.matchRoomService.votesResults[player.username] : 0 }}
+                    </p>
+                </div>
+
+                <div class="player-performance">
+                    <p>{{ player.score }} pts</p>
+                    <p>({{ player.bonusCount }}✨)</p>
+                </div>
+            </mat-card>
+        </div>
+        <div class="controls-container">
+            <button mat-raised-button class="exit-button" color="primary" (click)="handleDisconnect()" routerLink="/home">
+                <mat-icon class="material-icons">logout</mat-icon>
+                <p>{{t('nav-quit')}}</p>
+            </button>
+        </div>
     </div>
-    <div class="controls-container">
-        <button mat-raised-button class="exit-button" color="primary" (click)="handleDisconnect()" routerLink="/home">
-            <mat-icon class="material-icons">logout</mat-icon>
-            <p>QUITTER</p>
-        </button>
-    </div>
-</div>
-<app-players-list [players]="players" [canHostToggleChatState]="false"></app-players-list>
+    <app-players-list [players]="players" [canHostToggleChatState]="false"></app-players-list>
+</ng-container>
