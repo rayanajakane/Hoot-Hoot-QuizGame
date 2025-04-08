@@ -61,7 +61,6 @@ fun VotingPage(
     var voteCounts by remember { mutableStateOf(VotingData("", 0, mutableListOf())) }
     var totalVotes by remember { mutableStateOf(0) }
     val playersPlaying = remember(players) { players.filter { it.isPlaying } }
-  //  val totalVotesOfActivePlayers = remember(playersPlaying) { playersPlaying.size - 1 }
     val currentVotes = remember(matchRoomService.votesResults) {
         matchRoomService.votesResults.values.sum()
     }
@@ -86,7 +85,7 @@ fun VotingPage(
     }
 
     LaunchedEffect(MatchRoomService.userVoted) {
-        if(MatchRoomService.userVoted.isNotEmpty()) {
+        if (MatchRoomService.userVoted.isNotEmpty()) {
             votedPlayers.add(MatchRoomService.userVoted)
         }
     }
@@ -176,7 +175,6 @@ fun VotingPage(
                 }
             }
 
-            //Spacer(modifier = Modifier.height(16.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End
             ) {
@@ -184,14 +182,13 @@ fun VotingPage(
                     Button(
                         onClick = {
                             MatchRoomService.socket.emit(
-                                MatchEvents.SEND_UPDATED_SCORES.value, MatchRoomService.matchRoomCode.value
+                                MatchEvents.SEND_UPDATED_SCORES.value,
+                                MatchRoomService.matchRoomCode.value
                             )
                             matchRoomService.routeToResultsPage();
                             navigateToResultsPage();
                         },
-                        //enabled = AnswerService.isEndGame,
                         shape = RoundedCornerShape(5.dp),
-                       // shape = RoundedCornerShape(8.dp)
                     ) {
                         Icon(
                             Icons.Filled.BarChart,
@@ -201,22 +198,6 @@ fun VotingPage(
                         Text(stringResource(R.string.show_final))
                     }
                 }
-//                Button(
-//                    onClick = {
-//                        matchRoomService.isQuitting = true
-//                        matchRoomService.disconnectFromRoom()
-//                        navigateToHome()
-//                    },
-//                    shape = RoundedCornerShape(3.dp),
-//                ) {
-//                    Icon(
-//                        Icons.AutoMirrored.Filled.Logout,
-//                        contentDescription = stringResource(R.string.leave)
-//                    )
-//                    Spacer(modifier = Modifier.height(8.dp))
-//                    Text(stringResource(R.string.leave))
-//                }
-
             }
         }
         PlayersListComponent(
@@ -248,60 +229,6 @@ fun VotingPage(
             }
         )
     }
-
-}
-
-@Composable
-fun PlayerCard(
-    modifier: Modifier,
-    player: Player,
-    url: String,
-    context: MatchContextService,
-    withAvatar: Boolean = false
-) {
-    Card(
-        shape = RoundedCornerShape(3.dp), colors = CardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceBright,
-            contentColor = MaterialTheme.colorScheme.onSurface,
-            disabledContainerColor = MaterialTheme.colorScheme.surfaceBright,
-            disabledContentColor = MaterialTheme.colorScheme.onSurface
-        ), modifier = modifier
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (withAvatar) {
-                AsyncImage(
-                    model = url,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape),
-                    placeholder = rememberAsyncImagePainter(model = PresetAvatar.DEFAULT.value)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-            }
-            if (!player.isPlaying) {
-                Text(
-                    text = player.username,
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    style = TextStyle(textDecoration = TextDecoration.LineThrough)
-                )
-            } else {
-                Text(
-                    text = player.username,
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-            }
-
-        }
-    }
 }
 
 @Composable
@@ -324,12 +251,10 @@ fun PlayerVotedCard(player: String) {
         ) {
 
             Text(
-                //stringResource(R.string.cheater_mode_players_voted,
-                text = player,
+                text = player + stringResource(R.string.cheater_mode_players_voted),
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurface,
             )
-
         }
     }
 }
@@ -347,7 +272,6 @@ fun PlayerVoteCard(
             .fillMaxWidth(0.8f)
             .padding(vertical = 4.dp)
             .clickable { onPlayerSelected(player.username) },
-        //.align(Alignment.CenterHorizontally),
         shape = RoundedCornerShape(3.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceBright,
@@ -399,7 +323,6 @@ fun PlayerInfo(player: Player) {
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurface,
             )
-
         }
     }
 }
