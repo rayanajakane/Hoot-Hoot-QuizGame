@@ -26,15 +26,16 @@ export class MoneyGateway {
         const roundedAmount = Math.round(data.amount * 100) / 100;
         data.amount = Number.isInteger(roundedAmount) ? Math.trunc(roundedAmount) : roundedAmount;
         console.log('Donating money:', data);
-        const moneyErrors = await this.moneyService.getMoneyError(data.user, data.amount, true);
+        const friendUid = (await this.firebaseAuthService.getUserById(data.friend)).uid;
+        const moneyErrors = await this.moneyService.getMoneyError(data.user, data.amount, true, friendUid);
         if (moneyErrors.length > 0) {
             this.sendError(client.id, moneyErrors);
             return;
         }
 
+        const friendUsername = (await this.firebaseAuthService.getUserById(data.friend)).displayName;
         const success = await this.moneyService.donateMoney(data.user, data.friend, data.amount);
         if (!success) return;
-        const friendUsername = (await this.firebaseAuthService.getUserById(data.friend)).displayName;
         const userUsername = (await this.firebaseAuthService.getUserById(data.user)).displayName;
         client.emit(MoneyEvents.DonationGiven, {
             to: friendUsername,

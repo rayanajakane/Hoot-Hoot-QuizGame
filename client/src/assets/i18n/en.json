@@ -343,6 +343,10 @@
         "zero-amount": "The amount is invalid, it must be a positive number larger than 0.",
         "not-friends": "You can only send money to your friends."
     },
+    "money-status": {
+        "donation-received": "{{from}} has donated {{amount}} $ to you.",
+        "donation-sent": "You have donated {{amount}} $ to {{to}}."
+    },
     "match-errors": {
         "ban_player": "The host banned you from the match.",
         "no_more_host": "The host left the match.",
