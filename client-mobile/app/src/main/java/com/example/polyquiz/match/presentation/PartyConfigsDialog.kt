@@ -94,19 +94,22 @@ fun PartyConfigDialog(
                         modifier = Modifier.padding(top = 4.dp)
                     )
                 }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = "Jouer en Mode Tricheur")
-                    Spacer(modifier = Modifier.weight(1f))
+                if(MatchRoomService.canPlayCheaterMode) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = stringResource(R.string.cheater_mode))
+                        Spacer(modifier = Modifier.weight(1f))
 
-                    Switch(
-                        checked = partyConfig.isCheaterMode,
-                        onCheckedChange = { partyConfig = partyConfig.copy(isCheaterMode = it) },
-
-                    )
-                    MatchRoomService.isCheaterMode = partyConfig.isCheaterMode
+                        Switch(
+                            checked = partyConfig.isCheaterMode,
+                            onCheckedChange = {
+                                partyConfig = partyConfig.copy(isCheaterMode = it)
+                            },
+                            )
+                        MatchRoomService.isCheaterMode = partyConfig.isCheaterMode
+                    }
                 }
             }
         },

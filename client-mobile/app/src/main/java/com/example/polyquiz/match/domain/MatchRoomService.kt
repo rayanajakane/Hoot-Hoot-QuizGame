@@ -49,6 +49,7 @@ object MatchRoomService {
     var isTimeToNavigateToResults by mutableStateOf(false)
     var hasBeenKickedOut by mutableStateOf(false)
     var isLocked by mutableStateOf(false)
+    var canPlayCheaterMode by mutableStateOf(false)
     var gameTitle: String = ""
     var gameDuration: Int = 0
     var currentAnswers: MutableList<String> = mutableListOf()
@@ -83,7 +84,7 @@ object MatchRoomService {
     val matchRoomCode: StateFlow<String> get() = _matchRoomCode
 
     val socket = SocketHandler.getSocket()
-    
+
     val socketId: String
         get() = socket.id() ?: ""
 
@@ -258,12 +259,13 @@ object MatchRoomService {
         hostId: String,
         hostUsername: String,
         isClassicMode: Boolean = true,
-        partyConfigs: PartyConfig = PartyConfig(false, false)
+        partyConfigs: PartyConfig = PartyConfig(false, false, isCheaterMode = false)
     ) {
         val partyConfisObject = JSONObject().apply {
             put("isFriendsOnly", partyConfigs.isFriendsOnly)
             put("isEntryFeeRequired", partyConfigs.isEntryFeeRequired)
             put("entryFeeAmount", partyConfigs.entryFeeAmount)
+            put("isCheaterMode", partyConfigs.isCheaterMode)
         }
         val data = JSONObject().apply {
             put("gameId", gameId)

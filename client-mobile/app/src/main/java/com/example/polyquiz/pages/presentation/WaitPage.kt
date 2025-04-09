@@ -230,7 +230,7 @@ fun WaitPage(
                         LockMatchToggle(onToggleLock)
                         var disabled = true
                         if(matchRoomService.isCheaterMode){
-                            disabled  = !matchRoomService.isLocked || (matchRoomService.players.size <= 3)
+                            disabled  = !matchRoomService.isLocked || (matchRoomService.players.size < 3)
                         }
                         else {
                             disabled =

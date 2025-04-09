@@ -41,6 +41,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.OutlinedTextField
 import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
+import com.example.polyquiz.match.domain.MatchRoomService
+import com.example.polyquiz.match.domain.Question
 
 
 @Composable
@@ -56,6 +58,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
     val username by remember { mutableStateOf(authViewModel.getUsername()) }
     val userId by remember { mutableStateOf(authViewModel.getUserId()) }
     var showPartyConfigDialog by remember { mutableStateOf(false) }
+    var gameIsValidCheaterMode by remember { mutableStateOf(false) }
     var partyConfigs by remember { mutableStateOf(PartyConfig(false, false)) }
 
     var titleQuery by remember { mutableStateOf("") }
@@ -145,6 +148,21 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
         }
     }
 
+    fun canStartCheaterMode(questions: List<Question>) : Boolean{
+        if(questions.isNotEmpty()){
+            for(question in questions){
+                if(question.type == "QRL"){
+                    MatchRoomService.canPlayCheaterMode = false
+                    gameIsValidCheaterMode = false;
+                    return false
+                }
+            }
+        }
+        MatchRoomService.canPlayCheaterMode = true
+        gameIsValidCheaterMode = true;
+        return true
+    }
+
     fun loadSelectedGame(currentGame: Game) {
         isLoadingSelectedGame = true
         gameService.getGameById(currentGame.id!!,
@@ -160,7 +178,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
             })
     }
 
-    fun reloadSelectedGame(partyConfigs: PartyConfig = PartyConfig(false, false)) {
+    fun reloadSelectedGame(partyConfigs: PartyConfig = PartyConfig(false, false, 0 , false)) {
         gameService.getGameById(selectedGame?.id!!,
             onSuccess = { response ->
                 val gson = Gson()
@@ -172,10 +190,9 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                 println("Error: $errorMessage")
                 fetchGames()
             })
-
     }
 
-    fun createMatch(context: MatchContext, partyConfigs: PartyConfig = PartyConfig(false, false)) {
+    fun createMatch(context: MatchContext, partyConfigs: PartyConfig = PartyConfig(false, false, 0, false)) {
         contextService.setContext(context)
         reloadSelectedGame(partyConfigs)
     }
@@ -386,6 +403,8 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                         }
                         Button(
                             onClick = {
+                                canStartCheaterMode(selectedGame!!.questions!!);
+
                                 showPartyConfigDialog = true
                             },
                             colors = ButtonDefaults.buttonColors(
