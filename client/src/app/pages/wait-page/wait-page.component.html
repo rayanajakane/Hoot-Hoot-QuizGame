@@ -24,7 +24,7 @@
                 isLocked ? t('wait-page.unlocked-match') : t('wait-page.locked-match')
             }}</mat-slide-toggle>
             <button
-                *ngIf="isHost"
+                *ngIf="isHost && !matchRoomService.isCheaterMode"
                 mat-raised-button
                 id="start-button"
                 color="primary"
@@ -37,6 +37,21 @@
             >
                 {{ t('wait-page.start-match') }}
             </button>
+            <p *ngIf="matchRoomService.isCheaterMode && isHost">
+                <button
+                    mat-raised-button
+                    id="start-button"
+                    color="primary"
+                    (click)="startMatch()"
+                    [disabled]="
+                        matchRoomService.players.length < 3 ||
+                        !isLocked ||
+                        (matchRoomService.partyConfig.isEntryFeeRequired && matchRoomService.players.length <= 1)
+                    "
+                >
+                    {{ t('wait-page.start-match') }}
+                </button>
+            </p>
         </div>
         <div id="exit-button-container">
             <button mat-raised-button id="exit-button" color="basic" routerLink="/home" (click)="quitGame()">

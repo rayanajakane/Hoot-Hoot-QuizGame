@@ -83,6 +83,7 @@ export class AnswerService {
         this.timeService.isTimerPaused = false;
     }
 
+
     selectChoice(choice: string, userInfo: UserInfo) {
         const choiceInfo: ChoiceInfo = { choice, userInfo };
         this.socketService.send(AnswerEvents.SelectChoice, choiceInfo);
@@ -118,6 +119,22 @@ export class AnswerService {
     onBonusPoints() {
         this.socketService.on(AnswerEvents.Bonus, (bonus: number) => {
             this.bonusPoints = bonus;
+        });
+    }
+
+    cheaterGetsBonus() {
+        const totalVotes = this.matchRoomService.totalVotes.reduce((total, voteData) => total + voteData.numberOfVotes, 0);
+        if (this.matchRoomService.cheaterPlayer.username === this.matchRoomService.votesData.username) {
+            if (this.matchRoomService.votesData.numberOfVotes / totalVotes <= 0.5) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    onCheaterFinalScores() {
+        this.socketService.on(MatchEvents.VoteOnCheater, (bonus: number) => {
+            this.bonusPoints += this.bonusPoints * 0.3;
         });
     }
 

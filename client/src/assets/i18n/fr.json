@@ -108,6 +108,7 @@
     "common": {
         "cancel": "Annuler",
         "play": "Jouer",
+        "play.modeCheater": "Jouer en mode tricheur",
         "title": "Titre",
         "desc": "Description",
         "secs": "secondes",
@@ -251,6 +252,8 @@
     "match-config": {
         "title-label": "Configuration de la partie",
         "friends-label": "Partie entre amis uniquement",
+        "cheater-mode": "Mode tricheur",
+        "cheater-mode-description": "Pour jouer en mode tricheur : le jeu ne doit pas contenir de question de type réponse longue et doit comporter au moins trois joueurs",
         "friends-description": "Seuls vos amis pourront rejoindre cette partie.",
         "fee-section-label": "Partie avec prix d'entrée",
         "fee-label": "Frais d'entrée",
@@ -322,7 +325,8 @@
         "good-answer-qre": "Réponse correcte : {{answer}}. La marge est de +/- {{margin}}",
         "choose-estimated": "Choisissez une valeur estimée. La marge est de +/- {{margin}}",
         "answer": "Réponse",
-        "out-of-bounds": "Valeur hors limites ! Doit être entre {{lowerBound}} et {{upperBound}}"
+        "out-of-bounds": "Valeur hors limites ! Doit être entre {{lowerBound}} et {{upperBound}}",
+        "show-voting-button":"Aller vers la page de vote"
     },
     "players-list": {
         "players": "Joueurs"
@@ -337,6 +341,19 @@
         "title": "Titre",
         "author": "Auteur"
     },
+    "cheater-mode":{
+        "notifyCheater":"Vous êtes le/la tricheur/tricheuse de cette partie",
+        "cheater": "Tricheur",
+        "vote":"Voter" ,
+        "voteCheater":"Votez pour le tricheur",
+        "answer-hint": "Indice pour la réponse: \"{{answer}}\"",
+        "notifyRegularPlayer": "Vous avez le rôle de joueur régulier dans cette partie",
+        "playerVoted": "\"{{player}}\" a voté",
+        "players-still-voting": "Joueurs en train de voter",
+        "players-voted": "Tous les joueurs ont voté",
+        "players-amount-invalid": "Le nombre de joueurs doit être supérieur à 3"
+    },
+    
     "questions-generations":{
         "input": "Veuillez fournir un sujet ou un thème pour générer des questions, et sélectionnez le type de question souhaité ",
         "generate": "Générer",

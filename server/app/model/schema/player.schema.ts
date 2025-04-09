@@ -18,3 +18,9 @@ export interface Player {
     socket: Socket;
     state: string;
 }
+
+export interface VotingData {
+    username: string;
+    numberOfVotes: number;
+    usersWhoVoted:string[];
+}
