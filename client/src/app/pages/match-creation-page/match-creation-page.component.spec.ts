@@ -144,8 +144,10 @@ describe('MatchCreationPageComponent', () => {
         spyOn(gameService, 'getGameById').and.returnValue(of(fakeGame));
         component.revalidateGame();
         component.reloadSelectedGame();
+        tick();
         expect(component.selectedGame).toEqual(fakeGame);
         expect(component.gameIsValid).toBeTruthy();
+        flush();
     }));
 
     it('should not load an invisible selected game', fakeAsync(() => {

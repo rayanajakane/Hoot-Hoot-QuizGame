@@ -38,7 +38,11 @@
 
                             <div *ngIf="match.partyConfig?.isFriendsOnly" class="match-flag friends-only">
                                 <i class="material-icons">people</i>
-                                <span>Amis uniquement</span>
+                                <span>{{t('match.partyConfig.isFriendsOnly')}}</span>
+                            </div>
+                            <div *ngIf="match.partyConfig?.isCheaterMode" class="match-flag friends-only">
+                                <i class="material-icons"></i>
+                                <span>{{t('match-config.cheater-mode')}}</span>
                             </div>
 
                             <div *ngIf="match.partyConfig?.isEntryFeeRequired" class="match-flag entry-fee">
@@ -67,9 +71,15 @@
                             </div>
 
                             <div *ngIf="match.partyConfig?.isFriendsOnly" class="match-flag friends-only">
-                                <i class="material-icons">people</i>
-                                <span>Amis uniquement</span>
+                                <i class="material-icons"></i>
+                                <span>{{t('match.partyConfig.isFriendsOnly')}}</span>
                             </div>
+
+                            <div *ngIf="match.partyConfig?.isCheaterMode" class="match-flag friends-only">
+                                <i class="material-icons"></i>
+                                <span>{{t('match-config.cheater-mode')}}</span>
+                            </div>
+
 
                             <div *ngIf="match.partyConfig?.isEntryFeeRequired" class="match-flag entry-fee">
                                 <i class="material-icons">attach_money</i>
@@ -96,7 +106,12 @@
 
                         <div *ngIf="match.partyConfig?.isFriendsOnly" class="match-flag friends-only">
                             <i class="material-icons">people</i>
-                            <span>Amis uniquement</span>
+                            <span>{{t('match.partyConfig.isFriendsOnly') }}</span>
+                        </div>
+
+                        <div *ngIf="match.partyConfig?.isCheaterMode" class="match-flag friends-only">
+                            <i class="material-icons"></i>
+                            <span>{{t('match-config.cheater-mode')}}</span>
                         </div>
 
                         <div *ngIf="match.partyConfig?.isEntryFeeRequired" class="match-flag entry-fee">

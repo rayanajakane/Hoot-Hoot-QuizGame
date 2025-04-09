@@ -30,6 +30,13 @@ h2 {
     background-color: white;
     border-radius: 0.5rem;
 }
+.username {
+    display: grid;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    grid-template-columns: 1fr 1fr;
+}
 
 .inactive-player {
     text-decoration-line: line-through;

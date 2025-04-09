@@ -7,7 +7,9 @@ import { HistoryService } from '@app/services/history/history.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { AnswerCorrectness } from '@common/constants/answer-correctness';
 import { PlayerState } from '@common/constants/player-states';
+import { AnswerEvents } from '@common/events/answer.events';
 import { MatchEvents } from '@common/events/match.events';
+import { Feedback } from '@common/interfaces/feedback';
 import { Injectable } from '@nestjs/common';
 import { Socket } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
@@ -34,6 +36,54 @@ export class PlayerRoomService {
                 return value;
             }
         });
+    }
+
+    recalculateScores(roomCode: string) {
+        const totalVotes = Object.values(this.matchRoomService?.votesCount).reduce((total, vote) => total + vote, 0);
+        const cheaterUsername = this.matchRoomService.cheaterPlayer.username;
+        const playersPlaying = this.getPlayers(roomCode).filter((player) => player.isPlaying);
+        if (totalVotes >= 3) {
+            const cheaterPlayer = this.matchRoomService.cheaterPlayer;
+
+            if (!this.matchRoomService.cheaterGetsBonus(cheaterUsername)) {
+                const cheaterVotes = this.matchRoomService.votesCount[cheaterUsername];
+                console.log('cheaterVotes', cheaterVotes);
+
+                if (cheaterVotes) {
+                    const cheaterScore = this.getPlayerById(roomCode, cheaterPlayer.id).score;
+                    const cheaterVoteEntry = this.matchRoomService.totalVotes.filter((vote) => vote.username === cheaterPlayer.username);
+
+                    const playersWhoVotedForCheater = cheaterVoteEntry.flatMap((vote) => vote.usersWhoVoted);
+
+                    playersWhoVotedForCheater.forEach((voterUsername: string) => {
+                        const player = this.getPlayerByUsername(roomCode, voterUsername);
+                        if (player.isPlaying) {
+                            player.score = Math.round(player.score + cheaterScore * 0.3);
+                            const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
+                            console.log(feedback);
+                            this.getPlayerByUsername(roomCode, voterUsername).socket.emit(AnswerEvents.Feedback, feedback);
+                        }
+                    });
+
+                    const players: Player[] = this.getPlayers(roomCode);
+                    const player = this.getPlayerByUsername(roomCode, cheaterUsername);
+                    if (player.isPlaying) {
+                        player.score = Math.round(player.score - 0.3 * player.score);
+                        const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
+                        this.getPlayerByUsername(roomCode, player.username).socket.emit(AnswerEvents.Feedback, feedback);
+                    }
+                }
+            }
+
+            if (this.matchRoomService.cheaterGetsBonus(cheaterUsername)) {
+                const player = this.getPlayerByUsername(roomCode, cheaterUsername);
+                if (player.isPlaying) {
+                    player.score = Math.round(player.score + player.score * 0.3);
+                    const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
+                    this.matchRoomService.cheaterPlayer.socket.emit(AnswerEvents.Feedback, feedback);
+                }
+            }
+        }
     }
 
     async addPlayer(playerSocket: Socket, matchRoomCode: string, newid: string, newUsername: string): Promise<Player> {
@@ -111,6 +161,14 @@ export class PlayerRoomService {
             }
         });
         return foundPlayer;
+    }
+
+    getPlayerByUsername(matchRoomCode: string, username: string): Player | undefined {
+        const matchRoom = this.matchRoomService.getRoom(matchRoomCode);
+        if (matchRoom) {
+            return matchRoom.players.find((player: Player) => player.username === username);
+        }
+        return undefined;
     }
 
     makePlayerInactive(matchRoomCode: string, userId: string): void {

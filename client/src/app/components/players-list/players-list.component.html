@@ -1,15 +1,28 @@
-<!-- TODO: Cheater Mode instead of Random Mode -->
-<!-- TODO: Check if it's okay to display players list for everyone (not just host) -->
 <ng-container *transloco="let t">
     <div
         id="players-main-container"
         *ngIf="
             this.matchContextService.getContext() === context.HostView ||
-            (this.matchContextService.getContext() !== context.HostView && this.matchContextService.getContext() === context.RandomMode)
+            (this.matchContextService.getContext() !== context.HostView && this.matchContextService.getContext() === context.RandomMode) ||
+            (this.matchContextService.getContext() !== context.HostView && this.matchRoomService.isCheaterMode)
         "
     >
         <h2>{{ t('players-list.players') }}</h2>
         <div *ngIf="this.matchContextService.getContext() === context.HostView">
+            <div *ngFor="let player of this.players | sortPlayers: 'score' : 'descending'" class="player-card">
+                <div class="username">
+                    <p [ngClass]="[player.isPlaying ? '' : 'inactive-player']">{{ player.username }}</p>
+                    <strong *ngIf="player.id === this.matchRoomService.cheaterPlayer?.id" class="cheater-tag">
+                        {{ t('cheater-mode.cheater') }}
+                    </strong>
+                </div>
+                <div class="player-performance">
+                    <p>{{ player.score }} pts</p>
+                    <p>({{ player.bonusCount }}✨)</p>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="this.matchContextService.getContext() !== context.HostView && this.matchRoomService.isCheaterMode">
             <div *ngFor="let player of this.players | sortPlayers: 'score' : 'descending'" class="player-card">
                 <p [ngClass]="[player.isPlaying ? '' : 'inactive-player']">{{ player.username }}</p>
                 <div class="player-performance">

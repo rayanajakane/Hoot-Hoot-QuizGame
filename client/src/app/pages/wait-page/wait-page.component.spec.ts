@@ -15,6 +15,7 @@ import { MatchService } from '@app/services/match/match.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { TimeService } from '@app/services/time/time.service';
 import SpyObj = jasmine.SpyObj;
+import { getTranslocoModule } from '@app/transloco-testing.module';
 
 @Component({
     selector: 'app-chat',
@@ -59,7 +60,7 @@ describe('WaitPageComponent', () => {
 
         TestBed.configureTestingModule({
             declarations: [WaitPageComponent, MockChatComponent],
-            imports: [RouterTestingModule.withRoutes(routes), HttpClientTestingModule, MatProgressSpinnerModule],
+            imports: [RouterTestingModule.withRoutes(routes), HttpClientTestingModule, MatProgressSpinnerModule,getTranslocoModule()],
             providers: [
                 HttpClient,
                 { provide: MatchRoomService, useValue: matchRoomSpy },
