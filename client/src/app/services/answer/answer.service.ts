@@ -63,7 +63,6 @@ export class AnswerService {
         this.onEndGame();
         this.onTimesUp();
         this.onGradeAnswers();
-        this.goToVoting();
         this.onNextQuestion();
     }
 
@@ -84,17 +83,6 @@ export class AnswerService {
         this.timeService.isTimerPaused = false;
     }
 
-    goToVoting(){
-        this.socketService.on(AnswerEvents.EndGame, () => {
-            if(!this.matchRoomService.isCooldown && this.showFeedback && this.matchRoomService.isCheaterMode){
-                this.matchRoomService.startedVote = true;
-                setTimeout(() => {
-                    this.matchRoomService.voteOnCheater();
-                },3000);
-                this.matchRoomService.startedVote = false;
-             }
-        });
-    }
 
     selectChoice(choice: string, userInfo: UserInfo) {
         const choiceInfo: ChoiceInfo = { choice, userInfo };

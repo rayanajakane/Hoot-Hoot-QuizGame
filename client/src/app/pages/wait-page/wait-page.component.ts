@@ -6,7 +6,9 @@ import { AuthenticationService } from '@app/services/authentication/authenticati
 import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { MatchService } from '@app/services/match/match.service';
+import { NotificationService } from '@app/services/notification/notification.service';
 import { TimeService } from '@app/services/time/time.service';
+import { TranslocoService } from '@jsverse/transloco';
 
 @Component({
     selector: 'app-wait-page',
@@ -27,12 +29,15 @@ export class WaitPageComponent implements OnInit {
         public router: Router,
         public matchService: MatchService,
         private readonly matchContextService: MatchContextService,
+        private readonly notificationService: NotificationService,
+        private translocoService: TranslocoService,
         public authenticationService: AuthenticationService,
     ) {}
 
     get time() {
         return this.timeService.time;
     }
+
 
     get isHost() {
         return this.matchContextService.getContext() === MatchContext.HostView;
@@ -58,6 +63,9 @@ export class WaitPageComponent implements OnInit {
     toggleLock() {
         this.matchRoomService.toggleLock();
         this.isLocked = this.isLocked ? false : true;
+        if(this.matchRoomService.isCheaterMode && this.matchRoomService.players.length < 3 && this.isLocked) {
+           this.notificationService.displayErrorMessage(this.translocoService.translate('cheater-mode.players-amount-invalid'));
+        }
     }
 
     banPlayerId(userId: string) {

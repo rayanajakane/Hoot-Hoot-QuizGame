@@ -57,9 +57,8 @@ export class PlayerRoomService {
 
                     playersWhoVotedForCheater.forEach((voterUsername: string) => {
                         const player = this.getPlayerByUsername(roomCode, voterUsername);
-                        if (player) {
+                        if (player.isPlaying) {
                             player.score = Math.round(player.score + cheaterScore * 0.3);
-                            player.bonusCount++;
                             const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
                             console.log(feedback);
                             this.getPlayerByUsername(roomCode, voterUsername).socket.emit(AnswerEvents.Feedback, feedback);
@@ -68,20 +67,21 @@ export class PlayerRoomService {
 
                     const players: Player[] = this.getPlayers(roomCode);
                     const player = this.getPlayerByUsername(roomCode, cheaterUsername);
-                    player.score = Math.round(player.score - 0.3 * player.score);
-
-                    const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
-
-                    this.getPlayerByUsername(roomCode, player.username).socket.emit(AnswerEvents.Feedback, feedback);
+                    if (player.isPlaying) {
+                        player.score = Math.round(player.score - 0.3 * player.score);
+                        const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
+                        this.getPlayerByUsername(roomCode, player.username).socket.emit(AnswerEvents.Feedback, feedback);
+                    }
                 }
             }
 
             if (this.matchRoomService.cheaterGetsBonus(cheaterUsername)) {
                 const player = this.getPlayerByUsername(roomCode, cheaterUsername);
-                player.score = Math.round(player.score + player.score*0.3);
-                player.bonusCount++;
-                const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
-                this.matchRoomService.cheaterPlayer.socket.emit(AnswerEvents.Feedback, feedback);
+                if (player.isPlaying) {
+                    player.score = Math.round(player.score + player.score * 0.3);
+                    const feedback: Feedback = { score: player.score, answerCorrectness: player.answerCorrectness };
+                    this.matchRoomService.cheaterPlayer.socket.emit(AnswerEvents.Feedback, feedback);
+                }
             }
         }
     }

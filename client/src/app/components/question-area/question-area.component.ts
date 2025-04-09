@@ -136,6 +136,12 @@ export class QuestionAreaComponent implements OnInit {
         this.answerService.resetStateForNewQuestion();
     }
 
+    goToVoting() {
+        this.matchRoomService.startedVote = true;
+        this.matchRoomService.voteOnCheater();
+        this.matchRoomService.startedVote = false;
+    }
+
     voteOnCheater() {
         this.matchRoomService.voteOnCheater();
     }

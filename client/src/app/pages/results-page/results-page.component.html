@@ -1,6 +1,6 @@
 <ng-container *transloco="let t">
     <div id="main-container">
-        <h1>Résultats</h1>
+        <h1>R{{ t('history.result') }}</h1>
         <div id="players-list">
             <mat-card *ngFor="let player of this.players | sortPlayers: 'score' : 'descending'" class="player-card">
                 <div class="username-avatar-container">
@@ -13,7 +13,7 @@
                     <span class="username">
                         <p [ngClass]="[player.isPlaying ? '' : 'inactive-player']">{{ player.username }}</p>
                         <p *ngIf="player.id === this.matchRoomService.cheaterPlayer?.id" class="cheater-tag">
-                            {{ t('cheater-mode.cheater') }}
+                            <strong> {{ t('cheater-mode.cheater') }} </strong>
                         </p>
                     </span>
                 </div>
@@ -32,7 +32,7 @@
         <div class="controls-container">
             <button mat-raised-button class="exit-button" color="primary" (click)="handleDisconnect()" routerLink="/home">
                 <mat-icon class="material-icons">logout</mat-icon>
-                <p>{{t('nav.quit')}}</p>
+                <p>{{ t('nav.quit') }}</p>
             </button>
         </div>
     </div>
