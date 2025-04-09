@@ -39,6 +39,7 @@ import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.SwitchCamera
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -225,7 +226,9 @@ fun CameraContent(onPhotoCaptured: (Bitmap) -> Unit) {
         AndroidView(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues).statusBarsPadding().navigationBarsPadding(),
+                .padding(paddingValues)
+                .statusBarsPadding()
+                .navigationBarsPadding(),
             factory = { context ->
                 PreviewView(context).apply {
                     layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
@@ -240,10 +243,9 @@ fun CameraContent(onPhotoCaptured: (Bitmap) -> Unit) {
                 }
             })
 
-        ExtendedFloatingActionButton(
+        FloatingActionButton(
             modifier = Modifier
                 .padding(16.dp),
-            text = { Text(text = stringResource(R.string.switch_camera)) },
             onClick = {
                 isFrontCamera.value = !isFrontCamera.value
                 cameraController.cameraSelector =
@@ -253,14 +255,15 @@ fun CameraContent(onPhotoCaptured: (Bitmap) -> Unit) {
                         CameraSelector.DEFAULT_BACK_CAMERA
                     }
                 cameraController.bindToLifecycle(lifecycleOwner)
-            },
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.SwitchCamera,
-                    contentDescription = stringResource(R.string.switch_camera)
-                )
             }
-        )
+        ) {
+
+            Icon(
+                imageVector = Icons.Default.SwitchCamera,
+                contentDescription = stringResource(R.string.switch_camera)
+            )
+
+        }
     }
 }
 
