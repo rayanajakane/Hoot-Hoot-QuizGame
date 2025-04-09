@@ -1,6 +1,6 @@
 <ng-container *transloco="let t">
     <div id="main-container">
-        <h1>Résultats</h1>
+        <h1>R{{ t('history.result') }}</h1>
         <div id="players-list">
             <mat-card *ngFor="let player of this.players | sortPlayers: 'score' : 'descending'" class="player-card">
                 <div class="username-avatar-container">
