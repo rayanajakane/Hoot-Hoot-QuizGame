@@ -5,14 +5,11 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.activity.result.launch
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -176,7 +173,7 @@ fun UserEditPage(
     val avatarToShow = temporaryAvatar ?: avatarURL
     var initialAvatarURL by remember { mutableStateOf(authViewModel.getAvatarURL()) }
     var initialUsername by remember { mutableStateOf(authViewModel.getUsername()) }
-    val initialLang by remember { mutableStateOf(Locale.getDefault().language) }
+    var initialLang by remember { mutableStateOf(Locale.getDefault().language) }
 
     val openDeleteDialog = remember { mutableStateOf(false) }
 
@@ -237,89 +234,79 @@ fun UserEditPage(
         }
     }
 
-    fun saveUserProfile(): Boolean {
-        var usernameUpdate: String = ""
-        var avatarURLUpdate: String = ""
-
-        // Flag used to tell us if something was updated or not
-        var isUpdated: Boolean = false
-
+    fun saveUserProfile() {
         // To hide the keyboard in case it's open
         keyboardController?.hide()
 
-        // Change username
-        if (initialUsername != username) {
-            usernameUpdate = username
-            initialUsername = username
-            isUpdated = true
-        } else {
-            Log.d("Save UserProfile", "Username has not changed.")
+        // Equivalent to invalid form
+        if (usernameError.isNotEmpty()) {
+            Log.e("Update profile", "Username is invalid")
+            return
         }
 
-        // Save avatar image
+        val isSameUsername = (username.lowercase() == authViewModel.getUsername().lowercase())
+
+
+        // Update avatar image
         val capturedImage = cameraViewModel.state.value.capturedImage
         if (!isPresetAvatar && capturedImage != null) {
-            Log.d("UserEditPage", "Saving new stuff")
             cameraViewModel.saveCapturedImage(
                 capturedImage,
                 authViewModel.getUserId(),
                 authViewModel
             ) { newAvatarUrl ->
                 if (newAvatarUrl != null) {
-                    avatarURLUpdate = newAvatarUrl
+                    Log.d("Update profile", "Camera Avatar : $newAvatarUrl")
                     initialAvatarURL = newAvatarUrl
-                    isUpdated = true
-                    Log.d("Save UserProfile", "URLUpdate: $avatarURLUpdate")
-
-                    Log.d("Save UserProfile", "URL Update: $avatarURLUpdate")
-
+                    authViewModel.updateAvatar(newAvatarUrl)
                 } else {
-                    Log.e("Save UserProfile", "Failed to save image. URL was null")
+                    Log.e("Update profile", "Failed to save image. URL was null")
                 }
             }
         } else if (initialAvatarURL != authViewModel.getAvatarURL()) {
-            Log.d("Save UserProfile", "Using preset avatar")
             val newAvatarUrl = authViewModel.getAvatarURL()
-            avatarURLUpdate = newAvatarUrl
             initialAvatarURL = newAvatarUrl
-            isUpdated = true
-
-            Log.d("Save UserProfile", "URL Update: $avatarURLUpdate")
+            authViewModel.updateAvatar(newAvatarUrl)
+            Log.d("Update profile", "Saved preset avatar : $newAvatarUrl")
 
         } else {
-            Log.d("Save UserProfile", "Avatar has not changed")
+            Log.d("Update profile", "Avatar has not changed")
         }
 
-        // Saves both avatar and or username in one go
-        authViewModel.updateUserProfile(avatarURLUpdate, usernameUpdate)
+
+        if (!isSameUsername) {
+            Log.d("Update profile", "Updating username to : $username")
+            authViewModel.updateUsername(username) { updateUsernameTask ->
+                if (updateUsernameTask) {
+                    authViewModel.emitUpdates()
+                } else {
+                    Log.e("Update profile", "An error has occured when updating username")
+                }
+            }
+        }
 
         // Change app theme
         if (currentTheme != theme) {
-            isUpdated = true
             onThemeUpdated(theme)
             ThemeService.saveThemeToDB(theme, authViewModel.getUserConfigsDatabaseRef())
         } else {
-            Log.d("Save UserProfile", "Theme was not changed")
+            Log.d("Update profile", "Theme was not changed")
         }
 
         // Change app language
         if (initialLang != currentLang) {
-            isUpdated = true
             translationService.setLanguage(currentLang)
             translationService.saveLanguageToDB(
                 currentLang,
                 authViewModel.getUserConfigsDatabaseRef()
             )
         } else {
-            Log.d("Save UserProfile", "Lang was not changed")
+            Log.d("Update profile", "Lang was not changed")
         }
 
-        // Send snackbar if updated
-        if (isUpdated) {
-            authViewModel.setProfileUpdated(isUpdated)
-        }
-        return isUpdated
+        authViewModel.setProfileUpdated(true)
     }
+
     // Delete dialog
     when {
         openDeleteDialog.value -> {
