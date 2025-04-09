@@ -42,6 +42,7 @@ import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.Icon
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.pointerInput
@@ -52,10 +53,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.polyquiz.R
+import com.example.polyquiz.SnackbarController
+import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AnswerCorrectness
 import com.example.polyquiz.constants.AnswerEvents
 import com.example.polyquiz.match.domain.AnswerService.showFeedback
+import kotlinx.coroutines.launch
 import java.util.Timer
 import kotlin.concurrent.schedule
 
@@ -77,6 +81,7 @@ fun QuestionArea(
     var context by remember { mutableStateOf(matchContextService.getContext()) }
     val question by matchRoomService::currentQuestion
     val score by answerService::playerScore
+    val scope = rememberCoroutineScope()
 
     val hasImage = !question?.pictureUrl.isNullOrEmpty()
 
@@ -96,8 +101,26 @@ fun QuestionArea(
         if (matchRoomService.isCheaterMode) {
             if (matchRoomService.username == matchRoomService.cheaterPlayer?.username) {
                 matchContextService.setContext(MatchContext.CHEATERVIEW);
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.StringResource(R.string.cheater_mode_notify_cheater)
+                        )
+                    )
+                }
+            }
+
+            if(matchContextService.getContext() === MatchContext.PLAYERVIEW){
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.StringResource(R.string.cheater_mode_notify_regular_player)
+                        )
+                    )
+                }
             }
         }
+
 
         when (MatchRoomService.navigateToVotingPage) {
             true -> {

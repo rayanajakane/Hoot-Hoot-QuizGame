@@ -144,7 +144,7 @@ fun WaitPage(
 
     val onToggleLock: () -> Unit = {
         MatchRoomService.toggleLock()
-        if(matchRoomService.isCheaterMode && matchRoomService.players.size <= 3){
+        if(matchRoomService.isCheaterMode && matchRoomService.players.size < 3){
             scope.launch {
                 SnackbarController.sendEvent(
                     event = SnackbarEvent(

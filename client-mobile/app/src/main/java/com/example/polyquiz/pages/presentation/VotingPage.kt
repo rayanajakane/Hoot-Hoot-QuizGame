@@ -182,7 +182,7 @@ fun VotingPage(
             }
 
             Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.Top
             ) {
                 if (context === MatchContext.HOSTVIEW && !matchRoomService.isCooldown) {
                     Button(
