@@ -54,6 +54,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -61,6 +62,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.ui.features.camera.CameraState
@@ -240,7 +242,7 @@ fun CameraContent(onPhotoCaptured: (Bitmap) -> Unit) {
         ExtendedFloatingActionButton(
             modifier = Modifier
                 .padding(16.dp),
-            text = { Text(text = "Switch Camera") },
+            text = { Text(text = stringResource(R.string.switch_camera)) },
             onClick = {
                 isFrontCamera.value = !isFrontCamera.value
                 cameraController.cameraSelector =
@@ -254,7 +256,7 @@ fun CameraContent(onPhotoCaptured: (Bitmap) -> Unit) {
             icon = {
                 Icon(
                     imageVector = Icons.Default.SwitchCamera,
-                    contentDescription = "Switch camera icon"
+                    contentDescription = stringResource(R.string.switch_camera)
                 )
             }
         )
