@@ -129,7 +129,7 @@ fun VotingPage(
                                 selectedPlayer = selectedPlayer,
                                 onPlayerSelected = {
                                     selectedPlayer = it
-                                    isVotingDisabled = false
+                                    isVotingDisabled = true
                                 },
                                 isVotingDisabled = false,
                                 voteCounts = voteCounts
@@ -268,7 +268,7 @@ fun PlayerVoteCard(
     selectedPlayer: String?,
     onPlayerSelected: (String) -> Unit,
     voteCounts: VotingData,
-    isVotingDisabled: Boolean =true
+    isVotingDisabled: Boolean = true
 ) {
     Card(
         modifier = Modifier
@@ -289,11 +289,12 @@ fun PlayerVoteCard(
         ) {
             RadioButton(
                 selected = selectedPlayer == player.username,
+
                 onClick = { onPlayerSelected(player.username) },
                 colors = RadioButtonDefaults.colors(
                     selectedColor = AndroidGreen, unselectedColor = Color.Gray
                 ),
-                enabled = isVotingDisabled
+                enabled = !isVotingDisabled
             )
             PlayerInfo(player = player)
         }
