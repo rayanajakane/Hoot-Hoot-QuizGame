@@ -322,6 +322,7 @@ fun Navigation(
                 authViewModel = authViewModel,
                 currentUserID = authViewModel.getUserId(),
                 moneyService = moneyService,
+                navigateToLogin = { navController.navigate(Route.Login) },
                 navigateToHome = { navController.navigate(Route.Home) },
                 navigateToCreate = { navController.navigate(Route.MatchCreation) },
                 navigateToUserEdit = { navController.navigate(Route.UserEditPage) },

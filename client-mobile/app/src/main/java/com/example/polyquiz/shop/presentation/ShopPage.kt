@@ -48,6 +48,7 @@ fun ShopPage(
     authViewModel: AuthViewModel,
     currentUserID: String,
     moneyService: MoneyService,
+    navigateToLogin: () -> Unit,
     navigateToHome: () -> Unit,
     navigateToCreate: () -> Unit,
     navigateToUserEdit: () -> Unit,
@@ -123,7 +124,10 @@ fun ShopPage(
                         navigateToJoinRoom,
                         navigateToRankingsPage,
                         navigateToShop,
-                        signOut = { authViewModel.signOut() }
+                        signOut = {
+                            authViewModel.signOut()
+                            navigateToLogin()
+                        },
                     )
                 }
                 Column(modifier = Modifier.padding(26.dp, 1.dp)) {
