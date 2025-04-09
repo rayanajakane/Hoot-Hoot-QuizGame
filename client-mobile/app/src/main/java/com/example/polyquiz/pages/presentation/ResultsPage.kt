@@ -83,7 +83,7 @@ fun ResultsPage(
             )
 
             LazyColumn(modifier = Modifier.weight(1f)) {
-                items(players) { player ->
+                items(matchRoomService.players) { player ->
                     PlayerCard(
                         Modifier.fillMaxWidth(0.8f),
                         player,

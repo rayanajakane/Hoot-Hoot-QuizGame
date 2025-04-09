@@ -48,7 +48,6 @@ object AnswerService {
         onTimesUp()
         onGradeAnswers()
         onNextQuestion()
-        goToVoting()
     }
 
     // TODO : fix on feedback pl0x : args is empty and or null
@@ -161,21 +160,6 @@ object AnswerService {
         mSocket.emit(AnswerEvents.SELECT_CHOICE.value, choiceInfoJsonObject)
     }
 
-    fun goToVoting(){
-        mSocket.on(AnswerEvents.END_GAME.value){
-            if(!MatchRoomService.isCooldown && showFeedback && MatchRoomService.isCheaterMode ){
-                MatchRoomService.startedVote = true;
-//                Handler().postDelayed({
-//                    MatchRoomService.voteOnCheater()
-//                }, 2000)
-                Timer().schedule(2000) {
-                    MatchRoomService.voteOnCheater()
-                }
-               // MatchRoomService.voteOnCheater();
-            }
-            MatchRoomService.startedVote = false;
-        }
-    }
 
     fun deselectChoice(choice: String, userInfo: UserInfo) {
         val choiceInfo = ChoiceInfo(choice, userInfo)

@@ -70,6 +70,9 @@ fun VotingPage(
 
 
     var isVotingDisabled by remember { mutableStateOf(true) }
+
+    var radioButtonDisabled by remember { mutableStateOf(false) }
+
     var context = MatchContextService.getContext()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -129,7 +132,7 @@ fun VotingPage(
                                 selectedPlayer = selectedPlayer,
                                 onPlayerSelected = {
                                     selectedPlayer = it
-                                    isVotingDisabled = true
+                                    isVotingDisabled = false
                                 },
                                 isVotingDisabled = false,
                                 voteCounts = voteCounts
@@ -156,6 +159,7 @@ fun VotingPage(
                                 put("usersWhoVoted", usersWhoVotedArray)
                             }
                             matchRoomService.sendBackVotesResult(sentInfo)
+                            radioButtonDisabled = true
                         }
                     }, modifier = Modifier, enabled = !isVotingDisabled
                 ) {
@@ -253,7 +257,7 @@ fun PlayerVotedCard(player: String) {
         ) {
 
             Text(
-                text = player + stringResource(R.string.cheater_mode_player_voted),
+                text = player + " ${stringResource(R.string.cheater_mode_player_voted)}",
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurface,
             )
@@ -268,7 +272,7 @@ fun PlayerVoteCard(
     selectedPlayer: String?,
     onPlayerSelected: (String) -> Unit,
     voteCounts: VotingData,
-    isVotingDisabled: Boolean = true
+    isVotingDisabled: Boolean = false
 ) {
     Card(
         modifier = Modifier

@@ -54,6 +54,10 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.polyquiz.R
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AnswerCorrectness
+import com.example.polyquiz.constants.AnswerEvents
+import com.example.polyquiz.match.domain.AnswerService.showFeedback
+import java.util.Timer
+import kotlin.concurrent.schedule
 
 @Composable
 fun QuestionArea(
@@ -389,13 +393,22 @@ fun QuestionArea(
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Text(stringResource(R.string.show_final))
                                 }
-                            } else if (answerService.isNextQuestionButtonEnabled) {
+                            } else if (!answerService.isEndGame && answerService.isNextQuestionButtonEnabled) {
                                 Log.d("Question area", "next question enabled")
                                 Button(
                                     onClick = { matchRoomService.goToNextQuestion() },
                                     shape = RoundedCornerShape(3.dp)
                                 ) {
                                     Text(stringResource(R.string.next_question))
+                                }
+                            }
+                            else if (answerService.isEndGame && MatchRoomService.isCheaterMode ) {
+                                Log.d("Voting Area", "next question enabled")
+                                Button(
+                                    onClick = { MatchRoomService.voteOnCheater() },
+                                    shape = RoundedCornerShape(3.dp)
+                                ) {
+                                    Text(stringResource(R.string.cheater_mode_go_to_vote_button))
                                 }
                             }
                         }
