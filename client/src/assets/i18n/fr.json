@@ -349,8 +349,10 @@
         "notifyRegularPlayer": "Vous avez le rôle de joueur régulier dans cette partie",
         "playerVoted": "\"{{player}}\" a voté",
         "players-still-voting": "Joueurs en train de voter",
-        "players-voted": "Tous les joueurs ont voté"
+        "players-voted": "Tous les joueurs ont voté",
+        "players-amount-invalid": "Le nombre de joueurs doit être supérieur à 3"
     },
+    
     "questions-generations":{
         "input": "Veuillez fournir un sujet ou un thème pour générer des questions, et sélectionnez le type de question souhaité ",
         "generate": "Générer",

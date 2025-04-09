@@ -350,7 +350,8 @@
         "playerVoted": "\"{{player}}\" has voted",
         "answer-hint": "Answer Hint: \"{{answer}}\"",
         "players-still-voting": "Players are still voting",
-        "players-voted": "All players have voted"
+        "players-voted": "All players have voted",
+        "players-amount-invalid": "The match needs at least 3 players"
     },
     "questions-generations":{
         "input": "Please provide a topic or theme to generate questions, and select the desired question type.",

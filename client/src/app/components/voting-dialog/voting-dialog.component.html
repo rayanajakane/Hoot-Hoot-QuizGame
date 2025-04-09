@@ -6,7 +6,7 @@
                 <mat-radio-group [(ngModel)]="selectedPlayer">
                     <mat-card *ngFor="let player of matchRoomService.players" class="player-card">
                         <div *ngIf="player.username !== matchRoomService.getUsername()">
-                            <mat-radio-button [value]="player.username">
+                            <mat-radio-button [disabled]="!this.isVotingDisabled" [value]="player.username" >
                                 <div class="avatar-container">
                                     <div class="avatar">
                                         <img src="{{ player.photoUrl ? player.photoUrl : defaultAvatar }}" alt="" />
@@ -47,7 +47,7 @@
         <div class="controls-container">
             <button mat-raised-button class="exit-button" color="primary" (click)="handleDisconnect()" routerLink="/home">
                 <mat-icon class="material-icons">logout</mat-icon>
-                <p>{{t('nav-quit')}}</p>
+                <p>{{t('nav.quit')}}</p>
             </button>
         </div>
     </div>
