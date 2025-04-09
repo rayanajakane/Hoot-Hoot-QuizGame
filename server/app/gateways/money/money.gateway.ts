@@ -60,7 +60,7 @@ export class MoneyGateway {
             return;
         }
         const moneyErrors = await this.moneyService.getMoneyError(data.user, data.item.price, false);
-        if (moneyErrors) {
+        if (moneyErrors.length > 0) {
             this.sendError(client.id, moneyErrors);
             return;
         }
@@ -78,7 +78,7 @@ export class MoneyGateway {
             return;
         }
         const moneyErrors = await this.moneyService.getMoneyError(data.user, data.item.price, false);
-        if (moneyErrors) {
+        if (moneyErrors.length > 0) {
             this.sendError(client.id, moneyErrors);
             return;
         }
@@ -95,7 +95,7 @@ export class MoneyGateway {
             return;
         }
         const moneyErrors = await this.moneyService.getMoneyError(data.user, data.item.price, false);
-        if (moneyErrors) {
+        if (moneyErrors.length > 0) {
             this.sendError(client.id, moneyErrors);
             return;
         }
