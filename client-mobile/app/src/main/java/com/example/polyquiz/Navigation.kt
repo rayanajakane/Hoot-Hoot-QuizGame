@@ -193,7 +193,9 @@ fun Navigation(
                 navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
                 navigateToMatchPage = { navController.navigate(Route.MatchRoom) },
                 navigateToLogin = { navController.navigate(Route.Login) },
-                navigateToRankingsPage = { navController.navigate(Route.RankingsPage) }
+                navigateToRankingsPage = { navController.navigate(Route.RankingsPage) },
+                navigateToCamera = { navController.navigate(Route.MainCameraScreen) },
+                cameraViewModel = cameraViewModel
             )
         }
 
@@ -265,9 +267,13 @@ fun Navigation(
                 authViewModel,
                 cameraViewModel,
                 navigateToUserEdit = { navController.navigate(Route.UserEditPage) },
+                navigateToJoinRoom = {
+                    navController.navigate(Route.JoinMatchPage)
+                },
                 navigateToSignup = { navController.navigate(Route.Signup) }
             )
         }
+
 
         composable<Route.RankingsPage> {
             RankingsPage(
@@ -292,7 +298,7 @@ fun Navigation(
         }
         composable<Route.Drawing> {
 
-             val viewModel: DrawingViewModel = viewModel() // If not using Hilt
+            val viewModel: DrawingViewModel = viewModel() // If not using Hilt
 
             DrawingScreen(
                 viewModel = viewModel,

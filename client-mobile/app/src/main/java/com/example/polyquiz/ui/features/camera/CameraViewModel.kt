@@ -15,11 +15,25 @@ class CameraViewModel : ViewModel() {
     private val _state = MutableStateFlow(CameraState())
     val state: StateFlow<CameraState> = _state
 
+    private val _showQrContent = MutableStateFlow(false)
+    val showQrContent: StateFlow<Boolean> = _showQrContent
+
     private val _temporaryAvatar = MutableStateFlow<Bitmap?>(null)
     val temporaryAvatar: StateFlow<Bitmap?> get() = _temporaryAvatar
 
     private val _isPresetAvatar = MutableStateFlow<Boolean>(true)
     val isPresetAvatar: StateFlow<Boolean> = _isPresetAvatar
+
+    private val _scannedCode = MutableStateFlow<String?>(null)
+    val scannedCode: StateFlow<String?> = _scannedCode
+
+    fun setScannedCode(code: String?) {
+        _scannedCode.value = code
+    }
+
+    fun setCameraContent(showQr: Boolean) {
+        _showQrContent.value = showQr
+    }
 
     fun setTemporaryAvatar(capturedImage: Bitmap?) {
         _temporaryAvatar.value = capturedImage
@@ -58,7 +72,12 @@ class CameraViewModel : ViewModel() {
         _isPresetAvatar.value = true
     }
 
-    fun saveCapturedImage(capturedImage: Bitmap, uid: String, authViewModel: AuthViewModel, callback: (String?) -> Unit) {
+    fun saveCapturedImage(
+        capturedImage: Bitmap,
+        uid: String,
+        authViewModel: AuthViewModel,
+        callback: (String?) -> Unit
+    ) {
         updateCapturedPhotoState(capturedImage)
         ImageStorage.uploadAvatar(capturedImage, uid) { url ->
             if (url != null) {
