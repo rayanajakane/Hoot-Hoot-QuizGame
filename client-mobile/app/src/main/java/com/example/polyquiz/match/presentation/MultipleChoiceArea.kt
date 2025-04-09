@@ -90,7 +90,8 @@ fun MultipleChoiceArea(
         }
     }
 
-    if (matchContext == MatchContext.HOSTVIEW) {
+    if (matchContext === MatchContext.HOSTVIEW) {
+        answerService.isSelectionEnabled = false
         Column(modifier = modifier) {
             for (rowIndex in 0 until rows) {
                 val firstIndex = rowIndex * 2

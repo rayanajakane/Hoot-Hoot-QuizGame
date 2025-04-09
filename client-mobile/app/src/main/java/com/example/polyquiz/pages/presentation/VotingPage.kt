@@ -167,7 +167,7 @@ fun VotingPage(
                 }
                 Spacer(modifier = Modifier.height(2.dp))
                 LazyColumn(
-                    modifier = Modifier.weight(1f)
+                    //modifier = Modifier.weight(1f)
                 ) {
                     items(votedPlayers) { player ->
                         PlayerVotedCard(player = player)
@@ -175,7 +175,7 @@ fun VotingPage(
                 }
             }
 
-
+            Spacer(modifier = Modifier.height(4.dp))
             if (context === MatchContext.HOSTVIEW && !matchRoomService.isCooldown) {
                 Button(
                     onClick = {
@@ -280,7 +280,8 @@ fun PlayerVoteCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             RadioButton(
                 selected = selectedPlayer == player.username,

@@ -81,7 +81,6 @@ fun PlayerCard(
     withAvatar: Boolean = false,
     inResultsPage: Boolean = false,
 ) {
-    println("isResultsPage$inResultsPage")
     Card(
         shape = RoundedCornerShape(3.dp),
         colors = CardColors(
@@ -96,8 +95,8 @@ fun PlayerCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            horizontalArrangement = Arrangement.SpaceEvenly,
+           // verticalAlignment = Alignment.CenterVertically
         ) {
             if (withAvatar) {
                 AsyncImage(
@@ -144,8 +143,7 @@ fun PlayerCard(
                 }
             }
 
-            Row() {
-                Spacer(modifier = Modifier.width(6.dp))
+                Spacer(modifier = Modifier.width(16.dp))
                 if (MatchRoomService.isCheaterMode && MatchRoomService.isTimeToNavigateToResults && inResultsPage) {
                     if (MatchRoomService.votesResults[player.username] == null) {
                         Text(
@@ -158,7 +156,7 @@ fun PlayerCard(
                             fontSize = 14.sp
                         )
                     }
-                }
+
             }
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 Text(text = "${player.score} pts", fontSize = 14.sp)
