@@ -34,6 +34,7 @@ export class JoinMatchPageComponent {
         this.joinMatchService.getAllMatches();
     }
     ngOnDestroy() {
+        console.log('Destroying JoinMatchPageComponent');
         this.joinMatchService.stopReturningAllMatches();
     }
 

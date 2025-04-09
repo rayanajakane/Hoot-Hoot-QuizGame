@@ -31,7 +31,7 @@ export class CommunicationService<T> {
         return this.http.get<T>(`${this.serverUrl}/${this.baseUrl}/${endpoint}/${id}`).pipe(catchError(this.handleError<T>()));
     }
 
-    add(payload: T, endpoint: string = ''): Observable<HttpResponse<string>> {
+    add(payload: T | any, endpoint: string = ''): Observable<HttpResponse<string>> {
         console.log('caca');
         return this.http
             .post(`${this.serverUrl}/${this.baseUrl}/${endpoint}`, payload, this.httpOptions)
