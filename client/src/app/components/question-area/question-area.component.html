@@ -86,6 +86,10 @@
                 <mat-icon class="material-icons">bar_chart</mat-icon>
                 <p>{{ t('question-area.show-final-results') }}</p>
             </button>
+            <button mat-raised-button *ngIf="this.answerService.isEndGame && this.matchRoomService.isCheaterMode" color="primary" (click)="this.goToVoting()">
+                <mat-icon class="material-icons">bar_chart</mat-icon>
+                <p>{{ t('question-area.show-voting-button') }}</p>
+            </button>
             <button
                 *ngIf="!this.answerService.isEndGame && this.answerService.isNextQuestionButtonEnabled"
                 mat-raised-button

@@ -326,7 +326,8 @@
         "good-answer-qre": "Correct answer : {{answer}}. Margin is +/- {{margin}}",
         "choose-estimated": "Chose an estimated value. Margin is +/- {{margin}}",
         "answer": "Answer",
-        "out-of-bounds": "Value is out of bounds! Must be between {{lowerBound}} and {{upperBound}}"
+        "out-of-bounds": "Value is out of bounds! Must be between {{lowerBound}} and {{upperBound}}",
+        "show-voting-button":"Go to voting page"
     },
     "players-list": {
         "players": "Players"
