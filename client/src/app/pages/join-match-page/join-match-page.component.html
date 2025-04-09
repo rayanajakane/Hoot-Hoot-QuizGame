@@ -38,7 +38,7 @@
 
                             <div *ngIf="match.partyConfig?.isFriendsOnly" class="match-flag friends-only">
                                 <i class="material-icons">people</i>
-                                <span>{{ match.partyConfig.isFriendsOnly}}</span>
+                                <span>{{t('match.partyConfig.isFriendsOnly')}}</span>
                             </div>
                             <div *ngIf="match.partyConfig?.isCheaterMode" class="match-flag friends-only">
                                 <i class="material-icons"></i>
@@ -72,11 +72,11 @@
 
                             <div *ngIf="match.partyConfig?.isFriendsOnly" class="match-flag friends-only">
                                 <i class="material-icons"></i>
-                                <span>Amis uniquement</span>
+                                <span>{{t('match.partyConfig.isFriendsOnly')}}</span>
                             </div>
 
                             <div *ngIf="match.partyConfig?.isCheaterMode" class="match-flag friends-only">
-                                <i class="material-icons">thief</i>
+                                <i class="material-icons"></i>
                                 <span>{{t('match-config.cheater-mode')}}</span>
                             </div>
 
@@ -106,7 +106,7 @@
 
                         <div *ngIf="match.partyConfig?.isFriendsOnly" class="match-flag friends-only">
                             <i class="material-icons">people</i>
-                            <span>{{ match.partyConfig.isFriendsOnly }}</span>
+                            <span>{{t('match.partyConfig.isFriendsOnly') }}</span>
                         </div>
 
                         <div *ngIf="match.partyConfig?.isCheaterMode" class="match-flag friends-only">
