@@ -159,4 +159,5 @@
     <string name="cheater_mode_players_voted">All players have voted</string>
     <string name="cheater_mode">Cheater Mode</string>
     <string name="cheater_mode_players_min">This mode needs at least 3 players</string>
+    <string name="cheater_mode_players_info"> To play in this mode: the game should not contain a question of type long answer, and must contain at least three players</string>
 </resources>

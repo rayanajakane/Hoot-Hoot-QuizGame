@@ -16,9 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.res.stringResource
 import com.example.polyquiz.R
+import com.example.polyquiz.constants.SIZE_CONSTANTS
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.PartyConfig
 
@@ -30,6 +32,7 @@ fun PartyConfigDialog(
 ) {
     var partyConfig by remember { mutableStateOf(initialPartyConfig.copy()) }
     var feeText by remember { mutableStateOf(partyConfig.entryFeeAmount?.toString() ?: "") }
+    var showInfoCheaterMode by remember { mutableStateOf(false) }
 
     val feeValue = feeText.toFloatOrNull() ?: -1f
     val isValid = if (partyConfig.isEntryFeeRequired) feeValue >= 0f else true
@@ -75,7 +78,9 @@ fun PartyConfigDialog(
                     Spacer(modifier = Modifier.weight(1f))
                     Switch(
                         checked = partyConfig.isEntryFeeRequired,
-                        onCheckedChange = { partyConfig = partyConfig.copy(isEntryFeeRequired = it) }
+                        onCheckedChange = {
+                            partyConfig = partyConfig.copy(isEntryFeeRequired = it)
+                        }
                     )
                 }
                 if (partyConfig.isEntryFeeRequired) {
@@ -89,27 +94,48 @@ fun PartyConfigDialog(
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                     )
                     Text(
-                        text = "Les joueurs devront payer ce montant pour rejoindre la partie.",
+                        text = stringResource(R.string.entry_fee_message),
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(top = 4.dp)
                     )
                 }
-                if(MatchRoomService.canPlayCheaterMode) {
+                if (MatchRoomService.canPlayCheaterMode) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text(text = stringResource(R.string.cheater_mode))
-                        Spacer(modifier = Modifier.weight(1f))
 
+                        IconButton(
+                            onClick = { showInfoCheaterMode = !showInfoCheaterMode },
+                            modifier = Modifier.size(30.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Info,
+                                contentDescription = null
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.weight(1f))
                         Switch(
                             checked = partyConfig.isCheaterMode,
                             onCheckedChange = {
                                 partyConfig = partyConfig.copy(isCheaterMode = it)
                             },
-                            )
-                        MatchRoomService.isCheaterMode = partyConfig.isCheaterMode
+                        )
                     }
+
+                    if (showInfoCheaterMode) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = stringResource(R.string.cheater_mode_players_info),
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
+                    }
+
+                    MatchRoomService.isCheaterMode = partyConfig.isCheaterMode
+
                 }
             }
         },
