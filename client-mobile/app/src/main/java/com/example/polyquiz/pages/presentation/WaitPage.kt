@@ -38,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -55,6 +56,8 @@ import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.polyquiz.R
+import com.example.polyquiz.SnackbarController
+import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.MatchContext
@@ -73,6 +76,7 @@ import com.example.polyquiz.match.domain.Player
 import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.match.presentation.TimerComponent
 import com.example.polyquiz.ui.theme.Theme
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
@@ -87,6 +91,7 @@ fun WaitPage(
     val timeService = TimeService
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
+    val scope = rememberCoroutineScope()
 
 
     fun resetWaitPage() {
@@ -139,6 +144,15 @@ fun WaitPage(
 
     val onToggleLock: () -> Unit = {
         MatchRoomService.toggleLock()
+        if(matchRoomService.isCheaterMode && matchRoomService.players.size <= 3){
+            scope.launch {
+                SnackbarController.sendEvent(
+                    event = SnackbarEvent(
+                        message = StringValue.StringResource(R.string.cheater_mode_players_min)
+                    )
+                )
+            }
+        }
         Log.d("toggle lock", "Toggled lock on wait page")
     }
 
@@ -214,7 +228,14 @@ fun WaitPage(
                     )
                     if (isHost()) {
                         LockMatchToggle(onToggleLock)
-                        val disabled  = !matchRoomService.isLocked || players.isEmpty() ||  (matchRoomService.partyConfig.isEntryFeeRequired && matchRoomService.players.size <= 1)
+                        var disabled = true
+                        if(matchRoomService.isCheaterMode){
+                            disabled  = !matchRoomService.isLocked || (matchRoomService.players.size <= 3)
+                        }
+                        else {
+                            disabled =
+                                !matchRoomService.isLocked || players.isEmpty() || (matchRoomService.partyConfig.isEntryFeeRequired && matchRoomService.players.size <= 1)
+                        }
                         Button(
                             onClick = {
                                 startMatch()

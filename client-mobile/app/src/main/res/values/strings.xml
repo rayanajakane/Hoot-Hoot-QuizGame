@@ -158,4 +158,6 @@
     <string name="cheater_mode_players_still_voting">Joueurs en train de voter</string>
     <string name="cheater_mode_go_to_vote_button">Passer vers la page de vote</string>
     <string name="cheater_mode_players_voted">Tous les joueurs ont voté</string>
+    <string name="cheater_mode">Mode tricheur</string>
+    <string name="cheater_mode_players_min">Ce mode nécessite au moins 3 joueurs</string>
 </resources>

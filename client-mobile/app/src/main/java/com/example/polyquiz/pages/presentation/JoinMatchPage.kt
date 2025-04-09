@@ -395,6 +395,18 @@ fun MatchCard(match: MatchPageInfo, onClick: () -> Unit = {}) {
                         )
                     }
                 }
+                if (match.partyConfig?.isCheaterMode == true) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.height(24.dp)
+                    ) {
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = stringResource(R.string.cheater_mode),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                }
             }
             if (onClick != {} && !match.isLocked) {
                 Button(
