@@ -56,7 +56,7 @@ export class MoneyGateway {
     @SubscribeMessage(MoneyEvents.BuyAvatar)
     async buyAvatar(client: Socket, data: PurchaseInfo) {
         if (data.item.owned) {
-            this.sendError(client.id, 'Avatar already owned');
+            // this.sendError(client.id, 'Avatar already owned');
             return;
         }
         const moneyErrors = await this.moneyService.getMoneyError(data.user, data.item.price, false);
@@ -74,7 +74,7 @@ export class MoneyGateway {
     async buyTheme(client: Socket, data: PurchaseInfo) {
         console.log('Buying theme:', data);
         if (data.item.owned) {
-            this.sendError(client.id, 'Theme already owned');
+            // this.sendError(client.id, 'Theme already owned');
             return;
         }
         const moneyErrors = await this.moneyService.getMoneyError(data.user, data.item.price, false);
@@ -91,7 +91,7 @@ export class MoneyGateway {
     async buyWallpaper(client: Socket, data: PurchaseInfo) {
         console.log('Buying wallpaper:', data);
         if (data.item.owned) {
-            this.sendError(client.id, 'Wallpaper already owned');
+            // this.sendError(client.id, 'Wallpaper already owned');
             return;
         }
         const moneyErrors = await this.moneyService.getMoneyError(data.user, data.item.price, false);
