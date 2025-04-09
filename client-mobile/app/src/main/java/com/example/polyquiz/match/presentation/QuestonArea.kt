@@ -85,19 +85,7 @@ fun QuestionArea(
 
     val hasImage = !question?.pictureUrl.isNullOrEmpty()
 
-    LaunchedEffect(
-        Unit,
-        MatchRoomService.hasBeenKickedOut,
-        MatchRoomService.isTimeToNavigateToResults,
-        MatchRoomService.isCheaterMode,
-        MatchRoomService.navigateToVotingPage
-    ) {
-        answerService.resetStateForNewQuestion()
-        timeService.listenToTimerEvents()
-        answerService.listenToAnswerEvents()
-        matchRoomService.isQuitting = false
-        answerService.playerScore = 0
-        context = matchContextService.getContext()
+    LaunchedEffect  (matchRoomService.isCheaterMode){
         if (matchRoomService.isCheaterMode) {
             if (matchRoomService.username == matchRoomService.cheaterPlayer?.username) {
                 matchContextService.setContext(MatchContext.CHEATERVIEW);
@@ -109,7 +97,6 @@ fun QuestionArea(
                     )
                 }
             }
-
             if(matchContextService.getContext() === MatchContext.PLAYERVIEW){
                 scope.launch {
                     SnackbarController.sendEvent(
@@ -119,7 +106,22 @@ fun QuestionArea(
                     )
                 }
             }
+            println("QuestionArea$context")
         }
+    }
+
+    LaunchedEffect(
+        Unit,
+        MatchRoomService.hasBeenKickedOut,
+        MatchRoomService.isTimeToNavigateToResults,
+        MatchRoomService.navigateToVotingPage
+    ) {
+        answerService.resetStateForNewQuestion()
+        timeService.listenToTimerEvents()
+        answerService.listenToAnswerEvents()
+        matchRoomService.isQuitting = false
+        answerService.playerScore = 0
+        context = matchContextService.getContext()
 
 
         when (MatchRoomService.navigateToVotingPage) {
@@ -217,7 +219,6 @@ fun QuestionArea(
                             .align(Alignment.BottomCenter)
                             .padding(top = 16.dp)
                     )
-
 
                 } else {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {

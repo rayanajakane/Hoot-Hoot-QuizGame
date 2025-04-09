@@ -64,6 +64,7 @@ object MatchRoomService {
     var errorMsg by mutableStateOf("")
     var navigateToVotingPage by mutableStateOf(false)
    var votingUsers = MutableStateFlow<List<String>>(emptyList())
+    var playerVoted  by mutableStateOf(false)
 
     var userVoted by mutableStateOf("")
     var votesResults = mutableMapOf<String, Int>()

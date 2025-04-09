@@ -118,20 +118,21 @@ fun PlayerCard(
                     color = MaterialTheme.colorScheme.onSurface,
                     style = TextStyle(textDecoration = TextDecoration.LineThrough)
                 )
-            }
-
-            if (MatchRoomService.isCheaterMode && MatchRoomService.isResults) {
-                Text(
-                    text = stringResource(R.string.cheater_mode_cheater),
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
             } else {
                 Text(
                     text = player.username,
                     fontSize = 16.sp,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
+            }
+            if (MatchRoomService.isCheaterMode && context.getContext() !== MatchContext.HOSTVIEW) {
+                if (player.id == MatchRoomService.cheaterPlayer.id) {
+                    Text(
+                        text = " ' ${stringResource(R.string.cheater_mode_cheater)}'",
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
             }
             if (MatchRoomService.isCheaterMode && context.getContext() === MatchContext.HOSTVIEW) {
                 if (player.id == MatchRoomService.cheaterPlayer.id) {

@@ -146,6 +146,7 @@ fun VotingPage(
                 Button(
                     onClick = {
                         selectedPlayer?.let {
+                            MatchRoomService.playerVoted =true
                             voteCounts.username = it
                             voteCounts.numberOfVotes += 1
                             voteCounts.usersWhoVoted.add("'${matchRoomService.retrieveUsername()}'")
@@ -293,12 +294,11 @@ fun PlayerVoteCard(
         ) {
             RadioButton(
                 selected = selectedPlayer == player.username,
-
                 onClick = { onPlayerSelected(player.username) },
                 colors = RadioButtonDefaults.colors(
                     selectedColor = AndroidGreen, unselectedColor = Color.Gray
                 ),
-                enabled = !isVotingDisabled
+                enabled = !MatchRoomService.playerVoted
             )
             PlayerInfo(player = player)
         }
