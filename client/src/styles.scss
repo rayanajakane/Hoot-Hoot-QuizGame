@@ -315,7 +315,6 @@ $pikachu-theme: mat.define-light-theme(
     --mdc-elevated-card-container-color: #c2e5c1;
     --mdc-elevated-card-container-elevation: 0 2px 8px rgba(0, 0, 0, 0.1);
     --mdc-filled-text-field-container-color: white;
-    --mdc-snackbar-supporting-text-color: #000 !important;
     --mdc-dialog-supporting-text-color: #333;
     --mat-expansion-container-background-color: #99d498;
     --mdc-protected-button-container-color: mat.get-color-from-palette($primary-luigi, 500);
@@ -710,23 +709,6 @@ body {
 
 .buttons-rack {
     flex-direction: column;
-}
-
-.error-snackbar {
-    --mdc-snackbar-container-color: #cc0000;
-    --mat-snack-bar-button-color: white;
-    white-space: pre-wrap;
-}
-
-.success-snackbar {
-    --mdc-snackbar-container-color: #4bb543;
-    --mat-snack-bar-button-color: white;
-    white-space: pre-wrap;
-}
-.cheater-snackbar {
-    --mdc-snackbar-container-color: #0d72c5;
-    --mat-snack-bar-button-color: white;
-    white-space: pre-wrap;
 }
 
 .custom-placeholder {
