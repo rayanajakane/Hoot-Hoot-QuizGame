@@ -35,6 +35,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.SwitchCamera
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -197,6 +198,7 @@ fun QRCameraContent(onQrScanned: (String) -> Unit) {
 fun CameraContent(onPhotoCaptured: (Bitmap) -> Unit) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    val isFrontCamera = remember { mutableStateOf(false) }
     val cameraController = remember { LifecycleCameraController(context) }
 
     Scaffold(
@@ -234,6 +236,28 @@ fun CameraContent(onPhotoCaptured: (Bitmap) -> Unit) {
 
                 }
             })
+
+        ExtendedFloatingActionButton(
+            modifier = Modifier
+                .padding(16.dp),
+            text = { Text(text = "Switch Camera") },
+            onClick = {
+                isFrontCamera.value = !isFrontCamera.value
+                cameraController.cameraSelector =
+                    if (isFrontCamera.value) {
+                        CameraSelector.DEFAULT_FRONT_CAMERA
+                    } else {
+                        CameraSelector.DEFAULT_BACK_CAMERA
+                    }
+                cameraController.bindToLifecycle(lifecycleOwner)
+            },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.SwitchCamera,
+                    contentDescription = "Switch camera icon"
+                )
+            }
+        )
     }
 }
 
