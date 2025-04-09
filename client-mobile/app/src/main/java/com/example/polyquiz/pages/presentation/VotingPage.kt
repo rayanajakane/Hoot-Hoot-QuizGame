@@ -106,9 +106,10 @@ fun VotingPage(
         ChatComponent(modifier = Modifier, authViewModel = authViewModel)
 
         Column(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Top
         ) {
             if (context != MatchContext.HOSTVIEW) {
                 Text(
@@ -130,6 +131,7 @@ fun VotingPage(
                                     selectedPlayer = it
                                     isVotingDisabled = false
                                 },
+                                isVotingDisabled = false,
                                 voteCounts = voteCounts
                             )
                         }
@@ -251,7 +253,7 @@ fun PlayerVotedCard(player: String) {
         ) {
 
             Text(
-                text = player + stringResource(R.string.cheater_mode_players_voted),
+                text = player + stringResource(R.string.cheater_mode_player_voted),
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurface,
             )
@@ -265,7 +267,8 @@ fun PlayerVoteCard(
     player: Player,
     selectedPlayer: String?,
     onPlayerSelected: (String) -> Unit,
-    voteCounts: VotingData
+    voteCounts: VotingData,
+    isVotingDisabled: Boolean =true
 ) {
     Card(
         modifier = Modifier
@@ -289,7 +292,8 @@ fun PlayerVoteCard(
                 onClick = { onPlayerSelected(player.username) },
                 colors = RadioButtonDefaults.colors(
                     selectedColor = AndroidGreen, unselectedColor = Color.Gray
-                )
+                ),
+                enabled = isVotingDisabled
             )
             PlayerInfo(player = player)
         }

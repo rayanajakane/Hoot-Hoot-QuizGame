@@ -64,7 +64,7 @@ fun QuestionArea(
     authViewModel: AuthViewModel,
     navigateToHome: () -> Unit,
     navigateToResultsPage: () -> Unit,
-    navigateToVotingPage : () -> Unit,
+    navigateToVotingPage: () -> Unit,
     modifier: Modifier
 ) {
     var room by remember { mutableStateOf(matchRoomService.getRoomCode()) }
@@ -89,16 +89,17 @@ fun QuestionArea(
         matchRoomService.isQuitting = false
         answerService.playerScore = 0
         context = matchContextService.getContext()
-        if(matchRoomService.isCheaterMode){
-            if(matchRoomService.username == matchRoomService.cheaterPlayer?.username){
+        if (matchRoomService.isCheaterMode) {
+            if (matchRoomService.username == matchRoomService.cheaterPlayer?.username) {
                 matchContextService.setContext(MatchContext.CHEATERVIEW);
             }
         }
 
-        when (MatchRoomService.navigateToVotingPage){
+        when (MatchRoomService.navigateToVotingPage) {
             true -> {
                 navigateToVotingPage();
             }
+
             else -> Unit
         }
 
@@ -124,7 +125,7 @@ fun QuestionArea(
         matchRoomService.routeToResultsPage()
     }
 
-    fun voteOnCheater(){
+    fun voteOnCheater() {
         matchRoomService.voteOnCheater();
     }
 
@@ -230,6 +231,7 @@ fun QuestionArea(
                         }
 
                         AnswerCorrectness.GOOD -> {
+                            run { println("poinr2t${question?.points}") }
                             stringResource(R.string.good_answer, question?.points ?: 0) to Color(
                                 0xFF4caf50
                             )
@@ -254,9 +256,7 @@ fun QuestionArea(
                     }
                 }
 
-                if ((answerService.showFeedback && context === MatchContext.PLAYERVIEW && !matchRoomService.isCooldown) ||
-                    answerService.showFeedback && context === MatchContext.CHEATERVIEW && !matchRoomService.isCooldown)
-                {
+                if (answerService.showFeedback && context === MatchContext.CHEATERVIEW && !matchRoomService.isCooldown) {
                     val (feedbackText, feedbackColor) = when (answerService.answerCorrectness) {
                         AnswerCorrectness.WRONG -> stringResource(R.string.wrong_answer) to Color(
                             0xFFe91b0c
@@ -272,6 +272,7 @@ fun QuestionArea(
                         }
 
                         AnswerCorrectness.GOOD -> {
+                            run { println("poinrt${question?.points}") }
                             stringResource(R.string.good_answer, question?.points ?: 0) to Color(
                                 0xFF4caf50
                             )

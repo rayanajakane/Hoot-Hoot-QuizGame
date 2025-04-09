@@ -74,9 +74,9 @@ fun EstimatedAnswerArea(
             Text(
                 text = if (isDisabled) {
                     stringResource(
-                        R.string.good_answer,
-                        answerService.feedback.correctAnswer!![0].toInt()
-                            + estimatedParams?.margin!!
+                        R.string.good_answer_qre,
+                        answerService.feedback?.correctAnswer!![0].toInt()
+                            + estimatedParams?.margin!!, estimatedParams!!.margin
                     )
                 } else {
                     stringResource(R.string.choose_estimated, estimatedParams!!.margin)
