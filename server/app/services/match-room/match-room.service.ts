@@ -351,8 +351,13 @@ export class MatchRoomService {
     }
 
     getAllMatchesInfo() {
-        const matchPagesInfo: MatchPageInfo[] = [];
+        let matchPagesInfo: MatchPageInfo[] = [];
         this.matchRooms.forEach((matchRoom: MatchRoom) => {
+            // Fix to avoid immortal rooms when host leaves first in results page and re-creates other match.
+            // CurrentQuestionIndex shouldn't be equal to 0 and MatchRoom is Not Playing when in results page.
+            if (matchRoom.currentQuestionIndex !== 0 && !matchRoom.isPlaying) {
+                return;
+            }
             matchPagesInfo.push({
                 code: matchRoom.code,
                 isLocked: matchRoom.isLocked,
