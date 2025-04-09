@@ -12,7 +12,7 @@
             <div *ngFor="let player of this.players | sortPlayers: 'score' : 'descending'" class="player-card">
                 <div class="username">
                     <p [ngClass]="[player.isPlaying ? '' : 'inactive-player']">{{ player.username }}</p>
-                    <p *ngIf="player.username === this.matchRoomService.cheaterPlayer?.username" class="cheater-tag">
+                    <p *ngIf="player.id === this.matchRoomService.cheaterPlayer?.id" class="cheater-tag">
                         {{ t('cheater-mode.cheater') }}
                     </p>
                 </div>
