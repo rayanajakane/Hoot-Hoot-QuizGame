@@ -13,7 +13,7 @@
                 <div class="username">
                     <p [ngClass]="[player.isPlaying ? '' : 'inactive-player']">{{ player.username }}</p>
                     <p *ngIf="player.id === this.matchRoomService.cheaterPlayer?.id" class="cheater-tag">
-                        {{ t('cheater-mode.cheater') }}
+                        {{ "${t('cheater-mode.cheater')}"}}
                     </p>
                 </div>
                 <div class="player-performance">
