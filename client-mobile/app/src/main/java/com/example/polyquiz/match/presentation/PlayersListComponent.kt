@@ -125,7 +125,7 @@ fun PlayerCard(
                     color = MaterialTheme.colorScheme.onSurface,
                 )
             }
-            if (MatchRoomService.isCheaterMode && context.getContext() !== MatchContext.HOSTVIEW) {
+            if (MatchRoomService.isCheaterMode && context.getContext() !== MatchContext.HOSTVIEW && MatchRoomService.isTimeToNavigateToResults && inResultsPage) {
                 if (player.id == MatchRoomService.cheaterPlayer.id) {
                     Text(
                         text = " ' ${stringResource(R.string.cheater_mode_cheater)}'",
@@ -144,8 +144,9 @@ fun PlayerCard(
                 }
             }
 
-            if (MatchRoomService.isCheaterMode && MatchRoomService.isTimeToNavigateToResults && inResultsPage) {
-                Row(horizontalArrangement = Arrangement.Absolute.Center) {
+            Row() {
+                Spacer(modifier = Modifier.width(6.dp))
+                if (MatchRoomService.isCheaterMode && MatchRoomService.isTimeToNavigateToResults && inResultsPage) {
                     if (MatchRoomService.votesResults[player.username] == null) {
                         Text(
                             text = " Votes: ${0}",
@@ -157,7 +158,6 @@ fun PlayerCard(
                             fontSize = 14.sp
                         )
                     }
-
                 }
             }
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {

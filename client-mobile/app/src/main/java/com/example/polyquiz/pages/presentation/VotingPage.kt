@@ -93,9 +93,7 @@ fun VotingPage(
         }
     }
 
-
     Row(
-        horizontalArrangement = Arrangement.spacedBy(26.dp),
         modifier = Modifier
             .fillMaxSize()
             .pointerInput(Unit) {
@@ -107,23 +105,21 @@ fun VotingPage(
             .statusBarsPadding()
     ) {
         ChatComponent(modifier = Modifier, authViewModel = authViewModel)
-
         Column(
             modifier = Modifier
                 .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+            // verticalArrangement = Arrangement.Top
         ) {
             if (context != MatchContext.HOSTVIEW) {
-                Text(
-                    text = stringResource(R.string.cheater_mode_vote),
-                    style = MaterialTheme.typography.headlineSmall
-                )
+//                Text(
+//                    text = stringResource(R.string.cheater_mode_vote),
+//                    style = MaterialTheme.typography.headlineSmall
+//                )
 
-                Spacer(modifier = Modifier.height(16.dp))
-
+                // Spacer(modifier = Modifier.height(16.dp))
                 LazyColumn(
-                    modifier = Modifier.weight(1f)
+                    //modifier = Modifier.weight(1f)
                 ) {
                     items(players) { player ->
                         if (player.username != matchRoomService.retrieveUsername()) {
@@ -140,13 +136,10 @@ fun VotingPage(
                         }
                     }
                 }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
                 Button(
                     onClick = {
                         selectedPlayer?.let {
-                            MatchRoomService.playerVoted =true
+                            MatchRoomService.playerVoted = true
                             voteCounts.username = it
                             voteCounts.numberOfVotes += 1
                             voteCounts.usersWhoVoted.add("'${matchRoomService.retrieveUsername()}'")
@@ -172,7 +165,7 @@ fun VotingPage(
                 } else {
                     Text(stringResource(R.string.cheater_mode_players_voted))
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(2.dp))
                 LazyColumn(
                     modifier = Modifier.weight(1f)
                 ) {
@@ -182,29 +175,26 @@ fun VotingPage(
                 }
             }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.Top
-            ) {
-                if (context === MatchContext.HOSTVIEW && !matchRoomService.isCooldown) {
-                    Button(
-                        onClick = {
-                            MatchRoomService.socket.emit(
-                                MatchEvents.SEND_UPDATED_SCORES.value,
-                                MatchRoomService.matchRoomCode.value
-                            )
-                            matchRoomService.routeToResultsPage();
-                            navigateToResultsPage();
-                        },
-                        shape = RoundedCornerShape(5.dp),
-                    ) {
-                        Icon(
-                            Icons.Filled.BarChart,
-                            contentDescription = stringResource(R.string.show_final)
+
+            if (context === MatchContext.HOSTVIEW && !matchRoomService.isCooldown) {
+                Button(
+                    onClick = {
+                        MatchRoomService.socket.emit(
+                            MatchEvents.SEND_UPDATED_SCORES.value,
+                            MatchRoomService.matchRoomCode.value
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(stringResource(R.string.show_final))
-                    }
+                        matchRoomService.routeToResultsPage();
+                        navigateToResultsPage();
+                    },
+                    shape = RoundedCornerShape(5.dp),
+                ) {
+                    Icon(
+                        Icons.Filled.BarChart,
+                        contentDescription = stringResource(R.string.show_final)
+                    )
+                    Text(stringResource(R.string.show_final))
                 }
+
             }
         }
         PlayersListComponent(
