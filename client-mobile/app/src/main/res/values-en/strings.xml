@@ -146,4 +146,5 @@
     <string name="prepare">Get ready for the next question! ⏳</string>
     <string name="regen">Generate other usernames</string>
     <string name="suggest_names">Username Suggestions</string>
+    <string name="switch_camera">Switch Camera</string>
 </resources>
