@@ -414,6 +414,7 @@ fun UserEditPage(
                             }
                             Button(
                                 onClick = {
+                                    cameraViewModel.setCameraContent(false)
                                     navigateToCamera()
                                 }, shape = RoundedCornerShape(3.dp)
                             ) { Text(stringResource(R.string.upload_avatar)) }

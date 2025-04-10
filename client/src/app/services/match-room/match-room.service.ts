@@ -4,10 +4,12 @@ import { ChatChannel } from '@app/constants/chat-channels';
 import { MatchContext } from '@app/constants/states';
 import { Player } from '@app/interfaces/player';
 import { Question } from '@app/interfaces/question';
+import { VotingData } from '@app/interfaces/voting-data';
 import { ChatService } from '@app/services/chat/chat.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
+import { AnswerEvents } from '@common/events/answer.events';
 import { ChatEvents } from '@common/events/chat.events';
 import { MatchEvents } from '@common/events/match.events';
 import { PartyConfig } from '@common/interfaces/party-config';
@@ -29,9 +31,16 @@ export class MatchRoomService {
     isHostPlaying: boolean;
     isCooldown: boolean;
     isQuitting: boolean;
+    isCheaterMode: boolean;
+    cheaterPlayer: Player;
+    votesData: VotingData;
+    totalVotes: VotingData[] = [{ username: '', numberOfVotes: 0, usersWhoVoted: [] }];
+    votesResults: { [username: string]: number };
     partyConfig: PartyConfig;
-
+    votingUsers: string[] = [];
+    userVoted: string;
     currentAnswers: string[] = [];
+    startedVote: boolean = false;
 
     private hostId: string;
     private matchRoomCode: string;
@@ -46,7 +55,7 @@ export class MatchRoomService {
         private readonly router: Router,
         private readonly notificationService: NotificationService,
         private readonly matchContextService: MatchContextService,
-        private chatService: ChatService,
+        private chatService: ChatService, //  private readonly dialog: MatDialog,
     ) {
         this.hasEnteredRoom = false;
     }
@@ -79,6 +88,8 @@ export class MatchRoomService {
             this.onRedirectAfterDisconnection();
             this.onFetchPlayersData();
             this.onMatchStarted();
+            this.onMatchCheaterModeStarted();
+            this.onSelectedCheater();
             this.onBeginQuiz();
             this.onNextQuestion();
             this.onStartCooldown();
@@ -87,7 +98,10 @@ export class MatchRoomService {
             this.handleError();
             this.onPlayerChatStateToggle();
             this.onRouteToResultsPage();
+            this.onVotingResults();
             this.onCurrentAnswers();
+            this.onVoting();
+            this.onUsersWhoVoted();
         }
     }
 
@@ -106,9 +120,20 @@ export class MatchRoomService {
         this.socketService.socket.removeListener(MatchEvents.Error);
         this.socketService.socket.removeListener(MatchEvents.RouteToResultsPage);
         this.socketService.socket.removeListener(MatchEvents.CurrentAnswers);
+        this.socketService.socket.removeListener(MatchEvents.ShowVotingDialog);
+        this.socketService.socket.removeListener(MatchEvents.SendVotingUsers);
+        this.socketService.socket.removeListener(MatchEvents.CheaterModeMatchStarting);
+        this.socketService.socket.removeListener(MatchEvents.SendBackVotesResults);
+        this.socketService.socket.removeListener(AnswerEvents.EndGame);
         this.socketService.send(MatchEvents.Disconnect);
         this.matchContextService.resetContext();
-        // this.socketService.socket.removeListener(MatchEvents.Disconnect);
+        this.isCheaterMode = false;
+        this.votingUsers = [];
+        // this.currentAnswers = [];
+    }
+
+    sendBackVotesResult(voteData: VotingData) {
+        this.socketService.send(MatchEvents.SendVotesResults, voteData);
     }
 
     createRoom(
@@ -116,7 +141,7 @@ export class MatchRoomService {
         hostId: string,
         hostUsername: string,
         isClassicMode: boolean = true,
-        partyConfig: PartyConfig = { isFriendsOnly: false, isEntryFeeRequired: false },
+        partyConfig: PartyConfig = { isFriendsOnly: false, isEntryFeeRequired: false, isCheaterMode: false, canPlayCheaterMode: false },
     ) {
         this.socketService.send(MatchEvents.CreateRoom, { gameId, hostId, isClassicMode, partyConfig }, (res: { code: string }) => {
             if (res) {
@@ -128,6 +153,14 @@ export class MatchRoomService {
 
                 this.sendPlayersData(this.matchRoomCode);
                 this.router.navigateByUrl('/match-room');
+            }
+        });
+    }
+    onSelectedCheater() {
+        this.socketService.on(MatchEvents.SendCheater, (data: { player: string }) => {
+            const cheaterPlayer = this.getPlayerByUsername(data.player);
+            if (cheaterPlayer) {
+                this.cheaterPlayer = cheaterPlayer;
             }
         });
     }
@@ -148,14 +181,12 @@ export class MatchRoomService {
 
     joinRoom(roomCode: string, username: string, userId: string) {
         const sentInfo: UserInfo = { roomCode, username, userId };
-
         this.socketService.send(MatchEvents.JoinRoom, sentInfo, (res: { code: string; userId: string; username: string }) => {
             if (res) {
                 this.matchRoomCode = res.code;
                 this.username = res.username;
                 this.userId = res.userId;
                 this.router.navigateByUrl('/match-room');
-
                 this.sendPlayersData(roomCode);
             }
         });
@@ -183,6 +214,24 @@ export class MatchRoomService {
         this.socketService.send(MatchEvents.StartMatch, this.matchRoomCode);
     }
 
+    startMatchCheaterMode() {
+        this.isCheaterMode = true;
+        this.isMatchStarted = true; // we can keep the same.
+        this.socketService.send(MatchEvents.StartMatchCheaterMode, this.matchRoomCode);
+    }
+
+    onMatchCheaterModeStarted() {
+        this.socketService.on(MatchEvents.CheaterModeMatchStarting, (data: { start: boolean; gameTitle: string }) => {
+            this.isCheaterMode = true;
+            if (data.start) {
+                this.isMatchStarted = data.start;
+            }
+            if (data.gameTitle) {
+                this.gameTitle = data.gameTitle;
+            }
+        });
+    }
+
     onMatchStarted() {
         this.socketService.on(MatchEvents.MatchStarting, (data: { start: boolean; gameTitle: string }) => {
             if (data.start) {
@@ -206,6 +255,28 @@ export class MatchRoomService {
 
     goToNextQuestion() {
         this.socketService.send(MatchEvents.GoToNextQuestion, this.matchRoomCode);
+    }
+
+    voteOnCheater() {
+        this.socketService.send(MatchEvents.VoteOnCheater, this.matchRoomCode);
+    }
+
+    onVoting() {
+        this.socketService.on(MatchEvents.ShowVotingDialog, () => {
+            this.router.navigateByUrl('/vote');
+        });
+    }
+
+    onUsersWhoVoted() {
+        this.socketService.on(MatchEvents.SendVotingUsers, (user: string) => {
+            this.userVoted = user;
+            this.votingUsers.push(user);
+        });
+    }
+    onVotingResults() {
+        this.socketService.on(MatchEvents.SendBackVotesResults, (data: { [username: string]: number }) => {
+            this.votesResults = data;
+        });
     }
 
     onStartCooldown() {
@@ -253,11 +324,32 @@ export class MatchRoomService {
         this.isWaitOver = false;
         this.isPlaying = false;
         this.isCooldown = false;
+        this.currentAnswers = [];
+        this.votesResults = {};
+        this.votesData = { username: '', numberOfVotes: 0, usersWhoVoted: [] };
+        this.votingUsers = [];
+        this.resetCheaterPlayerValue();
         this.chatService.clearMatchRoomMessages();
     }
 
     routeToResultsPage() {
         this.socketService.send(MatchEvents.RouteToResultsPage, this.matchRoomCode);
+    }
+
+    resetCheaterPlayerValue() {
+        if (this.cheaterPlayer?.username != '') {
+            this.cheaterPlayer = {
+                username: '',
+                id: '',
+                photoUrl: '',
+                score: 0,
+                bonusCount: 0,
+                isPlaying: false,
+                isChatActive: false,
+                state: '',
+            };
+        }
+        this.startedVote = false;
     }
 
     onRouteToResultsPage() {
@@ -280,8 +372,10 @@ export class MatchRoomService {
 
     onCurrentAnswers() {
         this.socketService.on(MatchEvents.CurrentAnswers, (answer: string[]) => {
-            if (this.userId !== this.hostId) return;
-            this.currentAnswers = answer;
+            if (this.userId === this.hostId || this.userId === this.cheaterPlayer?.id) {
+                this.currentAnswers = answer;
+            }
+            // return;
         });
     }
 }

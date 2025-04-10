@@ -40,8 +40,17 @@
 .number-input {
     width: 120px; // Approximately 5 digits + some padding
     margin: 0 auto;
-    display: block;
+    display: inline-block;
 }
+
+.hint-text{
+    font-size: 20px;
+    margin-left: 1rem;
+    margin: 0 auto;
+    display: inline-block;
+    margin-bottom: 5vh;
+}
+
 
 ::ng-deep .number-input .mat-mdc-text-field-wrapper {
     width: 100%;

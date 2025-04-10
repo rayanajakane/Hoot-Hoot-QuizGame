@@ -161,4 +161,5 @@
     <string name="no_background">No background</string>
     <string name="regen">Generate other usernames</string>
     <string name="suggest_names">Username Suggestions</string>
+    <string name="switch_camera">Switch Camera</string>
 </resources>

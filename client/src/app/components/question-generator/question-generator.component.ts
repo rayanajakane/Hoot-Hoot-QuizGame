@@ -1,7 +1,7 @@
 import { Component, EventEmitter, HostListener, Inject, Output } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TextDialogData } from '@app/interfaces/dialog-data/text-dialog-data';
-import { QuestionCreationFormComponent } from '../question-creation-form/question-creation-form.component';
+import { QuestionCreationFormComponent } from '@app/components/question-creation-form/question-creation-form.component';
 import { FormGroup } from '@angular/forms';
 import { Choice } from '@app/interfaces/choice';
 import { HttpResponse } from '@angular/common/http';

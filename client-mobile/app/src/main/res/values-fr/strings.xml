@@ -161,4 +161,5 @@
     <string name="no_background">Aucun arrière-plan</string>
     <string name="regen">Générer d\'autres noms</string>
     <string name="suggest_names">Suggestions de noms d\'utilisateurs</string>
+    <string name="switch_camera">Changer camera</string>
 </resources>

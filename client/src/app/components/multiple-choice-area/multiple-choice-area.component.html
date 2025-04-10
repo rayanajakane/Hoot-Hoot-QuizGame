@@ -8,10 +8,15 @@
         [class.correct]="answerService.showFeedback && isCorrectAnswer(choice)"
         [class.incorrect]="answerService.showFeedback && !isCorrectAnswer(choice) && isSelected(choice)"
         (click)="selectChoice(choice)"
+        
     >
+    <p *ngIf="matchContextService.getContext() === contextOptions.CheaterView && choice.isCorrect">
+        <span class ="dot"> </span>
+    </p>
         <p>{{ i + 1 }}. {{ choice.text }}</p>
     </button>
 </div>
+
 <div id="answers-container" *ngIf="!matchRoomService.isCooldown && matchContextService.getContext() === contextOptions.HostView">
     <button
         disabled

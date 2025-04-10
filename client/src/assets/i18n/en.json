@@ -255,6 +255,8 @@
         "friends-label": "Match with Friends",
         "friends-description": "Only your friends can join this match.",
         "fee-section-label": "Match with Entry Fee",
+        "cheater-mode": "Cheater Mode",
+        "cheater-mode-description": "To play in this mode: the game should not contain a question of type long answer, and must contain at least three players",
         "fee-label": "Entry Fee",
         "fee-description": "Players will have to pay this fee to join this match.",
         "cancel": "Cancel",
@@ -324,7 +326,8 @@
         "good-answer-qre": "Correct answer : {{answer}}. Margin is +/- {{margin}}",
         "choose-estimated": "Chose an estimated value. Margin is +/- {{margin}}",
         "answer": "Answer",
-        "out-of-bounds": "Value is out of bounds! Must be between {{lowerBound}} and {{upperBound}}"
+        "out-of-bounds": "Value is out of bounds! Must be between {{lowerBound}} and {{upperBound}}",
+        "show-voting-button":"Go to voting page"
     },
     "players-list": {
         "players": "Players"
@@ -338,6 +341,18 @@
         "label": "Search Games",
         "title": "Title",
         "author": "Author"
+    },
+    "cheater-mode":{
+        "notifyCheater":"You are the cheater",
+        "cheater": "Cheater",
+        "vote":"Vote",
+        "voteCheater":"Vote for the cheater",
+        "notifyRegularPlayer": "You are a regular player",
+        "playerVoted": "\"{{player}}\" has voted",
+        "answer-hint": "Answer Hint: \"{{answer}}\"",
+        "players-still-voting": "Players are still voting",
+        "players-voted": "All players have voted",
+        "players-amount-invalid": "The match needs at least 3 players"
     },
     "questions-generations":{
         "input": "Please provide a topic or theme to generate questions, and select the desired question type.",

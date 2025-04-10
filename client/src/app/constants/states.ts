@@ -10,5 +10,6 @@ export enum MatchContext {
     HostView = 'hostView',
     PlayerView = 'playerView',
     RandomMode = 'randomMode',
+    CheaterView = 'cheaterView',
     Null = 0,
 }

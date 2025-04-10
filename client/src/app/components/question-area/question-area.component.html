@@ -8,6 +8,7 @@
                     id="score-feedback-area"
                     *ngIf="
                         (this.answerService.showFeedback && context === matchContext.PlayerView && !this.matchRoomService.isCooldown) ||
+                        (this.answerService.showFeedback && context === matchContext.CheaterView && !this.matchRoomService.isCooldown) ||
                             (this.answerService.showFeedback && (context === matchContext.TestPage || context === matchContext.RandomMode));
                         else elseBlock
                     "
@@ -68,7 +69,7 @@
 
             <div
                 id="submit-button-container"
-                *ngIf="context === matchContext.PlayerView || context === matchContext.TestPage || context === matchContext.RandomMode"
+                *ngIf="context === matchContext.PlayerView || context === matchContext.TestPage || context === matchContext.RandomMode ||context === matchContext.CheaterView"
             >
                 <button mat-raised-button color="primary" id="submit-button" *ngIf="this.answerService.isSelectionEnabled" (click)="submitAnswers()">
                     {{ t('question-area.submit') }}
@@ -81,9 +82,13 @@
     </div>
     <div class="controls-container">
         <div id="host-area" *ngIf="context === matchContext.HostView && !this.matchRoomService.isCooldown">
-            <button mat-raised-button *ngIf="this.answerService.isEndGame" color="primary" (click)="routeToResultsPage()">
+            <button mat-raised-button *ngIf="this.answerService.isEndGame && !this.matchRoomService.isCheaterMode" color="primary" (click)="routeToResultsPage()">
                 <mat-icon class="material-icons">bar_chart</mat-icon>
                 <p>{{ t('question-area.show-final-results') }}</p>
+            </button>
+            <button mat-raised-button *ngIf="this.answerService.isEndGame && this.matchRoomService.isCheaterMode" color="primary" (click)="this.goToVoting()">
+                <mat-icon class="material-icons">bar_chart</mat-icon>
+                <p>{{ t('question-area.show-voting-button') }}</p>
             </button>
             <button
                 *ngIf="!this.answerService.isEndGame && this.answerService.isNextQuestionButtonEnabled"

@@ -5,7 +5,7 @@ import { Choice } from '@app/model/database/choice';
 import { Game } from '@app/model/database/game';
 import { Question } from '@app/model/database/question';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
-import { Player } from '@app/model/schema/player.schema';
+import { Player, VotingData } from '@app/model/schema/player.schema';
 import { ChoiceTracker } from '@app/model/tally-trackers/choice-tracker/choice-tracker';
 import { HistoryService } from '@app/services/history/history.service';
 import { QrCodeService } from '@app/services/qr-code/qr-code.service';
@@ -27,6 +27,10 @@ import { v4 as uuidv4 } from 'uuid';
 export class MatchRoomService {
     matchRooms: MatchRoom[];
     backgroundHostSocket: Socket;
+    cheaterPlayer: Player;
+    votesCount: { [username: string]: number } = { ['']: 0 };
+    isCheaterMode: boolean = false;
+    totalVotes: VotingData[] = [{ username: '', numberOfVotes: 0, usersWhoVoted: [] }];
 
     constructor(
         private readonly eventEmitter: EventEmitter2,
@@ -69,6 +73,8 @@ export class MatchRoomService {
 
         const roomCode = this.generateRoomCode();
         const qrCodeUrl = await this.qrCodeService.generateQrCode(roomCode);
+        this.votesCount = {};
+        this.totalVotes = [];
 
         const newRoom: MatchRoom = {
             code: roomCode,
@@ -133,14 +139,53 @@ export class MatchRoomService {
 
     startMatch(socket: Socket, server: Server, matchRoomCode: string) {
         if (!this.canStartMatch(matchRoomCode)) return;
+        this.isCheaterMode = false;
         const gameTitle = this.getGameTitle(matchRoomCode);
         const gameInfo: GameInfo = { start: true, gameTitle };
         socket.to(matchRoomCode).emit(MatchEvents.MatchStarting, gameInfo);
 
         const roomIndex = this.getRoomIndex(matchRoomCode);
         this.matchRooms[roomIndex].startTime = new Date();
-
         this.timeService.startTimer(server, matchRoomCode, COUNTDOWN_TIME, ExpiredTimerEvents.CountdownTimerExpired);
+    }
+
+    startCheaterModeMatch(socket: Socket, server: Server, matchRoomCode: string) {
+        // if (!this.canStartMatchCheaterMode(matchRoomCode)) return;
+        this.isCheaterMode = true;
+        const gameTitle = this.getGameTitle(matchRoomCode);
+        const gameInfo: GameInfo = { start: true, gameTitle };
+        socket.to(matchRoomCode).emit(MatchEvents.CheaterModeMatchStarting, gameInfo);
+
+        const roomIndex = this.getRoomIndex(matchRoomCode);
+        this.matchRooms[roomIndex].startTime = new Date();
+        this.timeService.startTimer(server, matchRoomCode, COUNTDOWN_TIME, ExpiredTimerEvents.CountdownTimerExpired);
+    }
+
+    getRandomPlayer(roomCode): Player {
+        const players = this.getRoom(roomCode).players;
+        if (players && players.length > 0) {
+            const randomIndex = Math.floor(Math.random() * players.length);
+            this.cheaterPlayer = players[randomIndex];
+            return players[randomIndex];
+        } else {
+            return null;
+        }
+    }
+
+    cheaterGetsBonus(username) {
+        let total = 0;
+        for (const voteData of this.totalVotes) {
+            for (const username in voteData) {
+                total += voteData[username];
+            }
+        }
+
+        if (this.votesCount[username]) {
+            if (this.votesCount[username] / total <= 0.5) {
+                return true;
+            } else return false;
+        }
+        return true;
     }
 
     pauseMatchTimer(server: Server, matchRoomCode: string) {
@@ -169,6 +214,9 @@ export class MatchRoomService {
         this.defineCurrentQuestionAnswer(matchRoomCode, firstQuestion);
         this.removeAnswerField(firstQuestion);
         server.to(matchRoom.hostSocket.id).emit(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
+        if (this.cheaterPlayer) {
+            server.to(this.cheaterPlayer?.socket.id).emit(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
+        }
         const isClassicMode: boolean = matchRoom.isClassicMode;
         server.in(matchRoomCode).emit(MatchEvents.BeginQuiz, { firstQuestion, gameDuration, isClassicMode });
         this.timeService.startTimer(server, matchRoomCode, matchRoom.questionDuration, ExpiredTimerEvents.QuestionTimerExpired);
@@ -191,7 +239,15 @@ export class MatchRoomService {
         this.removeAnswerField(nextQuestion);
         server.in(matchRoomCode).emit(MatchEvents.GoToNextQuestion, nextQuestion);
         server.to(matchRoom.hostSocket.id).emit(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
+        if (this.cheaterPlayer) {
+            server.to(this.cheaterPlayer?.socket.id).emit(MatchEvents.CurrentAnswers, matchRoom.currentQuestionAnswer);
+        }
         this.timeService.startTimer(server, matchRoomCode, matchRoom.questionDuration, ExpiredTimerEvents.QuestionTimerExpired);
+    }
+
+    sendCheaterPlayer(server: Server, matchRoomCode: string, player: string) {
+        const matchRoom: MatchRoom = this.getRoom(matchRoomCode);
+        server.in(matchRoomCode).emit(MatchEvents.SendCheater, { player });
     }
 
     defineCurrentQuestionAnswer(matchRoomCode: string, question: Question) {
@@ -213,6 +269,10 @@ export class MatchRoomService {
         this.getRoom(matchRoomCode).submittedPlayers = 0;
     }
 
+    resetCheaterPlayer() {
+        this.cheaterPlayer = null;
+    }
+
     incrementCurrentQuestionIndex(matchRoomCode: string) {
         this.getRoom(matchRoomCode).currentQuestionIndex++;
     }
@@ -227,6 +287,27 @@ export class MatchRoomService {
             return false;
         }
         return room.isLocked && room.players.length > 0;
+    }
+
+    canStartMatchCheaterMode(matchRoomCode: string): boolean {
+        const room = this.getRoom(matchRoomCode);
+        if (!room) {
+            return false;
+        }
+        return room.isLocked && room.players.length > 2 && this.isQuestionTypeNotQRL(matchRoomCode);
+    }
+
+    isQuestionTypeNotQRL(matchRoomCode) {
+        const room = this.getRoom(matchRoomCode);
+        if (!room) {
+            return false;
+        }
+        for (let question of room.game.questions) {
+            if (question.type === QuestionType.LongAnswer) {
+                return false;
+            }
+        }
+        return true;
     }
 
     getCurrentQuestion(matchRoomCode: string) {
