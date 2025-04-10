@@ -44,21 +44,21 @@
 
                 <div>
                     <div class="button-container">
-                    <button
-                        *ngIf="modificationState !== managementState.GameModify"
-                        mat-raised-button
-                        color="primary"
-                        type="submit"
-                        class="submit-button"
-                        (click)="submitForm()"
-                        [disabled]="!questionForm.valid"
-                    >
-                        <mat-icon>check</mat-icon>
-                        {{ getButtonText() }}
-                    </button>
+                        <button
+                            *ngIf="modificationState !== managementState.GameModify"
+                            mat-raised-button
+                            color="primary"
+                            type="submit"
+                            class="submit-button"
+                            (click)="submitForm()"
+                            [disabled]="!questionForm.valid"
+                        >
+                            <mat-icon>check</mat-icon>
+                            {{ getButtonText() }}
+                        </button>
                         <button mat-raised-button type="button" (click)="openQuestionDialog()" class="ai-generation">
                             <mat-icon>lightbulb</mat-icon>
-                            {{t('questions-generations.generate-IA')}}
+                            {{ t('questions-generations.generate-IA') }}
                         </button>
                     </div>
                 </div>
@@ -125,6 +125,7 @@
                                 formControlName="lowerBound"
                                 [placeholder]="t('question-creation-form.boundary-low-placeholder')"
                                 type="number"
+                                onkeydown="return event.keyCode !== 69"
                             />
                         </mat-form-field>
 
@@ -145,6 +146,7 @@
                                 formControlName="correctAnswer"
                                 [placeholder]="t('question-creation-form.good-answer-placeholder')"
                                 type="number"
+                                onkeydown="return event.keyCode !== 69"
                             />
                         </mat-form-field>
 
@@ -155,6 +157,7 @@
                                 formControlName="margin"
                                 [placeholder]="t('question-creation-form.tolerance-margin-placeholder')"
                                 type="number"
+                                onkeydown="return event.keyCode !== 69"
                                 min="0"
                             />
                         </mat-form-field>
