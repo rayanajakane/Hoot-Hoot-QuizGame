@@ -1,6 +1,6 @@
 import { CHAT_REACTIVATED } from '@app/constants/chat-state-messages';
 import { ExpiredTimerEvents } from '@app/constants/expired-timer-events';
-import { BAN_PLAYER, LESS_THAN_3_PLAYERS, NO_MORE_HOST, NO_MORE_PLAYERS } from '@app/constants/match-errors';
+import { BAN_PLAYER, NO_MORE_HOST, NO_MORE_PLAYERS } from '@app/constants/match-errors';
 import { Game } from '@app/model/database/game';
 import { MatchRoom } from '@app/model/schema/match-room.schema';
 import { Player, VotingData } from '@app/model/schema/player.schema';
@@ -17,11 +17,9 @@ import { PartyService } from '@app/services/party/party.service';
 import { PlayerRoomService } from '@app/services/player-room/player-room.service';
 import { TimeService } from '@app/services/time/time.service';
 import { PlayerState } from '@common/constants/player-states';
-import { AnswerEvents } from '@common/events/answer.events';
 import { ChatEvents } from '@common/events/chat.events';
 import { MatchEvents } from '@common/events/match.events';
 import { MoneyEvents } from '@common/events/money.events';
-import { Feedback } from '@common/interfaces/feedback';
 import { PartyConfig } from '@common/interfaces/party-config';
 import { UserInfo } from '@common/interfaces/user-info';
 import { Injectable } from '@nestjs/common';
@@ -138,10 +136,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         }
         this.server.to(this.roomCode).emit(MatchEvents.SendBackVotesResults, votesCount);
         this.server.to(this.roomCode).emit(MatchEvents.SendVotingUsers, newVotesCount.usersWhoVoted);
-
     }
-
-
 
     @SubscribeMessage(MatchEvents.SendUpdatedScores)
     sendUpdatedScores(@ConnectedSocket() socket: Socket, @MessageBody() roomCode) {
@@ -157,6 +152,10 @@ export class MatchGateway implements OnGatewayDisconnect {
     @SubscribeMessage(MatchEvents.RouteToResultsPage)
     async routeToResultsPage(@ConnectedSocket() socket: Socket, @MessageBody() matchRoomCode: string) {
         const roomIndex = this.matchRoomService.getRoomIndex(matchRoomCode);
+        if (!this.matchRoomService.matchRooms[roomIndex]) {
+            // Added condition to avoid server crash when matchRooms[roomIndex] is undefined
+            return;
+        }
         this.matchRoomService.matchRooms[roomIndex].isPlaying = false;
 
         this.matchRoomService.matchRooms[roomIndex].end = new Date();
@@ -314,8 +313,7 @@ export class MatchGateway implements OnGatewayDisconnect {
                 await this.partyService.leaveParty(player.id, roomCode);
                 const currPlayerBalance = await this.moneyService.getCurrentBalance(player.id);
                 this.server.in(socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
-            } 
-            else if (isOnePlayerLeft) {
+            } else if (isOnePlayerLeft) {
                 this.timeService.expireTimer(roomCode, this.server, ExpiredTimerEvents.QuestionTimerExpired);
                 await this.routeToResultsPage({} as Socket, roomCode);
             }
@@ -376,7 +374,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         return room.players.every((player) => !player.isPlaying || !player.socket.rooms.has(room.code));
     }
 
-   private isRoomLessThanThreePlayers(room: MatchRoom) {
+    private isRoomLessThanThreePlayers(room: MatchRoom) {
         return room.players.filter((player) => player.isPlaying || player.socket.rooms.has(room.code)).length < 3;
     }
 
