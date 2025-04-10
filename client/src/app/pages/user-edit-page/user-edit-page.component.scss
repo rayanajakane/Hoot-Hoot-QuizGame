@@ -111,6 +111,11 @@ img {
     gap: 1rem;
 }
 
+.self-centered {
+    align-self: center;
+    text-align: center;
+}
+
 // Reference: https://codepen.io/ire/pen/Legmwo/
 .grid-labels-container {
     display: inline-grid;
