@@ -327,7 +327,7 @@
         "choose-estimated": "Chose an estimated value. Margin is +/- {{margin}}",
         "answer": "Answer",
         "out-of-bounds": "Value is out of bounds! Must be between {{lowerBound}} and {{upperBound}}",
-        "show-voting-button":"Go to voting page"
+        "show-voting-button": "Go to voting page"
     },
     "players-list": {
         "players": "Players"
@@ -342,11 +342,11 @@
         "title": "Title",
         "author": "Author"
     },
-    "cheater-mode":{
-        "notifyCheater":"You are the cheater",
-        "cheater": "Cheater",
-        "vote":"Vote",
-        "voteCheater":"Vote for the cheater",
+    "cheater-mode": {
+        "notifyCheater": "😈 You are the cheater",
+        "cheater": "😈",
+        "vote": "Vote",
+        "voteCheater": "Vote for the cheater 😈",
         "notifyRegularPlayer": "You are a regular player",
         "playerVoted": "\"{{player}}\" has voted",
         "answer-hint": "Answer Hint: \"{{answer}}\"",
@@ -354,7 +354,7 @@
         "players-voted": "All players have voted",
         "players-amount-invalid": "The match needs at least 3 players"
     },
-    "questions-generations":{
+    "questions-generations": {
         "input": "Please provide a topic or theme to generate questions, and select the desired question type.",
         "generate": "Generate",
         "regenerate": "Regenerate other questions",
@@ -362,10 +362,10 @@
         "submit": "Submit",
         "language": "The question language",
         "choice-number": "Number of answer choices",
-        "choice":"Choice",
+        "choice": "Choice",
         "question-input": "Enter the question",
         "generate-IA": "Generate questions with IA",
-        "error": "Error while generating questions", 
+        "error": "Error while generating questions",
         "choice-input": "Enter the choice",
         "french": "French",
         "english": "English"
