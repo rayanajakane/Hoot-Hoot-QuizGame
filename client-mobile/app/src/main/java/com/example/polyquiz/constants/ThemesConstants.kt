@@ -1,3 +1,3 @@
 package com.example.polyquiz.constants
 
-const val THEME_PRICE = 50
+const val THEME_PRICE = 500

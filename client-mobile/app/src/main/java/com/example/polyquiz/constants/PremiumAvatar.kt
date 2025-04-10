@@ -7,4 +7,4 @@ enum class PremiumAvatar(val value: String) {
     H("https://www.pixelstalk.net/wp-content/uploads/2016/08/Shadow-The-Hedgehog-Background-HD-Free.jpg")
 }
 
-const val AVATAR_PRICE = 10
+const val AVATAR_PRICE = 100
