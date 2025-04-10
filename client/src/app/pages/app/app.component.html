@@ -1,7 +1,7 @@
 <div *transloco="let t; read: 'main-page'">
     <div *ngIf="authenticationService.isUserAuthenticated() && matchContextService.getContext() === 0" class="right-panel">
         <div class="sticky">
-            <button mat-raised-button [matMenuTriggerFor]="menu"><mat-icon>menu</mat-icon>Menu</button>
+            <button mat-raised-button [matMenuTriggerFor]="menu" color="basic"><mat-icon>menu</mat-icon>Menu</button>
             <mat-menu #menu="matMenu" yPosition="below" xPosition="after">
                 <button mat-menu-item routerLink="home"><mat-icon>home</mat-icon>{{ t('home') }}</button>
                 <button mat-menu-item routerLink="join-match"><mat-icon>play_circle</mat-icon>{{ t('join-match') }}</button>
