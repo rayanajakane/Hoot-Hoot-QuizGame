@@ -323,7 +323,6 @@ export class UserEditPageComponent implements OnInit {
         this.translationService.setLanguage(language);
     }
 
-    // TODO : Put in username service
     // https://blog.angular-university.io/angular-custom-validators/
     private usernameValidator(): ValidatorFn {
         return (usernameControl: AbstractControl): ValidationErrors | null => {
@@ -331,7 +330,7 @@ export class UserEditPageComponent implements OnInit {
             if (!username) {
                 return null;
             }
-            const containsSpecialChar = /[^A-Za-z0-9_]/.test(username);
+            const containsSpecialChar = /[^a-zA-ZÀ-ÿ0-9_]/.test(username);
 
             if (containsSpecialChar) {
                 return { containsSpecialChar: true };
