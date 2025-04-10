@@ -203,7 +203,7 @@ fun Navigation(
                 navigateToLogin = { navController.navigate(Route.Login) },
                 navigateToRankingsPage = { navController.navigate(Route.RankingsPage) },
                 navigateToCamera = { navController.navigate(Route.MainCameraScreen) },
-                cameraViewModel = cameraViewModel
+                cameraViewModel = cameraViewModel,
                 navigateToShopPage = { navController.navigate(Route.ShopPage) }
             )
         }
