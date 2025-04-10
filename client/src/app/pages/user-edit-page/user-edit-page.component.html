@@ -190,15 +190,15 @@
             <mat-card class="history-match-item header-card card-header-background" *ngIf="userHistory.match.length !== 0">
                 <p>{{ t('history.start') }}</p>
                 <p>{{ t('history.end') }}</p>
-                <p>{{ t('history.result') }}</p>
-                <p>{{ t('history.gave-up-label') }}</p>
+                <p class="self-centered">{{ t('history.result') }}</p>
+                <p class="self-centered">{{ t('history.gave-up-label') }}</p>
             </mat-card>
             <div *ngFor="let item of userHistory.match">
                 <mat-card class="history-match-item" color="primary">
                     <p>{{ item.start | date: 'yyyy-MM-dd HH:mm' }}</p>
                     <p>{{ item.end | date: 'yyyy-MM-dd HH:mm' }}</p>
-                    <p>{{ item.hasWon ? t('history.victory') : t('history.defeat') }}</p>
-                    <p>{{ item.hasGivenUp ? '✔' : '-' }}</p>
+                    <p class="self-centered">{{ item.hasWon ? t('history.victory') : t('history.defeat') }}</p>
+                    <p class="self-centered">{{ item.hasGivenUp ? '✔' : '-' }}</p>
                 </mat-card>
             </div>
 
