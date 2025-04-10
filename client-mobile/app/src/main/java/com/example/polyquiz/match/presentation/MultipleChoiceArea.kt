@@ -50,10 +50,6 @@ fun MultipleChoiceArea(
     val rows = (choices.size + 1) / 2
 
     if (matchContext == MatchContext.PLAYERVIEW || matchContext == MatchContext.CHEATERVIEW) {
-        val selectedStates =
-            remember { mutableStateListOf<Boolean>().apply { addAll(List(choices.size) { false }) } }
-        val rows = (choices.size + 1) / 2
-
         Column(modifier = modifier) {
             for (rowIndex in 0 until rows) {
                 val firstIndex = rowIndex * 2
