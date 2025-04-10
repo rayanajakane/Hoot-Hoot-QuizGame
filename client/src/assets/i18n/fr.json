@@ -202,8 +202,8 @@
         "cancel-request": "Annuler",
         "add-friend": "Ajouter un ami",
         "donate-money": "Donner de l'argent",
-        "enter-donation-amout": "Entrer le montant de la donation",
-        "donation-amount": "Montant de la donation"
+        "enter-donation-amout": "Entrer le montant du don: (Max 500$ par jour)",
+        "donation-amount": "Montant du don"
     },
     "history": {
         "match-history": "Historique des parties jouées",
