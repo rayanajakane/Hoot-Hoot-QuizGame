@@ -17,6 +17,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -121,28 +123,34 @@ fun PlayerCard(
                         style = TextStyle(textDecoration = TextDecoration.LineThrough)
                     )
                 } else {
-                    Text(
+                    TruncatedText(
                         text = player.username,
                         fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onSurface,
+                        maxChars = 20,
+                        fontWeight = FontWeight.Normal,
+                        modifier =Modifier,
                     )
                 }
                 if (MatchRoomService.isCheaterMode && context.getContext() !== MatchContext.HOSTVIEW && MatchRoomService.isTimeToNavigateToResults && inResultsPage) {
                     if (player.id == MatchRoomService.cheaterPlayer.id) {
-                        Text(
+                        TruncatedText(
                             text = " ' ${stringResource(R.string.cheater_mode_cheater)}'",
                             fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.onSurface,
+                            maxChars = 20,
+                            fontWeight = FontWeight.Normal,
+                            modifier =Modifier,
                         )
                     }
                 }
 
                 if (MatchRoomService.isCheaterMode && context.getContext() === MatchContext.HOSTVIEW) {
                     if (player.id == MatchRoomService.cheaterPlayer.id) {
-                        Text(
+                        TruncatedText(
                             text = " ' ${stringResource(R.string.cheater_mode_cheater)}'",
                             fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.onSurface,
+                            maxChars = 20,
+                            fontWeight = FontWeight.Normal,
+                            modifier =Modifier,
                         )
                     }
                 }
@@ -196,5 +204,30 @@ fun ButtonGroup(
             }
         }
     }
+}
+
+
+@Composable
+fun TruncatedText(
+    text: String,
+    fontSize: TextUnit,
+    maxChars: Int,
+    fontWeight: FontWeight,
+    modifier: Modifier
+) {
+    val truncatedText = if (text.length > maxChars) {
+        text.take(maxChars) + "..."
+    } else {
+        text
+    }
+
+    Text(
+        text = truncatedText,
+        fontSize = fontSize,
+        fontWeight = fontWeight,
+        modifier = modifier,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
+    )
 }
 
