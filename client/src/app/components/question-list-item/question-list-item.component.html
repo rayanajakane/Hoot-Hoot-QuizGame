@@ -1,7 +1,7 @@
 <mat-expansion-panel class="question-card" *ngIf="question" [expanded]="isExpanded">
     <mat-expansion-panel-header>
         <mat-panel-title class="question-text">
-            <p class="question-text">{{ index }} {{ question.text }}</p>
+            <p class="question-text text-overflow-ellipsis">{{ index }} {{ question.text }}</p>
         </mat-panel-title>
         <mat-panel-description class="question-options">
             <p>{{ question.points }} pts</p>
