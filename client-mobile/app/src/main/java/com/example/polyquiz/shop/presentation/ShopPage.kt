@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -77,16 +78,6 @@ fun ShopPage(
         shopViewModel.initialize(authViewModel)
     }
 
-    if (isLoading || !dataInitialized) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
-        return
-    }
-
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -99,22 +90,29 @@ fun ShopPage(
             }
     ) {
         ChatComponent(modifier = modifier, authViewModel = authViewModel)
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .imePadding()
-        ) {
-            Column(modifier = modifier) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Text(
-                        text = stringResource(R.string.buy_goodies),
-                        modifier = Modifier.padding(horizontal = 26.dp),
-                        style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold)
-                    )
+
+        if (isLoading || !dataInitialized) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+            return
+        }
+
+        Column(modifier = modifier.padding(26.dp)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    text = stringResource(R.string.buy_goodies),
+                    modifier = Modifier.padding(horizontal = 26.dp),
+                    style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold)
+                )
+                Column( horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.Center) {
                     MenuButton(
                         modifier = Modifier,
                         navigateToHome,
@@ -129,70 +127,53 @@ fun ShopPage(
                             navigateToLogin()
                         },
                     )
-                }
-                Column(modifier = Modifier.padding(26.dp, 1.dp)) {
+                    Spacer(modifier = Modifier.height(16.dp))
                     Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                        shape = RoundedCornerShape(8.dp),
+                        elevation = CardDefaults.cardElevation(4.dp),
+                        modifier = Modifier.padding(horizontal = 26.dp)
                     ) {
                         Row(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            horizontalArrangement = Arrangement.Center,
+                                .padding(8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
                                 imageVector = Icons.Default.AccountBalanceWallet,
-                                contentDescription = "Balance",
-                                tint = MaterialTheme.colorScheme.primary
+                                contentDescription = stringResource(R.string.balance),
+                                tint = MaterialTheme.colorScheme.tertiary
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Spacer(modifier = Modifier.width(4.dp))
                             Text(
-                                text = "$${currentBalance}",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-
-                    if (isLoading) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
-                    } else {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .verticalScroll(rememberScrollState())
-                        ) {
-                            ShopSection(
-                                title = stringResource(R.string.avatar_items),
-                                items = avatarItems,
-                                onBuyClick = { shopViewModel.buyAvatar(it) }
-                            )
-
-                            ShopSection(
-                                title = stringResource(R.string.theme_items),
-                                items = themeItems,
-                                onBuyClick = { shopViewModel.buyTheme(it) }
-                            )
-
-                            ShopSection(
-                                title = stringResource(R.string.wallpaper_items),
-                                items = wallpaperItems,
-                                onBuyClick = { shopViewModel.buyWallpaper(it) }
+                                text = "$$currentBalance",
+                                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
                             )
                         }
                     }
                 }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+            ) {
+                ShopSection(
+                    title = stringResource(R.string.avatar_items),
+                    items = avatarItems,
+                    onBuyClick = { shopViewModel.buyAvatar(it) }
+                )
+                ShopSection(
+                    title = stringResource(R.string.theme_items),
+                    items = themeItems,
+                    onBuyClick = { shopViewModel.buyTheme(it) }
+                )
+                ShopSection(
+                    title = stringResource(R.string.wallpaper_items),
+                    items = wallpaperItems,
+                    onBuyClick = { shopViewModel.buyWallpaper(it) }
+                )
             }
         }
     }
@@ -213,7 +194,7 @@ fun ShopSection(
         )
 
         LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
+            columns = GridCells.Fixed(4),
             contentPadding = PaddingValues(8.dp),
             modifier = Modifier
                 .fillMaxWidth()
@@ -238,7 +219,9 @@ fun ShopItemCard(
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        shape = RoundedCornerShape(0.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -266,7 +249,7 @@ fun ShopItemCard(
             Button(
                 onClick = { onBuyClick(item) },
                 enabled = !item.owned,
-                modifier = Modifier.fillMaxWidth()
+                shape = RoundedCornerShape(0.dp)
             ) {
                 Text(
                     text = if (item.owned)

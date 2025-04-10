@@ -155,8 +155,9 @@
     <string name="avatar_items">Premium Avatars</string>
     <string name="theme_items">Premium Themes</string>
     <string name="wallpaper_items">Chat Wallpapers</string>
+    <string name="balance">Balance</string>
     <string name="buy">Buy</string>
-    <string name="owned">Owned</string>
+    <string name="owned">✅ Owned</string>
     <string name="no_background">No background</string>
     <string name="regen">Generate other usernames</string>
     <string name="suggest_names">Username Suggestions</string>

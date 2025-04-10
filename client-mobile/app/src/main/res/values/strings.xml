@@ -154,8 +154,9 @@
     <string name="avatar_items">Avatars Premiums</string>
     <string name="theme_items">Thèmes Premiums</string>
     <string name="wallpaper_items">Arrières-plan de clavardage</string>
+    <string name="balance">Balance</string>
     <string name="buy">Acheter</string>
-    <string name="owned">Possédé</string>
+    <string name="owned">✅ Possédé</string>
     <string name="no_background">Aucun arrière-plan</string>
     <string name="username_edit">Veuillez choisir un identifiant</string>
     <string name="confirm">Confirmer</string>
