@@ -99,4 +99,7 @@ dependencies {
     // Cloud storage stuff
     implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
     implementation("com.google.firebase:firebase-storage")
+
+    // QR code stuff
+    implementation("com.google.zxing:core:3.3.0")
 }

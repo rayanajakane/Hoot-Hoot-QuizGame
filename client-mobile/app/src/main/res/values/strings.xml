@@ -161,4 +161,5 @@
     <string name="cheater_mode">Mode tricheur</string>
     <string name="cheater_mode_players_min">Ce mode nécessite au moins 3 joueurs</string>
     <string name="cheater_mode_players_info"> Pour jouer en mode tricheur : le jeu ne doit pas contenir de question de type réponse longue et doit comporter au moins trois joueurs </string>
+    <string name="switch_camera">Changer camera</string>
 </resources>
