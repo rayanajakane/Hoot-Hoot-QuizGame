@@ -278,7 +278,7 @@ fun PlayerVoteCard(
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
+             //   .fillMaxWidth()
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween

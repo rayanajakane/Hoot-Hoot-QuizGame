@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -27,6 +28,7 @@ import com.example.polyquiz.match.domain.AnswerService
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.Player
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 @Composable
 fun PlayersListComponent(
@@ -95,56 +97,63 @@ fun PlayerCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-           // verticalAlignment = Alignment.CenterVertically
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            if (withAvatar) {
-                AsyncImage(
-                    model = url,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape),
-                    placeholder = rememberAsyncImagePainter(model = PresetAvatar.DEFAULT.value)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-            }
+            Row(modifier = Modifier.fillMaxWidth(0.49f)) {
+                if (withAvatar) {
+                    AsyncImage(
+                        model = url,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape),
+                        placeholder = rememberAsyncImagePainter(model = PresetAvatar.DEFAULT.value)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
 
-            if (!player.isPlaying) {
-                Text(
-                    text = player.username,
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    style = TextStyle(textDecoration = TextDecoration.LineThrough)
-                )
-            } else {
-                Text(
-                    text = player.username,
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-            }
-            if (MatchRoomService.isCheaterMode && context.getContext() !== MatchContext.HOSTVIEW && MatchRoomService.isTimeToNavigateToResults && inResultsPage) {
-                if (player.id == MatchRoomService.cheaterPlayer.id) {
+                if (!player.isPlaying) {
                     Text(
-                        text = " ' ${stringResource(R.string.cheater_mode_cheater)}'",
+                        text = player.username,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                    )
+                } else {
+                    Text(
+                        text = player.username,
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onSurface,
                     )
                 }
-            }
-            if (MatchRoomService.isCheaterMode && context.getContext() === MatchContext.HOSTVIEW) {
-                if (player.id == MatchRoomService.cheaterPlayer.id) {
-                    Text(
-                        text = " ' ${stringResource(R.string.cheater_mode_cheater)}'",
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
+                if (MatchRoomService.isCheaterMode && context.getContext() !== MatchContext.HOSTVIEW && MatchRoomService.isTimeToNavigateToResults && inResultsPage) {
+                    if (player.id == MatchRoomService.cheaterPlayer.id) {
+                        Text(
+                            text = " ' ${stringResource(R.string.cheater_mode_cheater)}'",
+                            fontSize = 16.sp,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
                 }
+
+                if (MatchRoomService.isCheaterMode && context.getContext() === MatchContext.HOSTVIEW) {
+                    if (player.id == MatchRoomService.cheaterPlayer.id) {
+                        Text(
+                            text = " ' ${stringResource(R.string.cheater_mode_cheater)}'",
+                            fontSize = 16.sp,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
+                }
+
+
             }
 
-                Spacer(modifier = Modifier.width(16.dp))
-                if (MatchRoomService.isCheaterMode && MatchRoomService.isTimeToNavigateToResults && inResultsPage) {
+
+            if (MatchRoomService.isCheaterMode && MatchRoomService.isTimeToNavigateToResults && inResultsPage) {
+                Row(modifier = Modifier.fillMaxWidth(0.7f)) {
+
                     if (MatchRoomService.votesResults[player.username] == null) {
                         Text(
                             text = " Votes: ${0}",
@@ -156,9 +165,11 @@ fun PlayerCard(
                             fontSize = 14.sp
                         )
                     }
+                }
+
 
             }
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+            Row(horizontalArrangement = Arrangement.End) {
                 Text(text = "${player.score} pts", fontSize = 14.sp)
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(text = "(${player.bonusCount}✨)", fontSize = 12.sp)
