@@ -839,3 +839,9 @@ mat-tool-tip {
 mat-tool-tip * {
     text-align: left;
 }
+
+.text-overflow-ellipsis {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
