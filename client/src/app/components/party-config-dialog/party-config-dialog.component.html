@@ -18,7 +18,7 @@
             <div *ngIf="partyConfig.isEntryFeeRequired" class="fee-section">
                 <mat-form-field appearance="outline">
                     <mat-label>{{ t('match-config.fee-label') }}</mat-label>
-                    <input matInput type="number" min="0" [(ngModel)]="partyConfig.entryFeeAmount" />
+                    <input matInput type="number" min="0" [(ngModel)]="partyConfig.entryFeeAmount" onkeydown="return event.keyCode !== 69" />
                     <mat-icon matSuffix>attach_money</mat-icon>
                 </mat-form-field>
                 <p class="helper-text">{{ t('match-config.fee-description') }}</p>
@@ -30,7 +30,12 @@
                 t('match-config.cheater-mode')
             }}</mat-slide-toggle>
 
-            <button *ngIf="partyConfig.canPlayCheaterMode" mat-icon-button (click)="this.showCheaterModeDescription = !this.showCheaterModeDescription" class="info-button">
+            <button
+                *ngIf="partyConfig.canPlayCheaterMode"
+                mat-icon-button
+                (click)="this.showCheaterModeDescription = !this.showCheaterModeDescription"
+                class="info-button"
+            >
                 <mat-icon>info</mat-icon>
             </button>
 
