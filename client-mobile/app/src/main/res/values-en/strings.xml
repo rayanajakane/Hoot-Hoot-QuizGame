@@ -146,4 +146,6 @@
     <string name="prepare">Get ready for the next question! ⏳</string>
     <string name="regen">Generate other usernames</string>
     <string name="suggest_names">Username Suggestions</string>
+    <string name="money_errors_not_enough_money">You don\'t have enough money to make this transaction.</string>
+    <string name="money_errors_donation_amount_exceeded">With this donation, you will exceed the maximum amount of money allowed to send.</string>
 </resources>

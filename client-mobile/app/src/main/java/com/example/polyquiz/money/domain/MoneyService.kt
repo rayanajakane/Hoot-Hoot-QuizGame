@@ -1,9 +1,16 @@
 package com.example.polyquiz.money.domain
+import android.content.Context
+import com.example.polyquiz.R
+import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.constants.MoneyEvents
 import com.example.vanillaprototype.socket.SocketHandler
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import com.example.polyquiz.SnackbarController
 import org.json.JSONObject
 
 
@@ -14,11 +21,11 @@ class MoneyService() {
     private val _currentBalance = MutableStateFlow(0)
     val currentBalance: StateFlow<Int> get() = _currentBalance
 
-    fun listenForMoneyEvents() {
+    fun listenForMoneyEvents(context : Context) {
         onReturnBalance()
         onDonationGiven()
         onDonationReceived()
-        handleError()
+        handleError(context)
     }
 
     fun stopListeningForMoneyEvents() {
@@ -85,13 +92,35 @@ class MoneyService() {
         }
     }
 
-    private fun handleError() {
+
+    private fun handleError(context: Context) {
         mSocket.on(MoneyEvents.ERROR.value) { args: Array<Any> ->
             if (args.isNotEmpty()) {
-                val errorMessage = args[0].toString()
-                println(errorMessage)
-//                notificationService.displayErrorMessage(errorMessage)
+                println("Error: ${args[0]}")
+
+                val errors: List<String> = try {
+                    Gson().fromJson(args[0].toString(), Array<String>::class.java).toList()
+                } catch (e: Exception) {
+                    listOf(args[0].toString())
+                }
+
+                println("Errorsito: $errors")
+
+                val displayText = errors.joinToString(separator = "\n") { errorKey: String ->
+                    val cleanKey = errorKey.trim()
+                    StringValue.dynamicLookup(context, cleanKey).asString(context)
+                }
+
+                val event = SnackbarEvent(
+                    message = StringValue.DynamicString(displayText)
+                )
+
+                CoroutineScope(Dispatchers.Main).launch {
+                    SnackbarController.sendEvent(event)
+                }
             }
         }
     }
+
+
 }
