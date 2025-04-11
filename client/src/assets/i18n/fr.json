@@ -348,7 +348,7 @@
         "voteCheater":"Votez pour le tricheur",
         "answer-hint": "Indice pour la réponse: \"{{answer}}\"",
         "notifyRegularPlayer": "Vous avez le rôle de joueur régulier dans cette partie",
-        "playerVoted": "\"{{player}}\" a voté",
+        "playerVoted": " a voté",
         "players-still-voting": "Joueurs en train de voter",
         "players-voted": "Tous les joueurs ont voté",
         "players-amount-invalid": "Le nombre de joueurs doit être supérieur à 3"
