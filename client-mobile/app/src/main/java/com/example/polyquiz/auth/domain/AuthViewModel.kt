@@ -284,25 +284,6 @@ class AuthViewModel : ViewModel() {
             .emit(GameEvents.UPDATE_AUTHOR_NAME.value, authorUpdateObject)
     }
 
-//    fun betterSaveUserProfile(username: String, avatarURL: String) {
-//        val isSameUsername = (username.lowercase() == getUsername().lowercase())
-//        val isSameAvatar = (Uri.parse(avatarURL) == user?.photoUrl)
-//
-//        if (!isSameUsername) {
-//            updateUsername(username)
-//        }
-//        if(!isSameAvatar) {
-//            updateAvatar(avatarURL)
-//        }
-//
-//        SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
-//
-//        val authorNameUpdate = UserIdName(id = user!!.uid, name = username)
-//        val authorUpdateObject = JSONObject(Gson().toJson(authorNameUpdate))
-//        SocketHandler.getSocket()
-//            .emit(GameEvents.UPDATE_AUTHOR_NAME.value, authorUpdateObject)
-//    }
-
     fun getAvatarURLFromDB(callback: (String?) -> Unit) {
         val uid = auth.currentUser?.uid ?: return callback(null)
         val avatarRef = ImageStorage.getAvatarRef(uid)

@@ -59,6 +59,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
@@ -478,7 +479,10 @@ fun TruncatedText(
     fontSize: TextUnit,
     maxChars: Int,
     fontWeight: FontWeight,
-    modifier: Modifier
+    modifier: Modifier,
+    color : Color = MaterialTheme.colorScheme.onSurface,
+    style: TextStyle = TextStyle()
+
 ) {
     val truncatedText = if (text.length > maxChars) {
         text.take(maxChars) + "..."
@@ -492,6 +496,8 @@ fun TruncatedText(
         fontWeight = fontWeight,
         modifier = modifier,
         maxLines = 1,
-        overflow = TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis,
+        color = color,
+        style = style
     )
 }

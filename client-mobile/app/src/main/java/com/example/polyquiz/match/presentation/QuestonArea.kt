@@ -1,5 +1,6 @@
 package com.example.polyquiz.match.presentation
 
+import android.media.MediaPlayer
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -45,12 +46,14 @@ import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.PriorityHigh
 import androidx.compose.material3.Icon
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -92,6 +95,8 @@ fun QuestionArea(
     val hasImage = !question?.pictureUrl.isNullOrEmpty()
     val isTimerPaused by TimeService.isTimerPaused.collectAsState()
     val isPanicking by TimeService.isPanicking.collectAsState()
+
+    val mediaPlayer = MediaPlayer.create(LocalContext.current, R.raw.panic)
 
     LaunchedEffect(isPanicking) {
         if(isPanicking) {
@@ -168,6 +173,14 @@ fun QuestionArea(
             else -> Unit
         }
     }
+
+    // To avoid memory leaks
+    DisposableEffect(Unit) {
+        onDispose {
+            mediaPlayer.release()
+        }
+    }
+
     context = matchContextService.getContext()
 
     fun routeToResultsPage() {
@@ -445,6 +458,23 @@ fun QuestionArea(
                                 Button(
                                     onClick = {
                                         timeService.pauseTimer(matchRoomService.getRoomCode())
+                                        if(isTimerPaused) {
+                                            scope.launch {
+                                                SnackbarController.sendEvent(
+                                                    event = SnackbarEvent(
+                                                        message = StringValue.StringResource(R.string.timer_start)
+                                                    )
+                                                )
+                                            }
+                                        } else {
+                                            scope.launch {
+                                                SnackbarController.sendEvent(
+                                                    event = SnackbarEvent(
+                                                        message = StringValue.StringResource(R.string.timer_paused)
+                                                    )
+                                                )
+                                            }
+                                        }
 
                                     },
                                     shape = RoundedCornerShape(3.dp)
@@ -469,7 +499,7 @@ fun QuestionArea(
                                 Button(
                                     onClick = {
                                         timeService.triggerPanicTimer(matchRoomService.getRoomCode())
-
+                                        mediaPlayer.start()
                                     },
                                     enabled = !isPanicking,
                                     shape = RoundedCornerShape(3.dp)

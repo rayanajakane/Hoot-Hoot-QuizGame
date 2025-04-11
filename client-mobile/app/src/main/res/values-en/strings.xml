@@ -163,6 +163,8 @@
     <string name="regen">Generate other usernames</string>
     <string name="suggest_names">Username Suggestions</string>
     <string name="panic_mode_activated">❗ PANIC MODE ACTIVATED! ❗</string>
+    <string name="timer_paused">Timer paused</string>
+    <string name="timer_start">Timer unpaused</string>
     <string name="cheater_mode_notify_cheater">You are the cheater in this game</string>
     <string name="cheater_mode_cheater">Cheater</string>
     <string name="cheater_mode_vote">Vote</string>
