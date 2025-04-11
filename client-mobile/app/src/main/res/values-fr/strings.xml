@@ -158,6 +158,7 @@
     <string name="balance">Balance</string>
     <string name="buy">Acheter</string>
     <string name="owned">✅ Possédé</string>
+    <string name="insufficient_funds">Fonds insuffisants</string>
     <string name="no_background">Aucun arrière-plan</string>
     <string name="regen">Générer d\'autres noms</string>
     <string name="suggest_names">Suggestions de noms d\'utilisateurs</string>

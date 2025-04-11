@@ -162,16 +162,19 @@ fun ShopPage(
                 ShopSection(
                     title = stringResource(R.string.avatar_items),
                     items = avatarItems,
+                    currentBalance = currentBalance,
                     onBuyClick = { shopViewModel.buyAvatar(it) }
                 )
                 ShopSection(
                     title = stringResource(R.string.theme_items),
                     items = themeItems,
+                    currentBalance = currentBalance,
                     onBuyClick = { shopViewModel.buyTheme(it) }
                 )
                 ShopSection(
                     title = stringResource(R.string.wallpaper_items),
                     items = wallpaperItems,
+                    currentBalance = currentBalance,
                     onBuyClick = { shopViewModel.buyWallpaper(it) }
                 )
             }
@@ -183,6 +186,7 @@ fun ShopPage(
 fun ShopSection(
     title: String,
     items: List<ShopItem>,
+    currentBalance: Int,
     onBuyClick: (ShopItem) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -203,6 +207,7 @@ fun ShopSection(
             items(items) { item ->
                 ShopItemCard(
                     item = item,
+                    currentBalance = currentBalance,
                     onBuyClick = onBuyClick
                 )
             }
@@ -213,6 +218,7 @@ fun ShopSection(
 @Composable
 fun ShopItemCard(
     item: ShopItem,
+    currentBalance: Int,
     onBuyClick: (ShopItem) -> Unit
 ) {
     Card(
@@ -247,7 +253,7 @@ fun ShopItemCard(
 
             Button(
                 onClick = { onBuyClick(item) },
-                enabled = !item.owned,
+                enabled = !item.owned && item.price <= currentBalance,
                 shape = RoundedCornerShape(0.dp)
             ) {
                 Text(
@@ -257,6 +263,15 @@ fun ShopItemCard(
                         stringResource(R.string.buy)
                 )
             }
+            if (!item.owned && item.price > currentBalance) {
+                Text(
+                    text = stringResource(R.string.insufficient_funds),
+                    color = MaterialTheme.colorScheme.error
+                )
+            } else {
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+
         }
     }
 }
