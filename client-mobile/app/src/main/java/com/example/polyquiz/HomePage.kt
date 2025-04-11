@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
@@ -20,6 +21,7 @@ import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayCircleFilled
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
@@ -62,6 +64,7 @@ fun HomePage(
     navigateToJoinRoom: () -> Unit,
     authViewModel: AuthViewModel,
     navigateToRankingsPage: () -> Unit,
+    navigateToShopPage: () -> Unit
 ) {
     val authState = authViewModel.authState.observeAsState()
     val scope = rememberCoroutineScope()
@@ -147,6 +150,7 @@ fun HomePage(
                 navigateToFriendsPage,
                 navigateToJoinRoom,
                 navigateToRankingsPage,
+                navigateToShopPage,
                 signOut = { authViewModel.signOut() }
             )
             Column(
@@ -252,25 +256,47 @@ fun HomePage(
                             Text(text = stringResource(R.string.friends))
                         }
                     }
-                    ElevatedButton(
-                        onClick = {
-                            navigateToRankingsPage()
-                        },
-                        shape = RoundedCornerShape(3.dp),
-                        modifier = Modifier
-                            .height(55.dp)
-                            .width(164.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceBright,
-                            contentColor = MaterialTheme.colorScheme.onSurface
-                        )
-                    ) {
-                        Icon(
-                            Icons.Filled.Group,
-                            contentDescription = stringResource(R.string.rankings)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = stringResource(R.string.rankings))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Column {
+                        ElevatedButton(
+                            onClick = {
+                                navigateToRankingsPage()
+                            },
+                            shape = RoundedCornerShape(3.dp),
+                            modifier = Modifier
+                                .height(55.dp)
+                                .width(164.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceBright,
+                                contentColor = MaterialTheme.colorScheme.onSurface
+                            )
+                        ) {
+                            Icon(
+                                Icons.Filled.Group,
+                                contentDescription = stringResource(R.string.rankings)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(text = stringResource(R.string.rankings))
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        ElevatedButton(
+                            onClick = { navigateToShopPage() },
+                            shape = RoundedCornerShape(3.dp),
+                            modifier = Modifier
+                                .height(55.dp)
+                                .width(164.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceBright,
+                                contentColor = MaterialTheme.colorScheme.onSurface
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ShoppingCart,
+                                contentDescription = null
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(stringResource(R.string.buy_goodies))
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.height(8.dp))

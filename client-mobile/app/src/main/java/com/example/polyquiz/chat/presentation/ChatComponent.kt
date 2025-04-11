@@ -75,6 +75,7 @@ import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.constants.SIZE_CONSTANTS
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
+import com.example.polyquiz.shop.domain.WallpaperService
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -85,6 +86,7 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     val userId by remember { mutableStateOf(authViewModel.getUserId()) }
     val avatarURL by remember { mutableStateOf(authViewModel.getAvatarURL()) }
     val roomCode by MatchRoomService.matchRoomCode.collectAsState()
+    val currentWallpaper by WallpaperService.currentWallpaper.collectAsState()
     var selectedChat by remember {
         mutableStateOf(if (roomCode.isNotEmpty()) "Match" else "General")
     }
