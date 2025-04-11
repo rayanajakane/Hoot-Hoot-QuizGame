@@ -63,17 +63,17 @@ class ShopViewModel : ViewModel() {
     private fun onItemBought(item: ShopItem, authViewModel: AuthViewModel, type: String) {
         when (type) {
             "avatar" -> {
-                println("Updating purchased avatars")
+                Log.d(TAG, "Updating purchased avatars")
                 PremiumAvatarService.updatePurchasedAvatars(item.id)
                 updateAvatarItem(item.id, true)
             }
             "theme" -> {
-                println("Updating purchased themes")
+                Log.d(TAG, "Updating purchased themes")
                 ThemeService.updatePurchasedThemes(item.id)
                 updateThemeItem(item.id, true)
             }
             "wallpaper" -> {
-                println("Updating purchased wallpapers")
+                Log.d(TAG, "Updating purchased wallpapers")
                 WallpaperService.updatePurchasedWallpapers(item.id)
                 updateWallpaperItem(item.id, true)
             }

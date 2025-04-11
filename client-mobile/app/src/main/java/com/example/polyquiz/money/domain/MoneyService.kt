@@ -1,4 +1,5 @@
 package com.example.polyquiz.money.domain
+import android.util.Log
 import com.example.polyquiz.constants.MoneyEvents
 import com.example.polyquiz.shop.domain.ShopItem
 import com.example.vanillaprototype.socket.SocketHandler
@@ -10,7 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 
 class MoneyService() {
-
+    private val TAG = "MoneyService"
     private val mSocket = SocketHandler.getSocket()
 
     private val _currentBalance = MutableStateFlow(0)
@@ -46,7 +47,7 @@ class MoneyService() {
 
     fun getCurrentBalance(userId: String) {
         mSocket.emit(MoneyEvents.GET_BALANCE.value, userId)
-        println("Getting balance for $userId")
+        Log.d(TAG, "Getting balance for $userId")
     }
 
     private fun onReturnBalance() {
@@ -54,7 +55,7 @@ class MoneyService() {
             if (args.isNotEmpty()) {
                 val balance = args[0].toString().toIntOrNull() ?: 0
                 _currentBalance.value = balance
-                println("Current balance: $balance")
+                Log.d(TAG, "Current balance: $balance")
             }
         }
     }
@@ -65,7 +66,7 @@ class MoneyService() {
             put("friend", friendId)
             put("amount", amount)
         }
-        println("Donating $amount to $friendId")
+        Log.d(TAG, "Donating $amount to $friendId")
         mSocket.emit(MoneyEvents.DONATE_MONEY.value, data)
     }
 
@@ -76,7 +77,7 @@ class MoneyService() {
                 try {
                     val donationData = Gson().fromJson(json, DonationGivenData::class.java)
 //                    notificationService.displaySuccessMessage("You have donated ${donationData.amount} to ${donationData.to}")
-                    println("You have donated ${donationData.amount} to ${donationData.to}")
+                    Log.d(TAG, "You have donated ${donationData.amount} to ${donationData.to}")
                     _currentBalance.value = donationData.newBalance
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -93,7 +94,7 @@ class MoneyService() {
                     val donationData = Gson().fromJson(json, DonationReceivedData::class.java)
 //                    notificationService.displaySuccessMessage("${donationData.from} has donated ${donationData.amount} to you")
                     _currentBalance.value = donationData.newBalance
-                    println("${donationData.from} has donated ${donationData.amount} to you")
+                    Log.d(TAG, "${donationData.from} has donated ${donationData.amount} to you")
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -111,7 +112,7 @@ class MoneyService() {
                 put("owned", item.owned)
             })
         }
-        println("Buying avatar: ${item.id} for ${item.price}")
+        Log.d(TAG, "Buying avatar: ${item.id} for ${item.price}")
         mSocket.emit(MoneyEvents.BUY_AVATAR.value, data)
     }
 
@@ -125,7 +126,7 @@ class MoneyService() {
                 put("owned", item.owned)
             })
         }
-        println("Buying theme: ${item.id} for ${item.price}")
+        Log.d(TAG, "Buying theme: ${item.id} for ${item.price}")
         mSocket.emit(MoneyEvents.BUY_THEME.value, data)
     }
 
@@ -139,7 +140,7 @@ class MoneyService() {
                 put("owned", item.owned)
             })
         }
-        println("Buying wallpaper: ${item.id} for ${item.price}")
+        Log.d(TAG, "Buying wallpaper: ${item.id} for ${item.price}")
         mSocket.emit(MoneyEvents.BUY_WALLPAPER.value, data)
     }
 
@@ -189,7 +190,7 @@ class MoneyService() {
         mSocket.on(MoneyEvents.ERROR.value) { args: Array<Any> ->
             if (args.isNotEmpty()) {
                 val errorMessage = args[0].toString()
-                println(errorMessage)
+                Log.e(TAG, errorMessage)
 //                notificationService.displayErrorMessage(errorMessage)
             }
         }
