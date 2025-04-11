@@ -40,6 +40,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.match.domain.MatchRoomService
@@ -349,7 +350,6 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
 
                 modifier = Modifier.padding(2.dp),
                 horizontalArrangement = Arrangement.Start
-                //HorizontalAlignment= Arrangement.Start
             ) {
 
                 if (selectedGame != null) {
@@ -409,7 +409,6 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                             ),
                             modifier = Modifier
                                 .padding(10.dp)
-                                .align(Alignment.End)
                                 .width(160.dp)
                                 .height(60.dp)
                         ) {
@@ -427,22 +426,21 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                             ),
                             shape = RoundedCornerShape(5.dp),
                             modifier = Modifier
-                                .padding(start = 10.dp, end = 10.dp, top = 10.dp)
-                                .width(160.dp)
-                                .height(60.dp)
+                                .padding(start = 10.dp, end = 15.dp)
 
                         ) {
-
-                            Icon(
-                                Icons.Filled.Settings,
-                                contentDescription = stringResource(R.string.custom_match),
-                            )
-
-                            Text(
-                                text = stringResource(R.string.custom_match),
-                                textAlign = TextAlign.Center
-                            )
-
+                            Row(modifier = Modifier.fillMaxWidth()) {
+                                Icon(
+                                    Icons.Filled.Settings,
+                                    contentDescription = stringResource(R.string.custom_match),
+                                    modifier = Modifier
+                                        .offset(x = -18.dp, y = 5.dp),
+                                )
+                                Text(
+                                    text = stringResource(R.string.custom_match),
+                                    textAlign = TextAlign.Center,
+                                )
+                            }
                         }
 
                     }
