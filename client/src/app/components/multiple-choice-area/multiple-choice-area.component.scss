@@ -1,9 +1,12 @@
-#choice-area {
+#choice-area,
+#answers-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.5rem;
     position: fixed;
     top: 55vh;
+    left: 22vw;
+    right: 22vw;
     align-self: center;
 }
 
@@ -61,7 +64,7 @@ button.answer.selected {
     border-radius: 50%;
     display: inline-block;
     position: absolute;
-    top: -1rem;
+    top: -0.25rem;
     right: -2rem;
 }
 
