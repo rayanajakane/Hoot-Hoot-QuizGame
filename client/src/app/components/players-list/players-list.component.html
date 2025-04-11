@@ -10,8 +10,8 @@
         <h2>{{ t('players-list.players') }}</h2>
         <div *ngIf="this.matchContextService.getContext() === context.HostView">
             <div *ngFor="let player of this.players | sortPlayers: 'score' : 'descending'" class="player-card">
-                <div class="username text-overflow-ellipsis">
-                    <p [ngClass]="[player.isPlaying ? '' : 'inactive-player']">{{ player.username }}</p>
+                <div class="username">
+                    <p [ngClass]="[player.isPlaying ? 'text-overflow-ellipsis' : 'text-overflow-ellipsis inactive-player']">{{ player.username }}</p>
                     <strong *ngIf="player.id === this.matchRoomService.cheaterPlayer?.id" class="cheater-tag">
                         {{ t('cheater-mode.cheater') }}
                     </strong>
