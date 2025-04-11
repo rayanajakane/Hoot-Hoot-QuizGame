@@ -172,7 +172,6 @@ fun UserEditPage(
     val temporaryAvatar by cameraViewModel.temporaryAvatar.collectAsState()
     val avatarToShow = temporaryAvatar ?: avatarURL
     var initialAvatarURL by remember { mutableStateOf(authViewModel.getAvatarURL()) }
-    var initialUsername by remember { mutableStateOf(authViewModel.getUsername()) }
     var initialLang by remember { mutableStateOf(Locale.getDefault().language) }
 
     val openDeleteDialog = remember { mutableStateOf(false) }

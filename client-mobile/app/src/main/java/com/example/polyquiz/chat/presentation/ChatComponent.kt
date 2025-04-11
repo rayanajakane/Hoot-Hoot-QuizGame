@@ -86,9 +86,10 @@ import java.util.Locale
 
 @Composable
 fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
-    val username by remember { mutableStateOf(authViewModel.getUsername()) }
+//    val username by remember { mutableStateOf(authViewModel.getUsername()) }
+    val username by authViewModel.username.collectAsState()
     val userId by remember { mutableStateOf(authViewModel.getUserId()) }
-    val avatarURL by remember { mutableStateOf(authViewModel.getAvatarURL()) }
+    val avatarURL by authViewModel.avatarURL.collectAsState()
     val roomCode by MatchRoomService.matchRoomCode.collectAsState()
     val currentWallpaper by WallpaperService.currentWallpaper.collectAsState()
     var selectedChat by remember {
@@ -158,6 +159,7 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
             messages?.let {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
+                    state = listState,
                     modifier = Modifier
                         .weight(1f),
                 ) {
