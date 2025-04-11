@@ -23,6 +23,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.polyquiz.auth.domain.UserIdName
 import com.example.polyquiz.constants.FriendsDisplayText
@@ -40,12 +41,13 @@ fun FriendsSearchScreen(
     val moneyService = remember { MoneyService() }
     var searchQuery by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     LaunchedEffect(currentUserID) {
         friendsService.initialize(currentUserID)
         friendsService.returnAllData()
         moneyService.getCurrentBalance(currentUserID)
-        moneyService.listenForMoneyEvents()
+        moneyService.listenForMoneyEvents(context)
     }
 
     val pendingRequests by friendsService.pendingRequests.collectAsState()

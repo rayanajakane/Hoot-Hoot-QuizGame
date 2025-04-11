@@ -180,4 +180,6 @@
     <string name="timer_paused">Minutrie suspendue</string>
     <string name="timer_start">Minutrie partie</string>
     <string name="game_author">"Auteur: "</string>
+    <string name="money_errors_not_enough_money">Vous n\'avez pas assez d\'argent pour effectuer cette transaction.</string>
+    <string name="money_errors_donation_amount_exceeded">Avec cette donation, vous dépassez la limite quotidienne.</string>
 </resources>
