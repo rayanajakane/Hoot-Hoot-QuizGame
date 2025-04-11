@@ -235,7 +235,7 @@ export class UserEditPageComponent implements OnInit {
                 // from Firebase Storage to free up space.
                 this.authenticationService.deleteUserAvatar(this.authenticationService.userId);
             }
-            this.themeService.setTheme(this.currentTheme.value as Theme);
+            this.themeService.setTheme(this.currentTheme.value as Theme, true);
             this.translationService.setLanguage(this.currentLang.value as string);
             this.wallpaperService.setWallpaper(this.currentWallpaper);
 
