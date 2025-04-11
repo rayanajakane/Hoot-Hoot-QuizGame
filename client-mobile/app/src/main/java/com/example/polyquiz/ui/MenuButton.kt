@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayCircleFilled
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -120,7 +121,7 @@ fun MenuButton(
                 text = { Text(stringResource(R.string.rankings)) },
                 leadingIcon = {
                     Icon(
-                        Icons.Filled.Group,
+                        Icons.Filled.ShoppingCart,
                         contentDescription = stringResource(R.string.rankings)
                     )
                 },
