@@ -86,7 +86,6 @@ import java.util.Locale
 
 @Composable
 fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
-//    val username by remember { mutableStateOf(authViewModel.getUsername()) }
     val username by authViewModel.username.collectAsState()
     val userId by remember { mutableStateOf(authViewModel.getUserId()) }
     val avatarURL by authViewModel.avatarURL.collectAsState()
