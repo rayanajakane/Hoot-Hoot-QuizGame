@@ -1,8 +1,7 @@
 <div *transloco="let t; read: 'friends-search'">
-    <div class="nav">
+    <div class="page-title-container">
         <h1 class="page-title">{{ 'main-page.friends' | transloco }}</h1>
     </div>
-
     <div class="friends-search-container">
         <div class="friends-section" *ngIf="friendsService.friends && friendsService.friends.length > 0">
             <h3>{{ t('friends-list') }}</h3>
