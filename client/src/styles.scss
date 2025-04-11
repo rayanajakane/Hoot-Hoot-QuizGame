@@ -315,7 +315,6 @@ $pikachu-theme: mat.define-light-theme(
     --mdc-elevated-card-container-color: #c2e5c1;
     --mdc-elevated-card-container-elevation: 0 2px 8px rgba(0, 0, 0, 0.1);
     --mdc-filled-text-field-container-color: white;
-    --mdc-dialog-supporting-text-color: #333;
     --mat-expansion-container-background-color: #99d498;
     --mdc-protected-button-container-color: mat.get-color-from-palette($primary-luigi, 500);
     --mat-sidenav-container-background-color: #e7f5e6;
@@ -324,10 +323,6 @@ $pikachu-theme: mat.define-light-theme(
 
     .color-variant {
         color: mat.get-color-from-palette($accent-luigi, 500) !important;
-    }
-
-    .mdc-snackbar__label {
-        color: black !important;
     }
 
     .signup-button {
