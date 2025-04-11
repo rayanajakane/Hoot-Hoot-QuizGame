@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.StateFlow
 object ThemeService {
     private const val TAG = "ThemeService"
 
-    // Add the missing MutableStateFlow for purchased themes
     private val _purchasedThemes = MutableStateFlow<List<String>>(emptyList())
     val purchasedThemes: StateFlow<List<String>> = _purchasedThemes
 
@@ -100,18 +99,5 @@ object ThemeService {
 
     fun getStandardThemes(): List<Theme> {
         return listOf(Theme.LIGHT, Theme.DARK)
-    }
-
-    fun getAvailableThemes(): List<Theme> {
-        val available = getStandardThemes().toMutableList()
-        val purchasedThemeNames = _purchasedThemes.value
-
-        getPremiumThemes().forEach { theme ->
-            if (purchasedThemeNames.contains(theme.toString())) {
-                available.add(theme)
-            }
-        }
-
-        return available
     }
 }

@@ -650,17 +650,6 @@ fun UserEditPage(
                         }
                     }
                 }
-                Button(
-                    onClick = { navigateToShopPage() },
-                    modifier = Modifier.padding(top = 16.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ShoppingCart,
-                        contentDescription = null
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(stringResource(R.string.buy_goodies))
-                }
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     stringResource(R.string.danger_zone),
