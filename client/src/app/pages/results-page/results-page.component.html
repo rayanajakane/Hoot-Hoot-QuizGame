@@ -1,9 +1,12 @@
 <ng-container *transloco="let t">
     <div id="main-container">
         <h1>{{ t('history.result') }}</h1>
-        <div class="balance-container" *ngIf="matchContext.getContext() !== contextOptions.HostView">
+        <div
+            *ngIf="matchContext.getContext() !== contextOptions.HostView"
+            [ngClass]="this.matchRoomService.isCheaterMode ? 'cheater-mode-balance-container' : 'balance-container'"
+        >
             <mat-icon class="balance-icon">account_balance_wallet</mat-icon>
-            <span class="balance-text"> {{ t('page.new-total') }} {{ moneyService.currentBalance | currency: 'USD' : 'symbol' }} </span>
+            <span class="balance-text"> {{ t('page.new-total') }} {{ moneyService.currentBalance }}$</span>
         </div>
         <div id="players-list">
             <mat-card
