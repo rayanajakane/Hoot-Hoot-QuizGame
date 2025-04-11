@@ -296,11 +296,11 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "Title",
+                                text = stringResource(R.string.game_title),
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = "Author",
+                                text = stringResource(R.string.game_author),
                                 fontWeight = FontWeight.Bold
                             )
                         }

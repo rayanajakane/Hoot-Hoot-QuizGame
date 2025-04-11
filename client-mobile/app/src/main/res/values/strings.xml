@@ -59,6 +59,7 @@
     <string name="games_description">"Description: "</string>
     <string name="games_time">"Durée: "</string>
     <string name="game_title">"Titre: "</string>
+    <string name="game_author">"Auteur: "</string>
     <string name="questions">Questions </string>
     <string name="select_game">"Sélectionner un jeu dans la liste des jeux"</string>
     <string name="play">"Jouer"</string>
