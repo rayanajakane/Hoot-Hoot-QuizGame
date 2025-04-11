@@ -138,9 +138,9 @@
         "modification": "modification",
         "creation-title": "Création du jeu",
         "modification-title": "Modification du jeu",
-        "create-game": "Créer le jeu",
-        "apply-changes": "Appliquer les modifications",
-        "add-question": "Ajouter une nouvelle question",
+        "create-game": "Sauvegarder",
+        "apply-changes": "Sauvegarder",
+        "add-question": "Nouvelle question",
         "notice": "Le jeu doit contenir au moins 1 question. Cliquez sur \"Ajouter une nouvelle question\" ou importez une question de la banque."
     },
     "question-creation-form": {

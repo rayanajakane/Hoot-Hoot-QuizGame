@@ -139,9 +139,9 @@
         "modification": "modification",
         "creation-title": "Game creation",
         "modification-title": "Game modification",
-        "create-game": "Create game",
-        "apply-changes": "Apply changes",
-        "add-question": "Add new question",
+        "create-game": "Save",
+        "apply-changes": "Save",
+        "add-question": "New question",
         "notice": "The game must contain at least 1 question. Click on \"Add new question\" or import a question from the bank."
     },
     "question-creation-form": {
