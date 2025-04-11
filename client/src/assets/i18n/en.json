@@ -187,7 +187,7 @@
         "wallpaper-items": "Chat Wallpapers"
     },
     "friends-search": {
-        "search-friend": "Search Friend",
+        "search-friend": "Search User (Non-Friend)",
         "search-input": "Search",
         "search-input-placeholder": "Username",
         "friend-requests-received": "Friend Requests received",
