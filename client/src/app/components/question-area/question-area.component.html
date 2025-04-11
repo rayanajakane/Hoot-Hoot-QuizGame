@@ -14,17 +14,17 @@
                     "
                 >
                     <h1 id="score">SCORE : {{ this.answerService.playerScore }}</h1>
-                    <div>
-                        <h1 class="points" *ngIf="!this.answerService.answerCorrectness" class="wrong-answer">
+                    <div class="points-feedback-container">
+                        <h1 *ngIf="!this.answerService.answerCorrectness" class="wrong-answer feedback-text">
                             {{ t('question-area.wrong-answer') }}
                         </h1>
-                        <h1 class="points" *ngIf="this.answerService.answerCorrectness === answerOptions.OK" class="ok-answer">
+                        <h1 *ngIf="this.answerService.answerCorrectness === answerOptions.OK" class="ok-answer feedback-text">
                             {{ t('question-area.partial-answer') }} {{ this.currentQuestion.points / 2 }} points 🆗
                         </h1>
-                        <h1 class="points" *ngIf="this.answerService.answerCorrectness === answerOptions.GOOD" class="good-answer">
+                        <h1 *ngIf="this.answerService.answerCorrectness === answerOptions.GOOD" class="good-answer feedback-text">
                             {{ t('question-area.good-answer') }} {{ this.currentQuestion.points }} points 👏
                         </h1>
-                        <h1 class="points" class="good-answer" *ngIf="this.answerService.bonusPoints > 0">
+                        <h1 class="good-answer feedback-text" *ngIf="this.answerService.bonusPoints > 0">
                             {{ t('question-area.bonus-message') }} {{ this.answerService.bonusPoints }} points!✨
                         </h1>
                     </div>
@@ -41,7 +41,7 @@
 
                 <div id="question">
                     <div id="question-text-container" [ngClass]="this.currentQuestion.pictureUrl !== '' ? 'two-columns' : 'one-column'">
-                        <h1>{{ this.currentQuestion!.text }}</h1>
+                        <h1 class="question-text">{{ this.currentQuestion!.text }}</h1>
                         <img
                             *ngIf="this.currentQuestion.pictureUrl !== '' && !this.matchRoomService.isCooldown"
                             src="{{ this.currentQuestion.pictureUrl }}"
