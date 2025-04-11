@@ -121,7 +121,7 @@ fun MenuButton(
                 text = { Text(stringResource(R.string.rankings)) },
                 leadingIcon = {
                     Icon(
-                        Icons.Filled.ShoppingCart,
+                        Icons.Filled.Group,
                         contentDescription = stringResource(R.string.rankings)
                     )
                 },
@@ -131,7 +131,7 @@ fun MenuButton(
                 text = { Text(stringResource(R.string.buy_goodies)) },
                 leadingIcon = {
                     Icon(
-                        Icons.Filled.Group,
+                        Icons.Filled.ShoppingCart,
                         contentDescription = stringResource(R.string.buy_goodies)
                     )
                 },
