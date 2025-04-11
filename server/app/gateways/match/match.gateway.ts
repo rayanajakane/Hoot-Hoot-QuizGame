@@ -82,6 +82,9 @@ export class MatchGateway implements OnGatewayDisconnect {
         @MessageBody() data: { gameId: string; hostId: string; isClassicMode: boolean; partyConfig: PartyConfig },
     ) {
         console.log('Creating room', data.hostId);
+        // DEACTIVATED CALLS because no longer necessary + caused bugs where clients were stuck (pseudo-crash)
+        // COMMENTED to avoid confusion during eventual rebases
+        /*
         if (data.partyConfig) {
             if (data.partyConfig.isFriendsOnly) {
                 const friendshipErrors = await this.friendService.getFriendshipErrors(data.hostId, true);
@@ -98,6 +101,7 @@ export class MatchGateway implements OnGatewayDisconnect {
                 }
             }
         }
+        */
 
         let selectedGame: Game = {} as Game;
         selectedGame = this.matchBackupService.getBackupGame(data.gameId);
