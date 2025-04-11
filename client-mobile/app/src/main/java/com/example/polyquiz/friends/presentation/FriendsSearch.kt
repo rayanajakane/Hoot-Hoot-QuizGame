@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.polyquiz.R
@@ -54,11 +55,14 @@ fun FriendsSearchScreen(
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+    val context = LocalContext.current
 
     LaunchedEffect(currentUserID) {
         friendsService.initialize(currentUserID)
         friendsService.returnAllData()
         shopViewModel.getCurrentBalance(currentUserID)
+        moneyService.getCurrentBalance(currentUserID)
+        moneyService.listenForMoneyEvents(context)
     }
 
     val pendingRequests by friendsService.pendingRequests.collectAsState()

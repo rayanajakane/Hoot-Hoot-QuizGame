@@ -192,4 +192,6 @@
     <string name="classic_mode">Classic</string>
     <string name="cheater_mode_label">Cheater</string>
     <string name="game_mode">Game Mode</string>
+    <string name="money_errors_not_enough_money">You don\'t have enough money to make this transaction.</string>
+    <string name="money_errors_donation_amount_exceeded">With this donation, you will exceed the maximum amount of money allowed to send.</string>
 </resources>

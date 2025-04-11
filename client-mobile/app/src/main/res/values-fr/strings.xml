@@ -192,4 +192,6 @@
     <string name="classic_mode">Classique</string>
     <string name="cheater_mode_label">Tricheur</string>
     <string name="game_mode">Mode de Jeu</string>
+    <string name="money_errors_not_enough_money">Vous n\'avez pas assez d\'argent pour effectuer cette transaction.</string>
+    <string name="money_errors_donation_amount_exceeded">Avec cette donation, vous dépassez la limite quotidienne.</string>
 </resources>
