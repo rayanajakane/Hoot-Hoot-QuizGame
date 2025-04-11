@@ -265,7 +265,8 @@ fun PlayerVotedCard(player: Player) {
                     text = " ${stringResource(R.string.cheater_mode_player_voted)}",
                     fontSize = 16.sp,
                     color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.End
                 )
             }
         }
