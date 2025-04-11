@@ -25,17 +25,10 @@ h2 {
     margin: 1rem;
     padding: 0 1rem;
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 3fr 1fr;
     align-items: center;
     background-color: white;
     border-radius: 0.5rem;
-}
-.username {
-    display: grid;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5rem;
-    grid-template-columns: 1fr 1fr;
 }
 
 .inactive-player {
@@ -103,4 +96,8 @@ h2 {
 .chat-toggle-button:hover::before,
 .chat-toggle-button:hover::after {
     opacity: 1;
+}
+
+.performance-text {
+    font-size: 0.8rem;
 }
