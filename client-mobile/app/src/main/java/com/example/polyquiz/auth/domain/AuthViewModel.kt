@@ -120,6 +120,31 @@ class AuthViewModel : ViewModel() {
         return database.getReference("usernames/${username}")
     }
 
+    fun getUserDatabaseRef(): DatabaseReference {
+        val userId = getUserId()
+        return database.getReference("users/$userId")
+    }
+
+    fun getPurchasedAvatarsRef(): DatabaseReference {
+        return getUserDatabaseRef().child("purchasedAvatars")
+    }
+
+    fun getPurchasedWallpapersRef(): DatabaseReference {
+        return getUserDatabaseRef().child("purchasedWallpapers")
+    }
+
+    fun getPurchasedThemesRef(): DatabaseReference {
+        return getUserDatabaseRef().child("purchasedThemes")
+    }
+
+    fun getCurrentWallpaperRef(): DatabaseReference {
+        return getUserDatabaseRef().child("currentWallpaper")
+    }
+
+    fun getBalanceRef(): DatabaseReference {
+        return getUserDatabaseRef().child("balance")
+    }
+
     fun updateEmail(newEmail: String, context: Context) {
         _email.value = newEmail
         validateEmail(newEmail, context)

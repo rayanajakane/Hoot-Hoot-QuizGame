@@ -36,7 +36,8 @@ fun RankingsPage(
     navigateToFriendsPage: () -> Unit,
     navigateToJoinRoom: () -> Unit,
     navigateToLogin: () -> Unit,
-    navigateToRankingsPage: () -> Unit
+    navigateToRankingsPage: () -> Unit,
+    navigateToShop: () -> Unit
 ) {
     val rankings by EloService._rankings.observeAsState(emptyList())
     val currentRating by EloService.currentRating.observeAsState(0)
@@ -74,6 +75,7 @@ fun RankingsPage(
                 navigateToFriendsPage,
                 navigateToJoinRoom,
                 navigateToRankingsPage,
+                navigateToShop,
                 signOut = {
                     authViewModel.signOut()
                     navigateToLogin()

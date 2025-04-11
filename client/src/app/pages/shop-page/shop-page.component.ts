@@ -22,8 +22,8 @@ export class ShopPageComponent implements OnInit {
     wallpaperItems: ShopItem[] = [];
     premiumThemes = [Theme.LUIGI, Theme.MARIO, Theme.SONIC, Theme.PIKACHU];
 
-    private readonly THEME_PRICE = 50;
-    private readonly WALLPAPER_PRICE = 30;
+    private readonly THEME_PRICE = 500;
+    private readonly WALLPAPER_PRICE = 300;
 
     constructor(
         public moneyService: MoneyService,

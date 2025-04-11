@@ -19,4 +19,4 @@ export enum AvatarState {
     Custom = 'custom',
 }
 
-export const AVATAR_PRICE = 10;
+export const AVATAR_PRICE = 100;
