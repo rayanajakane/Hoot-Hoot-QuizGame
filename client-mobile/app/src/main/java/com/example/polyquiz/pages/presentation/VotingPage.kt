@@ -121,7 +121,7 @@ fun VotingPage(
                                     selectedPlayer = it
                                     isVotingDisabled = false
                                 },
-                                isVotingDisabled = false,
+                                //isVotingDisabled = false,
                                 voteCounts = voteCounts
                             )
                         }
@@ -144,7 +144,7 @@ fun VotingPage(
                                 put("usersWhoVoted", usersWhoVotedArray)
                             }
                             matchRoomService.sendBackVotesResult(sentInfo)
-                            radioButtonDisabled = true
+                            //radioButtonDisabled = true
                         }
                     }, modifier = Modifier, enabled = !isVotingDisabled
                 ) {
@@ -238,6 +238,9 @@ fun PlayerVotedCard(player: Player) {
             containerColor = MaterialTheme.colorScheme.surfaceBright,
             contentColor = MaterialTheme.colorScheme.onSurface,
         ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 6.dp,
+        ),
     ) {
         Row(
             modifier = Modifier
@@ -284,13 +287,16 @@ fun PlayerVoteCard(
 ) {
     Card(
         modifier = Modifier
-            .fillMaxWidth(0.8f)
-            .padding(vertical = 4.dp)
+            .fillMaxWidth(0.7f)
+            .padding(vertical = 2.dp)
             .clickable { onPlayerSelected(player.username) },
-        shape = RoundedCornerShape(3.dp),
+        shape = RoundedCornerShape(5.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceBright,
             contentColor = MaterialTheme.colorScheme.onSurface,
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp,
         ),
     ) {
         Row(
@@ -307,12 +313,40 @@ fun PlayerVoteCard(
                 ),
                 enabled = !MatchRoomService.playerVoted
             )
-            PlayerCard(
-                modifier = Modifier,
+            PlayerInfo(
                 player = player,
-                url = player.photoUrl,
-                withAvatar = true,
-                context = MatchContextService
+            )
+        }
+    }
+}
+
+
+@Composable
+fun PlayerInfo(player: Player) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AsyncImage(
+            model = player.photoUrl,
+            contentDescription = "Player Avatar",
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape),
+            placeholder = rememberAsyncImagePainter(model = PresetAvatar.DEFAULT.value)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        if (!player.isPlaying) {
+            Text(
+                text = player.username,
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = TextStyle(textDecoration = TextDecoration.LineThrough)
+            )
+        } else {
+            Text(
+                text = player.username,
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }

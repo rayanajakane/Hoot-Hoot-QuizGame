@@ -85,6 +85,7 @@ fun PlayerCard(
     context: MatchContextService,
     withAvatar: Boolean = false,
     inResultsPage: Boolean = false,
+
 ) {
     Card(
         shape = RoundedCornerShape(4.dp),
@@ -93,13 +94,13 @@ fun PlayerCard(
             contentColor = MaterialTheme.colorScheme.onSurface,
             disabledContainerColor = MaterialTheme.colorScheme.surfaceBright,
             disabledContentColor = MaterialTheme.colorScheme.onSurface
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 6.dp,
+
         ),
         modifier = modifier,
-
-        ) {
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 6.dp,
+        )
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -107,7 +108,10 @@ fun PlayerCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(modifier = Modifier.fillMaxWidth(0.4f), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier.fillMaxWidth(0.4f),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 if (withAvatar) {
                     AsyncImage(
                         model = url,
@@ -121,44 +125,42 @@ fun PlayerCard(
                 }
 
 
-                    if (!player.isPlaying) {
+                if (!player.isPlaying) {
+                    Text(
+                        text = player.username,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                    )
+                } else {
+                    TruncatedText(
+                        text = player.username,
+                        fontSize = 16.sp,
+                        maxChars = 10,
+                        fontWeight = FontWeight.Normal,
+                        modifier = Modifier,
+                    )
+                }
+                if (MatchRoomService.isCheaterMode && context.getContext() !== MatchContext.HOSTVIEW && MatchRoomService.isTimeToNavigateToResults && inResultsPage) {
+                    if (player.id == MatchRoomService.cheaterPlayer.id) {
                         Text(
-                            text = player.username,
+                            text = " \uD83D\uDE08",
                             fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            style = TextStyle(textDecoration = TextDecoration.LineThrough)
-                        )
-                    } else {
-                        TruncatedText(
-                            text = player.username,
-                            fontSize = 16.sp,
-                            maxChars = 20,
                             fontWeight = FontWeight.Normal,
                             modifier = Modifier,
                         )
                     }
-                    if (MatchRoomService.isCheaterMode && context.getContext() !== MatchContext.HOSTVIEW && MatchRoomService.isTimeToNavigateToResults && inResultsPage) {
-                        if (player.id == MatchRoomService.cheaterPlayer.id) {
-                            TruncatedText(
-                                text = " \uD83D\uDE08",
-                                fontSize = 16.sp,
-                                maxChars = 20,
-                                fontWeight = FontWeight.Normal,
-                                modifier = Modifier,
-                            )
-                        }
-                    }
+                }
 
-                    if (MatchRoomService.isCheaterMode && context.getContext() === MatchContext.HOSTVIEW) {
-                        if (player.id == MatchRoomService.cheaterPlayer.id) {
-                            TruncatedText(
-                                text = " \uD83D\uDE08",
-                                fontSize = 16.sp,
-                                maxChars = 20,
-                                fontWeight = FontWeight.Normal,
-                                modifier = Modifier,
-                            )
-                        }
+                if (MatchRoomService.isCheaterMode && context.getContext() === MatchContext.HOSTVIEW) {
+                    if (player.id == MatchRoomService.cheaterPlayer.id) {
+                        Text(
+                            text = " \uD83D\uDE08",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Normal,
+                            modifier = Modifier,
+                        )
+                    }
 
                 }
 
@@ -166,7 +168,7 @@ fun PlayerCard(
 
 
             if (MatchRoomService.isCheaterMode && MatchRoomService.isTimeToNavigateToResults && inResultsPage) {
-                Row(modifier = Modifier.fillMaxWidth(0.6f)) {
+                Row(modifier = Modifier.fillMaxWidth(0.5f)) {
 
                     if (MatchRoomService.votesResults[player.username] == null) {
                         Text(
