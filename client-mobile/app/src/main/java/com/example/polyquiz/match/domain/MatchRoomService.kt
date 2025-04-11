@@ -63,7 +63,7 @@ object MatchRoomService {
     var hostId by mutableStateOf("")
     var errorMsg by mutableStateOf("")
     var navigateToVotingPage by mutableStateOf(false)
-   var votingUsers = MutableStateFlow<List<String>>(emptyList())
+    var votingUsers = MutableStateFlow<List<String>>(emptyList())
     var playerVoted  by mutableStateOf(false)
 
     var userVoted by mutableStateOf("")
@@ -431,13 +431,14 @@ object MatchRoomService {
         isWaitOver = false
         isPlaying = false
         isCooldown = false
-       votingUsers = MutableStateFlow(emptyList())
+        votingUsers = MutableStateFlow(emptyList())
         userVoted = ""
         votesResults = mutableMapOf<String, Int>()
         startedVote = false
         if (cheaterPlayer.username != "") {
             cheaterPlayer = Player("", "", "", 0, 0, false, false, "")
         }
+        playerVoted = false
     }
 
     fun routeToResultsPage() {

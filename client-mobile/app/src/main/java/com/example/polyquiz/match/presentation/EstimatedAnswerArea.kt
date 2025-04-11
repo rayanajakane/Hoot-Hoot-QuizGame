@@ -1,5 +1,6 @@
 package com.example.polyquiz.match.presentation
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -75,8 +76,7 @@ fun EstimatedAnswerArea(
                 text = if (isDisabled) {
                     stringResource(
                         R.string.good_answer_qre,
-                        answerService.feedback?.correctAnswer!![0].toInt()
-                            + estimatedParams?.margin!!, estimatedParams!!.margin
+                        matchRoomService.currentAnswers[0], estimatedParams!!.margin
                     )
                 } else {
                     stringResource(R.string.choose_estimated, estimatedParams!!.margin)

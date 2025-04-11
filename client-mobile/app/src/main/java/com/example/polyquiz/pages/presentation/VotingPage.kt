@@ -90,6 +90,16 @@ fun VotingPage(
             else -> Unit
         }
     }
+    LaunchedEffect(MatchRoomService.hasBeenKickedOut) {
+        when (MatchRoomService.hasBeenKickedOut) {
+            true -> {
+                MatchRoomService.hasBeenKickedOut = false
+                navigateToHome()
+            }
+
+            else -> Unit
+        }
+    }
 
 
     Row(
@@ -121,7 +131,6 @@ fun VotingPage(
                                     selectedPlayer = it
                                     isVotingDisabled = false
                                 },
-                                //isVotingDisabled = false,
                                 voteCounts = voteCounts
                             )
                         }
@@ -144,7 +153,6 @@ fun VotingPage(
                                 put("usersWhoVoted", usersWhoVotedArray)
                             }
                             matchRoomService.sendBackVotesResult(sentInfo)
-                            //radioButtonDisabled = true
                         }
                     }, modifier = Modifier, enabled = !isVotingDisabled
                 ) {
