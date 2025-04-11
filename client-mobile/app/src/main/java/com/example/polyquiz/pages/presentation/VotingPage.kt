@@ -1,6 +1,8 @@
 package com.example.polyquiz.pages.presentation
 
+import android.annotation.SuppressLint
 import android.service.autofill.FieldClassification.Match
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
@@ -26,6 +28,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,9 +46,11 @@ import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.Player
 import com.example.polyquiz.match.presentation.PlayersListComponent
+import com.example.polyquiz.match.presentation.PlayerCard
 import com.example.polyquiz.ui.theme.AndroidGreen
 import org.json.JSONArray
 import org.json.JSONObject
+
 
 @Composable
 fun VotingPage(
@@ -64,7 +69,6 @@ fun VotingPage(
     val currentVotes = remember(matchRoomService.votesResults) {
         matchRoomService.votesResults.values.sum()
     }
-    val votedPlayers = remember { mutableStateListOf<String>() }
 
     var totalVotesOfActivePlayers: Int = matchRoomService.votesResults.values.sum()
 
@@ -87,11 +91,6 @@ fun VotingPage(
         }
     }
 
-    LaunchedEffect(MatchRoomService.userVoted) {
-        if (MatchRoomService.userVoted.isNotEmpty()) {
-            votedPlayers.add(MatchRoomService.userVoted)
-        }
-    }
 
     Row(
         modifier = Modifier
@@ -109,17 +108,9 @@ fun VotingPage(
             modifier = Modifier
                 .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
-            // verticalArrangement = Arrangement.Top
         ) {
             if (context != MatchContext.HOSTVIEW) {
-//                Text(
-//                    text = stringResource(R.string.cheater_mode_vote),
-//                    style = MaterialTheme.typography.headlineSmall
-//                )
-
-                // Spacer(modifier = Modifier.height(16.dp))
                 LazyColumn(
-                    //modifier = Modifier.weight(1f)
                 ) {
                     items(players) { player ->
                         if (player.username != matchRoomService.retrieveUsername()) {
@@ -167,9 +158,8 @@ fun VotingPage(
                 }
                 Spacer(modifier = Modifier.height(2.dp))
                 LazyColumn(
-                    //modifier = Modifier.weight(1f)
                 ) {
-                    items(votedPlayers) { player ->
+                    items(players) { player ->
                         PlayerVotedCard(player = player)
                     }
                 }
@@ -228,8 +218,17 @@ fun VotingPage(
     }
 }
 
+
 @Composable
-fun PlayerVotedCard(player: String) {
+fun PlayerVotedCard(player: Player) {
+    val votedPlayers = remember { mutableStateListOf<String>() }
+
+    LaunchedEffect(MatchRoomService.userVoted) {
+        if (MatchRoomService.userVoted.isNotEmpty()) {
+            votedPlayers.add(MatchRoomService.userVoted)
+        }
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth(0.8f)
@@ -246,12 +245,29 @@ fun PlayerVotedCard(player: String) {
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            if (!player.isPlaying) {
+                Text(
+                    text = player.username,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                )
+            } else {
 
-            Text(
-                text = player + " ${stringResource(R.string.cheater_mode_player_voted)}",
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
+                Text(
+                    text = player.username,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+            if (votedPlayers.contains(player.username)) {
+                Text(
+                    text = " ${stringResource(R.string.cheater_mode_player_voted)}",
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     }
 }
@@ -278,7 +294,6 @@ fun PlayerVoteCard(
     ) {
         Row(
             modifier = Modifier
-             //   .fillMaxWidth()
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -291,37 +306,12 @@ fun PlayerVoteCard(
                 ),
                 enabled = !MatchRoomService.playerVoted
             )
-            PlayerInfo(player = player)
-        }
-    }
-}
-
-@Composable
-fun PlayerInfo(player: Player) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AsyncImage(
-            model = player.photoUrl,
-            contentDescription = "Player Avatar",
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape),
-            placeholder = rememberAsyncImagePainter(model = PresetAvatar.DEFAULT.value)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        if (!player.isPlaying) {
-            Text(
-                text = player.username,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurface,
-                style = TextStyle(textDecoration = TextDecoration.LineThrough)
-            )
-        } else {
-            Text(
-                text = player.username,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurface,
+            PlayerCard(
+                modifier = Modifier,
+                player = player,
+                url = player.photoUrl,
+                withAvatar = true,
+                context = MatchContextService
             )
         }
     }

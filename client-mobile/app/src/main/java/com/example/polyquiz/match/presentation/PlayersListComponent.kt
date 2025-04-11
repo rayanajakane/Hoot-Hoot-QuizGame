@@ -134,7 +134,7 @@ fun PlayerCard(
                 if (MatchRoomService.isCheaterMode && context.getContext() !== MatchContext.HOSTVIEW && MatchRoomService.isTimeToNavigateToResults && inResultsPage) {
                     if (player.id == MatchRoomService.cheaterPlayer.id) {
                         TruncatedText(
-                            text = " ' ${stringResource(R.string.cheater_mode_cheater)}'",
+                            text = " \uD83D\uDE08",
                             fontSize = 16.sp,
                             maxChars = 20,
                             fontWeight = FontWeight.Normal,
@@ -146,7 +146,7 @@ fun PlayerCard(
                 if (MatchRoomService.isCheaterMode && context.getContext() === MatchContext.HOSTVIEW) {
                     if (player.id == MatchRoomService.cheaterPlayer.id) {
                         TruncatedText(
-                            text = " ' ${stringResource(R.string.cheater_mode_cheater)}'",
+                            text = " \uD83D\uDE08",
                             fontSize = 16.sp,
                             maxChars = 20,
                             fontWeight = FontWeight.Normal,

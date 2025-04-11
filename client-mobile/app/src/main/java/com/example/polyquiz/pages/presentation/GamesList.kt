@@ -39,11 +39,11 @@ import com.example.polyquiz.match.presentation.PartyConfigDialog
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.ui.text.style.TextAlign
 import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.Question
-
 
 @Composable
 fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: AuthViewModel) {
@@ -148,10 +148,10 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
         }
     }
 
-    fun canStartCheaterMode(questions: List<Question>) : Boolean{
-        if(questions.isNotEmpty()){
-            for(question in questions){
-                if(question.type == "QRL"){
+    fun canStartCheaterMode(questions: List<Question>): Boolean {
+        if (questions.isNotEmpty()) {
+            for (question in questions) {
+                if (question.type == "QRL") {
                     MatchRoomService.canPlayCheaterMode = false
                     gameIsValidCheaterMode = false;
                     return false
@@ -178,7 +178,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
             })
     }
 
-    fun reloadSelectedGame(partyConfigs: PartyConfig = PartyConfig(false, false, 0 , false)) {
+    fun reloadSelectedGame(partyConfigs: PartyConfig = PartyConfig(false, false, 0, false)) {
         gameService.getGameById(selectedGame?.id!!,
             onSuccess = { response ->
                 val gson = Gson()
@@ -192,7 +192,10 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
             })
     }
 
-    fun createMatch(context: MatchContext, partyConfigs: PartyConfig = PartyConfig(false, false, 0, false)) {
+    fun createMatch(
+        context: MatchContext,
+        partyConfigs: PartyConfig = PartyConfig(false, false, 0, false)
+    ) {
         contextService.setContext(context)
         reloadSelectedGame(partyConfigs)
     }
@@ -342,61 +345,73 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                 .weight(1f)
                 .fillMaxHeight()
         ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
+            Row(
+
+                modifier = Modifier.padding(2.dp),
+                horizontalArrangement = Arrangement.Start
+                //HorizontalAlignment= Arrangement.Start
             ) {
+
                 if (selectedGame != null) {
                     loadSelectedGame(selectedGame!!)
                     matchService.currentGame = selectedGame
-                    Text(
-                        text = stringResource(R.string.game_title) + selectedGame!!.title,
-                        modifier = Modifier.padding(8.dp),
-                        fontWeight = FontWeight.Bold
-                    )
-                    Row(modifier = Modifier.padding(8.dp)) {
+                    Column(modifier = Modifier.fillMaxWidth(.6f)) {
                         Text(
-                            text = stringResource(R.string.games_description),
+                            text = stringResource(R.string.game_title) + selectedGame!!.title,
+                            modifier = Modifier.padding(8.dp),
                             fontWeight = FontWeight.Bold
                         )
-                        Text(
-                            text = selectedGame!!.description,
-                        )
-                    }
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Row(modifier = Modifier.padding(8.dp)) {
+                            Text(
+                                text = stringResource(R.string.games_description),
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = selectedGame!!.description,
+                            )
+                        }
 
-                    Row(modifier = Modifier.padding(8.dp)) {
+                        Row(modifier = Modifier.padding(8.dp)) {
+                            Text(
+                                text = stringResource(R.string.games_time),
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = "${selectedGame!!.duration} minutes",
+                                fontWeight = FontWeight.Normal
+                            )
+                        }
+
                         Text(
-                            text = stringResource(R.string.games_time),
+                            text = stringResource(R.string.questions),
+                            modifier = Modifier.padding(8.dp),
                             fontWeight = FontWeight.Bold
                         )
-                        Text(
-                            text = "${selectedGame!!.duration} minutes",
-                            fontWeight = FontWeight.Normal
-                        )
+                        selectedGame!!.questions?.forEachIndexed { index, question ->
+                            Text(
+                                "${index + 1}. ${question.text}",
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
                     }
 
-                    Text(
-                        text = stringResource(R.string.questions),
-                        modifier = Modifier.padding(8.dp),
-                        fontWeight = FontWeight.Bold
-                    )
-                    selectedGame!!.questions?.forEachIndexed { index, question ->
-                        Text("${index + 1}. ${question.text}", modifier = Modifier.padding(8.dp))
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
 
-
-                    Row {
+                    Column() {
                         Button(
                             onClick = {
                                 createMatch(MatchContext.HOSTVIEW)
                             },
-                            shape = RoundedCornerShape(3.dp),
+                            shape = RoundedCornerShape(5.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.primary,
                                 contentColor = MaterialTheme.colorScheme.onPrimary
                             ),
                             modifier = Modifier
-                                .padding(16.dp)
+                                .padding(10.dp)
+                                .align(Alignment.End)
+                                .width(160.dp)
+                                .height(60.dp)
                         ) {
                             Text(text = stringResource(R.string.play))
 
@@ -404,22 +419,29 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                         Button(
                             onClick = {
                                 canStartCheaterMode(selectedGame!!.questions!!);
-
                                 showPartyConfigDialog = true
                             },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                contentColor = MaterialTheme.colorScheme.onPrimary
+                                containerColor = MaterialTheme.colorScheme.tertiary,
+                                contentColor = MaterialTheme.colorScheme.onTertiary
                             ),
-                            shape = RoundedCornerShape(3.dp),
+                            shape = RoundedCornerShape(5.dp),
                             modifier = Modifier
-                                .padding(16.dp)
+                                .padding(start = 10.dp, end = 10.dp, top = 10.dp)
+                                .width(160.dp)
+                                .height(60.dp)
+
                         ) {
+
                             Icon(
                                 Icons.Filled.Settings,
-                                contentDescription = stringResource(R.string.custom_match)
+                                contentDescription = stringResource(R.string.custom_match),
                             )
-                            Text(text = stringResource(R.string.custom_match))
+
+                            Text(
+                                text = stringResource(R.string.custom_match),
+                                textAlign = TextAlign.Center
+                            )
 
                         }
 
@@ -452,8 +474,6 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
 
         }
     }
-
-
 }
 
 
