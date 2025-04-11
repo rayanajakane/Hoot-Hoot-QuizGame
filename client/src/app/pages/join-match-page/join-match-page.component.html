@@ -29,7 +29,7 @@
                 </div>
                 <div *ngFor="let match of unlockedMatches">
                     <mat-card class="match-card clickable" (click)="submitCode(match.code)">
-                        <h3 class="match-title">{{ match.gameTitle }}</h3>
+                        <h3 class="match-title text-overflow-ellipsis">{{ match.gameTitle }}</h3>
                         <div class="match-details-container">
                             <div class="nPlayers">
                                 <i class="material-icons">people_alt</i>
