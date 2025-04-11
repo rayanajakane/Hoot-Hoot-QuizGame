@@ -132,7 +132,7 @@
         "start-match": "Start Match",
         "creation": "creation",
         "modification": "modification",
-        "starting": "Game \"{{title}}\" starts in.."
+        "starting": "Game \"{{title}}\" starts in..."
     },
     "admin-edit-page": {
         "cancel": "Cancel",
