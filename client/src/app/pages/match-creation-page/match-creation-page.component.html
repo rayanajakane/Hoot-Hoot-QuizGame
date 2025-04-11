@@ -10,8 +10,8 @@
             <h3>{{ t('match-creation-page.popular-games') }}</h3>
             <div class="popular-games-container">
                 <mat-card *ngFor="let game of mostPopularGames" (click)="loadSelectedGame(game)" class="popular-game-card clickable-item">
-                    <h4>{{ game.title }}</h4>
-                    <p>{{ t('match-creation-page.n-matches-played') }} {{ game.nMatchesPlayed }}</p>
+                    <h4 class="popular-game-title">{{ game.title }}</h4>
+                    <p class="popular-games-count">{{ t('match-creation-page.n-matches-played') }} {{ game.nMatchesPlayed }}</p>
                 </mat-card>
             </div>
             <div id="search-container">
