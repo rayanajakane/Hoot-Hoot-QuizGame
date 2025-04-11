@@ -111,10 +111,7 @@ object MatchRoomService {
             onSelectedCheater()
             onCurrentAnswers()
             onUsersWhoVoted()
-
-//            onPlayerChatStateToggle()
             onRouteToResultsPage()
-//            timeToGoToWaitPage = true
         }
     }
 
@@ -163,7 +160,7 @@ object MatchRoomService {
                         val user = firstArg.getString(0)
                         userVoted = user
                     } else {
-                        println("JSONArray object is empty.")
+                        Log.d("onUsersWhoVoted","JSONArray object is empty.")
                     }
                 }
             }
@@ -206,7 +203,6 @@ object MatchRoomService {
     }
 
     fun onVoting() {
-
         socket.on(MatchEvents.SHOW_VOTING_DIALOG.value) {
             navigateToVotingPage = true
         }
@@ -453,7 +449,6 @@ object MatchRoomService {
             println("Navigating to results page")
             isResults = true
             isTimeToNavigateToResults = true
-            //navigateToResultsPage()
         }
     }
 
