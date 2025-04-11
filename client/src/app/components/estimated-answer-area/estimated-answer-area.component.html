@@ -1,6 +1,6 @@
 <div id="main-container" *transloco="let t">
     <div id="estimated-answer-area" *ngIf="matchContextService.getContext() !== contextOptions.HostView">
-        <div class="instruction-hint=container">
+        <div class="instruction-hint-container">
             <p *ngIf="!answerService.showFeedback" class="instruction">
                 {{ t('question-area.choose-estimated', { margin: matchRoomService.currentQuestion.estimatedParameters?.margin }) }}
             </p>
