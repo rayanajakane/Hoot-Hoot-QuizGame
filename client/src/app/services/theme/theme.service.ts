@@ -79,11 +79,13 @@ export class ThemeService {
         return [Theme.DARK, Theme.LIGHT];
     }
 
-    setTheme(theme: Theme) {
+    setTheme(theme: Theme, saveToDatabase: boolean) {
         this.renderer.removeClass(this.document.body, this.currentTheme);
         this.renderer.addClass(this.document.body, theme);
         this.currentTheme = theme;
-        this.saveThemeToDB(theme);
+        if (saveToDatabase) {
+            this.saveThemeToDB(theme);
+        }
     }
 
     async getPurchasedThemes(): Promise<string[]> {
