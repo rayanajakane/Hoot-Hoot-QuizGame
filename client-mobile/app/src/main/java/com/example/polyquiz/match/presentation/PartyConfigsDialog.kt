@@ -99,6 +99,7 @@ fun PartyConfigDialog(
                         modifier = Modifier.padding(top = 4.dp)
                     )
                 }
+                Spacer(modifier = Modifier.height(16.dp))
                 if (MatchRoomService.canPlayCheaterMode) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
