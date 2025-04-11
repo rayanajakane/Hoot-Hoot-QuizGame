@@ -29,6 +29,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -49,6 +50,8 @@ import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.match.domain.MatchRoomService
+import com.example.polyquiz.shop.domain.ShopViewModel
+import com.example.polyquiz.shop.presentation.BalanceCard
 import com.example.polyquiz.ui.MenuButton
 import kotlinx.coroutines.launch
 
@@ -63,9 +66,11 @@ fun HomePage(
     navigateToFriendsPage: () -> Unit,
     navigateToJoinRoom: () -> Unit,
     authViewModel: AuthViewModel,
+    shopViewModel: ShopViewModel,
     navigateToRankingsPage: () -> Unit,
     navigateToShopPage: () -> Unit
 ) {
+    val currentBalance by shopViewModel.currentBalance.collectAsState()
     val authState = authViewModel.authState.observeAsState()
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
@@ -139,20 +144,26 @@ fun HomePage(
                 // TODO : Top and right padding
                 .imePadding()
         ) {
-            MenuButton(
+            Column(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .imePadding()
-                    .statusBarsPadding(),
-                navigateToHome,
-                navigateToCreate,
-                navigateToUserEdit,
-                navigateToFriendsPage,
-                navigateToJoinRoom,
-                navigateToRankingsPage,
-                navigateToShopPage,
-                signOut = { authViewModel.signOut() }
-            )
+                    .statusBarsPadding()
+            ) {
+                MenuButton(
+                    modifier = Modifier,
+                    navigateToHome,
+                    navigateToCreate,
+                    navigateToUserEdit,
+                    navigateToFriendsPage,
+                    navigateToJoinRoom,
+                    navigateToRankingsPage,
+                    navigateToShopPage,
+                    signOut = { authViewModel.signOut() }
+                )
+                BalanceCard(currentBalance)
+            }
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,

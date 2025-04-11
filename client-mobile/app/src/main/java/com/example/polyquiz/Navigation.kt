@@ -28,7 +28,6 @@ import com.example.polyquiz.pages.presentation.JoinMatchPage
 import com.example.polyquiz.pages.presentation.MatchCreationPage
 import com.example.polyquiz.pages.presentation.WaitPage
 import com.example.polyquiz.friends.presentation.FriendsSearchScreen
-import com.example.polyquiz.money.domain.MoneyService
 import com.example.polyquiz.shop.domain.ShopViewModel
 import com.example.polyquiz.pages.presentation.VotingPage
 import com.example.polyquiz.ui.features.camera.CameraViewModel
@@ -43,6 +42,7 @@ fun Navigation(
     modifier: Modifier,
     authViewModel: AuthViewModel,
     cameraViewModel: CameraViewModel,
+    shopViewModel: ShopViewModel,
     context: Context,
     currentTheme: Theme,
     onThemeUpdated: (Theme) -> Unit
@@ -77,6 +77,7 @@ fun Navigation(
                     navController.navigate(Route.ForgotPassword)
                 },
                 authViewModel = authViewModel,
+                shopViewModel = shopViewModel,
                 onThemeUpdated = onThemeUpdated
             )
         }
@@ -93,6 +94,7 @@ fun Navigation(
                     navController.navigate(Route.MainCameraScreen)
                 },
                 authViewModel = authViewModel,
+                shopViewModel = shopViewModel,
                 cameraViewModel = cameraViewModel
             )
         }
@@ -144,6 +146,7 @@ fun Navigation(
                 navigateToShopPage = {
                     navController.navigate(Route.ShopPage)
                 },
+                shopViewModel = shopViewModel
             )
         }
         composable<Route.MatchCreation> {
@@ -288,8 +291,7 @@ fun Navigation(
         composable<Route.FriendsSearchScreen> {
             FriendsSearchScreen(
                 currentUserID = authViewModel.getUserId(),
-//                friendsService = FriendsService(),
-//                moneyService = MoneyService(),
+                shopViewModel = shopViewModel,
                 navigateToHome = { navController.navigate(Route.Home) }
             )
         }
@@ -340,13 +342,11 @@ fun Navigation(
             )
         }
         composable<Route.ShopPage> {
-            val moneyService = remember { MoneyService() }
-
             ShopPage(
                 modifier,
+                shopViewModel = shopViewModel,
                 authViewModel = authViewModel,
                 currentUserID = authViewModel.getUserId(),
-                moneyService = moneyService,
                 navigateToLogin = { navController.navigate(Route.Login) },
                 navigateToHome = { navController.navigate(Route.Home) },
                 navigateToCreate = { navController.navigate(Route.MatchCreation) },

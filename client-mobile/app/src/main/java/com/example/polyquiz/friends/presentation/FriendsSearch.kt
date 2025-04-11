@@ -24,28 +24,27 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.polyquiz.auth.domain.UserIdName
 import com.example.polyquiz.constants.FriendsDisplayText
 import com.example.polyquiz.friends.domain.FriendsService
-import com.example.polyquiz.money.domain.MoneyService
+import com.example.polyquiz.shop.domain.ShopViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FriendsSearchScreen(
     currentUserID: String,
+    shopViewModel: ShopViewModel,
     navigateToHome: () -> Unit
 ) {
     val friendsService = remember { FriendsService() }
-    val moneyService = remember { MoneyService() }
     var searchQuery by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(currentUserID) {
         friendsService.initialize(currentUserID)
         friendsService.returnAllData()
-        moneyService.getCurrentBalance(currentUserID)
-        moneyService.listenForMoneyEvents()
+        shopViewModel.getCurrentBalance(currentUserID)
+        shopViewModel.listenForMoneyEvents()
     }
 
     val pendingRequests by friendsService.pendingRequests.collectAsState()
@@ -79,7 +78,7 @@ fun FriendsSearchScreen(
                 Button(onClick = {
                     val amountInt = donationAmount.toIntOrNull() ?: 0
                     if (amountInt > 0) {
-                        moneyService.donateMoney(currentUserID, selectedFriendId, amountInt)
+                        shopViewModel.donateMoney(currentUserID, selectedFriendId, amountInt)
                     }
                     showDonationDialog = false
                     donationAmount = ""
@@ -97,7 +96,7 @@ fun FriendsSearchScreen(
     DisposableEffect(friendsService) {
         onDispose {
             friendsService.stopReturningUsers()
-            moneyService.stopListeningForMoneyEvents()
+            shopViewModel.stopListeningForMoneyEvents()
         }
     }
 
@@ -122,7 +121,7 @@ fun FriendsSearchScreen(
                     .padding(paddingValues)
                     .padding(16.dp)
             ) {
-                val currentBalance by moneyService.currentBalance.collectAsState()
+                val currentBalance by shopViewModel.currentBalance.collectAsState()
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
