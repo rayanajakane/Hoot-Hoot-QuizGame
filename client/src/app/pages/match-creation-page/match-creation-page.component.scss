@@ -144,7 +144,11 @@ app-game-list-item {
 }
 
 .popular-game-title {
+    max-width: 7.5vw;
     margin: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .popular-games-count {
