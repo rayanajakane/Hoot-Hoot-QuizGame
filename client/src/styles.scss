@@ -416,7 +416,6 @@ $pikachu-theme: mat.define-light-theme(
     // Add some Ben 10 stylistic elements
     .mat-mdc-raised-button:not(:disabled) {
         border: 2px solid mat.get-color-from-palette($primary-luigi, 900);
-        font-weight: bold;
         letter-spacing: 0.5px;
     }
 
