@@ -152,30 +152,33 @@ export class MatchGateway implements OnGatewayDisconnect {
     @SubscribeMessage(MatchEvents.RouteToResultsPage)
     async routeToResultsPage(@ConnectedSocket() socket: Socket, @MessageBody() matchRoomCode: string) {
         const roomIndex = this.matchRoomService.getRoomIndex(matchRoomCode);
-        if (!this.matchRoomService.matchRooms[roomIndex]) {
-            // Added condition to avoid server crash when matchRooms[roomIndex] is undefined
-            return;
-        }
-        this.matchRoomService.matchRooms[roomIndex].isPlaying = false;
+        try {
+            this.matchRoomService.matchRooms[roomIndex].isPlaying = false;
 
-        this.matchRoomService.matchRooms[roomIndex].end = new Date();
+            this.matchRoomService.matchRooms[roomIndex].end = new Date();
 
-        this.playerRoomService.setStateForAll(matchRoomCode, PlayerState.default);
-        this.server.to(matchRoomCode).emit(MatchEvents.RouteToResultsPage);
+            this.playerRoomService.setStateForAll(matchRoomCode, PlayerState.default);
+            this.server.to(matchRoomCode).emit(MatchEvents.RouteToResultsPage);
 
-        await this.moneyService.rewardPlayers(matchRoomCode);
-        for (const player of this.matchRoomService.matchRooms[roomIndex].players) {
-            const currPlayerBalance = await this.moneyService.getCurrentBalance(player.id);
-            this.server.in(player.socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
-        }
-        this.matchBackupService.updateNMatchesPlayed(this.matchRoomService.matchRooms[roomIndex].game.originalId);
-
-        this.matchRoomService.matchRooms[roomIndex].players.forEach((player: Player) => {
-            if (!player.isChatActive) {
-                player.isChatActive = true;
-                this.server.in(player.socket.id).emit(ChatEvents.ChatReactivated, CHAT_REACTIVATED);
+            await this.moneyService.rewardPlayers(matchRoomCode);
+            for (const player of this.matchRoomService.matchRooms[roomIndex].players) {
+                const currPlayerBalance = await this.moneyService.getCurrentBalance(player.id);
+                this.server.in(player.socket.id).emit(MoneyEvents.ReturnBalance, currPlayerBalance);
             }
-        });
+
+            this.matchBackupService.updateNMatchesPlayed(this.matchRoomService.matchRooms[roomIndex].game.originalId);
+
+            this.matchRoomService.matchRooms[roomIndex].players.forEach((player: Player) => {
+                if (!player.isChatActive) {
+                    player.isChatActive = true;
+                    this.server.in(player.socket.id).emit(ChatEvents.ChatReactivated, CHAT_REACTIVATED);
+                }
+            });
+        } catch (error) {
+            // Try-catch to be on the safe side and avoid server crash (happened a few times when sudden disconnect due to client refresh)
+            console.log(error);
+        }
+
         try {
             await this.eloService.updateEloForMatch(matchRoomCode);
             console.log(`Elo ratings updated for match: ${matchRoomCode}`);
