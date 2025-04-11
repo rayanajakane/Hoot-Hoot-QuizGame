@@ -9,14 +9,14 @@
 
 .answer {
     padding: 2rem;
-    width: 30vw;
+    width: 28vw;
     height: 15vh;
     font-size: 1rem;
     overflow: hidden;
 }
 
 .answer p {
-    max-width: 30vw;
+    max-width: 28vw;
     max-height: 15vh;
 }
 
@@ -55,14 +55,14 @@ button.answer.selected {
 }
 
 .dot {
-    height: 5vh;
-    width: 5vh;
-    background-color: #4caf50;
+    height: 2rem;
+    width: 2rem;
+    background-color: #275d29;
     border-radius: 50%;
     display: inline-block;
     position: absolute;
-    left: 20vh;
-    bottom: 4vh;
+    top: -1rem;
+    right: -2rem;
 }
 
 .dot::before {

@@ -131,7 +131,7 @@
         "locked-match": "Partie déverrouillée",
         "unlocked-match": "Partie verrouillée",
         "start-match": "Commencer la partie",
-        "starting": "Le jeu \"{{title}}\" commence dans.."
+        "starting": "Le jeu \"{{title}}\" commence dans..."
     },
     "admin-edit-page": {
         "cancel": "Annuler",
