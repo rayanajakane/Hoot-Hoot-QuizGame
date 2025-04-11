@@ -134,7 +134,7 @@
         "starting": "Game \"{{title}}\" starts in.."
     },
     "admin-edit-page": {
-        "cancel": "Cancel game {{state}}",
+        "cancel": "Cancel",
         "creation": "creation",
         "modification": "modification",
         "creation-title": "Game creation",
