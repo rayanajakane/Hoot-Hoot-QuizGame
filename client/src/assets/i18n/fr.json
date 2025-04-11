@@ -133,7 +133,7 @@
         "starting": "Le jeu \"{{title}}\" commence dans.."
     },
     "admin-edit-page": {
-        "cancel": "Annuler la {{state}} du jeu",
+        "cancel": "Annuler",
         "creation": "création",
         "modification": "modification",
         "creation-title": "Création du jeu",
