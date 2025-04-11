@@ -221,4 +221,9 @@
     <string name="cheater_mode_players_info"> Pour jouer en mode tricheur : le jeu ne doit pas contenir de question de type réponse longue et doit comporter au moins trois joueurs </string>
     <string name="switch_camera">Changer camera</string>
     <string name="match_errors_less_than_3_players">Il doit y avoir au moins 3 joueurs dans la partie.</string>
+    <string name="panic_mode_activated">❗ MODE PANIQUE ACTIVÉ! ❗</string>
+    <string name="timer_paused">Minutrie suspendue</string>
+    <string name="timer_start">Minutrie partie</string>
+    <string name="money_errors_not_enough_money">Vous n\'avez pas assez d\'argent pour effectuer cette transaction.</string>
+    <string name="money_errors_donation_amount_exceeded">Avec cette donation, vous dépassez la limite quotidienne.</string>
 </resources>
