@@ -4,6 +4,21 @@
     </div>
 
     <div class="friends-search-container">
+        <div class="friends-section" *ngIf="friendsService.friends && friendsService.friends.length > 0">
+            <h3>{{ t('friends-list') }}</h3>
+            <ul>
+                <app-friends-list-item
+                    *ngFor="let user of friendsService.friends"
+                    [user]="user"
+                    [isFriend]="true"
+                    [isRequestPending]="false"
+                    [isRequestSent]="false"
+                    [isEligible]="false"
+                    (removeFriend)="friendsService.removeFriend($event)"
+                    (donate)="onDonate($event)"
+                ></app-friends-list-item>
+            </ul>
+        </div>
         <h2>🔍 {{ t('search-friend') }}</h2>
 
         <mat-form-field appearance="outline" class="search-field">
@@ -38,22 +53,6 @@
                     [isRequestSent]="true"
                     [isEligible]="false"
                     (cancelRequest)="friendsService.cancelRequest($event)"
-                ></app-friends-list-item>
-            </ul>
-        </div>
-
-        <div class="friends-section" *ngIf="friendsService.friends && friendsService.friends.length > 0">
-            <h3>{{ t('friends-list') }}</h3>
-            <ul>
-                <app-friends-list-item
-                    *ngFor="let user of friendsService.friends"
-                    [user]="user"
-                    [isFriend]="true"
-                    [isRequestPending]="false"
-                    [isRequestSent]="false"
-                    [isEligible]="false"
-                    (removeFriend)="friendsService.removeFriend($event)"
-                    (donate)="onDonate($event)"
                 ></app-friends-list-item>
             </ul>
         </div>
