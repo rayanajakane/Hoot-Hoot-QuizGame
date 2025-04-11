@@ -179,5 +179,6 @@
     <string name="switch_camera">Changer camera</string>
     <string name="timer_paused">Minutrie suspendue</string>
     <string name="timer_start">Minutrie partie</string>
+    <string name="timer_start">Minutrie partie</string>
     <string name="game_author">"Auteur: "</string>
 </resources>

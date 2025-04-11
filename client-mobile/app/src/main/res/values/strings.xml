@@ -181,5 +181,5 @@
     <string name="switch_camera">Changer camera</string>
     <string name="panic_mode_activated">❗ MODE PANIQUE ACTIVÉ! ❗</string>
     <string name="timer_paused">Minutrie suspendue</string>
-    <string name="timer_start">MInutrie partie</string>
+    <string name="timer_start">Minutrie partie</string>
 </resources>
