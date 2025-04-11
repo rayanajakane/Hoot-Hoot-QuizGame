@@ -1,6 +1,10 @@
 <ng-container *transloco="let t">
     <div id="main-container">
         <h1>{{ t('history.result') }}</h1>
+        <div class="balance-container" *ngIf="matchContext.getContext() !== contextOptions.HostView">
+            <mat-icon class="balance-icon">account_balance_wallet</mat-icon>
+            <span class="balance-text"> {{ t('page.new-total') }} {{ moneyService.currentBalance | currency: 'USD' : 'symbol' }} </span>
+        </div>
         <div id="players-list">
             <mat-card
                 *ngFor="let player of this.players | sortPlayers: 'score' : 'descending'"
