@@ -2,6 +2,9 @@ package com.example.polyquiz.chat.presentation
 
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,8 +43,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -56,8 +63,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -67,10 +76,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.window.PopupPositionProvider
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.auth.domain.UserIdName
 import com.example.polyquiz.chat.domain.ChatChannel
 import com.example.polyquiz.chat.domain.ChatEmoji
 import com.example.polyquiz.chat.domain.ChatService
@@ -80,6 +91,8 @@ import com.example.polyquiz.constants.SIZE_CONSTANTS
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.shop.domain.WallpaperService
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -414,7 +427,7 @@ fun ReactionsRow(
         modifier = Modifier.padding(top = 1.dp),
         horizontalArrangement = Arrangement.Absolute.Left,
     ) {
-        ReactionButton("👍", message.userLikes.size) {
+        ReactionButton("👍", message.userLikes.size, users = message.userLikes) {
             ChatService.reactToMessage(
                 message.id,
                 ChatEmoji.LIKE,
@@ -423,7 +436,7 @@ fun ReactionsRow(
                 if (roomCode.isNullOrEmpty()) null else roomCode
             )
         }
-        ReactionButton("❤️", message.userLoves.size) {
+        ReactionButton("❤️", message.userLoves.size, users = message.userLoves) {
             ChatService.reactToMessage(
                 message.id,
                 ChatEmoji.LOVE,
@@ -432,7 +445,7 @@ fun ReactionsRow(
                 if (roomCode.isNullOrEmpty()) null else roomCode
             )
         }
-        ReactionButton("👎", message.userDislikes.size) {
+        ReactionButton("👎", message.userDislikes.size, users = message.userDislikes) {
             ChatService.reactToMessage(
                 message.id,
                 ChatEmoji.DISLIKE,
@@ -443,35 +456,81 @@ fun ReactionsRow(
         }
     }
 }
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReactionButton(emoji: String, count: Int, onClick: () -> Unit) {
+fun ReactionButton(emoji: String, count: Int, users: List<UserIdName>, onClick: () -> Unit) {
     var isClicked by remember { mutableStateOf(false) }
-    Button(
-        onClick = {
-            isClicked = !isClicked
-            onClick()
-        },
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (isClicked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh
-        ),
-        modifier = Modifier
-            .heightIn(min = 32.dp)
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = emoji,
-                style = MaterialTheme.typography.bodySmall,
-                color = if (isClicked) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.offset(y = (-4).dp)
-            )
-            Text(
-                text = "$count",
-                style = MaterialTheme.typography.bodySmall,
-                color = if (isClicked) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
-            )
+    val interactionSource = remember { MutableInteractionSource() }
+    val viewConfig = LocalViewConfiguration.current
+
+    var usernameList = users.map { it.name }
+    LaunchedEffect(users) {
+        usernameList = users.map { it.name }
+    }
+
+    LaunchedEffect(interactionSource) {
+        var isLongClick = false
+
+        interactionSource.interactions.collectLatest { interaction ->
+            when (interaction) {
+                is PressInteraction.Press -> {
+                    isLongClick = false
+                    delay(viewConfig.longPressTimeoutMillis)
+                    isLongClick = true
+                    // TODO users name list
+                }
+
+                is PressInteraction.Release -> {
+                    if (!isLongClick) {
+                        // TODO
+                        Log.d("Emoji", "Not long click")
+                        isClicked = !isClicked
+                        onClick()
+                    }
+                }
+            }
         }
     }
+
+    TooltipBox(
+        tooltip = { PlainTooltip { Text(usernameList.joinToString()) } },
+        positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
+        state = rememberTooltipState()
+    ) {
+        Button(
+            onClick = {
+//            isClicked = !isClicked
+//            onClick()
+            },
+            interactionSource = interactionSource,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (isClicked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh
+            ),
+            modifier = Modifier
+                .heightIn(min = 32.dp)
+                .pointerInput(Unit) {
+                    detectTapGestures(onLongPress = {
+                        // TODO : Show list of users
+                        Log.d("Emoji", "Users, $users")
+                    })
+                }
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = emoji,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (isClicked) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.offset(y = (-4).dp)
+                )
+                Text(
+                    text = "$count",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (isClicked) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
+                )
+            }
+        }
+    }
+
 }
 
 @Composable
