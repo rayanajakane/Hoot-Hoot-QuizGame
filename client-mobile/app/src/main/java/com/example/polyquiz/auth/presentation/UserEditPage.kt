@@ -3,7 +3,6 @@ package com.example.polyquiz.auth.presentation
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
-import androidx.activity.result.launch
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,9 +32,6 @@ import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.AutoFixNormal
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -84,7 +80,6 @@ import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.auth.domain.HistoryService
 import com.example.polyquiz.auth.domain.UsernameSuggestionService
-import com.example.polyquiz.auth.domain.UsernameSuggestionService.showUsernameDialog
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.MatchStats
 import com.example.polyquiz.constants.PremiumAvatar
@@ -96,7 +91,9 @@ import com.example.polyquiz.core.ThemeService
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.core.TranslationService
 import com.example.polyquiz.shop.domain.PremiumAvatarService
+import com.example.polyquiz.shop.domain.ShopViewModel
 import com.example.polyquiz.shop.domain.WallpaperService
+import com.example.polyquiz.shop.presentation.BalanceCard
 import com.example.polyquiz.ui.MenuButton
 import com.example.polyquiz.ui.theme.Theme
 import kotlinx.coroutines.launch
@@ -111,6 +108,7 @@ fun UserEditPage(
     context: Context,
     authViewModel: AuthViewModel,
     cameraViewModel: CameraViewModel,
+    shopViewModel: ShopViewModel,
     currentTheme: Theme,
     onThemeUpdated: (Theme) -> Unit,
     navigateToHome: () -> Unit,
@@ -125,6 +123,7 @@ fun UserEditPage(
 ) {
     val focusManager = LocalFocusManager.current
     val translationService = TranslationService
+    val currentBalance by shopViewModel.currentBalance.collectAsState()
     var currentLang by remember { mutableStateOf(Locale.getDefault().language) }
     var theme by remember { mutableStateOf(currentTheme) }
     val email by authViewModel.email.collectAsState()
@@ -356,20 +355,24 @@ fun UserEditPage(
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
-                    MenuButton(
-                        modifier = Modifier,
-                        navigateToHome,
-                        navigateToCreate,
-                        navigateToUserEdit,
-                        navigateToFriendsPage,
-                        navigateToJoinRoom,
-                        navigateToRankingsPage,
-                        navigateToShopPage,
-                        signOut = {
-                            authViewModel.signOut()
-                            navigateToLogin()
-                        }
-                    )
+                    Column(
+                        modifier = Modifier
+                            .imePadding()
+                            .statusBarsPadding()
+                    ) {
+                        MenuButton(
+                            modifier = Modifier,
+                            navigateToHome,
+                            navigateToCreate,
+                            navigateToUserEdit,
+                            navigateToFriendsPage,
+                            navigateToJoinRoom,
+                            navigateToRankingsPage,
+                            navigateToShopPage,
+                            signOut = { authViewModel.signOut() }
+                        )
+                        BalanceCard(currentBalance)
+                    }
                 }
 
                 ElevatedCard(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest)) {

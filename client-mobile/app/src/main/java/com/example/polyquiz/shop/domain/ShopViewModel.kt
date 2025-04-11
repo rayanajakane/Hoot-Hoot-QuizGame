@@ -60,7 +60,7 @@ class ShopViewModel : ViewModel() {
             onWallpaperBoughtCallback = { onItemBought(it, authViewModel, "wallpaper") }
         )
 
-        delay(100)
+        delay(50)
 
         loadShopItems()
         _dataInitialized.value = true

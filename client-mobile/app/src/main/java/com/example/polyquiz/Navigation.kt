@@ -171,7 +171,8 @@ fun Navigation(
                 navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
                 navigateToLogin = { navController.navigate(Route.Login) },
                 navigateToRankingsPage = { navController.navigate(Route.RankingsPage) },
-                navigateToShopPage = { navController.navigate(Route.ShopPage) }
+                navigateToShopPage = { navController.navigate(Route.ShopPage) },
+                shopViewModel = shopViewModel
             )
         }
         composable<Route.ResultsPage> {
@@ -226,7 +227,8 @@ fun Navigation(
                 navigateToRankingsPage = { navController.navigate(Route.RankingsPage) },
                 navigateToCamera = { navController.navigate(Route.MainCameraScreen) },
                 cameraViewModel = cameraViewModel,
-                navigateToShopPage = { navController.navigate(Route.ShopPage) }
+                navigateToShopPage = { navController.navigate(Route.ShopPage) },
+                shopViewModel = shopViewModel
             )
         }
 
@@ -285,13 +287,15 @@ fun Navigation(
                 },
                 navigateToShopPage = {
                     navController.navigate(Route.ShopPage)
-                }
+                },
+                shopViewModel = shopViewModel
             )
         }
         composable<Route.FriendsSearchScreen> {
             FriendsSearchScreen(
                 currentUserID = authViewModel.getUserId(),
                 shopViewModel = shopViewModel,
+                authViewModel = authViewModel,
                 navigateToHome = { navController.navigate(Route.Home) }
             )
         }
