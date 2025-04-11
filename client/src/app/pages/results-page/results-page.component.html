@@ -22,7 +22,10 @@
                     <p *ngIf="player.id !== this.matchRoomService.cheaterPlayer?.id" [ngClass]="[player.isPlaying ? '' : 'inactive-player']">
                         {{ player.username }}
                     </p>
-                    <p *ngIf="player.id === this.matchRoomService.cheaterPlayer?.id" class="cheater-tag">
+                    <p
+                        *ngIf="player.id === this.matchRoomService.cheaterPlayer?.id"
+                        [ngClass]="[player.isPlaying ? 'cheater-tag' : 'cheater-tag inactive-player']"
+                    >
                         {{ player.username + ' 😈' }}
                     </p>
                 </div>
