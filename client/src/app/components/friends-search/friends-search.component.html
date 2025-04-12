@@ -18,12 +18,6 @@
                 ></app-friends-list-item>
             </ul>
         </div>
-        <h2>🔍 {{ t('search-friend') }}</h2>
-
-        <mat-form-field appearance="outline" class="search-field">
-            <mat-label>{{ t('search-input') }}</mat-label>
-            <input matInput [formControl]="searchControl" [placeholder]="t('search-input-placeholder')" />
-        </mat-form-field>
 
         <div class="friends-section" *ngIf="friendsService.pendingRequests && friendsService.pendingRequests.length > 0">
             <h3>{{ t('friend-requests-received') }}</h3>
@@ -55,6 +49,12 @@
                 ></app-friends-list-item>
             </ul>
         </div>
+
+        <h2>🔍 {{ t('search-friend') }}</h2>
+        <mat-form-field appearance="outline" class="search-field">
+            <mat-label>{{ t('search-input') }}</mat-label>
+            <input matInput [formControl]="searchControl" [placeholder]="t('search-input-placeholder')" />
+        </mat-form-field>
 
         <div class="friends-section" *ngIf="friendsService.searchResults && friendsService.searchResults.length > 0">
             <h3>{{ t('search-results') }}</h3>
