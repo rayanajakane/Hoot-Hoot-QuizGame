@@ -64,6 +64,7 @@ import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
+import com.example.polyquiz.chat.presentation.TruncatedText
 import com.example.polyquiz.constants.MatchPageInfo
 import com.example.polyquiz.match.domain.JoinMatchService
 import com.example.polyquiz.match.domain.JoinMatchService.matchInfos
@@ -356,10 +357,12 @@ fun MatchCard(match: MatchPageInfo, onClick: () -> Unit = {}) {
             modifier = Modifier.padding(15.dp),
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text(
+            TruncatedText(
                 text = match.gameTitle,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                fontSize = 15.sp,
+                maxChars = 10,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
