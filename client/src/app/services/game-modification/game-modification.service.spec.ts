@@ -411,7 +411,7 @@ describe('GameModificationService', () => {
         const errorMessage = 'Question should contain at least 1 wrong and 1 right answer';
         questionServiceSpy.verifyQuestion.and.returnValue(throwError(() => new Error(errorMessage)));
         service['addQuestionToGame'](getMockQuestion());
-        expect(notificationServiceSpy.displayErrorMessage).toHaveBeenCalledWith(`${translate('question-status.unverified')} \n ${errorMessage}`);
+        expect(notificationServiceSpy.displayErrorMessage).toHaveBeenCalledWith(`${translate('question-status.unverified')}\n${errorMessage}`);
     });
 
     it('handleDialog() should add question if applicable and close dialog', () => {
