@@ -1,6 +1,6 @@
 .config-section {
     margin-bottom: 20px;
-    flex-direction: row; 
+    flex-direction: row;
     align-items: center;
 }
 
@@ -14,11 +14,27 @@
     margin-top: 5px;
     margin-left: 5px;
 }
-.info-button {
- position:absolute;
- margin-top: -7px;
-}
+
 mat-form-field {
     width: 100%;
     float: right;
+}
+
+.mode-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+}
+
+.cheater-mode-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.info-button {
+    margin-left: 8px;
 }
