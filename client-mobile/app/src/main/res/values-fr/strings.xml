@@ -191,4 +191,5 @@
 
     <string name="switch_camera">Changer camera</string>
     <string name="game_author">"Auteur: "</string>
+    <string name="match_errors_less_than_3_players">Il doit y avoir au moins 3 joueurs dans la partie.</string>
 </resources>

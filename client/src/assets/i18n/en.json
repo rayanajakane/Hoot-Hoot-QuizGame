@@ -352,7 +352,8 @@
         "no_more_players": "There are no more players in the match.",
         "locked-room": "The match is locked.",
         "invalid-code": "The access code is invalid.",
-        "banned-player": "You have been banned from this match."
+        "banned-player": "You have been banned from this match.",
+        "less_than_3_players": "The match needs at least 3 players."
     },
     "match-friends-errors": {
         "not_friends_with_host": "You are not friends with the host.",
