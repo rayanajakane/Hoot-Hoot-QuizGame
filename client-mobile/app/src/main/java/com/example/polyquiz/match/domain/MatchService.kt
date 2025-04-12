@@ -1,5 +1,6 @@
 package com.example.polyquiz.match.domain
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,8 +18,8 @@ object MatchService {
         override val apiService: ApiService = retrofit.create(ApiService::class.java)
     }
 
-    fun createMatch(hostId: String, hostUsername: String, partyConfigs: PartyConfig = PartyConfig(false, false), isClassicMode : Boolean = false){
-        matchRoomService.connect()
+    fun createMatch(hostId: String, hostUsername: String, context: Context, partyConfigs: PartyConfig = PartyConfig(false, false), isClassicMode : Boolean = false){
+        matchRoomService.connect(context)
         matchRoomService.createRoom(currentGame!!.id!!, hostId, hostUsername, isClassicMode, partyConfigs)
     }
 
@@ -38,7 +39,7 @@ object MatchService {
                     val game = gson.fromJson(gson.toJson(response), Game::class.java)
                     currentGame = game
                     println("Game saved")
-                    createMatch(hostId, hostUsername, partyConfigs )
+                    createMatch(hostId, hostUsername, componentContext, partyConfigs )
                 },
                 onError = { error -> println(error)
 
