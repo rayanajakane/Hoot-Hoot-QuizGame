@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -128,6 +129,17 @@ fun FriendsSearchScreen(
             .statusBarsPadding()
     ) {
         ChatComponent(modifier = Modifier, authViewModel = authViewModel)
+
+        if (pendingRequests.isEmpty() || sentRequests.isEmpty() || friends.isEmpty() || allUsers.isEmpty()) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+            return
+        }
+
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -170,7 +182,6 @@ fun FriendsSearchScreen(
                 LazyColumn {
                     if (pendingRequests.isNotEmpty()) {
                         item {
-                            Spacer(modifier = Modifier.height(8.dp))
                             PendingRequestsCard(pendingRequests, scope, friendsService)
                             Spacer(modifier = Modifier.height(8.dp))
                         }
@@ -178,7 +189,6 @@ fun FriendsSearchScreen(
 
                     if (sentRequests.isNotEmpty()) {
                         item {
-                            Spacer(modifier = Modifier.height(8.dp))
                             SentRequestsCard(sentRequests, scope, friendsService)
                             Spacer(modifier = Modifier.height(8.dp))
                         }
@@ -282,41 +292,43 @@ fun PendingRequestsCard(
     friendsService: FriendsService
 ) {
     ElevatedCard() {
-        Text(
-            text = stringResource(R.string.friend_requests_received),
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .padding(16.dp)
-        )
-        pendingRequests.forEach { user ->
-            FriendsListItem(
-                user = user,
-                isFriend = false,
-                isRequestPending = true,
-                isRequestSent = false,
-                isEligible = false,
-                onSendRequest = { },
-                onCancelRequest = { },
-                onAcceptRequest = { id ->
-                    scope.launch {
-                        friendsService.acceptFriendRequest(
-                            id
-                        )
-                    }
-                },
-                onRejectRequest = { id ->
-                    scope.launch {
-                        friendsService.rejectFriendRequest(
-                            id
-                        )
-                    }
-                },
-                onRemoveFriend = { },
-                onDonate = { }
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = stringResource(R.string.friend_requests_received),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(16.dp)
             )
+            pendingRequests.forEach { user ->
+                FriendsListItem(
+                    user = user,
+                    isFriend = false,
+                    isRequestPending = true,
+                    isRequestSent = false,
+                    isEligible = false,
+                    onSendRequest = { },
+                    onCancelRequest = { },
+                    onAcceptRequest = { id ->
+                        scope.launch {
+                            friendsService.acceptFriendRequest(
+                                id
+                            )
+                        }
+                    },
+                    onRejectRequest = { id ->
+                        scope.launch {
+                            friendsService.rejectFriendRequest(
+                                id
+                            )
+                        }
+                    },
+                    onRemoveFriend = { },
+                    onDonate = { }
+                )
+            }
         }
     }
 }
