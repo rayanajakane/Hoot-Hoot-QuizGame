@@ -15,30 +15,47 @@ export class FriendsService {
     searchResults: UserIdName[] = [];
     currentQuery: string = '';
 
+    allDataLoaded: boolean = false;
+
     constructor(
         private readonly authService: AuthenticationService,
         private readonly socketHandler: SocketHandlerService,
     ) {}
 
     returnAllData() {
+        this.allDataLoaded = false;
         this.onReturnUsers();
         this.socketHandler.send(FriendsEvents.ReturnAllData, this.authService.userId);
     }
 
     onReturnUsers() {
+        let loadedDataTypes = 0;
+        const totalDataTypes = 4;
+
+        const checkAllDataLoaded = () => {
+            loadedDataTypes++;
+            if (loadedDataTypes >= totalDataTypes) {
+                this.allDataLoaded = true;
+            }
+        };
+
         this.socketHandler.on(FriendsEvents.ReturnAllUsers, (data: UserIdName[]) => {
             this.allUsers = data;
             // this.searchResults = this.allUsers.filter((user) => !this.isFriend(user));
             this.searchUsers(this.currentQuery);
+            checkAllDataLoaded();
         });
         this.socketHandler.on(FriendsEvents.ReturnAllFriends, (data: UserIdName[]) => {
             this.friends = data;
+            checkAllDataLoaded();
         });
         this.socketHandler.on(FriendsEvents.ReturnAllPendingRequests, (data: UserIdName[]) => {
             this.pendingRequests = data;
+            checkAllDataLoaded();
         });
         this.socketHandler.on(FriendsEvents.ReturnAllSentRequests, (data: UserIdName[]) => {
             this.sentRequests = data;
+            checkAllDataLoaded();
         });
     }
 

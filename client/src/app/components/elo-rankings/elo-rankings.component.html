@@ -1,5 +1,6 @@
 <div id="main-container" *transloco="let t">
     <h1>{{ t('main-page.rankings') }}</h1>
+    <app-pulse-loader *ngIf="!eloService.rankings"></app-pulse-loader>
     <div id="players-list">
         <mat-card *ngFor="let ranking of eloService.rankings | sortPlayers: 'rating' : 'descending'; let i = index" class="player-card">
             <div class="username-avatar-container">
