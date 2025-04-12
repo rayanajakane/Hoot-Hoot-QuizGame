@@ -16,7 +16,6 @@ import {
     MOCK_USERNAME,
 } from '@app/constants/match-mocks';
 import { MatchGateway } from '@app/gateways/match/match.gateway';
-import { Answer } from '@app/model/answer-types/abstract-answer/answer';
 import { Player } from '@app/model/schema/player.schema';
 import { AnswerService } from '@app/services/answer/answer.service';
 import { EloService } from '@app/services/elo/elo.service';
@@ -87,7 +86,7 @@ describe('MatchGateway', () => {
                 { provide: PartyService, useValue: partySpy },
                 { provide: HistoryService, useValue: historySpy },
                 { provide: EloService, useValue: eloSpy },
-                {provide: AnswerService, useValue: answerSpy},
+                { provide: AnswerService, useValue: answerSpy },
                 // { provide: HistoryService, useValue: historySpy },
                 EventEmitter2,
             ],
@@ -114,9 +113,9 @@ describe('MatchGateway', () => {
     });
 
     it('joinRoom() should let the player join if the room code and the username are valid', async () => {
-        matchRoomSpy.getRoomCodeErrors.returns('');
+        matchRoomSpy.getRoomCodeErrors.returns([]);
         matchRoomSpy.getRoom.returns(MOCK_MATCH_ROOM);
-        playerRoomSpy.getUsernameErrors.returns('');
+        playerRoomSpy.getUsernameErrors.returns([]);
         playerRoomSpy.addPlayer.resolves(MOCK_PLAYER);
         const result = await gateway.joinRoom(socket, MOCK_USER_INFO);
         expect(socket.join.calledOnce).toBeTruthy();
@@ -125,9 +124,9 @@ describe('MatchGateway', () => {
     });
 
     it('joinRoom() should not let the player join if the room code or the username are invalid', () => {
-        matchRoomSpy.getRoomCodeErrors.returns(INVALID_CODE);
+        matchRoomSpy.getRoomCodeErrors.returns([INVALID_CODE]);
         matchRoomSpy.getRoom.returns(MOCK_MATCH_ROOM);
-        playerRoomSpy.getUsernameErrors.returns(HOST_CONFLICT);
+        playerRoomSpy.getUsernameErrors.returns([HOST_CONFLICT]);
         const sendErrorSpy = jest.spyOn(gateway, 'sendError').mockReturnThis();
         server.in.returns({
             socketsLeave: (code) => {
@@ -229,7 +228,7 @@ describe('MatchGateway', () => {
         expect(playerSpy).toHaveBeenCalledWith(MOCK_USER_INFO.roomCode, MOCK_USER_INFO.userId);
         expect(deleteSpy).toHaveBeenCalledWith(MOCK_USER_INFO.roomCode, MOCK_USER_INFO.userId);
         expect(sendSpy).toHaveBeenCalledWith(socket, MOCK_USER_INFO.roomCode);
-        expect(errorSpy).toHaveBeenCalledWith(mockPlayer.socket.id, BAN_PLAYER);
+        expect(errorSpy).toHaveBeenCalledWith(mockPlayer.socket.id, [BAN_PLAYER]);
         expect(returnSpy).toHaveBeenCalled();
     });
 
@@ -428,10 +427,10 @@ describe('MatchGateway', () => {
         server.to.returns({
             emit: (event: string, error: string) => {
                 expect(event).toEqual(MatchEvents.Error);
-                expect(error).toEqual(INVALID_CODE);
+                expect(error).toEqual([INVALID_CODE]);
             },
         } as BroadcastOperator<unknown, unknown>);
-        gateway.sendError('', INVALID_CODE);
+        gateway.sendError('', [INVALID_CODE]);
     });
 
     it('sendError() should send the error to the socketId', () => {
@@ -451,7 +450,7 @@ describe('MatchGateway', () => {
                 isPlaying: true,
                 gameTitle: '',
                 nPlayers: 1,
-                partyConfig: { isFriendsOnly: false, isEntryFeeRequired: false, entryFeeAmount: 0 , isCheaterMode: false, canPlayCheaterMode: false},
+                partyConfig: { isFriendsOnly: false, isEntryFeeRequired: false, entryFeeAmount: 0, isCheaterMode: false, canPlayCheaterMode: false },
             },
         ];
         const allMatchesSpy = jest.spyOn(matchRoomSpy, 'getAllMatchesInfo').mockReturnValue(mockMatches);

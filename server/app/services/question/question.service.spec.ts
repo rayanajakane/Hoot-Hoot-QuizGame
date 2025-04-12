@@ -92,7 +92,7 @@ describe('QuestionService', () => {
         const spyCreate = jest.spyOn(questionModel, 'create').mockImplementation(async () => Promise.reject(''));
         const mockQuestion = new Question();
         await service.addQuestion({ ...mockQuestion }).catch((error) => {
-            expect(error).toBe(`${ERROR_DEFAULT} `);
+            expect(error).toBe(`${ERROR_DEFAULT}\n`);
         });
         expect(spyGet).toHaveBeenCalled();
         expect(spyValidate).toHaveBeenCalled();
@@ -153,7 +153,7 @@ describe('QuestionService', () => {
         const spyValidate = jest.spyOn(gameValidationService, 'findQuestionErrors').mockReturnValue([]);
         const spyGet = jest.spyOn(service, 'getQuestionById').mockResolvedValue(new Question());
         await service.updateQuestion(new Question()).catch((error) => {
-            expect(error).toBe(`${ERROR_DEFAULT} `);
+            expect(error).toBe(`${ERROR_DEFAULT}\n`);
         });
         expect(spyValidate).toHaveBeenCalled();
         expect(spyGet).toHaveBeenCalled();
@@ -178,7 +178,7 @@ describe('QuestionService', () => {
         const spyGet = jest.spyOn(service, 'getQuestionById').mockResolvedValue(new Question());
         jest.spyOn(questionModel, 'deleteOne').mockRejectedValue('');
         await service.deleteQuestion('').catch((error) => {
-            expect(error).toBe(`${ERROR_DEFAULT} `);
+            expect(error).toBe(`${ERROR_DEFAULT}\n`);
         });
         expect(spyGet).toHaveBeenCalled();
     });

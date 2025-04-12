@@ -68,7 +68,7 @@ describe('PlayerRoomService', () => {
     });
 
     it('addPlayer() should not add player if the username is invalid', async () => {
-        const validateSpy = jest.spyOn(service, 'getUsernameErrors').mockReturnValue(HOST_CONFLICT);
+        const validateSpy = jest.spyOn(service, 'getUsernameErrors').mockReturnValue([HOST_CONFLICT]);
         jest.spyOn(authService, 'getUserPhotoUrl').mockResolvedValue('');
         const result = await service.addPlayer(socket, '', '', '');
         expect(result).toBeFalsy();
@@ -76,7 +76,7 @@ describe('PlayerRoomService', () => {
     });
 
     it('addPlayer() should add the player if the username is valid', async () => {
-        const validateSpy = jest.spyOn(service, 'getUsernameErrors').mockReturnValue('');
+        const validateSpy = jest.spyOn(service, 'getUsernameErrors').mockReturnValue([]);
         jest.spyOn(authService, 'getUserPhotoUrl').mockResolvedValue('');
         const pushSpy = jest.spyOn(Array.prototype, 'push');
         const mockUsername = 'mock';
@@ -240,7 +240,7 @@ describe('PlayerRoomService', () => {
             const result = service.getUsernameErrors('', userId);
             expect(banSpy).toHaveBeenCalled();
             // expect(usedSpy).toHaveBeenCalled();
-            expect(result).toEqual(expectedResult);
+            expect(result).toEqual([expectedResult]);
         }
     });
 
