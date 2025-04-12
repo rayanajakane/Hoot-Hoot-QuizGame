@@ -169,7 +169,7 @@
     <string name="cheater_mode_cheater">Cheater</string>
     <string name="cheater_mode_vote">Vote</string>
     <string name="cheater_mode_vote_cheater">Vote for the cheater</string>
-    <string name="cheater_mode_answer_hint">Hint for the answer: "</string>
+    <string name="cheater_mode_answer_hint"x>Hint for the answer: "</string>
     <string name="cheater_mode_notify_regular_player">You have the role of a regular player in this game</string>
     <string name="cheater_mode_player_voted"> has voted</string>
     <string name="cheater_mode_players_still_voting">Players are voting</string>
@@ -188,4 +188,8 @@
     <string name="search_friend">🔍 Search Friend</string>
     <string name="search">Search</string>
     <string name="no_reaction">No reaction</string>
+    <string name="game_author">"Author: "</string>
+    <string name="classic_mode">Classic</string>
+    <string name="cheater_mode_label">Cheater</string>
+    <string name="game_mode">Game Mode</string>
 </resources>

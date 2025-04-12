@@ -190,4 +190,7 @@
     <string name="timer_paused">Minutrie suspendue</string>
     <string name="timer_start">Minutrie partie</string>
     <string name="search_games">Rechercher un jeu</string>
+    <string name="classic_mode">Classique</string>
+    <string name="cheater_mode_label">Tricheur</string>
+    <string name="game_mode">Mode de Jeu</string>
 </resources>
