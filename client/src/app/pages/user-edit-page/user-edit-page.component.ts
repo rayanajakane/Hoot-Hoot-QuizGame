@@ -235,7 +235,7 @@ export class UserEditPageComponent implements OnInit {
                 // from Firebase Storage to free up space.
                 this.authenticationService.deleteUserAvatar(this.authenticationService.userId);
             }
-            this.themeService.setTheme(this.currentTheme.value as Theme);
+            this.themeService.setTheme(this.currentTheme.value as Theme, true);
             this.translationService.setLanguage(this.currentLang.value as string);
             this.wallpaperService.setWallpaper(this.currentWallpaper);
 
@@ -323,7 +323,6 @@ export class UserEditPageComponent implements OnInit {
         this.translationService.setLanguage(language);
     }
 
-    // TODO : Put in username service
     // https://blog.angular-university.io/angular-custom-validators/
     private usernameValidator(): ValidatorFn {
         return (usernameControl: AbstractControl): ValidationErrors | null => {
@@ -331,7 +330,7 @@ export class UserEditPageComponent implements OnInit {
             if (!username) {
                 return null;
             }
-            const containsSpecialChar = /[^A-Za-z0-9_]/.test(username);
+            const containsSpecialChar = /[^a-zA-ZÀ-ÿ0-9_]/.test(username);
 
             if (containsSpecialChar) {
                 return { containsSpecialChar: true };

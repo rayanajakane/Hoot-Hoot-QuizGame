@@ -144,7 +144,7 @@ export class MatchCreationPageComponent implements OnInit {
     }
 
     hasCorrectType(questions: Question[]): boolean {
-        if (questions?.length>0) {
+        if (questions?.length > 0) {
             for (const element of questions) {
                 if (element.type === 'QRL') {
                     this.gameIsValidCheaterMode = false;
@@ -258,7 +258,7 @@ export class MatchCreationPageComponent implements OnInit {
     }
 
     createMatchCheaterMode(context: MatchContext) {
-        this.buttonClicked = true; 
+        this.buttonClicked = true;
         this.matchRoomService.isCheaterMode = true;
         this.matchContextService.setContext(context);
         this.reloadSelectedGame();
@@ -277,7 +277,6 @@ export class MatchCreationPageComponent implements OnInit {
         dialogRef.afterClosed().subscribe((result) => {
             if (result) {
                 this.partyConfig = result;
-                console.log('match', this.partyConfig.isCheaterMode);
                 if (this.partyConfig.isCheaterMode) {
                     this.matchRoomService.isCheaterMode = true;
                     this.createMatchCheaterMode(this.matchContext.HostView);

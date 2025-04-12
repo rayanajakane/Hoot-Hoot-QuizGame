@@ -138,6 +138,21 @@ app-game-list-item {
 .popular-game-card {
     padding: 1rem;
     cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.popular-game-title {
+    max-width: 7.5vw;
+    margin: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.popular-games-count {
+    font-size: 0.8rem;
 }
 
 #game-details-header {

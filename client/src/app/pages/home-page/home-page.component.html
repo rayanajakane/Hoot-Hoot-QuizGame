@@ -13,10 +13,6 @@
                 <mat-icon>add_circle</mat-icon>
                 {{ t('host-match') }}
             </button>
-            <button mat-raised-button color="basic" color="accent" routerLink="/admin/games" class="match-button" id="admin-button">
-                <mat-icon>library_books</mat-icon>
-                {{ t('admin-game') }}
-            </button>
         </div>
 
         <div class="match-buttons">
@@ -29,17 +25,22 @@
                 <mat-icon>group</mat-icon>
                 {{ t('friends') }}
             </button>
-
+        </div>
+        <div class="match-buttons">
             <button mat-raised-button color="basic" routerLink="/shop" class="match-button" id="shop-button">
                 <mat-icon>shopping_cart</mat-icon>
                 {{ t('shop') }}
             </button>
+            <button mat-raised-button color="basic" routerLink="/elo-rankings" class="match-button" id="elo-button">
+                <mat-icon>stars</mat-icon>
+                {{ t('rankings') }}
+            </button>
         </div>
     </div>
 
-    <button mat-raised-button color="basic" routerLink="/elo-rankings" class="match-button" id="elo-button">
-        <mat-icon>group</mat-icon>
-        {{ t('rankings') }}
+    <button mat-raised-button color="basic" color="accent" routerLink="/admin/games" class="match-button" id="admin-button">
+        <mat-icon>library_books</mat-icon>
+        {{ t('admin-game') }}
     </button>
 
     <footer class="footer-container">

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
-import { ThemeService } from '@app/services/theme/theme.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { MoneyService } from '@app/services/money/money.service';
+import { ThemeService } from '@app/services/theme/theme.service';
 import { TranslationService } from '@app/translation/translation.service';
 
 @Component({
@@ -25,7 +25,7 @@ export class AppComponent implements OnInit {
                 const currentLangugage = await this.translationService.getLanguageFromDB();
                 const currentTheme = await this.themeService.getThemeFromDB();
                 this.translationService.setLanguage(currentLangugage);
-                this.themeService.setTheme(currentTheme);
+                this.themeService.setTheme(currentTheme, false);
             } else {
                 this.translationService.initLanguageFR();
                 // this.themeService.initLightTheme();

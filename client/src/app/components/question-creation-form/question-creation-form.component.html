@@ -44,21 +44,21 @@
 
                 <div>
                     <div class="button-container">
-                    <button
-                        *ngIf="modificationState !== managementState.GameModify"
-                        mat-raised-button
-                        color="primary"
-                        type="submit"
-                        class="submit-button"
-                        (click)="submitForm()"
-                        [disabled]="!questionForm.valid"
-                    >
-                        <mat-icon>check</mat-icon>
-                        {{ getButtonText() }}
-                    </button>
+                        <button
+                            *ngIf="modificationState !== managementState.GameModify"
+                            mat-raised-button
+                            color="primary"
+                            type="submit"
+                            class="submit-button"
+                            (click)="submitForm()"
+                            [disabled]="!questionForm.valid"
+                        >
+                            <mat-icon>check</mat-icon>
+                            {{ getButtonText() }}
+                        </button>
                         <button mat-raised-button type="button" (click)="openQuestionDialog()" class="ai-generation">
                             <mat-icon>lightbulb</mat-icon>
-                            {{t('questions-generations.generate-IA')}}
+                            {{ t('questions-generations.generate-IA') }}
                         </button>
                     </div>
                 </div>
@@ -92,7 +92,7 @@
                                             type="button"
                                             class="pointer-on-hover"
                                             (click)="removeChoice(i)"
-                                            color="accent"
+                                            color="warn"
                                             [matTooltip]="t('question-creation-form.delete-choice')"
                                             matTooltipClass="button-tooltip"
                                         >
