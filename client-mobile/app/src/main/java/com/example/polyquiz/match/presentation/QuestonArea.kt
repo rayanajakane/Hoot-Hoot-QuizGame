@@ -212,7 +212,7 @@ fun QuestionArea(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .background(MaterialTheme.colorScheme.background),
+                .background(MaterialTheme.colorScheme.background).navigationBarsPadding(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(24.dp))
