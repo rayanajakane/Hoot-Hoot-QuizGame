@@ -66,11 +66,21 @@ fun FriendsSearchScreen(
     val friends by friendsService.friends.collectAsState()
     val allUsers by friendsService.allUsers.collectAsState()
 
+    fun isFriend(user: UserIdName): Boolean {
+        return friends.any { it.id == user.id }
+    }
+
     val searchResults by remember(searchQuery, allUsers) {
         derivedStateOf {
             val query = searchQuery.trim().lowercase()
-            if (query.isEmpty()) allUsers else allUsers.filter {
-                it.name.lowercase().contains(query)
+            if (query.isEmpty()) {
+                allUsers.filter { user ->
+                    !isFriend(user)
+                }
+            } else {
+                allUsers.filter { user ->
+                    user.name.lowercase().contains(query) && !isFriend(user)
+                }
             }
         }
     }
