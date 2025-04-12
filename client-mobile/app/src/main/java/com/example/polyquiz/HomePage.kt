@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayCircleFilled
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Stars
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
@@ -301,7 +302,7 @@ fun HomePage(
                             )
                         ) {
                             Icon(
-                                Icons.Filled.Group,
+                                Icons.Filled.Stars,
                                 contentDescription = stringResource(R.string.rankings)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
