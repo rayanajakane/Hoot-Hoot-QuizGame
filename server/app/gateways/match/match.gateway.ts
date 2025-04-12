@@ -306,6 +306,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         }
         const room = this.matchRoomService.getRoom(roomCode);
         const isOnePlayerLeft = this.isOnePlayerLeft(room);
+        const lessthanThreePlayers = this.isRoomLessThanThreePlayers(room);
 
         if (room.partyConfig.isEntryFeeRequired) {
             if (!room.isPlaying && !room.currentQuestionIndex) {
@@ -326,21 +327,17 @@ export class MatchGateway implements OnGatewayDisconnect {
             return;
         }
 
-        // if(this.matchRoomService.isCheaterMode && room.isPlaying && lessthanThreePlayers ) {
-        //     this.sendError(roomCode, LESS_THAN_3_PLAYERS);
-        //     this.deleteRoom(roomCode);
-        //     return;
-        // }
+        if(this.matchRoomService.isCheaterMode && room.isPlaying && lessthanThreePlayers ) {
+            this.sendError(roomCode, LESS_THAN_3_PLAYERS);
+            this.deleteRoom(roomCode);
+            return;
+        }
 
-        console.log(`Room host socket connected: ${room.hostSocket.connected}`);
-        console.log(`Room host has roomCode: ${room.hostSocket.rooms.has(roomCode)}`);
-        console.log(`Is room empty: ${isRoomEmpty}`);
-
-        // if(this.matchRoomService.isCheaterMode && room.isPlaying && lessthanThreePlayers ) {
-        //     this.sendError(roomCode, LESS_THAN_3_PLAYERS);
-        //     this.deleteRoom(roomCode);
-        //     return;
-        // }
+        if(this.matchRoomService.isCheaterMode && room.isPlaying && lessthanThreePlayers ) {
+            this.sendError(roomCode, LESS_THAN_3_PLAYERS);
+            this.deleteRoom(roomCode);
+            return;
+        }
 
         if (isRoomEmpty && (!room.hostSocket.connected || !room.hostSocket.rooms.has(roomCode))) {
             this.deleteRoom(roomCode);
@@ -375,7 +372,7 @@ export class MatchGateway implements OnGatewayDisconnect {
     }
 
    private isRoomLessThanThreePlayers(room: MatchRoom) {
-        return room.players.filter((player) => player.isPlaying || player.socket.rooms.has(room.code)).length < 3;
+        return room.players.filter((player) => player.isPlaying || player.socket.rooms.has(room.code)).length < 4;
     }
 
     private isOnePlayerLeft(room: MatchRoom) {
