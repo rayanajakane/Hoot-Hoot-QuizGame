@@ -31,7 +31,7 @@ object MatchService {
         return gameService.getGames(onSuccess = {}, onError = {})
     }
 
-    fun saveBackupGame(id: String, hostId: String , hostUsername: String, partyConfigs: PartyConfig = PartyConfig(false, false, 0, false)){
+    fun saveBackupGame(id: String, hostId: String , hostUsername: String, componentContext:Context, partyConfigs: PartyConfig = PartyConfig(false, false, 0, false)){
             return backupService.add(
                 currentGame!!,
                 onSuccess = { response ->

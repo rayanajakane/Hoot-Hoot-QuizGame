@@ -110,7 +110,6 @@ object MatchRoomService {
             onStartCooldown()
             onHostQuit()
             onPlayerKick()
-            handleError()
             onMatchCheaterModeStarted()
             onVoting()
             onVotingResults()
@@ -118,7 +117,6 @@ object MatchRoomService {
             onCurrentAnswers()
             onUsersWhoVoted()
             handleError(context)
-//            onPlayerChatStateToggle()
             onRouteToResultsPage()
         }
     }
