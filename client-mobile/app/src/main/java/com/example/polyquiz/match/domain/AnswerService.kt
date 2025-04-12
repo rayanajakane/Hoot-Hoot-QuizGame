@@ -55,12 +55,8 @@ object AnswerService {
     fun onFeedback() {
         Log.d("answer service", "called onFeedback")
         Log.d("answer socket", "Socket is null? : id=${mSocket.id()} and ${mSocket.isActive}, and connected= ${mSocket.connected()}")
-        // HAD TO MODIFY THIS CAUSE WHEN WE SEND THE FEEDBACK FROM THE SERVER TO THE HOST, THE ARGS ARE EMPTY AND FEEDBACK IS NEVER TRUE.
         mSocket.on(AnswerEvents.FEEDBACK.value) { args ->
             Log.d("answer socket", " args is empty : ${args.isEmpty()}")
-            if(MatchContextService.getContext() === MatchContext.HOSTVIEW){
-                showFeedback = true
-            }
             if (args.isNotEmpty() && args[0] != null) {
                 val jsonObject = JSONObject(args[0].toString())
 
@@ -72,7 +68,7 @@ object AnswerService {
                 jsonObject.put("answerCorrectness", mappedCorrectness.name)
 
                 feedback = Gson().fromJson(jsonObject.toString(), Feedback::class.java)
-
+                Log.d("answer service", "feedback is $feedback")
                 showFeedback = true
                 isNextQuestionButtonEnabled = true
                 processFeedback(feedback)
