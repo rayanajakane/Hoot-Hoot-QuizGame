@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -159,11 +160,12 @@ fun VotingPage(
                     Text(stringResource(R.string.cheater_mode_vote))
                 }
             } else {
-                if (playersPlaying.size != totalVotesOfActivePlayers) {
-                    Text(stringResource(R.string.cheater_mode_players_still_voting))
-                } else {
-                    Text(stringResource(R.string.cheater_mode_players_voted))
-                }
+                Text(
+                    text = stringResource(R.string.cheater_mode_players_still_voting),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
                 Spacer(modifier = Modifier.height(2.dp))
                 LazyColumn(
                 ) {

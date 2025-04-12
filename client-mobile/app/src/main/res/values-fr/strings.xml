@@ -170,7 +170,7 @@
     <string name="cheater_mode_answer_hint">Indice pour la réponse: "</string>
     <string name="cheater_mode_notify_regular_player">Vous avez le rôle de joueur régulier dans cette partie</string>
     <string name="cheater_mode_player_voted"> a voté</string>
-    <string name="cheater_mode_players_still_voting">Joueurs en train de voter</string>
+    <string name="cheater_mode_players_still_voting">Les joueurs votent</string>
     <string name="cheater_mode_go_to_vote_button">Aller à la page de vote</string>
     <string name="cheater_mode_players_voted">Tous les joueurs ont voté</string>
     <string name="cheater_mode">Mode tricheur</string>
