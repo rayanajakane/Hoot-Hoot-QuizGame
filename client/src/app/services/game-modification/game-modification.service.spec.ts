@@ -22,11 +22,11 @@ import { getMockQuestion } from '@app/constants/question-mocks';
 import { ManagementState } from '@app/constants/states';
 import { Game } from '@app/interfaces/game';
 import { Question } from '@app/interfaces/question';
+import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { BankService } from '@app/services/bank/bank.service';
 import { GameModificationService } from '@app/services/game-modification/game-modification.service';
 import { getTranslocoModule } from '@app/transloco-testing.module';
 import { translate } from '@jsverse/transloco';
-import { AuthenticationService } from '../authentication/authentication.service';
 
 describe('GameModificationService', () => {
     let service: GameModificationService;

@@ -91,7 +91,7 @@
         "games-list": "Games list",
         "game-details": "Game details ",
         "select-game": "Select a game from the games list",
-        "time-per-QCM": "Time per QCM:",
+        "time-per-QCM": "Time per MCQ and EAQ:",
         "popular-games": "Popular Games",
         "n-matches-played": "Matches Played:",
         "all-games": "All Games",
@@ -431,5 +431,15 @@
         "choice-input": "Enter the choice",
         "french": "French",
         "english": "English"
+    },
+    "question": {
+        "qcm": "MCQ",
+        "qrl": "LAQ",
+        "qre": "EAQ"
+    },
+    "question-long-label": {
+        "qcm": "MCQ - Multiple Choices",
+        "qrl": "LAQ - Long Answer     ",
+        "qre": "EAQ - Estimated Answer"
     }
 }

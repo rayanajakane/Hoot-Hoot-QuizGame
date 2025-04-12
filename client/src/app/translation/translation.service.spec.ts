@@ -2,10 +2,10 @@ import { User } from '@angular/fire/auth';
 import { Language } from '@app/interfaces/language';
 import { AuthError } from '@app/services/authentication/auth-error';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
+import { TranslationService } from '@app/translation/translation.service';
 import { getTranslocoTestingModules } from '@app/transloco-testing.module';
 import { TranslocoService } from '@jsverse/transloco';
 import { createServiceFactory, SpectatorService, SpyObject } from '@ngneat/spectator';
-import { TranslationService } from './translation.service';
 
 describe('TranslationService', () => {
     let spectator: SpectatorService<TranslationService>;

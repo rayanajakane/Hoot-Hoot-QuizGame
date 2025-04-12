@@ -4,12 +4,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { EstimatedAnswerAreaComponent } from '@app/components/estimated-answer-area/estimated-answer-area.component';
 import { getMockQuestion } from '@app/constants/question-mocks';
 import { Question } from '@app/interfaces/question';
 import { AnswerService } from '@app/services/answer/answer.service';
 import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
-import { EstimatedAnswerAreaComponent } from './estimated-answer-area.component';
 import spyObj = jasmine.SpyObj;
 
 describe('EstimatedAnswerAreaComponent', () => {
