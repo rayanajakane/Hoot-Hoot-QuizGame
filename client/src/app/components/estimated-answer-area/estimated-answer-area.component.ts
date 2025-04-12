@@ -18,6 +18,7 @@ export class EstimatedAnswerAreaComponent implements OnInit, OnDestroy {
     upperBound: number;
     isOutOfBounds: boolean = false;
     private showFeedbackSubscription: Subscription;
+    isSelectionEnabledSubscription: Subscription;
 
     constructor(
         public matchRoomService: MatchRoomService,
@@ -38,17 +39,29 @@ export class EstimatedAnswerAreaComponent implements OnInit, OnDestroy {
             this.updateInputState(showingFeedback);
         });
 
+        this.isSelectionEnabledSubscription= this.answerService.isSelectionEnabled$.subscribe((isSelectedEnabled) => {
+            this.disableInput(isSelectedEnabled);
+        });
+
         this.updateInputState(this.answerService.showFeedback);
+        this.disableInput(this.answerService.isSelectionEnabled);
     }
 
     ngOnDestroy() {
         if (this.showFeedbackSubscription) {
             this.showFeedbackSubscription.unsubscribe();
         }
+        if (this.isSelectionEnabledSubscription) {
+            this.isSelectionEnabledSubscription.unsubscribe();
+        }
     }
 
     updateInputState(showFeedback: boolean) {
         this.currentLongAnswerControl[showFeedback ? 'disable' : 'enable']();
+    }
+
+    disableInput(isSelectionEnabled: boolean){
+        this.currentLongAnswerControl[!isSelectionEnabled? 'disable' : 'enable']();
     }
 
     onInputChange(): void {
