@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,13 +34,11 @@ import com.example.polyquiz.match.domain.AnswerService
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.TimeService
-import com.example.polyquiz.constants.MatchStatus
 import com.example.polyquiz.constants.UserInfo
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.BarChart
-import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.PriorityHigh
@@ -49,7 +46,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.pointerInput
@@ -66,11 +62,6 @@ import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AnswerCorrectness
 import kotlinx.coroutines.launch
-import com.example.polyquiz.constants.AnswerEvents
-import com.example.polyquiz.match.domain.AnswerService.showFeedback
-import kotlinx.coroutines.launch
-import java.util.Timer
-import kotlin.concurrent.schedule
 
 @Composable
 fun QuestionArea(
@@ -100,6 +91,7 @@ fun QuestionArea(
 
     LaunchedEffect(isPanicking) {
         if(isPanicking) {
+            mediaPlayer.start()
             scope.launch {
                 SnackbarController.sendEvent(
                     event = SnackbarEvent(
@@ -108,7 +100,26 @@ fun QuestionArea(
                 )
             }
         }
+    }
 
+    LaunchedEffect(isTimerPaused) {
+        if(!isTimerPaused) {
+            scope.launch {
+                SnackbarController.sendEvent(
+                    event = SnackbarEvent(
+                        message = StringValue.StringResource(R.string.timer_start)
+                    )
+                )
+            }
+        } else {
+            scope.launch {
+                SnackbarController.sendEvent(
+                    event = SnackbarEvent(
+                        message = StringValue.StringResource(R.string.timer_paused)
+                    )
+                )
+            }
+        }
     }
 
     LaunchedEffect (matchRoomService.isCheaterMode){
@@ -135,19 +146,20 @@ fun QuestionArea(
         }
     }
 
+    LaunchedEffect(Unit) {
+        answerService.resetStateForNewQuestion()
+        timeService.listenToTimerEvents()
+        answerService.listenToAnswerEvents()
+    }
+
     LaunchedEffect(
-        Unit,
         MatchRoomService.hasBeenKickedOut,
         MatchRoomService.isTimeToNavigateToResults,
         MatchRoomService.navigateToVotingPage
     ) {
-        answerService.resetStateForNewQuestion()
-        timeService.listenToTimerEvents()
-        answerService.listenToAnswerEvents()
         matchRoomService.isQuitting = false
         answerService.playerScore = 0
         context = matchContextService.getContext()
-
 
         when (MatchRoomService.navigateToVotingPage) {
             true -> {
@@ -185,10 +197,6 @@ fun QuestionArea(
 
     fun routeToResultsPage() {
         matchRoomService.routeToResultsPage()
-    }
-
-    fun voteOnCheater() {
-        matchRoomService.voteOnCheater();
     }
 
     Row(modifier = Modifier
@@ -458,24 +466,6 @@ fun QuestionArea(
                                 Button(
                                     onClick = {
                                         timeService.pauseTimer(matchRoomService.getRoomCode())
-                                        if(isTimerPaused) {
-                                            scope.launch {
-                                                SnackbarController.sendEvent(
-                                                    event = SnackbarEvent(
-                                                        message = StringValue.StringResource(R.string.timer_start)
-                                                    )
-                                                )
-                                            }
-                                        } else {
-                                            scope.launch {
-                                                SnackbarController.sendEvent(
-                                                    event = SnackbarEvent(
-                                                        message = StringValue.StringResource(R.string.timer_paused)
-                                                    )
-                                                )
-                                            }
-                                        }
-
                                     },
                                     shape = RoundedCornerShape(3.dp)
                                 ) {
@@ -499,7 +489,6 @@ fun QuestionArea(
                                 Button(
                                     onClick = {
                                         timeService.triggerPanicTimer(matchRoomService.getRoomCode())
-                                        mediaPlayer.start()
                                     },
                                     enabled = !isPanicking,
                                     shape = RoundedCornerShape(3.dp)

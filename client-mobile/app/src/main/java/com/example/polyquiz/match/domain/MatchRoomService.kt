@@ -107,6 +107,7 @@ object MatchRoomService {
             handleError()
             onMatchCheaterModeStarted()
             onVoting()
+            voteOnCheater()
             onVotingResults()
             onSelectedCheater()
             onCurrentAnswers()

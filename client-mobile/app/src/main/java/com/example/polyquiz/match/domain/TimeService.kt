@@ -1,5 +1,6 @@
 package com.example.polyquiz.match.domain
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.example.vanillaprototype.socket.SocketHandler
@@ -41,7 +42,11 @@ object TimeService {
     }
 
     fun listenToTimerEvents() {
+        Log.d("Timer", "Listening to timer events")
         handleTimer()
+        onPauseTimer()
+        onPanicTimer()
+        onResumeTimer()
     }
 
     fun handleTimer() {
@@ -66,7 +71,15 @@ object TimeService {
 
     fun onPauseTimer() {
         mSocket.on(TimerEvents.PAUSE_TIMER.value) {
-            _isTimerPaused.value = !_isTimerPaused.value
+            Log.d("Timer", "paused timer")
+            _isTimerPaused.value = true
+        }
+    }
+
+    fun onResumeTimer() {
+        mSocket.on(TimerEvents.RESUME_TIMER.value) {
+            Log.d("Timer", "resumed timer")
+            _isTimerPaused.value = false
         }
     }
 
