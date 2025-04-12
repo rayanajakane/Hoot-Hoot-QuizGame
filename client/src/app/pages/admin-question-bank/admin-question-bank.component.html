@@ -1,11 +1,10 @@
-<div class="main-container" *transloco="let t">
+<div id="main-container" *transloco="let t">
     <div class="nav">
         <h1 class="page-title">{{ t('admin-main-page.question-bank') }}</h1>
         <div class="navigation-buttons buttons-container">
             <button mat-raised-button routerLink="/admin/games" color="basic">
                 <mat-icon>arrow_back</mat-icon>{{ t('admin-question-bank.back-page') }}
             </button>
-            <button mat-raised-button routerLink="/home" color="basic"><mat-icon>home</mat-icon>{{ t('nav.main-page') }}</button>
         </div>
     </div>
     <div class="buttons-container">

@@ -1,6 +1,6 @@
 .form-container {
     padding: 2rem 2rem 0 2rem;
-    font-size: 1.2rem;
+    font-size: 1rem;
 }
 
 .choices-container {
@@ -47,10 +47,10 @@
 }
 
 .button-container {
-    display: flex; 
-    justify-content: flex-start; 
+    display: flex;
+    justify-content: flex-start;
     gap: 1rem;
-    margin-top: 1rem; 
+    margin-top: 1rem;
 }
 
 .pointer-on-hover {
@@ -78,13 +78,19 @@
     display: none;
 }
 
-img {
-    width: 100%;
-    height: 100%;
-    object-fit: fill;
+.upload-image-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
-.ai-generation{
+img {
+    max-width: 15vw;
+    max-height: 25vh;
+    object-fit: contain;
+}
+
+.ai-generation {
     display: flex;
     align-items: right;
     justify-content: center;

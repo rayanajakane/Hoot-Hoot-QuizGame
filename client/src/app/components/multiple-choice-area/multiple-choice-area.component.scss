@@ -1,39 +1,41 @@
-#choice-area {
+#choice-area,
+#answers-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.5rem;
     position: fixed;
     top: 55vh;
+    left: 22vw;
+    right: 22vw;
     align-self: center;
 }
 
 .answer {
     padding: 2rem;
-    width: 30vw;
+    width: 28vw;
     height: 15vh;
     font-size: 1rem;
     overflow: hidden;
-    
 }
 
 .answer p {
-    max-width: 30vw;
+    max-width: 28vw;
     max-height: 15vh;
 }
 
 button.answer.selected {
-    background-color: #bebebe;
-    color: white;
+    background-color: #8f8f8f !important;
+    color: white !important;
     transform: scale(0.96);
 }
 
 .answer.correct {
-    background-color: #4caf50;
+    background-color: #4caf50 !important;
     color: white;
 }
 
 .answer.incorrect {
-    background-color: #f44336;
+    background-color: #f44336 !important;
     color: white;
 }
 
@@ -56,22 +58,22 @@ button.answer.selected {
 }
 
 .dot {
-    height: 5vh;
-    width: 5vh;
-    background-color: #4caf50;
+    height: 2rem;
+    width: 2rem;
+    background-color: #275d29;
     border-radius: 50%;
     display: inline-block;
-    position:absolute;
-    left:20vh;
-    bottom: 4vh;
+    position: absolute;
+    top: -0.25rem;
+    right: -2rem;
 }
 
 .dot::before {
-    content: "✓";
-    font-size: 3vh; 
+    content: '✓';
+    font-size: 3vh;
     position: absolute;
     top: 50%;
     left: 50%;
-    color:white;
+    color: white;
     transform: translate(-50%, -50%);
 }

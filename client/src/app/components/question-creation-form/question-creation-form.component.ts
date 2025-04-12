@@ -8,13 +8,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { IMAGE_MAX_FILE_SIZE } from '@app/constants/image-constants';
 import { MAX_CHOICES, MIN_CHOICES, SNACK_BAR_DISPLAY_TIME, VALID_MARGIN_FRACTION } from '@app/constants/question-creation';
 import { ManagementState } from '@app/constants/states';
+import { Choice } from '@app/interfaces/choice';
 import { Question } from '@app/interfaces/question';
 import { BankService } from '@app/services/bank/bank.service';
 import { QuestionService } from '@app/services/question/question.service';
 import { QuestionType } from '@common/constants/question-types';
-import { QuestionGeneratorComponent } from '../question-generator/question-generator.component';
-import { Choice } from '@app/interfaces/choice';
 import { translate } from '@jsverse/transloco';
+import { QuestionGeneratorComponent } from '../question-generator/question-generator.component';
 
 export interface DialogManagement {
     modificationState: ManagementState;
@@ -407,7 +407,7 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
         if (fields.some((field) => group.get(field)?.value === '')) {
             return null;
         }
-        if (fields.some((field) => !Number.isInteger(group.get(field)?.value))) {
+        if (fields.some((field) => !Number.isInteger(group.get(field)?.value) || group.get(field)?.value.toString().includes('e'))) {
             return { invalidType: true };
         }
         return null;

@@ -16,11 +16,10 @@ export interface DialogManagement {
     providedIn: 'root',
 })
 export class QuestionService extends CommunicationService<Question> {
-    communcationService: CommunicationService<String>
+    communcationService: CommunicationService<String>;
     constructor(
         public dialog: MatDialog,
         http: HttpClient,
-
     ) {
         super(http, 'questions');
     }
@@ -29,11 +28,11 @@ export class QuestionService extends CommunicationService<Question> {
         return this.getAll();
     }
 
-    generateQuestion(generatedQuestion:string){
+    generateQuestion(generatedQuestion: string) {
         //TODO: AGAIN FIND OUT IF WE CAN MODIFY THE PROMPT SERVER SIDE
-        const questionString = {"prompt" : JSON.stringify(generatedQuestion) + "genérer question"}
-        console.log(questionString)
-        return this.add(questionString,'generate-question');
+        const questionString = { prompt: JSON.stringify(generatedQuestion) + 'genérer question' };
+        console.log(questionString);
+        return this.add(questionString, 'generate-question');
     }
 
     createQuestion(question: Question): Observable<HttpResponse<string>> {
@@ -57,14 +56,14 @@ export class QuestionService extends CommunicationService<Question> {
             data: {
                 modificationState,
             },
-            height: '50%',
+            height: '95%',
             width: '100%',
             panelClass: 'centered-dialog',
         };
         return this.dialog.open(QuestionCreationFormComponent, manageConfig);
     }
 
-    validateChoicesLength(control: AbstractControl): ValidationErrors | null { 
+    validateChoicesLength(control: AbstractControl): ValidationErrors | null {
         if (control.get('type')?.value !== 'QCM') return null;
         const choices = control.get('choices') as FormArray;
         let hasCorrect = false;

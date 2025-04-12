@@ -8,23 +8,23 @@
                     id="score-feedback-area"
                     *ngIf="
                         (this.answerService.showFeedback && context === matchContext.PlayerView && !this.matchRoomService.isCooldown) ||
-                        (this.answerService.showFeedback && context === matchContext.CheaterView && !this.matchRoomService.isCooldown) ||
+                            (this.answerService.showFeedback && context === matchContext.CheaterView && !this.matchRoomService.isCooldown) ||
                             (this.answerService.showFeedback && (context === matchContext.TestPage || context === matchContext.RandomMode));
                         else elseBlock
                     "
                 >
                     <h1 id="score">SCORE : {{ this.answerService.playerScore }}</h1>
-                    <div>
-                        <h1 class="points" *ngIf="!this.answerService.answerCorrectness" class="wrong-answer">
+                    <div class="points-feedback-container">
+                        <h1 *ngIf="!this.answerService.answerCorrectness" class="wrong-answer feedback-text">
                             {{ t('question-area.wrong-answer') }}
                         </h1>
-                        <h1 class="points" *ngIf="this.answerService.answerCorrectness === answerOptions.OK" class="ok-answer">
+                        <h1 *ngIf="this.answerService.answerCorrectness === answerOptions.OK" class="ok-answer feedback-text">
                             {{ t('question-area.partial-answer') }} {{ this.currentQuestion.points / 2 }} points 🆗
                         </h1>
-                        <h1 class="points" *ngIf="this.answerService.answerCorrectness === answerOptions.GOOD" class="good-answer">
+                        <h1 *ngIf="this.answerService.answerCorrectness === answerOptions.GOOD" class="good-answer feedback-text">
                             {{ t('question-area.good-answer') }} {{ this.currentQuestion.points }} points 👏
                         </h1>
-                        <h1 class="points" class="good-answer" *ngIf="this.answerService.bonusPoints > 0">
+                        <h1 class="good-answer feedback-text" *ngIf="this.answerService.bonusPoints > 0">
                             {{ t('question-area.bonus-message') }} {{ this.answerService.bonusPoints }} points!✨
                         </h1>
                     </div>
@@ -41,8 +41,12 @@
 
                 <div id="question">
                     <div id="question-text-container" [ngClass]="this.currentQuestion.pictureUrl !== '' ? 'two-columns' : 'one-column'">
-                        <h1>{{ this.currentQuestion!.text }}</h1>
-                        <img *ngIf="this.currentQuestion.pictureUrl !== ''" src="{{ this.currentQuestion.pictureUrl }}" alt="" />
+                        <h1 class="question-text">{{ this.currentQuestion!.text }}</h1>
+                        <img
+                            *ngIf="this.currentQuestion.pictureUrl !== '' && !this.matchRoomService.isCooldown"
+                            src="{{ this.currentQuestion.pictureUrl }}"
+                            alt=""
+                        />
                     </div>
                     <h1 id="points" *ngIf="!this.matchRoomService.isCooldown">{{ currentQuestion.points }} points</h1>
                 </div>
@@ -69,7 +73,12 @@
 
             <div
                 id="submit-button-container"
-                *ngIf="context === matchContext.PlayerView || context === matchContext.TestPage || context === matchContext.RandomMode ||context === matchContext.CheaterView"
+                *ngIf="
+                    context === matchContext.PlayerView ||
+                    context === matchContext.TestPage ||
+                    context === matchContext.RandomMode ||
+                    context === matchContext.CheaterView
+                "
             >
                 <button mat-raised-button color="primary" id="submit-button" *ngIf="this.answerService.isSelectionEnabled" (click)="submitAnswers()">
                     {{ t('question-area.submit') }}
@@ -82,11 +91,21 @@
     </div>
     <div class="controls-container">
         <div id="host-area" *ngIf="context === matchContext.HostView && !this.matchRoomService.isCooldown">
-            <button mat-raised-button *ngIf="this.answerService.isEndGame && !this.matchRoomService.isCheaterMode" color="primary" (click)="routeToResultsPage()">
+            <button
+                mat-raised-button
+                *ngIf="this.answerService.isEndGame && !this.matchRoomService.isCheaterMode"
+                color="primary"
+                (click)="routeToResultsPage()"
+            >
                 <mat-icon class="material-icons">bar_chart</mat-icon>
                 <p>{{ t('question-area.show-final-results') }}</p>
             </button>
-            <button mat-raised-button *ngIf="this.answerService.isEndGame && this.matchRoomService.isCheaterMode" color="primary" (click)="this.goToVoting()">
+            <button
+                mat-raised-button
+                *ngIf="this.answerService.isEndGame && this.matchRoomService.isCheaterMode"
+                color="primary"
+                (click)="this.goToVoting()"
+            >
                 <mat-icon class="material-icons">bar_chart</mat-icon>
                 <p>{{ t('question-area.show-voting-button') }}</p>
             </button>
