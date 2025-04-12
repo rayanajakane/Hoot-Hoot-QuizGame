@@ -234,4 +234,5 @@
     <string name="match_errors_banned_player">You have been banned from this match.</string>
     <string name="match_friends_errors_not_friends_with_host">You are not friends with the host.</string>
     <string name="match_friends_errors_no_friends">You don\'t have any friends.</string>
+    <string name="match_errors_less_than_3_players">The match needs at least 3 players.</string>
 </resources>

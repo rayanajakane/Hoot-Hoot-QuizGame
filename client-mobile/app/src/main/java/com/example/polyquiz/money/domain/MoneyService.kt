@@ -28,7 +28,7 @@ class MoneyService() {
         return FirebaseAuth.getInstance().currentUser?.uid ?: ""
     }
 
-    fun listenForMoneyEvents(
+    fun listenForMoneyEvents(context : Context,
         onAvatarBoughtCallback: (ShopItem) -> Unit = {},
         onThemeBoughtCallback: (ShopItem) -> Unit = {},
         onWallpaperBoughtCallback: (ShopItem) -> Unit = {}
