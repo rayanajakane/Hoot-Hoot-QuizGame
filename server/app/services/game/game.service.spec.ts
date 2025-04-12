@@ -221,6 +221,7 @@ describe('GameService', () => {
         expectedResult.nMatchesPlayed++;
         const spyGet = jest.spyOn(service, 'getGameById').mockResolvedValue(mockGame);
         const spyModel = jest.spyOn(gameModel, 'findOneAndUpdate').mockResolvedValue(expectedResult);
+        jest.spyOn(gameModel, 'find').mockResolvedValue([]);
         const upsertedGame = await service.updateNMatchesPlayed(mockGame.id);
         expect(upsertedGame).toEqual(expectedResult);
         expect(spyGet).toHaveBeenCalled();
@@ -228,6 +229,7 @@ describe('GameService', () => {
     });
 
     it('upsertGame() should upsert the game if it is valid', async () => {
+        jest.spyOn(gameModel, 'find').mockResolvedValue([]);
         const mockGame = getMockGame();
         const spyValidate = jest.spyOn(gameValidationService, 'findGameErrors').mockReturnValue([]);
         const spyDateVisibility = jest.spyOn(gameCreationService, 'updateDateAndVisibility').mockReturnValue(mockGame);
@@ -242,6 +244,7 @@ describe('GameService', () => {
     });
 
     it('upsertGame() should fail if the game is not valid', async () => {
+        jest.spyOn(gameModel, 'find').mockResolvedValue([]);
         const mockGame = getMockGame();
         const mockErrorMessages = ['mock'];
         const spyValidate = jest.spyOn(gameValidationService, 'findGameErrors').mockReturnValue(mockErrorMessages);
@@ -252,6 +255,7 @@ describe('GameService', () => {
     });
 
     it('upsertGame() should fail if mongo query fails', async () => {
+        jest.spyOn(gameModel, 'find').mockResolvedValue([]);
         const mockGame = getMockGame();
         const spyValidate = jest.spyOn(gameValidationService, 'findGameErrors').mockReturnValue([]);
         const spyDateVisibility = jest.spyOn(gameCreationService, 'updateDateAndVisibility').mockReturnValue(mockGame);

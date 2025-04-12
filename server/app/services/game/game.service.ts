@@ -115,6 +115,10 @@ export class GameService {
         const filterQuery = { id: game.id };
         try {
             const errorMessages = this.validation.findGameErrors(game);
+            const gamesWithSameName = await this.gameModel.find({ title: game.title });
+            if (gamesWithSameName.length > 1) {
+                errorMessages.push(ERROR_GAME_SAME_TITLE);
+            }
             if (errorMessages.length) {
                 return Promise.reject(`${ERROR_INVALID_GAME}\n${errorMessages.join('\n')}`);
             }
