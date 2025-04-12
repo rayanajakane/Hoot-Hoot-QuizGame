@@ -169,7 +169,6 @@ fun JoinMatchPage(
                     )
             },
             onError = { errorMessage ->
-                println("Error: $errorMessage")
                 scope.launch {
                     SnackbarController.sendEvent(
                         event = SnackbarEvent(
