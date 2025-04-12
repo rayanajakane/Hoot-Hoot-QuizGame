@@ -58,7 +58,7 @@
     <string name="games_details">Détails du jeu</string>
     <string name="games_description">"Description: "</string>
     <string name="games_time">"Durée: "</string>
-    <string name="game_title">"Titre: "</string>
+    <string name="game_title">"Titre"</string>
     <string name="questions">Questions</string>
     <string name="select_game">"Sélectionner un jeu dans la liste des jeux"</string>
     <string name="play">"Jouer"</string>
@@ -179,5 +179,6 @@
     <string name="switch_camera">Changer camera</string>
     <string name="timer_paused">Minutrie suspendue</string>
     <string name="timer_start">Minutrie partie</string>
-    <string name="game_author">"Auteur: "</string>
+    <string name="game_author">"Auteur"</string>
+    <string name="search_games">Rechercher un jeu</string>
 </resources>
