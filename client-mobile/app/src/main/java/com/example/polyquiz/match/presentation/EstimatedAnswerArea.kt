@@ -1,5 +1,6 @@
 package com.example.polyquiz.match.presentation
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -34,19 +35,48 @@ fun EstimatedAnswerArea(
     var isInputCleared by remember { mutableStateOf(answer.isEmpty()) }
     var isOutOfBounds by remember { mutableStateOf(false) }
     val isDisabled = answerService.showFeedback
+    val isDisableHostView = matchContext == MatchContext.HOSTVIEW
 
     Column(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
+
+        if (matchContext === MatchContext.HOSTVIEW) {
+            OutlinedTextField(
+                value = MatchRoomService.currentAnswers[0],
+                onValueChange = {},
+                label = { Text(stringResource(R.string.answer)) },
+                modifier = Modifier
+                    .width(180.dp)
+                    .padding(vertical = 8.dp)
+                    .align(Alignment.CenterHorizontally),
+                singleLine = true,
+                enabled = false,
+                isError = isOutOfBounds
+            )
+            Slider(
+                value = MatchRoomService.currentAnswers[0].toFloat(),
+                onValueChange = {
+                    sliderValue = it
+                    isInputCleared = false
+                    val newValue = it.toInt().toString()
+                    answer = newValue
+                    answerService.currentLongAnswer = newValue
+                    answerService.updateLongAnswer()
+                },
+                valueRange = lowerBound..upperBound,
+                modifier = Modifier.weight(1f),
+                enabled = false
+            )
+        }
         if (matchContext != MatchContext.HOSTVIEW) {
             Text(
-                text = if (isDisabled) {
+                text = if (isDisabled ) {
                     stringResource(
-                        R.string.good_answer,
-                        answerService.feedback.correctAnswer!![0].toInt()
-                            + estimatedParams?.margin!!
+                        R.string.good_answer_qre,
+                        answerService.feedback.correctAnswer!![0], estimatedParams!!.margin
                     )
                 } else {
                     stringResource(R.string.choose_estimated, estimatedParams!!.margin)
@@ -96,10 +126,21 @@ fun EstimatedAnswerArea(
                 enabled = !isDisabled,
                 isError = isOutOfBounds
             )
+            if (matchContext === MatchContext.CHEATERVIEW) {
+                Text(
+                    text = stringResource(R.string.cheater_mode_answer_hint) + matchRoomService.currentAnswers[0],
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .width(180.dp)
+                        .padding(vertical = 8.dp)
+                        .align(Alignment.CenterHorizontally),
+                )
+            }
+
 
             if (isOutOfBounds) {
                 Text(
-                    text = stringResource(R.string.out_of_bounds),
+                    text = stringResource(R.string.out_of_bounds, lowerBound.toInt(), upperBound.toInt()),
                     // TODO : Check hardcoded value
                     color = BrightRed,
                     fontSize = 14.sp,

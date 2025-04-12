@@ -42,6 +42,7 @@ import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.Icon
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.pointerInput
@@ -52,8 +53,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.polyquiz.R
+import com.example.polyquiz.SnackbarController
+import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AnswerCorrectness
+import com.example.polyquiz.constants.AnswerEvents
+import com.example.polyquiz.match.domain.AnswerService.showFeedback
+import kotlinx.coroutines.launch
+import java.util.Timer
+import kotlin.concurrent.schedule
 
 @Composable
 fun QuestionArea(
@@ -64,6 +72,7 @@ fun QuestionArea(
     authViewModel: AuthViewModel,
     navigateToHome: () -> Unit,
     navigateToResultsPage: () -> Unit,
+    navigateToVotingPage: () -> Unit,
     modifier: Modifier
 ) {
     var room by remember { mutableStateOf(matchRoomService.getRoomCode()) }
@@ -72,13 +81,39 @@ fun QuestionArea(
     var context by remember { mutableStateOf(matchContextService.getContext()) }
     val question by matchRoomService::currentQuestion
     val score by answerService::playerScore
+    val scope = rememberCoroutineScope()
 
     val hasImage = !question?.pictureUrl.isNullOrEmpty()
+
+    LaunchedEffect (matchRoomService.isCheaterMode){
+        if (matchRoomService.isCheaterMode) {
+            if (matchRoomService.username == matchRoomService.cheaterPlayer?.username) {
+                matchContextService.setContext(MatchContext.CHEATERVIEW);
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.StringResource(R.string.cheater_mode_notify_cheater)
+                        )
+                    )
+                }
+            }
+            if(matchContextService.getContext() === MatchContext.PLAYERVIEW){
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.StringResource(R.string.cheater_mode_notify_regular_player)
+                        )
+                    )
+                }
+            }
+        }
+    }
 
     LaunchedEffect(
         Unit,
         MatchRoomService.hasBeenKickedOut,
-        MatchRoomService.isTimeToNavigateToResults
+        MatchRoomService.isTimeToNavigateToResults,
+        MatchRoomService.navigateToVotingPage
     ) {
         answerService.resetStateForNewQuestion()
         timeService.listenToTimerEvents()
@@ -86,6 +121,15 @@ fun QuestionArea(
         matchRoomService.isQuitting = false
         answerService.playerScore = 0
         context = matchContextService.getContext()
+
+
+        when (MatchRoomService.navigateToVotingPage) {
+            true -> {
+                navigateToVotingPage();
+            }
+
+            else -> Unit
+        }
 
         when (MatchRoomService.hasBeenKickedOut) {
             true -> {
@@ -107,6 +151,10 @@ fun QuestionArea(
 
     fun routeToResultsPage() {
         matchRoomService.routeToResultsPage()
+    }
+
+    fun voteOnCheater() {
+        matchRoomService.voteOnCheater();
     }
 
     Row(modifier = Modifier
@@ -171,7 +219,6 @@ fun QuestionArea(
                             .padding(top = 16.dp)
                     )
 
-
                 } else {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         val questionText =
@@ -215,15 +262,12 @@ fun QuestionArea(
                                 0xFF4caf50
                             )
                         }
-
                     }
-
                     Text(
                         text = feedbackText,
                         style = MaterialTheme.typography.titleMedium,
                         color = feedbackColor
                     )
-
 
                     if (answerService.bonusPoints > 0) {
                         Spacer(modifier = Modifier.height(12.dp))
@@ -238,9 +282,51 @@ fun QuestionArea(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                if (answerService.showFeedback && context === MatchContext.CHEATERVIEW && !matchRoomService.isCooldown) {
+                    val (feedbackText, feedbackColor) = when (answerService.answerCorrectness) {
+                        AnswerCorrectness.WRONG -> stringResource(R.string.wrong_answer) to Color(
+                            0xFFe91b0c
+                        )
 
+                        AnswerCorrectness.OK -> {
+                            stringResource(
+                                R.string.partial_answer,
+                                (question?.points ?: 0) / 2
+                            ) to Color(
+                                0xFFf6c811
+                            )
+                        }
+
+                        AnswerCorrectness.GOOD -> {
+                            stringResource(R.string.good_answer, question?.points ?: 0) to Color(
+                                0xFF4caf50
+                            )
+                        }
+                    }
+                    Text(
+                        text = feedbackText,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = feedbackColor
+                    )
+
+                    if (answerService.bonusPoints > 0) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = stringResource(
+                                R.string.bonus_message,
+                                answerService.bonusPoints
+                            ),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.Green
+                        )
+                    }
+                }
+
+
+
+                Spacer(modifier = Modifier.height(24.dp))
             }
+
 
             if (!matchRoomService.isCooldown) {
                 when (question?.type) {
@@ -279,7 +365,7 @@ fun QuestionArea(
                     .fillMaxWidth()
                     .wrapContentSize(Alignment.Center)
             ) {
-                if (answerService.isSelectionEnabled && context === MatchContext.PLAYERVIEW) {
+                if (answerService.isSelectionEnabled && (context === MatchContext.PLAYERVIEW || context === MatchContext.CHEATERVIEW)) {
                     Button(
                         onClick = {
                             answerService.submitAnswer(
@@ -311,7 +397,7 @@ fun QuestionArea(
                         Spacer(modifier = Modifier.height(16.dp))
                         if (context == MatchContext.HOSTVIEW && !matchRoomService.isCooldown) {
                             Spacer(modifier = Modifier.height(16.dp))
-                            if (answerService.isEndGame) {
+                            if (answerService.isEndGame && !matchRoomService.isCheaterMode) {
                                 Log.d("Question area", "is end game")
                                 Button(
                                     onClick = {
@@ -328,13 +414,22 @@ fun QuestionArea(
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Text(stringResource(R.string.show_final))
                                 }
-                            } else if (answerService.isNextQuestionButtonEnabled) {
+                            } else if (!answerService.isEndGame && answerService.isNextQuestionButtonEnabled) {
                                 Log.d("Question area", "next question enabled")
                                 Button(
                                     onClick = { matchRoomService.goToNextQuestion() },
                                     shape = RoundedCornerShape(3.dp)
                                 ) {
                                     Text(stringResource(R.string.next_question))
+                                }
+                            }
+                            else if (answerService.isEndGame && MatchRoomService.isCheaterMode ) {
+                                Log.d("Voting Area", "next question enabled")
+                                Button(
+                                    onClick = { MatchRoomService.voteOnCheater() },
+                                    shape = RoundedCornerShape(3.dp)
+                                ) {
+                                    Text(stringResource(R.string.cheater_mode_go_to_vote_button))
                                 }
                             }
                         }
@@ -359,7 +454,5 @@ fun QuestionArea(
             )
         }
     }
-
-
 }
 

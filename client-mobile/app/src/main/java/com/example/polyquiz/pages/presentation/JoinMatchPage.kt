@@ -64,6 +64,7 @@ import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
+import com.example.polyquiz.chat.presentation.TruncatedText
 import com.example.polyquiz.constants.MatchPageInfo
 import com.example.polyquiz.match.domain.JoinMatchService
 import com.example.polyquiz.match.domain.JoinMatchService.matchInfos
@@ -168,7 +169,6 @@ fun JoinMatchPage(
                     )
             },
             onError = { errorMessage ->
-                println("Error: $errorMessage")
                 scope.launch {
                     SnackbarController.sendEvent(
                         event = SnackbarEvent(
@@ -356,10 +356,12 @@ fun MatchCard(match: MatchPageInfo, onClick: () -> Unit = {}) {
             modifier = Modifier.padding(15.dp),
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text(
+            TruncatedText(
                 text = match.gameTitle,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                fontSize = 15.sp,
+                maxChars = 10,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
@@ -407,6 +409,18 @@ fun MatchCard(match: MatchPageInfo, onClick: () -> Unit = {}) {
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = match.partyConfig.entryFeeAmount.toString(),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                }
+                if (match.partyConfig?.isCheaterMode == true) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.height(24.dp)
+                    ) {
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = stringResource(R.string.cheater_mode),
                             style = MaterialTheme.typography.bodySmall
                         )
                     }

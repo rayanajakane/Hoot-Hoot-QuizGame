@@ -59,6 +59,7 @@
     <string name="games_description">"Description: "</string>
     <string name="games_time">"Durée: "</string>
     <string name="game_title">"Titre: "</string>
+    <string name="game_author">"Auteur: "</string>
     <string name="questions">Questions </string>
     <string name="select_game">"Sélectionner un jeu dans la liste des jeux"</string>
     <string name="play">"Jouer"</string>
@@ -164,5 +165,18 @@
     <string name="cancel">Annuler</string>
     <string name="regen">Générer d\'autres noms</string>
     <string name="suggest_names">Suggestions de noms d\'utilisateurs</string>
+    <string name="cheater_mode_notify_cheater">Vous êtes le/la tricheur/tricheuse de cette partie</string>
+    <string name="cheater_mode_cheater">Tricheur</string>
+    <string name="cheater_mode_vote">Voter</string>
+    <string name="cheater_mode_vote_cheater">Votez pour le tricheur</string>
+    <string name="cheater_mode_answer_hint">Indice pour la réponse: "</string>
+    <string name="cheater_mode_notify_regular_player">Vous avez le rôle de joueur régulier dans cette partie</string>
+    <string name="cheater_mode_player_voted"> a voté</string>
+    <string name="cheater_mode_players_still_voting">Joueurs en train de voter</string>
+    <string name="cheater_mode_go_to_vote_button">Aller à la page de vote</string>
+    <string name="cheater_mode_players_voted">Tous les joueurs ont voté</string>
+    <string name="cheater_mode">Mode tricheur</string>
+    <string name="cheater_mode_players_min">Ce mode nécessite au moins 3 joueurs</string>
+    <string name="cheater_mode_players_info"> Pour jouer en mode tricheur : le jeu ne doit pas contenir de question de type réponse longue et doit comporter au moins trois joueurs </string>
     <string name="switch_camera">Changer camera</string>
 </resources>

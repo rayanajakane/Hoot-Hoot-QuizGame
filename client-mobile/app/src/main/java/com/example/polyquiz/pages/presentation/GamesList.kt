@@ -39,9 +39,12 @@ import com.example.polyquiz.match.presentation.PartyConfigDialog
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
-
+import com.example.polyquiz.match.domain.MatchRoomService
+import com.example.polyquiz.match.domain.Question
 
 @Composable
 fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: AuthViewModel) {
@@ -56,6 +59,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
     val username by remember { mutableStateOf(authViewModel.getUsername()) }
     val userId by remember { mutableStateOf(authViewModel.getUserId()) }
     var showPartyConfigDialog by remember { mutableStateOf(false) }
+    var gameIsValidCheaterMode by remember { mutableStateOf(false) }
     var partyConfigs by remember { mutableStateOf(PartyConfig(false, false)) }
 
     var titleQuery by remember { mutableStateOf("") }
@@ -145,6 +149,21 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
         }
     }
 
+    fun canStartCheaterMode(questions: List<Question>): Boolean {
+        if (questions.isNotEmpty()) {
+            for (question in questions) {
+                if (question.type == "QRL") {
+                    MatchRoomService.canPlayCheaterMode = false
+                    gameIsValidCheaterMode = false;
+                    return false
+                }
+            }
+        }
+        MatchRoomService.canPlayCheaterMode = true
+        gameIsValidCheaterMode = true;
+        return true
+    }
+
     fun loadSelectedGame(currentGame: Game) {
         isLoadingSelectedGame = true
         gameService.getGameById(currentGame.id!!,
@@ -160,7 +179,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
             })
     }
 
-    fun reloadSelectedGame(partyConfigs: PartyConfig = PartyConfig(false, false)) {
+    fun reloadSelectedGame(partyConfigs: PartyConfig = PartyConfig(false, false, 0, false)) {
         gameService.getGameById(selectedGame?.id!!,
             onSuccess = { response ->
                 val gson = Gson()
@@ -172,10 +191,12 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                 println("Error: $errorMessage")
                 fetchGames()
             })
-
     }
 
-    fun createMatch(context: MatchContext, partyConfigs: PartyConfig = PartyConfig(false, false)) {
+    fun createMatch(
+        context: MatchContext,
+        partyConfigs: PartyConfig = PartyConfig(false, false, 0, false)
+    ) {
         contextService.setContext(context)
         reloadSelectedGame(partyConfigs)
     }
@@ -279,11 +300,11 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "Title",
+                                text = stringResource(R.string.game_title),
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = "Author",
+                                text = stringResource(R.string.game_author),
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -325,83 +346,101 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                 .weight(1f)
                 .fillMaxHeight()
         ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
+            Row(
+
+                modifier = Modifier.padding(2.dp),
+                horizontalArrangement = Arrangement.Start
             ) {
+
                 if (selectedGame != null) {
                     loadSelectedGame(selectedGame!!)
                     matchService.currentGame = selectedGame
-                    Text(
-                        text = stringResource(R.string.game_title) + selectedGame!!.title,
-                        modifier = Modifier.padding(8.dp),
-                        fontWeight = FontWeight.Bold
-                    )
-                    Row(modifier = Modifier.padding(8.dp)) {
+                    Column(modifier = Modifier.fillMaxWidth(.6f)) {
                         Text(
-                            text = stringResource(R.string.games_description),
+                            text = stringResource(R.string.game_title) + selectedGame!!.title,
+                            modifier = Modifier.padding(8.dp),
                             fontWeight = FontWeight.Bold
                         )
-                        Text(
-                            text = selectedGame!!.description,
-                        )
-                    }
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Row(modifier = Modifier.padding(8.dp)) {
+                            Text(
+                                text = stringResource(R.string.games_description),
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = selectedGame!!.description,
+                            )
+                        }
 
-                    Row(modifier = Modifier.padding(8.dp)) {
+                        Row(modifier = Modifier.padding(8.dp)) {
+                            Text(
+                                text = stringResource(R.string.games_time),
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = "${selectedGame!!.duration} minutes",
+                                fontWeight = FontWeight.Normal
+                            )
+                        }
+
                         Text(
-                            text = stringResource(R.string.games_time),
+                            text = stringResource(R.string.questions),
+                            modifier = Modifier.padding(8.dp),
                             fontWeight = FontWeight.Bold
                         )
-                        Text(
-                            text = "${selectedGame!!.duration} minutes",
-                            fontWeight = FontWeight.Normal
-                        )
+                        selectedGame!!.questions?.forEachIndexed { index, question ->
+                            Text(
+                                "${index + 1}. ${question.text}",
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
                     }
 
-                    Text(
-                        text = stringResource(R.string.questions),
-                        modifier = Modifier.padding(8.dp),
-                        fontWeight = FontWeight.Bold
-                    )
-                    selectedGame!!.questions?.forEachIndexed { index, question ->
-                        Text("${index + 1}. ${question.text}", modifier = Modifier.padding(8.dp))
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
 
-
-                    Row {
+                    Column() {
                         Button(
                             onClick = {
                                 createMatch(MatchContext.HOSTVIEW)
                             },
-                            shape = RoundedCornerShape(3.dp),
+                            shape = RoundedCornerShape(5.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.primary,
                                 contentColor = MaterialTheme.colorScheme.onPrimary
                             ),
                             modifier = Modifier
-                                .padding(16.dp)
+                                .padding(10.dp)
+                                .width(160.dp)
+                                .height(60.dp)
                         ) {
                             Text(text = stringResource(R.string.play))
 
                         }
                         Button(
                             onClick = {
+                                canStartCheaterMode(selectedGame!!.questions!!);
                                 showPartyConfigDialog = true
                             },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                contentColor = MaterialTheme.colorScheme.onPrimary
+                                containerColor = MaterialTheme.colorScheme.tertiary,
+                                contentColor = MaterialTheme.colorScheme.onTertiary
                             ),
-                            shape = RoundedCornerShape(3.dp),
+                            shape = RoundedCornerShape(5.dp),
                             modifier = Modifier
-                                .padding(16.dp)
-                        ) {
-                            Icon(
-                                Icons.Filled.Settings,
-                                contentDescription = stringResource(R.string.custom_match)
-                            )
-                            Text(text = stringResource(R.string.custom_match))
+                                .padding(start = 10.dp, end = 15.dp)
 
+                        ) {
+                            Row(modifier = Modifier.fillMaxWidth()) {
+                                Icon(
+                                    Icons.Filled.Settings,
+                                    contentDescription = stringResource(R.string.custom_match),
+                                    modifier = Modifier
+                                        .offset(x = -18.dp, y = 5.dp),
+                                )
+                                Text(
+                                    text = stringResource(R.string.custom_match),
+                                    textAlign = TextAlign.Center,
+                                )
+                            }
                         }
 
                     }
@@ -433,8 +472,6 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
 
         }
     }
-
-
 }
 
 

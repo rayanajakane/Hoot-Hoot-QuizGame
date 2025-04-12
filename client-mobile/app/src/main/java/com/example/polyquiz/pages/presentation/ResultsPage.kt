@@ -1,5 +1,6 @@
 package com.example.polyquiz.match.presentation
 
+import android.util.Log
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -35,6 +36,9 @@ fun ResultsPage(
     modifier: Modifier = Modifier,
     extraContent: @Composable () -> Unit = {}
 ) {
+
+    val allPlayers = remember { mutableStateOf(matchRoomService.players.toList()) }
+
     LaunchedEffect(MatchRoomService.isTimeToNavigateToResults) {
         MatchRoomService.isResults = false
     }
@@ -46,15 +50,8 @@ fun ResultsPage(
         }
     }
 
-    val username = matchRoomService.retrieveUsername()
-
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-
-    var sortBy by remember { mutableStateOf("score") }
-    var sortOrder by remember { mutableStateOf("descending") }
-
-    val context by remember { mutableStateOf(matchContextService.getContext()) }
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(26.dp),
@@ -83,13 +80,14 @@ fun ResultsPage(
             )
 
             LazyColumn(modifier = Modifier.weight(1f)) {
-                items(players) { player ->
+                items(allPlayers.value) { player ->
                     PlayerCard(
                         Modifier.fillMaxWidth(0.8f),
                         player,
                         player.photoUrl,
                         context = matchContextService,
-                        withAvatar = true
+                        withAvatar = true,
+                        inResultsPage = true,
                     )
                 }
             }
@@ -98,7 +96,7 @@ fun ResultsPage(
         PlayersListComponent(
             matchRoomService = matchRoomService,
             context = matchContextService,
-            players = matchRoomService.players,
+            players = allPlayers.value,
             modifier = Modifier
                 .width(250.dp)
                 .fillMaxHeight()

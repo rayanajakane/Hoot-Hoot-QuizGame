@@ -21,5 +21,14 @@ enum class MatchEvents(val value: String) {
     DISCONNECT("disconnectFromRoom"),
     ERROR("error"),
     GET_ALL_MATCHES("getAllMatches"),
-    RETURN_ALL_MATCHES ("returnAllMatches")
+    RETURN_ALL_MATCHES ("returnAllMatches"),
+    START_MATCH_CHEATER_MODE("startMatchCheaterMode"),
+    SEND_CHEATER("sendCheater"),
+    VOTE_ON_CHEATER("voteOnCheater"),
+    SHOW_VOTING_DIALOG("showVotingDialog"),
+    SEND_VOTES_RESULTS("sendVotesResults"),
+    SEND_BACK_VOTES_RESULTS("sendBackVotesResults"),
+    SEND_UPDATED_SCORES("sendUpdatedScores"),
+    CHEATER_MODE_MATCH_STARTING("CheaterModeMatchStarting"),
+    SEND_VOTING_USERS("sendVotingUsers"),
 }
