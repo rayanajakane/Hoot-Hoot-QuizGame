@@ -195,4 +195,5 @@
     <string name="match_errors_banned_player">Vous avez été banni de cette partie.</string>
     <string name="match_friends_errors_not_friends_with_host">Vous n\'êtes pas ami avec l\'hôte.</string>
     <string name="match_friends_errors_no_friends">Vous n\'avez pas d\'amis.</string>
+    <string name="match_errors_less_than_3_players">Il doit y avoir au moins 3 joueurs dans la partie.</string>
 </resources>

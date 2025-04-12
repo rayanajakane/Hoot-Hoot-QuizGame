@@ -352,7 +352,8 @@
         "no_more_players": "Il n'y a plus de joueurs dans la partie.",
         "locked-room": "La partie est verrouillée.",
         "invalid-code": "Le code est invalide.",
-        "banned-player": "Vous avez été banni de cette partie."
+        "banned-player": "Vous avez été banni de cette partie.",
+        "less_than_3_players": "Il doit y avoir au moins 3 joueurs dans la partie."
     },
     "match-friends-errors": {
         "not_friends_with_host": "Vous n'êtes pas ami avec l'hôte.",

@@ -19,6 +19,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import StringValue
+import android.content.Context
+import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.delay
 
 class ShopViewModel : ViewModel() {
@@ -41,7 +43,7 @@ class ShopViewModel : ViewModel() {
     private val _dataInitialized = MutableStateFlow(false)
     val dataInitialized: StateFlow<Boolean> = _dataInitialized
 
-    suspend fun initialize(authViewModel: AuthViewModel) {
+    suspend fun initialize(authViewModel: AuthViewModel, context: Context) {
         _isLoading.value = true
 
         WallpaperService.initialize(authViewModel)
@@ -49,6 +51,7 @@ class ShopViewModel : ViewModel() {
         ThemeService.loadPurchasedThemes(authViewModel)
 
         moneyService.listenForMoneyEvents(
+            context,
             onAvatarBoughtCallback = { onItemBought(it, authViewModel, "avatar") },
             onThemeBoughtCallback = { onItemBought(it, authViewModel, "theme") },
             onWallpaperBoughtCallback = { onItemBought(it, authViewModel, "wallpaper") }
