@@ -85,7 +85,7 @@ fun QuestionArea(
 
     val hasImage = !question?.pictureUrl.isNullOrEmpty()
 
-    LaunchedEffect  (matchRoomService.isCheaterMode){
+    LaunchedEffect (matchRoomService.isCheaterMode){
         if (matchRoomService.isCheaterMode) {
             if (matchRoomService.username == matchRoomService.cheaterPlayer?.username) {
                 matchContextService.setContext(MatchContext.CHEATERVIEW);
@@ -106,7 +106,6 @@ fun QuestionArea(
                     )
                 }
             }
-            println("QuestionArea$context")
         }
     }
 
@@ -259,7 +258,6 @@ fun QuestionArea(
                         }
 
                         AnswerCorrectness.GOOD -> {
-                            run { println("poinr2t${question?.points}") }
                             stringResource(R.string.good_answer, question?.points ?: 0) to Color(
                                 0xFF4caf50
                             )
@@ -300,7 +298,6 @@ fun QuestionArea(
                         }
 
                         AnswerCorrectness.GOOD -> {
-                            run { println("poinrt${question?.points}") }
                             stringResource(R.string.good_answer, question?.points ?: 0) to Color(
                                 0xFF4caf50
                             )

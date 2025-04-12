@@ -146,7 +146,6 @@ object AnswerService {
 
     fun handleGrading() {
         isGradingComplete = playersAnswers.all { it.score != null }
-        // println("isGradingComplete$isGradingComplete")
     }
 
     fun selectChoice(choice: String, userInfo: UserInfo) {

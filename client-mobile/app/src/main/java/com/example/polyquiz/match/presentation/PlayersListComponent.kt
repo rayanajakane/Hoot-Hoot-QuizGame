@@ -126,17 +126,17 @@ fun PlayerCard(
 
 
                 if (!player.isPlaying) {
-                    Text(
+                   Text(
                         text = player.username,
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onSurface,
-                        style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                        style = TextStyle(textDecoration = TextDecoration.LineThrough),
                     )
                 } else {
                     TruncatedText(
                         text = player.username,
                         fontSize = 16.sp,
-                        maxChars = 10,
+                        maxChars = 5,
                         fontWeight = FontWeight.Normal,
                         modifier = Modifier,
                     )
@@ -185,9 +185,9 @@ fun PlayerCard(
 
 
             }
-            Row(horizontalArrangement = Arrangement.End) {
+            Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth(1f)) {
                 Text(text = "${player.score} pts", fontSize = 14.sp)
-                Spacer(modifier = Modifier.width(20.dp))
+                Spacer(modifier = Modifier.width(15.dp))
                 Text(text = "${player.bonusCount} bonus✨", fontSize = 14.sp)
             }
         }

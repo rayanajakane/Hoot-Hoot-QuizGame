@@ -192,7 +192,6 @@ fun VotingPage(
                     )
                     Text(stringResource(R.string.show_final))
                 }
-
             }
         }
         PlayersListComponent(

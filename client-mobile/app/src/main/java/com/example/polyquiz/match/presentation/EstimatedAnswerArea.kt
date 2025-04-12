@@ -73,10 +73,10 @@ fun EstimatedAnswerArea(
         }
         if (matchContext != MatchContext.HOSTVIEW) {
             Text(
-                text = if (isDisabled) {
+                text = if (isDisabled ) {
                     stringResource(
                         R.string.good_answer_qre,
-                        matchRoomService.currentAnswers[0], estimatedParams!!.margin
+                        answerService.feedback.correctAnswer!![0], estimatedParams!!.margin
                     )
                 } else {
                     stringResource(R.string.choose_estimated, estimatedParams!!.margin)
@@ -140,7 +140,7 @@ fun EstimatedAnswerArea(
 
             if (isOutOfBounds) {
                 Text(
-                    text = stringResource(R.string.out_of_bounds),
+                    text = stringResource(R.string.out_of_bounds, lowerBound.toInt(), upperBound.toInt()),
                     // TODO : Check hardcoded value
                     color = BrightRed,
                     fontSize = 14.sp,
