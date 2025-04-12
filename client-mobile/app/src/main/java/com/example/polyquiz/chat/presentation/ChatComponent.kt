@@ -427,7 +427,7 @@ fun ReactionsRow(
         modifier = Modifier.padding(top = 1.dp),
         horizontalArrangement = Arrangement.Absolute.Left,
     ) {
-        ReactionButton("👍", message.userLikes.size, users = message.userLikes) {
+        ReactionButton("👍", message.userLikes.size, users = message.userLikes, username = username) {
             ChatService.reactToMessage(
                 message.id,
                 ChatEmoji.LIKE,
@@ -436,7 +436,7 @@ fun ReactionsRow(
                 if (roomCode.isNullOrEmpty()) null else roomCode
             )
         }
-        ReactionButton("❤️", message.userLoves.size, users = message.userLoves) {
+        ReactionButton("❤️", message.userLoves.size, users = message.userLoves, username = username) {
             ChatService.reactToMessage(
                 message.id,
                 ChatEmoji.LOVE,
@@ -445,7 +445,7 @@ fun ReactionsRow(
                 if (roomCode.isNullOrEmpty()) null else roomCode
             )
         }
-        ReactionButton("👎", message.userDislikes.size, users = message.userDislikes) {
+        ReactionButton("👎", message.userDislikes.size, users = message.userDislikes, username = username) {
             ChatService.reactToMessage(
                 message.id,
                 ChatEmoji.DISLIKE,
@@ -458,14 +458,15 @@ fun ReactionsRow(
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReactionButton(emoji: String, count: Int, users: List<UserIdName>, onClick: () -> Unit) {
+fun ReactionButton(emoji: String, count: Int, users: List<UserIdName>, username: String, onClick: () -> Unit) {
     var isClicked by remember { mutableStateOf(false) }
     val interactionSource = remember { MutableInteractionSource() }
     val viewConfig = LocalViewConfiguration.current
-
     var usernameList = users.map { it.name }
+    var isClicked by remember { mutableStateOf(usernameList.contains(username)) }
     LaunchedEffect(users) {
         usernameList = users.map { it.name }
+        isClicked = usernameList.contains(username)
     }
 
     LaunchedEffect(interactionSource) {
@@ -477,13 +478,10 @@ fun ReactionButton(emoji: String, count: Int, users: List<UserIdName>, onClick: 
                     isLongClick = false
                     delay(viewConfig.longPressTimeoutMillis)
                     isLongClick = true
-                    // TODO users name list
                 }
 
                 is PressInteraction.Release -> {
                     if (!isLongClick) {
-                        // TODO
-                        Log.d("Emoji", "Not long click")
                         isClicked = !isClicked
                         onClick()
                     }
