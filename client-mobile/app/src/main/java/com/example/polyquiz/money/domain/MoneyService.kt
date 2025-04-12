@@ -96,15 +96,11 @@ class MoneyService() {
     private fun handleError(context: Context) {
         mSocket.on(MoneyEvents.ERROR.value) { args: Array<Any> ->
             if (args.isNotEmpty()) {
-                println("Error: ${args[0]}")
-
                 val errors: List<String> = try {
                     Gson().fromJson(args[0].toString(), Array<String>::class.java).toList()
                 } catch (e: Exception) {
                     listOf(args[0].toString())
                 }
-
-                println("Errorsito: $errors")
 
                 val displayText = errors.joinToString(separator = "\n") { errorKey: String ->
                     val cleanKey = errorKey.trim()
