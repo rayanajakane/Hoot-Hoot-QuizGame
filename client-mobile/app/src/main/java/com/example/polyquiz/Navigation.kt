@@ -2,7 +2,6 @@ package com.example.polyquiz
 
 import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -296,7 +295,19 @@ fun Navigation(
                 currentUserID = authViewModel.getUserId(),
                 shopViewModel = shopViewModel,
                 authViewModel = authViewModel,
-                navigateToHome = { navController.navigate(Route.Home) }
+                navigateToHome = { navController.navigate(Route.Home) },
+                navigateToCreate = {
+                    navController.navigate(Route.MatchCreation)
+                },
+                navigateToUserEdit = {
+                    navController.navigate(Route.UserEditPage)
+                },
+                navigateToFriendsPage = {
+                    navController.navigate(Route.FriendsSearchScreen)
+                },
+                navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
+                navigateToRankingsPage = { navController.navigate(Route.RankingsPage) },
+                navigateToShopPage = { navController.navigate(Route.ShopPage) }
             )
         }
         composable<Route.MainCameraScreen> {

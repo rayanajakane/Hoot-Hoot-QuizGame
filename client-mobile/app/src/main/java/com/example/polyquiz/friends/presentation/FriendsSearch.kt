@@ -1,53 +1,51 @@
 package com.example.polyquiz.friends.presentation
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalanceWallet
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.auth.domain.UserIdName
 import com.example.polyquiz.chat.presentation.ChatComponent
-import com.example.polyquiz.constants.FriendsDisplayText
 import com.example.polyquiz.friends.domain.FriendsService
 import com.example.polyquiz.shop.domain.ShopViewModel
+import com.example.polyquiz.shop.presentation.BalanceCard
+import com.example.polyquiz.ui.MenuButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FriendsSearchScreen(
-    currentUserID: String,
-    shopViewModel: ShopViewModel,
+    navigateToHome: () -> Unit,
+    navigateToCreate: () -> Unit,
+    navigateToUserEdit: () -> Unit,
+    navigateToFriendsPage: () -> Unit,
+    navigateToJoinRoom: () -> Unit,
     authViewModel: AuthViewModel,
-    navigateToHome: () -> Unit
+    shopViewModel: ShopViewModel,
+    navigateToRankingsPage: () -> Unit,
+    navigateToShopPage: () -> Unit,
+    currentUserID: String,
 ) {
     val friendsService = remember { FriendsService() }
     var searchQuery by remember { mutableStateOf("") }
+    val currentBalance by shopViewModel.currentBalance.collectAsState()
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(currentUserID) {
@@ -113,120 +111,126 @@ fun FriendsSearchScreen(
     }
     Row {
         ChatComponent(modifier = Modifier, authViewModel = authViewModel)
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text(text = FriendsDisplayText.SEARCH_FRIENDS.value) },
-                    navigationIcon = {
-                        IconButton(onClick = navigateToHome) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Retourner à la page d'accueil"
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .fillMaxSize()
+                .imePadding()
+        ) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .imePadding()
+                    .statusBarsPadding()
+            ) {
+                MenuButton(
+                    modifier = Modifier,
+                    navigateToHome,
+                    navigateToCreate,
+                    navigateToUserEdit,
+                    navigateToFriendsPage,
+                    navigateToJoinRoom,
+                    navigateToRankingsPage,
+                    navigateToShopPage,
+                    signOut = { authViewModel.signOut() }
+                )
+                BalanceCard(currentBalance)
+            }
+            Column(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                Text(stringResource(R.string.friends))
+                Spacer(modifier = Modifier.height(32.dp))
+                LazyColumn {
+                    if (pendingRequests.isNotEmpty()) {
+                        item {
+                            PendingRequestsCard(pendingRequests, scope, friendsService)
+                        }
+                    }
+
+                    if (sentRequests.isNotEmpty()) {
+                        item {
+                            SentRequestsCard(sentRequests, scope, friendsService)
+                        }
+                    }
+                    if (friends.isNotEmpty()) {
+                        item {
+                            ElevatedCard() {
+                                Text(
+                                    text = stringResource(R.string.my_friends),
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 22.sp,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(16.dp)
+                                )
+                                friends.forEach { friend ->
+                                    FriendsListItem(
+                                        modifier = Modifier.padding(16.dp),
+                                        user = friend,
+                                        isFriend = true,
+                                        isRequestPending = false,
+                                        isRequestSent = false,
+                                        isEligible = false,
+                                        onSendRequest = { },
+                                        onCancelRequest = { },
+                                        onAcceptRequest = { },
+                                        onRejectRequest = { },
+                                        onRemoveFriend = { id ->
+                                            scope.launch {
+                                                friendsService.removeFriend(
+                                                    id
+                                                )
+                                            }
+                                        },
+                                        onDonate = { friendId ->
+                                            selectedFriendId = friendId
+                                            showDonationDialog = true
+                                        }
+                                    )
+                                }
+                            }
+                        }
+
+                    }
+
+                    item {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = stringResource(R.string.search_friend),
+                                style = MaterialTheme.typography.headlineSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+
+                            OutlinedTextField(
+                                value = searchQuery,
+                                onValueChange = { searchQuery = it },
+                                label = { Text(text = stringResource(R.string.search)) },
+                                modifier = Modifier.fillMaxWidth(0.60f)
                             )
                         }
                     }
-                )
-            },
-            content = { paddingValues ->
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                        .padding(16.dp)
-                ) {
-                    val currentBalance by shopViewModel.currentBalance.collectAsState()
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 16.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.AccountBalanceWallet,
-                            contentDescription = "Wallet",
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(32.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "Balance: $currentBalance",
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
+                    if (searchResults.isNotEmpty()) {
+                        item {
+                            SearchResultsCard(
+                                searchResults = searchResults,
+                                friends = friends,
+                                pendingRequests = pendingRequests,
+                                sentRequests = sentRequests,
+                                scope = scope,
+                                friendsService = friendsService
+                            )
+                        }
+
                     }
-
-                    OutlinedTextField(
-                        value = searchQuery,
-                        onValueChange = { searchQuery = it },
-                        label = { Text(text = FriendsDisplayText.SEARCH_FRIENDS_PLACEHOLDER.value) },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    LazyColumn {
-                        if (pendingRequests.isNotEmpty()) {
-                            item {
-                                PendingRequestsCard(pendingRequests, scope, friendsService)
-                            }
-                        }
-
-                        if (sentRequests.isNotEmpty()) {
-                            item {
-                                SentRequestsCard(sentRequests, scope, friendsService)
-                            }
-                        }
-                        if (friends.isNotEmpty()) {
-                            item {
-                                ElevatedCard() {
-                                    Text(stringResource(R.string.my_friends))
-                                    friends.forEach { friend ->
-                                        FriendsListItem(
-                                            user = friend,
-                                            isFriend = true,
-                                            isRequestPending = false,
-                                            isRequestSent = false,
-                                            isEligible = false,
-                                            onSendRequest = { },
-                                            onCancelRequest = { },
-                                            onAcceptRequest = { },
-                                            onRejectRequest = { },
-                                            onRemoveFriend = { id ->
-                                                scope.launch {
-                                                    friendsService.removeFriend(
-                                                        id
-                                                    )
-                                                }
-                                            },
-                                            onDonate = { friendId ->
-                                                selectedFriendId = friendId
-                                                showDonationDialog = true
-                                            }
-                                        )
-                                    }
-                                }
-                            }
-
-                        }
-
-                        if (searchResults.isNotEmpty()) {
-                            item {
-                                SearchResultsCard(
-                                    searchResults = searchResults,
-                                    friends = friends,
-                                    pendingRequests = pendingRequests,
-                                    sentRequests = sentRequests,
-                                    scope = scope,
-                                    friendsService = friendsService
-                                )
-                            }
-
-                        }
-                    }
-
-
                 }
+
+
             }
-        )
+        }
     }
 
 }

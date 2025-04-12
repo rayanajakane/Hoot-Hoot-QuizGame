@@ -141,7 +141,6 @@ fun HomePage(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxSize()
-                // TODO : Top and right padding
                 .imePadding()
         ) {
             Column(

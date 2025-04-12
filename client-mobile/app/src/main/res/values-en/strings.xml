@@ -185,4 +185,6 @@
     <string name="search_results">Search Results</string>
     <string name="game_author">Author</string>
     <string name="search_games">Search Games</string>
+    <string name="search_friend">🔍 Search Friend</string>
+    <string name="search">Search</string>
 </resources>

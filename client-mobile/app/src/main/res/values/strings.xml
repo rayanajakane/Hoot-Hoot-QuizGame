@@ -183,6 +183,8 @@
     <string name="friend_requests_received">Demandes d\'amis reçues</string>
     <string name="my_friends">Mes amis</string>
     <string name="search_results">Résultats de la recherche</string>
+    <string name="search_friend">🔍 Rechercher un ami</string>
+    <string name="search">Rechercher</string>
     <string name="panic_mode_activated">❗ MODE PANIQUE ACTIVÉ! ❗</string>
     <string name="timer_paused">Minutrie suspendue</string>
     <string name="timer_start">Minutrie partie</string>
