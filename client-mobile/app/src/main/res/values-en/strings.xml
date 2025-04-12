@@ -178,4 +178,7 @@
     <string name="cheater_mode_players_info"> To play in this mode: the game should not contain a question of type long answer, and must contain at least three players</string>
     <string name="switch_camera">Switch Camera</string>
     <string name="game_author">"Author: "</string>
+    <string name="classic_mode">Classic</string>
+    <string name="cheater_mode_label">Cheater</string>
+    <string name="game_mode">Game Mode</string>
 </resources>

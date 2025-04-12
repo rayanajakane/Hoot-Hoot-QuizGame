@@ -1,26 +1,31 @@
 package com.example.polyquiz.match.presentation
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.Color
 import com.example.polyquiz.R
-import com.example.polyquiz.constants.SIZE_CONSTANTS
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.PartyConfig
 
@@ -46,16 +51,78 @@ fun PartyConfigDialog(
                     contentDescription = null
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = stringResource(R.string.match_config))
+                Text(text = stringResource(id = R.string.match_config))
             }
         },
         text = {
             Column(modifier = Modifier.fillMaxWidth()) {
+                Text(text = stringResource(id = R.string.game_mode), color = Color.Gray)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(
+                        onClick = { partyConfig = partyConfig.copy(isCheaterMode = false) },
+                        shape = RoundedCornerShape(3.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (!partyConfig.isCheaterMode)
+                                MaterialTheme.colorScheme.secondary
+                            else
+                                MaterialTheme.colorScheme.tertiary,
+                            contentColor = if (!partyConfig.isCheaterMode)
+                                MaterialTheme.colorScheme.onSecondary
+                            else
+                                MaterialTheme.colorScheme.onTertiary,
+                        )
+                    ) {
+                        Text(text = stringResource(id = R.string.classic_mode))
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    if (MatchRoomService.canPlayCheaterMode) {
+                        Button(
+                            onClick = { partyConfig = partyConfig.copy(isCheaterMode = true) },
+                            shape = RoundedCornerShape(3.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (partyConfig.isCheaterMode)
+                                    MaterialTheme.colorScheme.secondary
+                                else
+                                    MaterialTheme.colorScheme.tertiary,
+                                contentColor = if (partyConfig.isCheaterMode)
+                                    MaterialTheme.colorScheme.onSecondary
+                                else
+                                    MaterialTheme.colorScheme.onTertiary,
+                            )
+                        ) {
+                            Text(text = stringResource(id = R.string.cheater_mode_label))
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        IconButton(
+                            onClick = { showInfoCheaterMode = !showInfoCheaterMode },
+                            modifier = Modifier.size(30.dp)
+                        ) {
+                            Icon(imageVector = Icons.Default.Info, contentDescription = null)
+                        }
+                    }
+                }
+                if (showInfoCheaterMode) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = stringResource(id = R.string.cheater_mode_players_info),
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+                }
+                MatchRoomService.isCheaterMode = partyConfig.isCheaterMode
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = stringResource(R.string.between_friends))
+                    Text(text = stringResource(id = R.string.between_friends))
                     Spacer(modifier = Modifier.weight(1f))
                     Switch(
                         checked = partyConfig.isFriendsOnly,
@@ -64,23 +131,21 @@ fun PartyConfigDialog(
                 }
                 if (partyConfig.isFriendsOnly) {
                     Text(
-                        text = stringResource(R.string.only_friends),
+                        text = stringResource(id = R.string.only_friends),
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(start = 16.dp)
                     )
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = stringResource(R.string.with_fee))
+                    Text(text = stringResource(id = R.string.with_fee))
                     Spacer(modifier = Modifier.weight(1f))
                     Switch(
                         checked = partyConfig.isEntryFeeRequired,
-                        onCheckedChange = {
-                            partyConfig = partyConfig.copy(isEntryFeeRequired = it)
-                        }
+                        onCheckedChange = { partyConfig = partyConfig.copy(isEntryFeeRequired = it) }
                     )
                 }
                 if (partyConfig.isEntryFeeRequired) {
@@ -88,72 +153,32 @@ fun PartyConfigDialog(
                     OutlinedTextField(
                         value = feeText,
                         onValueChange = { feeText = it },
-                        label = { Text(stringResource(R.string.entry_fee)) },
+                        label = { Text(stringResource(id = R.string.entry_fee)) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                     )
                     Text(
-                        text = stringResource(R.string.entry_fee_message),
+                        text = stringResource(id = R.string.entry_fee_message),
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(top = 4.dp)
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                if (MatchRoomService.canPlayCheaterMode) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text(text = stringResource(R.string.cheater_mode))
-
-                        IconButton(
-                            onClick = { showInfoCheaterMode = !showInfoCheaterMode },
-                            modifier = Modifier.size(30.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Info,
-                                contentDescription = null
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.weight(1f))
-                        Switch(
-                            checked = partyConfig.isCheaterMode,
-                            onCheckedChange = {
-                                partyConfig = partyConfig.copy(isCheaterMode = it)
-                            },
-                        )
-                    }
-
-                    if (showInfoCheaterMode) {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = stringResource(R.string.cheater_mode_players_info),
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.padding(start = 16.dp)
-                        )
-                    }
-
-                    MatchRoomService.isCheaterMode = partyConfig.isCheaterMode
-
-                }
             }
         },
         confirmButton = {
             Button(
-                onClick = {
-                    onConfirm(partyConfig.copy(entryFeeAmount = feeValue))
-                },
+                onClick = { onConfirm(partyConfig.copy(entryFeeAmount = feeValue)) },
                 enabled = isValid,
                 shape = RoundedCornerShape(3.dp)
             ) {
-                Text(text = stringResource(R.string.confirm))
+                Text(text = stringResource(id = R.string.confirm))
             }
         },
         dismissButton = {
             TextButton(onClick = onCancel) {
-                Text(text = stringResource(R.string.cancel))
+                Text(text = stringResource(id = R.string.cancel))
             }
         }
     )

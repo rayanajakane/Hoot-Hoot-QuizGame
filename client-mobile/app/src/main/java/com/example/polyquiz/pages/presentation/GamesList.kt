@@ -398,23 +398,23 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
 
 
                     Column() {
-                        Button(
-                            onClick = {
-                                createMatch(MatchContext.HOSTVIEW)
-                            },
-                            shape = RoundedCornerShape(5.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                contentColor = MaterialTheme.colorScheme.onPrimary
-                            ),
-                            modifier = Modifier
-                                .padding(10.dp)
-                                .width(160.dp)
-                                .height(60.dp)
-                        ) {
-                            Text(text = stringResource(R.string.play))
-
-                        }
+//                        Button(
+//                            onClick = {
+//                                createMatch(MatchContext.HOSTVIEW)
+//                            },
+//                            shape = RoundedCornerShape(5.dp),
+//                            colors = ButtonDefaults.buttonColors(
+//                                containerColor = MaterialTheme.colorScheme.primary,
+//                                contentColor = MaterialTheme.colorScheme.onPrimary
+//                            ),
+//                            modifier = Modifier
+//                                .padding(10.dp)
+//                                .width(160.dp)
+//                                .height(60.dp)
+//                        ) {
+//                            Text(text = stringResource(R.string.play))
+//
+//                        }
                         Button(
                             onClick = {
                                 canStartCheaterMode(selectedGame!!.questions!!);
@@ -428,16 +428,17 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                             modifier = Modifier
                                 .padding(start = 10.dp, end = 15.dp)
 
-                        ) {
+                        )
+                        {
                             Row(modifier = Modifier.fillMaxWidth()) {
-                                Icon(
-                                    Icons.Filled.Settings,
-                                    contentDescription = stringResource(R.string.custom_match),
-                                    modifier = Modifier
-                                        .offset(x = -18.dp, y = 5.dp),
-                                )
+//                                Icon(
+//                                    Icons.Filled.Settings,
+//                                    contentDescription = stringResource(R.string.play),
+//                                    modifier = Modifier
+//                                        .offset(x = -18.dp, y = 5.dp),
+//                                )
                                 Text(
-                                    text = stringResource(R.string.custom_match),
+                                    text = stringResource(R.string.play),
                                     textAlign = TextAlign.Center,
                                 )
                             }
