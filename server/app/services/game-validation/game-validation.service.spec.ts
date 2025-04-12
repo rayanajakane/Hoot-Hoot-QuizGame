@@ -218,8 +218,8 @@ describe('GameValidationService', () => {
 
         const foundErrors = service.findGameErrors(invalidQuestionsGame);
 
-        const firstQuestionErrorMessage = 'La question 1 est invalide:';
-        const secondQuestionErrorMessage = 'La question 2 est invalide:';
+        const firstQuestionErrorMessage = '❌ Question 1 : ';
+        const secondQuestionErrorMessage = '❌ Question 2 : ';
 
         expect(foundErrors).toEqual([firstQuestionErrorMessage, ERROR_EMPTY_QUESTION, secondQuestionErrorMessage, ERROR_EMPTY_QUESTION]);
         expect(spyValidateQuestion).toHaveBeenCalledTimes(invalidQuestionsGame.questions.length);
@@ -238,8 +238,8 @@ describe('GameValidationService', () => {
 
         const foundErrors = service.findGameErrors(invalidQuestionsGame);
 
-        const firstQuestionErrorMessage = 'La question 1 est invalide:';
-        const secondQuestionErrorMessage = 'La question 2 est invalide:';
+        const firstQuestionErrorMessage = '❌ Question 1 : ';
+        const secondQuestionErrorMessage = '❌ Question 2 : ';
 
         expect(foundErrors).toEqual([firstQuestionErrorMessage, ERROR_EMPTY_QUESTION, secondQuestionErrorMessage, ERROR_EMPTY_QUESTION]);
         expect(spyValidateQuestion).toHaveBeenCalledTimes(invalidQuestionsGame.questions.length);

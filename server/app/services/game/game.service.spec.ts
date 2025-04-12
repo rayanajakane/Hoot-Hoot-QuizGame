@@ -173,7 +173,7 @@ describe('GameService', () => {
         const spyDateVisibility = jest.spyOn(gameCreationService, 'updateDateAndVisibility').mockReturnValue(mockGame);
         const spyGenerateId = jest.spyOn(gameCreationService, 'generateId').mockReturnValue(mockGame);
         await service.addGame({ ...mockGame }).catch((error) => {
-            expect(error).toBe(`${ERROR_DEFAULT} ${ERROR_WRONG_FORMAT}`);
+            expect(error).toBe(`${ERROR_DEFAULT}\n${ERROR_WRONG_FORMAT}`);
         });
         expect(spyGet).toHaveBeenCalledWith(mockGame.title);
         expect(spyGenerateId).toHaveBeenCalledWith(mockGame);
@@ -210,7 +210,7 @@ describe('GameService', () => {
         const mockVisibleGame = new Game();
         const spyGet = jest.spyOn(service, 'getGameById').mockRejectedValue('');
         await service.toggleGameVisibility(mockVisibleGame.id).catch((error) => {
-            expect(error).toBe(`${ERROR_DEFAULT} `);
+            expect(error).toBe(`${ERROR_DEFAULT}\n`);
         });
         expect(spyGet).toHaveBeenCalledWith(mockVisibleGame.id);
     });
@@ -258,7 +258,7 @@ describe('GameService', () => {
         const spyModel = jest.spyOn(gameModel, 'findOneAndUpdate').mockRejectedValue('');
         const generateIds = jest.spyOn(gameCreationService, 'generateMissingQuestionIds').mockReturnValue(mockGame);
         await service.upsertGame(mockGame).catch((error) => {
-            expect(error).toBe(`${ERROR_DEFAULT} `);
+            expect(error).toBe(`${ERROR_DEFAULT}\n`);
         });
         expect(spyValidate).toHaveBeenCalledWith(mockGame);
         expect(spyDateVisibility).toHaveBeenCalledWith(mockGame);
@@ -278,7 +278,7 @@ describe('GameService', () => {
         const mockGame = new Game();
         const spyGet = jest.spyOn(service, 'getGameById').mockRejectedValue('');
         await service.deleteGame(mockGame.id).catch((error) => {
-            expect(error).toBe(`${ERROR_DEFAULT} `);
+            expect(error).toBe(`${ERROR_DEFAULT}\n`);
         });
         expect(spyGet).toHaveBeenCalledWith(mockGame.id);
     });
@@ -287,7 +287,7 @@ describe('GameService', () => {
         const spyGet = jest.spyOn(service, 'getGameById').mockResolvedValue(mockGame);
         const spyDelete = jest.spyOn(gameModel, 'deleteOne').mockRejectedValue('');
         await service.deleteGame(mockGame.id).catch((error) => {
-            expect(error).toBe(`${ERROR_DEFAULT} `);
+            expect(error).toBe(`${ERROR_DEFAULT}\n`);
         });
         expect(spyGet).toHaveBeenCalledWith(mockGame.id);
         expect(spyDelete).toHaveBeenCalledWith({ id: mockGame.id });
