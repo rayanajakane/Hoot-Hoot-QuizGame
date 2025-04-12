@@ -53,4 +53,7 @@ object Route {
 
     @Serializable
     object ShopPage
+
+    @Serializable
+    object VotingPage
 }

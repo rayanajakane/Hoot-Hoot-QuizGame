@@ -270,7 +270,8 @@ export class MatchRoomService {
     onUsersWhoVoted() {
         this.socketService.on(MatchEvents.SendVotingUsers, (user: string) => {
             this.userVoted = user;
-            this.votingUsers.push(user);
+            user = user.toString().replace(/['"]+/g, '');
+            this.votingUsers.push(user.toString());
         });
     }
     onVotingResults() {
@@ -299,6 +300,7 @@ export class MatchRoomService {
     onFetchPlayersData() {
         this.socketService.on(MatchEvents.FetchPlayersData, (res: string) => {
             this.players = JSON.parse(res);
+            console.log(this.players);
         });
     }
 

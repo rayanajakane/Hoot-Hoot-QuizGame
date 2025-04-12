@@ -5,5 +5,6 @@ enum class MatchContext(val value: String) {
     HOSTVIEW("hostView"),
     PLAYERVIEW("playerView"),
     RANDOMMODE("randomMode"),
+    CHEATERVIEW("cheaterView"),
     Null("0")
 }

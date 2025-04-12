@@ -1,4 +1,5 @@
 package com.example.polyquiz.match.domain
+
 import StringValue
 import android.annotation.SuppressLint
 import com.example.polyquiz.constants.MatchContext
@@ -12,15 +13,27 @@ import org.json.JSONObject
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.example.polyquiz.R
 import com.example.polyquiz.chat.domain.ChatService
+import com.example.polyquiz.constants.AnswerEvents
 import com.example.polyquiz.constants.ChatEvents
+import com.example.polyquiz.constants.LongAnswerInfo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import com.example.polyquiz.constants.Route
+import com.example.polyquiz.constants.VotingData
+import com.example.polyquiz.pages.presentation.VotingPage
 import com.example.polyquiz.elo.domain.EloService
+import com.example.polyquiz.match.domain.AnswerService.gradeAnswers
+import com.example.polyquiz.match.domain.AnswerService.playersAnswers
+import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.flow.asStateFlow
+import org.json.JSONArray
+import org.json.JSONException
+import java.util.Arrays
 
 @SuppressLint("StaticFieldLeak")
 object MatchRoomService {
@@ -36,9 +49,11 @@ object MatchRoomService {
     var isTimeToNavigateToResults by mutableStateOf(false)
     var hasBeenKickedOut by mutableStateOf(false)
     var isLocked by mutableStateOf(false)
+    var canPlayCheaterMode by mutableStateOf(false)
     var gameTitle: String = ""
     var gameDuration: Int = 0
-    var partyConfig by mutableStateOf(PartyConfig(false, false))
+    var currentAnswers: MutableList<String> = mutableListOf()
+    var partyConfig by mutableStateOf(PartyConfig(false, false, 0, false, false))
     var currentQuestion by mutableStateOf<Question?>(null)
     var isHostPlaying by mutableStateOf(true)
     var isCooldown by mutableStateOf(false)
@@ -47,16 +62,29 @@ object MatchRoomService {
     var userId by mutableStateOf("")
     var hostId by mutableStateOf("")
     var errorMsg by mutableStateOf("")
+    var navigateToVotingPage by mutableStateOf(false)
+    var votingUsers = MutableStateFlow<List<String>>(emptyList())
+    var playerVoted  by mutableStateOf(false)
 
-//    private var matchRoomCode: String = ""
+    var userVoted by mutableStateOf("")
+    var votesResults = mutableMapOf<String, Int>()
+    var startedVote = false
+
+    var cheaterPlayer by mutableStateOf(
+        Player(
+            "", "", "", 0, 0,
+            false, false, ""
+        )
+    )
+
+    var isCheaterMode by mutableStateOf(false)
+    var votesData by mutableStateOf(VotingData("", 0, mutableListOf("")))
+    var totalVotes: MutableList<VotingData> = mutableListOf()
     private var hasEnteredRoom = false
-
     private val _matchRoomCode = MutableStateFlow("")
     val matchRoomCode: StateFlow<String> get() = _matchRoomCode
 
-     val socket = SocketHandler.getSocket()
-
-    val mSocket = SocketHandler.getSocket()
+    val socket = SocketHandler.getSocket()
 
     val socketId: String
         get() = socket.id() ?: ""
@@ -77,9 +105,13 @@ object MatchRoomService {
             onHostQuit()
             onPlayerKick()
             handleError()
-//            onPlayerChatStateToggle()
+            onMatchCheaterModeStarted()
+            onVoting()
+            onVotingResults()
+            onSelectedCheater()
+            onCurrentAnswers()
+            onUsersWhoVoted()
             onRouteToResultsPage()
-//            timeToGoToWaitPage = true
         }
     }
 
@@ -96,22 +128,141 @@ object MatchRoomService {
         socket.off(MatchEvents.ROUTE_TO_RESULTS_PAGE.value)
         socket.off(ChatEvents.NEW_MESSAGE.value)
         socket.off(ChatEvents.SENT_ROOM_EMOJI.value)
+        socket.off(MatchEvents.SEND_BACK_VOTES_RESULTS.value)
+        socket.off(MatchEvents.CURRENT_ANSWERS.value)
+        socket.off(MatchEvents.CHEATER_MODE_MATCH_STARTING.value)
+        socket.off(MatchEvents.SHOW_VOTING_DIALOG.value)
+        socket.off(MatchEvents.SEND_VOTING_USERS.value)
+        socket.off(AnswerEvents.END_GAME.value)
         ChatService.deleteRoomMessages()
         socket.emit(MatchEvents.DISCONNECT.value)
         MatchContextService.resetContext()
-        hostId=""
+        hostId = ""
         timeToGoToWaitPage = false
         hasBeenKickedOut = true
+        navigateToVotingPage = false
+        isCheaterMode = false
         resetMatchValues()
-        Log.d("Disconnect from room WaitPage","Called disconnectFromRoom, hostId=$hostId" )
-        isTimeToNavigateToResults= false
+        Log.d("Disconnect from room WaitPage", "Called disconnectFromRoom, hostId=$hostId")
+        isTimeToNavigateToResults = false
     }
 
-    fun createRoom(gameId: String, hostId: String, hostUsername: String, isClassicMode: Boolean = true, partyConfigs: PartyConfig = PartyConfig(false, false)) {
+    fun sendBackVotesResult(voteData: JSONObject) {
+        socket.emit(MatchEvents.SEND_VOTES_RESULTS.value, voteData)
+    }
+
+    fun onUsersWhoVoted() {
+        socket.on(MatchEvents.SEND_VOTING_USERS.value) { args ->
+            if (args.isNotEmpty()) {
+                val firstArg = args[0]
+                if (firstArg is JSONArray) {
+                    if (firstArg.length() > 0) {
+                        val user = firstArg.getString(0)
+                        userVoted = user
+                    } else {
+                        Log.d("onUsersWhoVoted","JSONArray object is empty.")
+                    }
+                }
+            }
+        }
+    }
+
+
+    fun startMatchCheaterMode() {
+        isCheaterMode = true;
+        isMatchStarted = true;
+        socket.emit(MatchEvents.START_MATCH_CHEATER_MODE.value, matchRoomCode.value)
+
+    }
+
+    fun onSelectedCheater() {
+        socket.on(MatchEvents.SEND_CHEATER.value) { args ->
+            if (args.isNotEmpty()) {
+                val jsonString = (args[0] as? JSONObject)?.toString() ?: ""
+                val jsonObject = JSONObject(jsonString)
+                val playerName = jsonObject.optString("player")
+                val player = getPlayerByUsername(playerName);
+                cheaterPlayer = player!!;
+            }
+        }
+    }
+
+    fun onMatchCheaterModeStarted() {
+        socket.on(MatchEvents.CHEATER_MODE_MATCH_STARTING.value) { args ->
+            isCheaterMode = true;
+            if (args.isNotEmpty()) {
+                val data = args[0] as JSONObject
+                if (data.optBoolean("start", false)) {
+                    isMatchStarted = true
+                }
+                if (data.has("gameTitle")) {
+                    gameTitle = data.getString("gameTitle")
+                }
+            }
+        }
+    }
+
+    fun onVoting() {
+        socket.on(MatchEvents.SHOW_VOTING_DIALOG.value) {
+            navigateToVotingPage = true
+        }
+    }
+
+
+    fun voteOnCheater() {
+        socket.emit(MatchEvents.VOTE_ON_CHEATER.value, matchRoomCode.value)
+    }
+
+    fun onCurrentAnswers() {
+        socket.on(MatchEvents.CURRENT_ANSWERS.value) { args ->
+            if (userId == hostId || userId == cheaterPlayer?.id) {
+                if (args.isNotEmpty() && args[0] != null) {
+                    currentAnswers = Gson().fromJson(
+                        args[0].toString(),
+                        object : TypeToken<List<String>>() {}.type
+                    )
+                }
+            }
+        }
+    }
+
+    fun onVotingResults() {
+        socket.on(MatchEvents.SEND_BACK_VOTES_RESULTS.value) { args ->
+            if (args.isNotEmpty()) {
+                val data = args[0] as JSONObject
+                val gson = Gson()
+                val votingData = gson.fromJson(data.toString(), VotingData::class.java)
+                votesData = votingData
+                totalVotes.add(votingData)
+
+                val votesMap = mutableMapOf<String, Int>()
+                val iterator = data.keys()
+                while (iterator.hasNext()) {
+                    val key = iterator.next()
+                    val value = data.opt(key.toString())
+                    if (value is Int) {
+                        votesMap[key.toString()] = value
+                    } else {
+                        votesMap[key.toString()] = 0
+                    }
+                }
+                votesResults = votesMap
+            }
+        }
+    }
+
+    fun createRoom(
+        gameId: String,
+        hostId: String,
+        hostUsername: String,
+        isClassicMode: Boolean = true,
+        partyConfigs: PartyConfig = PartyConfig(false, false, isCheaterMode = false)
+    ) {
         val partyConfisObject = JSONObject().apply {
             put("isFriendsOnly", partyConfigs.isFriendsOnly)
             put("isEntryFeeRequired", partyConfigs.isEntryFeeRequired)
             put("entryFeeAmount", partyConfigs.entryFeeAmount)
+            put("isCheaterMode", partyConfigs.isCheaterMode)
         }
         val data = JSONObject().apply {
             put("gameId", gameId)
@@ -137,7 +288,11 @@ object MatchRoomService {
     fun getPlayerByUsername(username: String): Player? =
         players.find { it.username == username }
 
-    fun joinRoom(roomCode: String, username: String, userId:String) {
+    fun sendPlayersData(roomCode: String) {
+        socket.emit(MatchEvents.SEND_PLAYERS_DATA.value, roomCode)
+    }
+
+    fun joinRoom(roomCode: String, username: String, userId: String) {
         Log.d("Join room", "Hostid : $hostId")
         val sentInfo = JSONObject().apply {
             put("roomCode", roomCode)
@@ -158,10 +313,6 @@ object MatchRoomService {
         })
     }
 
-
-    fun sendPlayersData(roomCode: String) {
-        socket.emit(MatchEvents.SEND_PLAYERS_DATA.value, roomCode)
-    }
 
     fun banUsername(userId: String) {
         if (this.userId == this.hostId) {
@@ -280,6 +431,14 @@ object MatchRoomService {
         isWaitOver = false
         isPlaying = false
         isCooldown = false
+        votingUsers = MutableStateFlow(emptyList())
+        userVoted = ""
+        votesResults = mutableMapOf<String, Int>()
+        startedVote = false
+        if (cheaterPlayer.username != "") {
+            cheaterPlayer = Player("", "", "", 0, 0, false, false, "")
+        }
+        playerVoted = false
     }
 
     fun routeToResultsPage() {
@@ -291,7 +450,6 @@ object MatchRoomService {
             println("Navigating to results page")
             isResults = true
             isTimeToNavigateToResults = true
-            //navigateToResultsPage()
         }
     }
 
