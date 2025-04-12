@@ -493,14 +493,18 @@ fun ReactionButton(emoji: String, count: Int, users: List<UserIdName>, onClick: 
     }
 
     TooltipBox(
-        tooltip = { PlainTooltip { Text(usernameList.joinToString()) } },
+        tooltip = { PlainTooltip {
+            if(usernameList.isEmpty()) {
+                Text(stringResource(R.string.no_reaction))
+            } else {
+                Text(usernameList.joinToString())
+            }
+        } },
         positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
         state = rememberTooltipState()
     ) {
         Button(
             onClick = {
-//            isClicked = !isClicked
-//            onClick()
             },
             interactionSource = interactionSource,
             colors = ButtonDefaults.buttonColors(
