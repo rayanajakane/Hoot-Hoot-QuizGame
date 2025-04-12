@@ -122,12 +122,13 @@ export class GameModificationService {
                 this.router.navigate(['/admin/games/']);
             },
             // TODO : test this line pl0x
-            error: (error: HttpErrorResponse) =>
+            error: (error: HttpErrorResponse) => {
                 this.notificationService.displayErrorMessage(
                     this.state === ManagementState.GameModify
-                        ? translate('game-modification.modification-error')
+                        ? translate('game-modification.modification-error') + `\n ${error.message}`
                         : translate('game-modification.creation-error') + `\n ${error.message}`,
-                ),
+                );
+            },
         });
     }
 
@@ -148,7 +149,7 @@ export class GameModificationService {
                 error: (error: HttpErrorResponse) =>
                     this.notificationService.displayErrorMessage(
                         this.state === ManagementState.GameModify
-                            ? translate('game-modification.modification-error')
+                            ? translate('game-modification.modification-error') + `\n ${error.message}`
                             : translate('game-modification.creation-error') + `\n ${error.message}`,
                     ),
             });
