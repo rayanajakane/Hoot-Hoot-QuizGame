@@ -376,7 +376,7 @@
         "error-repeat-choices": "Il ne doit pas y avoir de choix répétés dans la même question.",
         "error-choices-number": "Il doit y avoir entre 2 et 4 choix dans une question.",
         "error-points": "Le nombre de points doit être entre 10 et 100.",
-        "error-empty-question": "Le texte de la ne peut pas être vide.",
+        "error-empty-question": "Le texte de la question ne peut pas être vide.",
         "error-choices-ratio": "Il doit y avoir au moins un choix correct et un choix incorrect.",
         "error-empty-title": "Le titre du jeu ne peut pas être vide.",
         "error-empty-description": "La description du jeu ne peut pas être vide.",
