@@ -43,7 +43,7 @@ class AuthViewModel : ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val _authState = MutableLiveData<AuthState>()
     val authState: LiveData<AuthState> = _authState
-    private var user: FirebaseUser? = null
+    var user: FirebaseUser? = null
     private val database = Firebase.database
     private val TAG = "EmailAuthActivity"
 
@@ -78,7 +78,10 @@ class AuthViewModel : ViewModel() {
 
     fun setProfileUpdated(updated: Boolean) {
         _profileUpdated.value = updated
-        sendUpdateProfileSnackbar()
+        if(updated) {
+            sendUpdateProfileSnackbar()
+            _profileUpdated.value = false
+        }
     }
 
     fun getProfileUpdated(): Boolean {
@@ -192,6 +195,95 @@ class AuthViewModel : ViewModel() {
         return auth.currentUser?.uid ?: ""
     }
 
+    // Check username, if doesn't exist use callback to save
+    private fun checkUsername(username: String, callback: (Boolean) -> Unit) {
+        val usernameRef = getUsernameDatabaseRef(username)
+        usernameRef.get().addOnSuccessListener { databaseSnapshot: DataSnapshot ->
+            if(databaseSnapshot.exists()) {
+                callback(false)
+            } else {
+                callback(true)
+            }
+        }.addOnFailureListener {
+            Log.e("Update profile", "An error occured when getting from DB")
+        }
+    }
+
+    fun updateUsername(username: String, callback: (Boolean) -> Unit) {
+        val formattedUsername = username.trim()
+        val oldUsername = getUsername()
+
+        checkUsername(formattedUsername) { isUsernameValid ->
+            if(isUsernameValid) {
+                // Save display name
+                val profileUpdates = userProfileChangeRequest {
+                    displayName = formattedUsername
+                }
+                user!!.updateProfile(profileUpdates).addOnCompleteListener { task ->
+                    if(task.isSuccessful) {
+                        _username.value = formattedUsername
+                        Log.d("Update profile", "Updated user's display name")
+                        // Now save new username and delete old ref
+                        val oldUsernameRef = getUsernameDatabaseRef(oldUsername.lowercase())
+                        oldUsernameRef.removeValue().addOnCompleteListener { deleteUsernameTask ->
+                            if (deleteUsernameTask.isSuccessful) {
+                                Log.d("Update profile", "Deleted username from DB ${oldUsername.lowercase()}")
+                            } else {
+                                Log.e("Update profile", "Could not delete username from DB")
+                            }
+                        }
+
+                        // Set new username value to DB
+                        val newUsernameRef = getUsernameDatabaseRef(formattedUsername.lowercase())
+                        newUsernameRef.setValue(formattedUsername.lowercase()).addOnSuccessListener {
+                            Log.d("Update profile", "Saved ${formattedUsername.lowercase()} to DB")
+                            callback(true)
+                        }.addOnFailureListener {
+                            Log.e("Update profile", "Could not save username to DB")
+                            callback(false)
+                        }
+                    } else {
+                        Log.e("Update profile", "Could not update user display name")
+                        callback(false)
+                    }
+                }
+            } else {
+                viewModelScope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.StringResource(R.string.username_already_exists)
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    fun updateAvatar(avatarURL: String) {
+        val profileUpdates = userProfileChangeRequest {
+            photoUri = Uri.parse(avatarURL)
+        }
+
+        user!!.updateProfile(profileUpdates).addOnCompleteListener { updateAvatarTask ->
+            if(updateAvatarTask.isSuccessful) {
+                _avatarURL.value = avatarURL
+                Log.d("Update profile", "Updated user avatar url : $avatarURL")
+            } else {
+                Log.e("Update profile", "Could not update avatar url")
+            }
+        }
+    }
+
+    fun emitUpdates() {
+        SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
+
+        val authorNameUpdate = UserIdName(id = user!!.uid, name = _username.value)
+        Log.d("Update profile", "AuthorNameUpdate with ${_username.value}")
+        val authorUpdateObject = JSONObject(Gson().toJson(authorNameUpdate))
+        SocketHandler.getSocket()
+            .emit(GameEvents.UPDATE_AUTHOR_NAME.value, authorUpdateObject)
+    }
+
     fun getAvatarURLFromDB(callback: (String?) -> Unit) {
         val uid = auth.currentUser?.uid ?: return callback(null)
         val avatarRef = ImageStorage.getAvatarRef(uid)
@@ -203,7 +295,7 @@ class AuthViewModel : ViewModel() {
 
     fun deleteUser() {
         val user = auth.currentUser
-        if(user == null) {
+        if (user == null) {
             viewModelScope.launch {
                 SnackbarController.sendEvent(
                     event = SnackbarEvent(
@@ -219,7 +311,7 @@ class AuthViewModel : ViewModel() {
         // Delete user from DB
         val userRef = getUserDatabaseRef(user.uid)
         userRef.removeValue().addOnCompleteListener { task ->
-            if(task.isSuccessful) {
+            if (task.isSuccessful) {
                 Log.d("Delete user", "Deleted user from DB")
             } else {
                 Log.e("Delete user", "Could not delete user from DB")
@@ -227,11 +319,11 @@ class AuthViewModel : ViewModel() {
         }
 
         // Delete username from DB
-        if(user.displayName?.isNotEmpty()!!) {
+        if (user.displayName?.isNotEmpty()!!) {
             val username = getUsername()
             val usernameRef = getUsernameDatabaseRef(getUsername().lowercase())
             usernameRef.removeValue().addOnCompleteListener { task ->
-                if(task.isSuccessful) {
+                if (task.isSuccessful) {
                     Log.d("Delete user", "Deleted username from DB $username")
                 } else {
                     Log.e("Delete user", "Could not delete username from DB")
@@ -246,7 +338,7 @@ class AuthViewModel : ViewModel() {
 
         // Delete user from auth
         user.delete().addOnCompleteListener { task ->
-            if(task.isSuccessful) {
+            if (task.isSuccessful) {
                 viewModelScope.launch {
                     SnackbarController.sendEvent(
                         event = SnackbarEvent(
@@ -280,7 +372,7 @@ class AuthViewModel : ViewModel() {
     }
 
     fun updateUserProfile(url: String, username: String) {
-        if(url.isEmpty() && username.isEmpty()) {
+        if (url.isEmpty() && username.isEmpty()) {
             Log.e("Save UserProfile", "Nothing to update")
             return
         }
@@ -313,7 +405,7 @@ class AuthViewModel : ViewModel() {
                 }
             } else {
                 val profileUpdates = userProfileChangeRequest {
-                    if(url.isNotEmpty()) {
+                    if (url.isNotEmpty()) {
                         photoUri = Uri.parse(url)
                     }
                     displayName = username
@@ -321,7 +413,7 @@ class AuthViewModel : ViewModel() {
                 user!!.updateProfile(profileUpdates).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         oldUsernameRef.removeValue().addOnCompleteListener { removeTask ->
-                            if(removeTask.isSuccessful) {
+                            if (removeTask.isSuccessful) {
                                 Log.d("Delete user", "Deleted username from DB $oldUsername")
                             } else {
                                 Log.e("Delete user", "Could not delete username from DB")
@@ -333,7 +425,8 @@ class AuthViewModel : ViewModel() {
 
                         val authorNameUpdate = UserIdName(id = user!!.uid, name = username)
                         val authorUpdateObject = JSONObject(Gson().toJson(authorNameUpdate))
-                        SocketHandler.getSocket().emit(GameEvents.UPDATE_AUTHOR_NAME.value, authorUpdateObject)
+                        SocketHandler.getSocket()
+                            .emit(GameEvents.UPDATE_AUTHOR_NAME.value, authorUpdateObject)
                         Log.d(
                             "Profile update",
                             "Used $username ${avatarURL.value}"
@@ -388,7 +481,7 @@ class AuthViewModel : ViewModel() {
                             _authState.value = AuthState.Authenticated
                             SocketHandler.connect()
                             SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
-                            SocketHandler.getSocket().emit(FriendsEvents.CONNECT.value, user?.uid )
+                            SocketHandler.getSocket().emit(FriendsEvents.CONNECT.value, user?.uid)
                             Log.d(TAG, "signInWithEmail:success")
                         }
                     userRef?.child("isOnline")?.get()
@@ -415,7 +508,13 @@ class AuthViewModel : ViewModel() {
             }
     }
 
-    fun signUp(email: String, username: String, password: String, context: Context, avatarToShow: Any?) {
+    fun signUp(
+        email: String,
+        username: String,
+        password: String,
+        context: Context,
+        avatarToShow: Any?
+    ) {
         if (email.isEmpty() || username.isEmpty() || password.isEmpty()) {
             _authState.value =
                 AuthState.Error(StringValue.StringResource(R.string.empty_username_password))
@@ -439,7 +538,7 @@ class AuthViewModel : ViewModel() {
                         if (task.isSuccessful) {
                             user = task.result.user
                             // Save temp avatar if needed
-                            if(avatarToShow is Bitmap) {
+                            if (avatarToShow is Bitmap) {
                                 user?.let {
                                     ImageStorage.uploadAvatar(avatarToShow, user!!.uid) { url ->
                                         if (url != null) {
@@ -470,8 +569,10 @@ class AuthViewModel : ViewModel() {
                                         setAvatarUrl(user?.photoUrl.toString())
                                         _authState.value = AuthState.Authenticated
                                         SocketHandler.connect()
-                                        SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
-                                        SocketHandler.getSocket().emit(FriendsEvents.CONNECT.value, user?.uid)
+                                        SocketHandler.getSocket()
+                                            .emit(FriendsEvents.UPDATE_DATA.value)
+                                        SocketHandler.getSocket()
+                                            .emit(FriendsEvents.CONNECT.value, user?.uid)
                                     }
                                     Log.d(TAG, "createUserWithEmail:success")
                                 }

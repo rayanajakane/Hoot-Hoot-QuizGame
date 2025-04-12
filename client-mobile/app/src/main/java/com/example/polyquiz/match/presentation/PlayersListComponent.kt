@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.polyquiz.R
+import com.example.polyquiz.chat.presentation.TruncatedText
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.match.domain.AnswerService
@@ -92,7 +93,6 @@ fun PlayerCard(
             contentColor = MaterialTheme.colorScheme.onSurface,
             disabledContainerColor = MaterialTheme.colorScheme.surfaceBright,
             disabledContentColor = MaterialTheme.colorScheme.onSurface
-
         ),
         modifier = modifier,
         elevation = CardDefaults.cardElevation(
@@ -121,20 +121,22 @@ fun PlayerCard(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-
-
-                if (!player.isPlaying) {
-                   Text(
+                if(!player.isPlaying) {
+                    TruncatedText(
                         text = player.username,
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onSurface,
                         style = TextStyle(textDecoration = TextDecoration.LineThrough),
+                        maxChars = 13,
+                        fontWeight = FontWeight.Normal,
+                        modifier = Modifier
                     )
                 } else {
                     TruncatedText(
                         text = player.username,
                         fontSize = 16.sp,
-                        maxChars = 5,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxChars = 13,
                         fontWeight = FontWeight.Normal,
                         modifier = Modifier,
                     )
@@ -210,30 +212,5 @@ fun ButtonGroup(
             }
         }
     }
-}
-
-
-@Composable
-fun TruncatedText(
-    text: String,
-    fontSize: TextUnit,
-    maxChars: Int,
-    fontWeight: FontWeight,
-    modifier: Modifier
-) {
-    val truncatedText = if (text.length > maxChars) {
-        text.take(maxChars) + "..."
-    } else {
-        text
-    }
-
-    Text(
-        text = truncatedText,
-        fontSize = fontSize,
-        fontWeight = fontWeight,
-        modifier = modifier,
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis
-    )
 }
 
