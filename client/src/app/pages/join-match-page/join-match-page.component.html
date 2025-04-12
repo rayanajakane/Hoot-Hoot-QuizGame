@@ -29,25 +29,27 @@
                 </div>
                 <div *ngFor="let match of unlockedMatches">
                     <mat-card class="match-card clickable" (click)="submitCode(match.code)">
-                        <h3>{{ match.gameTitle }}</h3>
+                        <h3 class="match-title text-overflow-ellipsis">{{ match.gameTitle }}</h3>
                         <div class="match-details-container">
                             <div class="nPlayers">
                                 <i class="material-icons">people_alt</i>
                                 <p>{{ match.nPlayers }}</p>
                             </div>
 
-                            <div *ngIf="match.partyConfig?.isFriendsOnly" class="match-flag friends-only">
-                                <i class="material-icons">people</i>
-                                <span>{{t('match.partyConfig.isFriendsOnly')}}</span>
-                            </div>
-                            <div *ngIf="match.partyConfig?.isCheaterMode" class="match-flag friends-only">
-                                <i class="material-icons"></i>
-                                <span>{{t('match-config.cheater-mode')}}</span>
-                            </div>
+                            <div class="flags-container">
+                                <div *ngIf="match.partyConfig?.isFriendsOnly" class="match-flag friends-only">
+                                    <i class="material-icons">people</i>
+                                    <span>{{ t('match-config.friends-label') }}</span>
+                                </div>
+                                <div *ngIf="match.partyConfig?.isCheaterMode" class="match-flag friends-only">
+                                    <i class="material-icons"></i>
+                                    <span>{{ t('match-config.cheater-mode') }}</span>
+                                </div>
 
-                            <div *ngIf="match.partyConfig?.isEntryFeeRequired" class="match-flag entry-fee">
-                                <i class="material-icons">attach_money</i>
-                                <span>{{ match.partyConfig.entryFeeAmount }}</span>
+                                <div *ngIf="match.partyConfig?.isEntryFeeRequired" class="match-flag entry-fee">
+                                    <i class="material-icons">attach_money</i>
+                                    <span>{{ match.partyConfig.entryFeeAmount }}</span>
+                                </div>
                             </div>
                         </div>
                         <button mat-raised-button color="primary" class="join-existing-match-button">
@@ -72,14 +74,13 @@
 
                             <div *ngIf="match.partyConfig?.isFriendsOnly" class="match-flag friends-only">
                                 <i class="material-icons"></i>
-                                <span>{{t('match.partyConfig.isFriendsOnly')}}</span>
+                                <span>{{ t('match.partyConfig.isFriendsOnly') }}</span>
                             </div>
 
                             <div *ngIf="match.partyConfig?.isCheaterMode" class="match-flag friends-only">
                                 <i class="material-icons"></i>
-                                <span>{{t('match-config.cheater-mode')}}</span>
+                                <span>{{ t('match-config.cheater-mode') }}</span>
                             </div>
-
 
                             <div *ngIf="match.partyConfig?.isEntryFeeRequired" class="match-flag entry-fee">
                                 <i class="material-icons">attach_money</i>
@@ -106,12 +107,12 @@
 
                         <div *ngIf="match.partyConfig?.isFriendsOnly" class="match-flag friends-only">
                             <i class="material-icons">people</i>
-                            <span>{{t('match.partyConfig.isFriendsOnly') }}</span>
+                            <span>{{ t('match.partyConfig.isFriendsOnly') }}</span>
                         </div>
 
                         <div *ngIf="match.partyConfig?.isCheaterMode" class="match-flag friends-only">
                             <i class="material-icons"></i>
-                            <span>{{t('match-config.cheater-mode')}}</span>
+                            <span>{{ t('match-config.cheater-mode') }}</span>
                         </div>
 
                         <div *ngIf="match.partyConfig?.isEntryFeeRequired" class="match-flag entry-fee">

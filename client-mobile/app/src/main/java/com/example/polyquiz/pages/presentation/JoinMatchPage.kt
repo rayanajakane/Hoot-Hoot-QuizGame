@@ -34,6 +34,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,6 +65,7 @@ import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
+import com.example.polyquiz.chat.presentation.TruncatedText
 import com.example.polyquiz.constants.MatchPageInfo
 import com.example.polyquiz.match.domain.JoinMatchService
 import com.example.polyquiz.match.domain.JoinMatchService.matchInfos
@@ -71,12 +73,14 @@ import com.example.polyquiz.match.domain.JoinMatchService.matchesInfos
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.ui.MenuButton
 import com.google.gson.Gson
+import com.example.polyquiz.ui.features.camera.CameraViewModel
 import kotlinx.coroutines.launch
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun JoinMatchPage(
     modifier: Modifier,
+    cameraViewModel: CameraViewModel,
     authViewModel: AuthViewModel,
     navigateToHome: () -> Unit,
     navigateToCreate: () -> Unit,
@@ -87,10 +91,13 @@ fun JoinMatchPage(
     navigateToMatchPage: () -> Unit,
     navigateToLogin: () -> Unit,
     navigateToRankingsPage: () -> Unit,
+    navigateToCamera: () -> Unit,
+    navigateToShopPage: () -> Unit
 ) {
     var room by remember { mutableStateOf("") }
     val username by remember { mutableStateOf(authViewModel.getUsername()) }
     val userId by remember { mutableStateOf(authViewModel.getUserId()) }
+    val scannedCode by cameraViewModel.scannedCode.collectAsState()
     val scope = rememberCoroutineScope()
     val shouldNavigate = rememberUpdatedState(MatchRoomService.timeToGoToWaitPage)
     val errorMessage by remember {
@@ -145,6 +152,8 @@ fun JoinMatchPage(
     DisposableEffect(Unit) {
         onDispose {
             joinMatchService.stopReturningAllMatches()
+            cameraViewModel.setScannedCode(null)
+
         }
     }
 
@@ -188,6 +197,13 @@ fun JoinMatchPage(
         )
     }
 
+    LaunchedEffect(scannedCode) {
+        scannedCode?.let {
+            submitCode(scannedCode!!)
+        }
+    }
+
+
     fun joinRoom(code: String) {
         submitCode(code)
 //        navigateToWaitPage()
@@ -228,6 +244,7 @@ fun JoinMatchPage(
                         navigateToFriendsPage,
                         navigateToJoinRoom,
                         navigateToRankingsPage,
+                        navigateToShopPage,
                         signOut = {
                             authViewModel.signOut()
                             navigateToLogin()
@@ -259,9 +276,9 @@ fun JoinMatchPage(
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         Button(
-                            enabled = false,
                             onClick = {
-                                TODO()
+                                cameraViewModel.setCameraContent(true)
+                                navigateToCamera()
                             }, shape = RoundedCornerShape(3.dp), modifier = Modifier.height(55.dp)
                         ) {
                             Text(text = stringResource(R.string.scan_qr))
@@ -354,10 +371,12 @@ fun MatchCard(match: MatchPageInfo, onClick: () -> Unit = {}) {
             modifier = Modifier.padding(15.dp),
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text(
+            TruncatedText(
                 text = match.gameTitle,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                fontSize = 15.sp,
+                maxChars = 10,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
@@ -405,6 +424,18 @@ fun MatchCard(match: MatchPageInfo, onClick: () -> Unit = {}) {
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = match.partyConfig.entryFeeAmount.toString(),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                }
+                if (match.partyConfig?.isCheaterMode == true) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.height(24.dp)
+                    ) {
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = stringResource(R.string.cheater_mode),
                             style = MaterialTheme.typography.bodySmall
                         )
                     }

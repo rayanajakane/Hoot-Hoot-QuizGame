@@ -2,6 +2,8 @@
     width: 60vw;
     height: 90vh;
     font-size: 0.8rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
 }
 
 #question-area {
@@ -59,10 +61,19 @@
     overflow: auto;
 }
 
+.points-feedback-container {
+    display: flex;
+    flex-direction: column;
+}
+
 #points {
     font-size: 0.9rem;
+    font-style: normal;
+    font-weight: 600;
     color: rgb(200, 200, 200);
     position: absolute;
+    margin: 0;
+    padding: 0;
     bottom: 0;
     align-self: center;
     text-align: center;
@@ -135,24 +146,21 @@ button.answer.selected {
 #score-feedback-area,
 #score-area {
     position: absolute;
-    top: 35vh;
+    top: 40vh;
     font-size: 0.8rem;
     align-self: center;
     text-align: center;
 }
 
 .good-answer {
-    font-size: 1rem;
     color: #4caf50;
 }
 
 .ok-answer {
-    font-size: 1rem;
     color: #f6c811;
 }
 
 .wrong-answer {
-    font-size: 1rem;
     color: #e91b0c;
 }
 
@@ -238,4 +246,22 @@ img {
 
 .two-columns h1 {
     text-align: left;
+}
+
+.question-text {
+    font-size: 1.15rem;
+}
+
+#score {
+    font-size: 1rem;
+    margin: 0;
+    margin-top: 0.5rem;
+}
+
+.feedback-text {
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 600;
+    margin: 0;
+    z-index: 999;
 }

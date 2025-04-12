@@ -3,15 +3,17 @@
         <div *ngIf="this.matchContextService.getContext() !== matchContext.HostView">
             <h2>{{ t('cheater-mode.voteCheater') }}</h2>
             <div id="players-list">
-                <mat-radio-group [(ngModel)]="selectedPlayer">
+                <mat-radio-group [(ngModel)]="selectedPlayer" class="players-list-radio-group">
                     <mat-card *ngFor="let player of matchRoomService.players" class="player-card">
                         <div *ngIf="player.username !== matchRoomService.getUsername()">
-                            <mat-radio-button [disabled]="!this.isVotingDisabled" [value]="player.username" >
+                            <mat-radio-button [disabled]="!this.isVotingDisabled" [value]="player.username">
                                 <div class="avatar-container">
                                     <div class="avatar">
                                         <img src="{{ player.photoUrl ? player.photoUrl : defaultAvatar }}" alt="" />
                                     </div>
-                                    <p class="player-username">{{ player.username }}</p>
+                                    <p [ngClass]="[player.isPlaying ? 'text-overflow-ellipsis' : 'text-overflow-ellipsis inactive-player']">
+                                        {{ player.username }}
+                                    </p>
                                 </div>
                             </mat-radio-button>
                         </div>
@@ -31,8 +33,9 @@
 
             <p *ngIf="this.playersPlaying.length == this.totalVotesOfActivePlayers" class="host-text">{{ t('cheater-mode.players-voted') }}</p>
             <div id="players-list">
-                <mat-card *ngFor="let player of this.matchRoomService.votingUsers" class="player-card">
-                    <p class="player-username">{{ t('cheater-mode.playerVoted', { player: player }) }}</p>
+                <mat-card *ngFor="let player of this.matchRoomService.players" class="player-card">
+                    <p class="player-username">{{ player.username }}</p>
+                    <p *ngIf= "matchRoomService.votingUsers.includes(player.username)">{{ t('cheater-mode.playerVoted') }}</p>
                 </mat-card>
             </div>
         </div>
@@ -47,7 +50,7 @@
         <div class="controls-container">
             <button mat-raised-button class="exit-button" color="primary" (click)="handleDisconnect()" routerLink="/home">
                 <mat-icon class="material-icons">logout</mat-icon>
-                <p>{{t('nav.quit')}}</p>
+                <p>{{ t('nav.quit') }}</p>
             </button>
         </div>
     </div>

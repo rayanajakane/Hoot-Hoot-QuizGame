@@ -2,6 +2,7 @@ package com.example.polyquiz
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -27,10 +28,14 @@ import com.example.polyquiz.pages.presentation.JoinMatchPage
 import com.example.polyquiz.pages.presentation.MatchCreationPage
 import com.example.polyquiz.pages.presentation.WaitPage
 import com.example.polyquiz.friends.presentation.FriendsSearchScreen
+import com.example.polyquiz.money.domain.MoneyService
+import com.example.polyquiz.shop.domain.ShopViewModel
+import com.example.polyquiz.pages.presentation.VotingPage
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.ui.features.camera.MainCameraScreen
 import com.plcoding.drawinginjetpackcompose.DrawingViewModel
 import com.example.polyquiz.ui.theme.Theme
+import com.example.polyquiz.shop.presentation.ShopPage
 
 // References: https://youtu.be/AIC_OFQ1r3k  and  https://youtu.be/lv1raAvwcgI
 @Composable
@@ -104,6 +109,9 @@ fun Navigation(
                 matchContextService = MatchContextService,
                 matchRoomService = MatchRoomService,
                 timeService = TimeService,
+                navigateToVotingPage = {
+                    navController.navigate(Route.VotingPage)
+                },
                 answerService = AnswerService
             )
         }
@@ -132,7 +140,10 @@ fun Navigation(
                 },
                 navigateToRankingsPage = {
                     navController.navigate(Route.RankingsPage)
-                }
+                },
+                navigateToShopPage = {
+                    navController.navigate(Route.ShopPage)
+                },
             )
         }
         composable<Route.MatchCreation> {
@@ -156,7 +167,8 @@ fun Navigation(
                 },
                 navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
                 navigateToLogin = { navController.navigate(Route.Login) },
-                navigateToRankingsPage = { navController.navigate(Route.RankingsPage) }
+                navigateToRankingsPage = { navController.navigate(Route.RankingsPage) },
+                navigateToShopPage = { navController.navigate(Route.ShopPage) }
             )
         }
         composable<Route.ResultsPage> {
@@ -169,6 +181,21 @@ fun Navigation(
                 players = players,
                 modifier = modifier
             )
+        }
+
+        composable<Route.VotingPage> {
+            VotingPage(
+                authViewModel,
+                players = players,
+                matchRoomService = MatchRoomService,
+                matchContextService = MatchContextService,
+                onVote = {},
+                navigateToResultsPage = {navController.navigate(Route.ResultsPage)},
+                navigateToHome = {
+                    navController.navigate(Route.Home)
+                },
+            )
+
         }
 
         composable<Route.JoinMatchPage> {
@@ -193,7 +220,10 @@ fun Navigation(
                 navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
                 navigateToMatchPage = { navController.navigate(Route.MatchRoom) },
                 navigateToLogin = { navController.navigate(Route.Login) },
-                navigateToRankingsPage = { navController.navigate(Route.RankingsPage) }
+                navigateToRankingsPage = { navController.navigate(Route.RankingsPage) },
+                navigateToCamera = { navController.navigate(Route.MainCameraScreen) },
+                cameraViewModel = cameraViewModel,
+                navigateToShopPage = { navController.navigate(Route.ShopPage) }
             )
         }
 
@@ -249,6 +279,9 @@ fun Navigation(
                 },
                 navigateToRankingsPage = {
                     navController.navigate(Route.RankingsPage)
+                },
+                navigateToShopPage = {
+                    navController.navigate(Route.ShopPage)
                 }
             )
         }
@@ -265,9 +298,13 @@ fun Navigation(
                 authViewModel,
                 cameraViewModel,
                 navigateToUserEdit = { navController.navigate(Route.UserEditPage) },
+                navigateToJoinRoom = {
+                    navController.navigate(Route.JoinMatchPage)
+                },
                 navigateToSignup = { navController.navigate(Route.Signup) }
             )
         }
+
 
         composable<Route.RankingsPage> {
             RankingsPage(
@@ -287,18 +324,37 @@ fun Navigation(
                 },
                 navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
                 navigateToLogin = { navController.navigate(Route.Login) },
-                navigateToRankingsPage = { navController.navigate(Route.RankingsPage) }
+                navigateToRankingsPage = { navController.navigate(Route.RankingsPage) },
+                navigateToShop = { navController.navigate(Route.ShopPage) }
             )
         }
         composable<Route.Drawing> {
 
-             val viewModel: DrawingViewModel = viewModel() // If not using Hilt
+            val viewModel: DrawingViewModel = viewModel() // If not using Hilt
 
             DrawingScreen(
                 viewModel = viewModel,
                 navigateToUserEdit = { navController.navigate(Route.UserEditPage) },
                 uid = authViewModel.getUserId(),
                 cameraViewModel = cameraViewModel
+            )
+        }
+        composable<Route.ShopPage> {
+            val moneyService = remember { MoneyService() }
+
+            ShopPage(
+                modifier,
+                authViewModel = authViewModel,
+                currentUserID = authViewModel.getUserId(),
+                moneyService = moneyService,
+                navigateToLogin = { navController.navigate(Route.Login) },
+                navigateToHome = { navController.navigate(Route.Home) },
+                navigateToCreate = { navController.navigate(Route.MatchCreation) },
+                navigateToUserEdit = { navController.navigate(Route.UserEditPage) },
+                navigateToFriendsPage = { navController.navigate(Route.FriendsSearchScreen) },
+                navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
+                navigateToRankingsPage = { navController.navigate(Route.RankingsPage) },
+                navigateToShop = { navController.navigate(Route.ShopPage) }
             )
         }
     }

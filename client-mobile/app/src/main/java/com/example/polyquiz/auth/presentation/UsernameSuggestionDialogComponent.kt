@@ -61,7 +61,6 @@ fun UsernameSuggestionDialog(
         title = { Text(stringResource(R.string.suggest_names)) },
         text = {
             Column {
-                println("column${usernameSuggestions}")
                 if (usernameSuggestions.isNotEmpty()) {
                     usernameSuggestions.forEach { username ->
                         Row(verticalAlignment = Alignment.CenterVertically) {

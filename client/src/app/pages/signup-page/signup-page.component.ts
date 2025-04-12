@@ -134,7 +134,7 @@ export class SignupPageComponent implements OnInit {
             if (!username) {
                 return null;
             }
-            const containsSpecialChar = /[^A-Za-z0-9_]/.test(username);
+            const containsSpecialChar = /[^a-zA-ZÀ-ÿ0-9_]/.test(username);
 
             if (containsSpecialChar) {
                 return { containsSpecialChar: true };

@@ -35,7 +35,12 @@ export class VotingDialogComponent {
     }
 
     get totalVotesOfActivePlayers() {
-        return Object.values(this?.matchRoomService.votesResults).reduce((total, vote) => total + vote, 0);
+       // return Object.values(this?.matchRoomService.votesResults).reduce((total, vote) => total + vote, 0);
+       const activeUsernames = this.playersPlaying.map(player => player.username);
+        const votes = this.matchRoomService.votesResults;
+       return Object.entries(votes)
+       .filter(([username]) => activeUsernames.includes(username))
+       .reduce((total, [, vote]) => total + vote, 0);
     }
 
     ngOnInit() {

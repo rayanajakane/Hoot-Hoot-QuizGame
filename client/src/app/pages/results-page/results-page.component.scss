@@ -6,6 +6,7 @@
     height: 100vh;
     width: 60vw;
     position: relative;
+    gap: 1rem;
 }
 
 #info-container {
@@ -15,7 +16,6 @@
     height: 70vh;
     border-radius: 1rem;
 }
-
 
 #buttons-container {
     display: flex;
@@ -38,41 +38,44 @@
 }
 
 .player-card {
-    display: flex; 
+    display: grid;
+    grid-template-columns: 3fr 1fr;
     flex-direction: row;
     justify-content: space-between;
     padding-left: 1rem;
     padding-right: 1rem;
+    align-items: center;
+}
+
+.cheater-mode-player-card {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    justify-content: space-between;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    align-items: center;
 }
 
 .player-performance {
     font-size: 0.75rem;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 2fr 3fr;
     gap: 0.5rem;
+    align-items: center;
 }
 
-.username{
+.username {
     display: grid;
     flex-direction: column;
     align-items: left;
     grid-template-columns: 1fr 1fr;
 }
 
-.vote{
-    flex-direction: row;
-    align-items: center;
-    display: grid;
-    //grid-template-columns: 1fr
-}
-
-
 .username-avatar-container {
-   display: flex;
-   flex-direction: row;
-  // align-items: left;
-  // grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
 }
 
 .avatar-container {
@@ -92,4 +95,46 @@
     height: 100%;
     object-fit: fill;
     border-radius: 100rem;
+}
+
+.votes {
+    font-size: 0.75rem;
+}
+
+.balance-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    position: fixed;
+    top: 2.5rem;
+    right: 0;
+    margin-top: 10rem;
+    margin-right: 2rem;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: -1rem;
+}
+
+.cheater-mode-balance-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    position: absolute;
+    top: 2.5rem;
+    right: 0;
+    margin-right: 2rem;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: -1rem;
+}
+
+.balance-icon {
+    margin-right: 0.5rem;
+}
+
+.balance-text {
+    font-size: 1rem;
+    font-weight: bold;
 }

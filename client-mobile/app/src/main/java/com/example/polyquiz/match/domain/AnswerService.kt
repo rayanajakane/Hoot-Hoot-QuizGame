@@ -1,5 +1,7 @@
 package com.example.polyquiz.match.domain
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import com.example.polyquiz.constants.AnswerCorrectness
 import com.example.polyquiz.constants.AnswerEvents
@@ -17,7 +19,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.constants.MatchContext
 import org.json.JSONObject
+import java.util.Timer
+import kotlin.concurrent.schedule
 
 object AnswerService {
     var playersAnswers by mutableStateOf<List<LongAnswerInfo>>(emptyList())
@@ -63,7 +68,7 @@ object AnswerService {
                 jsonObject.put("answerCorrectness", mappedCorrectness.name)
 
                 feedback = Gson().fromJson(jsonObject.toString(), Feedback::class.java)
-
+                Log.d("answer service", "feedback is $feedback")
                 showFeedback = true
                 isNextQuestionButtonEnabled = true
                 processFeedback(feedback)
@@ -141,7 +146,6 @@ object AnswerService {
 
     fun handleGrading() {
         isGradingComplete = playersAnswers.all { it.score != null }
-        // println("isGradingComplete$isGradingComplete")
     }
 
     fun selectChoice(choice: String, userInfo: UserInfo) {
@@ -150,6 +154,7 @@ object AnswerService {
         val choiceInfoJsonObject = JSONObject(choiceInfoStringified)
         mSocket.emit(AnswerEvents.SELECT_CHOICE.value, choiceInfoJsonObject)
     }
+
 
     fun deselectChoice(choice: String, userInfo: UserInfo) {
         val choiceInfo = ChoiceInfo(choice, userInfo)

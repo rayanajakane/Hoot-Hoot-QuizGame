@@ -70,6 +70,11 @@
     <string name="clear_canvas">Réinitialiser le canvas</string>
     <string name="light_theme">Thème clair</string>
     <string name="dark_theme">Thème sombre</string>
+    <string name="luigi_theme">Thème Luigi</string>
+    <string name="mario_theme">Thème Mario</string>
+    <string name="sonic_theme">Thème Sonic</string>
+    <string name="pikachu_theme">Thème Pikachu</string>
+    <string name="premium_themes">Thèmes Premiums</string>
     <string name="username_edit">Veuillez choisir un identifiant</string>
     <string name="your_elo">Votre elo</string>
     <string name="rankings">Classements</string>
@@ -144,6 +149,17 @@
     <string name="entry_fee">Frais d\'entrée</string>
     <string name="entry_fee_message">Les joueurs devront payer ce montant pour rejoindre la partie.</string>
     <string name="prepare">Préparez vous pour la prochaine question! ⏳</string>
+    <string name="already_owned">Déjà acheté</string>
+    <string name="purchase_successful">Acheté avec succès</string>
+    <string name="buy_goodies">Boutique</string>
+    <string name="avatar_items">Avatars Premiums</string>
+    <string name="theme_items">Thèmes Premiums</string>
+    <string name="wallpaper_items">Arrières-plan de clavardage</string>
+    <string name="balance">Balance</string>
+    <string name="buy">Acheter</string>
+    <string name="owned">✅ Possédé</string>
+    <string name="insufficient_funds">Fonds insuffisants</string>
+    <string name="no_background">Aucun arrière-plan</string>
     <string name="regen">Générer d\'autres noms</string>
     <string name="suggest_names">Suggestions de noms d\'utilisateurs</string>
     <string name="money_errors_not_enough_money">Vous n\'avez pas assez d\'argent pour effectuer cette transaction.</string>
@@ -159,4 +175,20 @@
     <string name="match_errors_banned_player">Vous avez été banni de cette partie.</string>
     <string name="match_friends_errors_not_friends_with_host">Vous n\'êtes pas ami avec l\'hôte.</string>
     <string name="match_friends_errors_no_friends">Vous n\'avez pas d\'amis.</string>
+    <string name="cheater_mode_notify_cheater">Vous êtes le/la tricheur/tricheuse de cette partie</string>
+    <string name="cheater_mode_cheater">Tricheur/se</string>
+    <string name="cheater_mode_vote">Voter</string>
+    <string name="cheater_mode_vote_cheater">Votez pour le tricheur</string>
+    <string name="cheater_mode_answer_hint">Indice pour la réponse: "</string>
+    <string name="cheater_mode_notify_regular_player">Vous avez le rôle de joueur régulier dans cette partie</string>
+    <string name="cheater_mode_player_voted"> a voté</string>
+    <string name="cheater_mode_players_still_voting">Joueurs en train de voter</string>
+    <string name="cheater_mode_go_to_vote_button">Aller à la page de vote</string>
+    <string name="cheater_mode_players_voted">Tous les joueurs ont voté</string>
+    <string name="cheater_mode">Mode tricheur</string>
+    <string name="cheater_mode_players_min">Ce mode nécessite au moins 3 joueurs</string>
+    <string name="cheater_mode_players_info">Pour jouer en mode tricheur : le jeu ne doit pas contenir de question de type réponse longue et doit comporter au moins trois joueurs</string>
+
+    <string name="switch_camera">Changer camera</string>
+    <string name="game_author">"Auteur: "</string>
 </resources>

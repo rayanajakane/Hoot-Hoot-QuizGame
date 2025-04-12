@@ -16,6 +16,7 @@ fun MainCameraScreen(
     authViewModel: AuthViewModel,
     cameraViewModel: CameraViewModel,
     navigateToUserEdit: () -> Unit,
+    navigateToJoinRoom: () -> Unit,
     navigateToSignup: () -> Unit
 ) {
     val cameraPermissionState: PermissionState =
@@ -27,8 +28,10 @@ fun MainCameraScreen(
         cameraViewModel,
         onRequestPermission = cameraPermissionState::launchPermissionRequest,
         navigateToUserEdit,
+        navigateToJoinRoom,
         navigateToSignup
     )
+
 }
 
 @Composable
@@ -38,10 +41,12 @@ private fun MainContent(
     cameraViewModel: CameraViewModel,
     onRequestPermission: () -> Unit,
     navigateToUserEdit: () -> Unit,
+    navigateToJoinRoom: () -> Unit,
     navigateToSignup: () -> Unit
+
 ) {
     if (hasPermission) {
-        CameraScreen(authViewModel, cameraViewModel, navigateToUserEdit, navigateToSignup)
+        CameraScreen(authViewModel, cameraViewModel, navigateToUserEdit, navigateToJoinRoom, navigateToSignup)
     } else {
         NoPermissionScreen(onRequestPermission)
     }
