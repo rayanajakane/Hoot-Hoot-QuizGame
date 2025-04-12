@@ -21,7 +21,15 @@ class MoneyService() {
     private val _currentBalance = MutableStateFlow(0)
     val currentBalance: StateFlow<Int> get() = _currentBalance
 
-    fun listenForMoneyEvents(context : Context) {
+    private fun getUserId(): String {
+        return FirebaseAuth.getInstance().currentUser?.uid ?: ""
+    }
+
+    fun listenForMoneyEvents(context : Context,
+        onAvatarBoughtCallback: (ShopItem) -> Unit = {},
+        onThemeBoughtCallback: (ShopItem) -> Unit = {},
+        onWallpaperBoughtCallback: (ShopItem) -> Unit = {}
+    ) {
         onReturnBalance()
         onDonationGiven()
         onDonationReceived()

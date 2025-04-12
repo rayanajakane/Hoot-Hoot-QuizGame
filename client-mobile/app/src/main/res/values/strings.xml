@@ -206,4 +206,19 @@
     <string name="match_errors_banned_player">Vous avez été banni de cette partie.</string>
     <string name="match_friends_errors_not_friends_with_host">Vous n\'êtes pas ami avec l\'hôte.</string>
     <string name="match_friends_errors_no_friends">Vous n\'avez pas d\'amis.</string>
+    <string name="cheater_mode_notify_cheater">Vous êtes le/la tricheur/tricheuse de cette partie</string>
+    <string name="cheater_mode_cheater">Tricheur</string>
+    <string name="cheater_mode_vote">Voter</string>
+    <string name="cheater_mode_vote_cheater">Votez pour le tricheur</string>
+    <string name="cheater_mode_answer_hint">Indice pour la réponse: "</string>
+    <string name="cheater_mode_notify_regular_player">Vous avez le rôle de joueur régulier dans cette partie</string>
+    <string name="cheater_mode_player_voted"> a voté</string>
+    <string name="cheater_mode_players_still_voting">Joueurs en train de voter</string>
+    <string name="cheater_mode_go_to_vote_button">Aller à la page de vote</string>
+    <string name="cheater_mode_players_voted">Tous les joueurs ont voté</string>
+    <string name="cheater_mode">Mode tricheur</string>
+    <string name="cheater_mode_players_min">Ce mode nécessite au moins 3 joueurs</string>
+    <string name="cheater_mode_players_info"> Pour jouer en mode tricheur : le jeu ne doit pas contenir de question de type réponse longue et doit comporter au moins trois joueurs </string>
+    <string name="switch_camera">Changer camera</string>
+    <string name="match_errors_less_than_3_players">Il doit y avoir au moins 3 joueurs dans la partie.</string>
 </resources>

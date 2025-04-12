@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -60,14 +61,15 @@ fun ShopPage(
     val currentBalance by shopViewModel.currentBalance.collectAsState()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+    val context = LocalContext.current
 
     LaunchedEffect(currentUserID) {
-        shopViewModel.getCurrentBalance(currentUserID)
-        shopViewModel.listenForMoneyEvents()
+        moneyService.getCurrentBalance(currentUserID)
+        moneyService.listenForMoneyEvents(context)
     }
 
     LaunchedEffect(Unit) {
-        shopViewModel.initialize(authViewModel)
+        shopViewModel.initialize(authViewModel, context)
     }
 
     Row(

@@ -24,6 +24,8 @@ import com.example.polyquiz.money.domain.DonationReceivedData
 import com.example.vanillaprototype.socket.SocketHandler
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
+import android.content.Context
+import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.delay
 import org.json.JSONObject
 
@@ -47,14 +49,15 @@ class ShopViewModel : ViewModel() {
     private val _dataInitialized = MutableStateFlow(false)
     val dataInitialized: StateFlow<Boolean> = _dataInitialized
 
-    suspend fun initialize(authViewModel: AuthViewModel) {
+    suspend fun initialize(authViewModel: AuthViewModel, context: Context) {
         _isLoading.value = true
 
         WallpaperService.initialize(authViewModel)
         PremiumAvatarService.initialize(authViewModel)
         ThemeService.loadPurchasedThemes(authViewModel)
 
-        listenForMoneyEvents(
+        moneyService.listenForMoneyEvents(
+            context,
             onAvatarBoughtCallback = { onItemBought(it, authViewModel, "avatar") },
             onThemeBoughtCallback = { onItemBought(it, authViewModel, "theme") },
             onWallpaperBoughtCallback = { onItemBought(it, authViewModel, "wallpaper") }

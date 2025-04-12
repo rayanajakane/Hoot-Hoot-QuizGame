@@ -205,4 +205,20 @@
     <string name="match_errors_banned_player">You have been banned from this match.</string>
     <string name="match_friends_errors_not_friends_with_host">You are not friends with the host.</string>
     <string name="match_friends_errors_no_friends">You don\'t have any friends.</string>
+    <string name="cheater_mode_notify_cheater">You are the cheater in this game</string>
+    <string name="cheater_mode_cheater">Cheater</string>
+    <string name="cheater_mode_vote">Vote</string>
+    <string name="cheater_mode_vote_cheater">Vote for the cheater</string>
+    <string name="cheater_mode_answer_hint">Hint for the answer: "</string>
+    <string name="cheater_mode_notify_regular_player">You have the role of a regular player in this game</string>
+    <string name="cheater_mode_player_voted"> has voted</string>
+    <string name="cheater_mode_players_still_voting">Players still voting</string>
+    <string name="cheater_mode_go_to_vote_button">Go to voting page</string>
+    <string name="cheater_mode_players_voted">All players have voted</string>
+    <string name="cheater_mode">Cheater Mode</string>
+    <string name="cheater_mode_players_min">This mode needs at least 3 players</string>
+    <string name="cheater_mode_players_info"> To play in this mode: the game should not contain a question of type long answer, and must contain at least three players</string>
+    <string name="switch_camera">Switch Camera</string>
+    <string name="game_author">"Author: "</string>
+    <string name="match_errors_less_than_3_players">The match needs at least 3 players.</string>
 </resources>
