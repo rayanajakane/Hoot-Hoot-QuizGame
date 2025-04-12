@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { QuestionGeneratorComponent } from '@app/components/question-generator/question-generator.component';
 import { ManagementState } from '@app/constants/states';
 import { DialogManagement, QuestionService } from '@app/services/question/question.service';
-import { QuestionGeneratorComponent } from './question-generator.component';
 import { getTranslocoModule } from '@app/transloco-testing.module';
 
 describe('QuestionGeneratorComponent', () => {

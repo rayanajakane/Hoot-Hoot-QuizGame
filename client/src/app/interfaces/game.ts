@@ -1,4 +1,4 @@
-import { Question } from './question';
+import { Question } from '@app/interfaces/question';
 
 export interface Game {
     id: string;

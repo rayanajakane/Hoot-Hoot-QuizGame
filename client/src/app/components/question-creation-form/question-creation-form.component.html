@@ -11,7 +11,7 @@
                     <mat-label>{{ this.isActiveSubmit() ? t('question-creation-form.question-type') : questionForm.get('type')?.value }}</mat-label>
                     <mat-select formControlName="type">
                         <span *ngIf="this.isActiveSubmit()">
-                            <mat-option *ngFor="let type of ['QCM', 'QRL', 'QRE']" [value]="type">{{ type }}</mat-option>
+                            <mat-option *ngFor="let type of [qcm, qrl, qre]" [value]="type.htmlLabel">{{ t(type.translocoLongLabel) }}</mat-option>
                         </span>
                     </mat-select>
                 </mat-form-field>

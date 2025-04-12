@@ -91,7 +91,7 @@
         "games-list": "Liste des jeux",
         "game-details": "Détails du jeu ",
         "select-game": "Sélectionner un jeu dans la liste des jeux",
-        "time-per-QCM": "Temps par QCM:",
+        "time-per-QCM": "Temps par QCM et QRE:",
         "popular-games": "Jeux populaires",
         "n-matches-played": "Parties jouées:",
         "all-games": "Tous les jeux",
@@ -429,5 +429,15 @@
         "french": "Français",
         "english": "Anglais",
         "question-input": "Veuillez écrire la question"
+    },
+    "question": {
+        "qcm": "QCM",
+        "qrl": "QRL",
+        "qre": "QRE"
+    },
+    "question-long-label": {
+        "qcm": "QCM - Choix Multiples",
+        "qrl": "QRL - Réponse Longue ",
+        "qre": "QRE - Réponse Estimée"
     }
 }

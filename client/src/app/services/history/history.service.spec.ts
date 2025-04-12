@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { HttpClient, HttpHandler } from '@angular/common/http';
-import { HistoryService } from './history.service';
+import { HistoryService } from '@app/services/history/history.service';
 
 describe('HistoryService', () => {
     let service: HistoryService;

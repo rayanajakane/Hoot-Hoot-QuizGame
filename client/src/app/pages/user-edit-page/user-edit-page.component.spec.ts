@@ -6,12 +6,12 @@ import { MatOption } from '@angular/material/core';
 import { MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatSelect } from '@angular/material/select';
+import { UserEditPageComponent } from '@app/pages/user-edit-page/user-edit-page.component';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { HistoryService } from '@app/services/history/history.service';
 import { Wallpaper, WallpaperService } from '@app/services/wallpaper/wallpaper.service';
 import { getTranslocoModule } from '@app/transloco-testing.module';
 import { of } from 'rxjs';
-import { UserEditPageComponent } from './user-edit-page.component';
 
 describe('UserEditPageComponent', () => {
     let component: UserEditPageComponent;

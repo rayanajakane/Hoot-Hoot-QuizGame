@@ -1,12 +1,12 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
+import { NotificationService } from '@app/services/notification/notification.service';
+import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { MatchEvents } from '@common/events/match.events';
 import { MatchPageInfo } from '@common/interfaces/match-page-info';
 import { translate } from '@jsverse/transloco';
 import { environment } from 'src/environments/environment';
-import { NotificationService } from '../notification/notification.service';
-import { SocketHandlerService } from '../socket-handler/socket-handler.service';
 
 @Injectable({
     providedIn: 'root',

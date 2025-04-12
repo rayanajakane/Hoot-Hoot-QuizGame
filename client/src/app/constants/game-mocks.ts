@@ -1,5 +1,5 @@
+import { getRandomNumber, getRandomString } from '@app/constants/test-utils';
 import { Game } from '@app/interfaces/game';
-import { getRandomNumber, getRandomString } from './test-utils';
 
 export const getMockGame = (): Game => ({
     id: getRandomString(),

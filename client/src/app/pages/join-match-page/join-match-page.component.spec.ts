@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { JoinMatchPageComponent } from '@app/pages/join-match-page/join-match-page.component';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { JoinMatchService } from '@app/services/join-match/join-match.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { getTranslocoModule } from '@app/transloco-testing.module';
 import { mockProvider } from '@ngneat/spectator';
 import { of, throwError } from 'rxjs';
-import { JoinMatchPageComponent } from './join-match-page.component';
 import SpyObj = jasmine.SpyObj;
 const mockHttpResponse: HttpResponse<string> = new HttpResponse({ status: 200, statusText: 'OK', body: JSON.stringify(true) });
 const mockMatches = [
@@ -17,7 +17,7 @@ const mockMatches = [
         isPlaying: false,
         gameTitle: '',
         nPlayers: 1,
-        partyConfig: { isFriendsOnly: false, isEntryFeeRequired: false, entryFeeAmount: 0,  isCheaterMode: false, canPlayCheaterMode: false},
+        partyConfig: { isFriendsOnly: false, isEntryFeeRequired: false, entryFeeAmount: 0, isCheaterMode: false, canPlayCheaterMode: false },
     },
 ];
 
