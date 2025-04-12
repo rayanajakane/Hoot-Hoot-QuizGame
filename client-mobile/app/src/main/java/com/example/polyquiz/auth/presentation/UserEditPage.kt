@@ -215,24 +215,6 @@ fun UserEditPage(
         navigateToLogin()
     }
 
-    @Composable
-    fun openUsernameDialog() {
-        if (showUsernameDialog) {
-            UsernameSuggestionDialog(
-                onDismiss = { showUsernameDialog = false },
-                onUsernameSelected = { newUsername ->
-                    username = newUsername
-                    showUsernameDialog = false
-                    authViewModel.updateUsername(
-                        newUsername,
-                        context
-                    )
-                }
-
-            )
-        }
-    }
-
     fun saveUserProfile() {
         // To hide the keyboard in case it's open
         keyboardController?.hide()

@@ -459,7 +459,6 @@ fun ReactionsRow(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReactionButton(emoji: String, count: Int, users: List<UserIdName>, username: String, onClick: () -> Unit) {
-    var isClicked by remember { mutableStateOf(false) }
     val interactionSource = remember { MutableInteractionSource() }
     val viewConfig = LocalViewConfiguration.current
     var usernameList = users.map { it.name }
