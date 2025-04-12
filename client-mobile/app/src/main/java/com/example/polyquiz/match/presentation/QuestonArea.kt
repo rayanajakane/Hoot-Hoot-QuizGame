@@ -1,5 +1,6 @@
 package com.example.polyquiz.match.presentation
 
+import android.media.MediaPlayer
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -34,18 +34,22 @@ import com.example.polyquiz.match.domain.AnswerService
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.TimeService
-import com.example.polyquiz.constants.MatchStatus
 import com.example.polyquiz.constants.UserInfo
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.BarChart
-import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.PriorityHigh
 import androidx.compose.material3.Icon
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -57,11 +61,7 @@ import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AnswerCorrectness
-import com.example.polyquiz.constants.AnswerEvents
-import com.example.polyquiz.match.domain.AnswerService.showFeedback
 import kotlinx.coroutines.launch
-import java.util.Timer
-import kotlin.concurrent.schedule
 
 @Composable
 fun QuestionArea(
@@ -84,6 +84,43 @@ fun QuestionArea(
     val scope = rememberCoroutineScope()
 
     val hasImage = !question?.pictureUrl.isNullOrEmpty()
+    val isTimerPaused by TimeService.isTimerPaused.collectAsState()
+    val isPanicking by TimeService.isPanicking.collectAsState()
+
+    val mediaPlayer = MediaPlayer.create(LocalContext.current, R.raw.panic)
+
+    LaunchedEffect(isPanicking) {
+        if(isPanicking) {
+            mediaPlayer.start()
+            scope.launch {
+                SnackbarController.sendEvent(
+                    event = SnackbarEvent(
+                        message = StringValue.StringResource(R.string.panic_mode_activated)
+                    )
+                )
+            }
+        }
+    }
+
+    LaunchedEffect(isTimerPaused) {
+        if(!isTimerPaused) {
+            scope.launch {
+                SnackbarController.sendEvent(
+                    event = SnackbarEvent(
+                        message = StringValue.StringResource(R.string.timer_start)
+                    )
+                )
+            }
+        } else {
+            scope.launch {
+                SnackbarController.sendEvent(
+                    event = SnackbarEvent(
+                        message = StringValue.StringResource(R.string.timer_paused)
+                    )
+                )
+            }
+        }
+    }
 
     LaunchedEffect (matchRoomService.isCheaterMode){
         if (matchRoomService.isCheaterMode) {
@@ -109,19 +146,20 @@ fun QuestionArea(
         }
     }
 
+    LaunchedEffect(Unit) {
+        answerService.resetStateForNewQuestion()
+        timeService.listenToTimerEvents()
+        answerService.listenToAnswerEvents()
+    }
+
     LaunchedEffect(
-        Unit,
         MatchRoomService.hasBeenKickedOut,
         MatchRoomService.isTimeToNavigateToResults,
         MatchRoomService.navigateToVotingPage
     ) {
-        answerService.resetStateForNewQuestion()
-        timeService.listenToTimerEvents()
-        answerService.listenToAnswerEvents()
         matchRoomService.isQuitting = false
         answerService.playerScore = 0
         context = matchContextService.getContext()
-
 
         when (MatchRoomService.navigateToVotingPage) {
             true -> {
@@ -147,14 +185,18 @@ fun QuestionArea(
             else -> Unit
         }
     }
+
+    // To avoid memory leaks
+    DisposableEffect(Unit) {
+        onDispose {
+            mediaPlayer.release()
+        }
+    }
+
     context = matchContextService.getContext()
 
     fun routeToResultsPage() {
         matchRoomService.routeToResultsPage()
-    }
-
-    fun voteOnCheater() {
-        matchRoomService.voteOnCheater();
     }
 
     Row(modifier = Modifier
@@ -170,7 +212,7 @@ fun QuestionArea(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .background(MaterialTheme.colorScheme.background),
+                .background(MaterialTheme.colorScheme.background).navigationBarsPadding(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(24.dp))
@@ -218,6 +260,7 @@ fun QuestionArea(
                             .align(Alignment.BottomCenter)
                             .padding(top = 16.dp)
                     )
+
 
                 } else {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -322,11 +365,8 @@ fun QuestionArea(
                     }
                 }
 
-
-
                 Spacer(modifier = Modifier.height(24.dp))
             }
-
 
             if (!matchRoomService.isCooldown) {
                 when (question?.type) {
@@ -422,6 +462,47 @@ fun QuestionArea(
                                 ) {
                                     Text(stringResource(R.string.next_question))
                                 }
+                            } else if (!answerService.isNextQuestionButtonEnabled) {
+                                Button(
+                                    onClick = {
+                                        timeService.pauseTimer(matchRoomService.getRoomCode())
+                                    },
+                                    shape = RoundedCornerShape(3.dp)
+                                ) {
+                                    if (isTimerPaused) {
+                                        Icon(
+                                            Icons.Filled.PlayArrow,
+                                            contentDescription = stringResource(R.string.start_timer)
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(stringResource(R.string.start_timer))
+                                    } else {
+                                        Icon(
+                                            Icons.Filled.Pause,
+                                            contentDescription = stringResource(R.string.pause_timer)
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(stringResource(R.string.pause_timer))
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Button(
+                                    onClick = {
+                                        timeService.triggerPanicTimer(matchRoomService.getRoomCode())
+                                    },
+                                    enabled = !isPanicking,
+                                    shape = RoundedCornerShape(3.dp)
+                                ) {
+
+                                    Icon(
+                                        Icons.Filled.PriorityHigh,
+                                        contentDescription = stringResource(R.string.panic_mode)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(stringResource(R.string.panic_mode))
+
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
                             }
                             else if (answerService.isEndGame && MatchRoomService.isCheaterMode ) {
                                 Log.d("Voting Area", "next question enabled")
@@ -454,5 +535,7 @@ fun QuestionArea(
             )
         }
     }
+
+
 }
 

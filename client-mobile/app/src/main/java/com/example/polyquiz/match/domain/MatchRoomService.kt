@@ -157,10 +157,10 @@ object MatchRoomService {
                 val firstArg = args[0]
                 if (firstArg is JSONArray) {
                     if (firstArg.length() > 0) {
-                        val user = firstArg.getString(0)
+                        val user = firstArg.getString(0).removeSuffix("'").removePrefix("'")
                         userVoted = user
                     } else {
-                        Log.d("onUsersWhoVoted","JSONArray object is empty.")
+                        Log.e("onUsersWhoVoted","JSONArray object is empty.")
                     }
                 }
             }

@@ -3,11 +3,14 @@ package com.example.polyquiz.chat.presentation
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
@@ -56,6 +59,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
@@ -82,9 +86,9 @@ import java.util.Locale
 
 @Composable
 fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
-    val username by remember { mutableStateOf(authViewModel.getUsername()) }
+    val username by authViewModel.username.collectAsState()
     val userId by remember { mutableStateOf(authViewModel.getUserId()) }
-    val avatarURL by remember { mutableStateOf(authViewModel.getAvatarURL()) }
+    val avatarURL by authViewModel.avatarURL.collectAsState()
     val roomCode by MatchRoomService.matchRoomCode.collectAsState()
     val currentWallpaper by WallpaperService.currentWallpaper.collectAsState()
     var selectedChat by remember {
@@ -114,7 +118,7 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
         "Match" -> ChatService.matchRoomMessages.observeAsState().value
         else -> ChatService.generalMessages.observeAsState().value
     }
-    var newMessageText by remember{ mutableStateOf("") }
+    var newMessageText by remember { mutableStateOf("") }
 
     LaunchedEffect(messages?.size) {
         messages?.let { list ->
@@ -137,6 +141,8 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceAround,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.weight(1f)
         ) {
             TruncatedText(
                 text = username,
@@ -146,14 +152,15 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                 Modifier.padding(20.dp, 20.dp, 20.dp, 0.dp)
             )
             ChatSelectionMenu(selectedChat) { newChat -> selectedChat = newChat }
+            Spacer(modifier = Modifier.height(8.dp))
             // REFERENCE: https://youtu.be/P3xQdINdrWY
             // To handle the situation where there would be no message to display.
             messages?.let {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
+                    state = listState,
                     modifier = Modifier
-                        .weight(1f)
-                        .padding(20.dp, 20.dp, 20.dp, 0.dp),
+                        .weight(1f),
                 ) {
                     itemsIndexed(it) { _: Int, message: Message ->
                         MessageContainer(message, userId, username)
@@ -259,38 +266,32 @@ fun MessageContainer(message: Message, currentUserId: String, username: String) 
             bottomStart = 10.dp
         )
     }
-    Column(
-        horizontalAlignment = containerAlignment,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Column(modifier = Modifier.width(containerWidth)) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.width(containerWidth)
-            ) {
-                if (message.authorId != currentUserId) {
-                    AvatarImage(message.photoUrl)
-                }
-                TruncatedText(
-                    message.authorUsername,
-                    fontSize = 16.sp,
-                    maxChars = 11,
-                    FontWeight(600),
-                    Modifier
-                )
-                Text(
-                    text = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(message.date)
-                        .toString()
-                )
-                if (message.authorId == currentUserId) {
-                    AvatarImage(message.photoUrl)
-                }
+    Row(modifier = Modifier.fillMaxSize()) {
+        // Avatar box if not author
+        if (message.authorId != currentUserId) {
+            Box(modifier = Modifier.align(Alignment.Bottom).padding(bottom = 20.dp, start = 10.dp)) {
+                AvatarImage(message.photoUrl)
             }
-            Column(
-                modifier = Modifier
-                    .padding(top = 10.dp)
-                    .align(alignment = AbsoluteAlignment.Left)
-            ) {
+        }
+        // Message box
+        Box(modifier = Modifier.weight(1f)) {
+            Column(modifier = Modifier.align(Alignment.Center)) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.width(containerWidth)
+                ) {
+                    TruncatedText(
+                        message.authorUsername,
+                        fontSize = 16.sp,
+                        maxChars = 11,
+                        FontWeight(600),
+                        Modifier
+                    )
+                    Text(
+                        text = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(message.date)
+                            .toString()
+                    )
+                }
                 Card(
                     colors = CardDefaults.cardColors(containerColor = containerColor),
                     shape = containerCorner,
@@ -302,9 +303,14 @@ fun MessageContainer(message: Message, currentUserId: String, username: String) 
                     message,
                     currentUserId,
                     username,
-                    MatchRoomService.getRoomCode(),
-                    modifier = Modifier.align(alignment = AbsoluteAlignment.Left)
+                    MatchRoomService.getRoomCode()
                 )
+            }
+        }
+        // Avatar box if author
+        if (message.authorId == currentUserId) {
+            Box(modifier = Modifier.align(Alignment.Bottom).padding(bottom = 20.dp, end = 10.dp)) {
+                AvatarImage(message.photoUrl)
             }
         }
     }
@@ -390,7 +396,7 @@ fun AvatarImage(photoUrl: String?) {
         model = photoUrl,
         contentDescription = "Avatar",
         modifier = Modifier
-            .size(40.dp)
+            .size(50.dp)
             .clip(CircleShape),
         contentScale = ContentScale.Crop,
         placeholder = rememberAsyncImagePainter(model = PresetAvatar.DEFAULT.value)
@@ -403,7 +409,6 @@ fun ReactionsRow(
     userId: String,
     username: String,
     roomCode: String?,
-    modifier: Modifier
 ) {
     Row(
         modifier = Modifier.padding(top = 1.dp),
@@ -438,6 +443,7 @@ fun ReactionsRow(
         }
     }
 }
+
 @Composable
 fun ReactionButton(emoji: String, count: Int, onClick: () -> Unit) {
     var isClicked by remember { mutableStateOf(false) }
@@ -474,7 +480,10 @@ fun TruncatedText(
     fontSize: TextUnit,
     maxChars: Int,
     fontWeight: FontWeight,
-    modifier: Modifier
+    modifier: Modifier,
+    color : Color = MaterialTheme.colorScheme.onSurface,
+    style: TextStyle = TextStyle()
+
 ) {
     val truncatedText = if (text.length > maxChars) {
         text.take(maxChars) + "..."
@@ -488,6 +497,8 @@ fun TruncatedText(
         fontWeight = fontWeight,
         modifier = modifier,
         maxLines = 1,
-        overflow = TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis,
+        color = color,
+        style = style
     )
 }
