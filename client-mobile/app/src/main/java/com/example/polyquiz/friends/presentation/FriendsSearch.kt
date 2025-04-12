@@ -1,5 +1,6 @@
 package com.example.polyquiz.friends.presentation
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -14,6 +15,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -47,6 +51,8 @@ fun FriendsSearchScreen(
     var searchQuery by remember { mutableStateOf("") }
     val currentBalance by shopViewModel.currentBalance.collectAsState()
     val scope = rememberCoroutineScope()
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(currentUserID) {
         friendsService.initialize(currentUserID)
@@ -109,7 +115,18 @@ fun FriendsSearchScreen(
             shopViewModel.stopListeningForMoneyEvents()
         }
     }
-    Row {
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                })
+            }
+            .navigationBarsPadding()
+            .statusBarsPadding()
+    ) {
         ChatComponent(modifier = Modifier, authViewModel = authViewModel)
         Box(
             contentAlignment = Alignment.Center,
@@ -117,6 +134,13 @@ fun FriendsSearchScreen(
                 .fillMaxSize()
                 .imePadding()
         ) {
+            Text(
+                stringResource(R.string.friends),
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.align(Alignment.TopCenter)
+            )
             Column(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
@@ -141,63 +165,79 @@ fun FriendsSearchScreen(
                     .align(Alignment.TopCenter)
                     .fillMaxSize()
                     .padding(16.dp)
+                    .padding(top = 100.dp)
             ) {
-                Text(stringResource(R.string.friends))
-                Spacer(modifier = Modifier.height(32.dp))
                 LazyColumn {
                     if (pendingRequests.isNotEmpty()) {
                         item {
+                            Spacer(modifier = Modifier.height(8.dp))
                             PendingRequestsCard(pendingRequests, scope, friendsService)
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
                     }
 
                     if (sentRequests.isNotEmpty()) {
                         item {
+                            Spacer(modifier = Modifier.height(8.dp))
                             SentRequestsCard(sentRequests, scope, friendsService)
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
                     }
                     if (friends.isNotEmpty()) {
                         item {
                             ElevatedCard() {
-                                Text(
-                                    text = stringResource(R.string.my_friends),
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 22.sp,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.padding(16.dp)
-                                )
-                                friends.forEach { friend ->
-                                    FriendsListItem(
-                                        modifier = Modifier.padding(16.dp),
-                                        user = friend,
-                                        isFriend = true,
-                                        isRequestPending = false,
-                                        isRequestSent = false,
-                                        isEligible = false,
-                                        onSendRequest = { },
-                                        onCancelRequest = { },
-                                        onAcceptRequest = { },
-                                        onRejectRequest = { },
-                                        onRemoveFriend = { id ->
-                                            scope.launch {
-                                                friendsService.removeFriend(
-                                                    id
-                                                )
-                                            }
-                                        },
-                                        onDonate = { friendId ->
-                                            selectedFriendId = friendId
-                                            showDonationDialog = true
+                                Box {
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Text(
+                                            text = stringResource(R.string.my_friends),
+                                            style = MaterialTheme.typography.headlineSmall,
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.colorScheme.onBackground,
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier
+                                                .padding(16.dp)
+                                        )
+                                        friends.forEach { friend ->
+                                            FriendsListItem(
+                                                user = friend,
+                                                isFriend = true,
+                                                isRequestPending = false,
+                                                isRequestSent = false,
+                                                isEligible = false,
+                                                onSendRequest = { },
+                                                onCancelRequest = { },
+                                                onAcceptRequest = { },
+                                                onRejectRequest = { },
+                                                onRemoveFriend = { id ->
+                                                    scope.launch {
+                                                        friendsService.removeFriend(
+                                                            id
+                                                        )
+                                                    }
+                                                },
+                                                onDonate = { friendId ->
+                                                    selectedFriendId = friendId
+                                                    showDonationDialog = true
+                                                }
+                                            )
                                         }
-                                    )
+                                    }
+
                                 }
+
                             }
                         }
 
                     }
 
                     item {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillParentMaxWidth()
+                        ) {
+                            Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = stringResource(R.string.search_friend),
                                 style = MaterialTheme.typography.headlineSmall,
@@ -242,7 +282,15 @@ fun PendingRequestsCard(
     friendsService: FriendsService
 ) {
     ElevatedCard() {
-        Text(text = stringResource(R.string.friend_requests_received))
+        Text(
+            text = stringResource(R.string.friend_requests_received),
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(16.dp)
+        )
         pendingRequests.forEach { user ->
             FriendsListItem(
                 user = user,
@@ -280,28 +328,39 @@ fun SentRequestsCard(
     friendsService: FriendsService
 ) {
     ElevatedCard() {
-        Text(stringResource(R.string.friend_requests_sent))
-        sentRequests.forEach { user ->
-            FriendsListItem(
-                user = user,
-                isFriend = false,
-                isRequestPending = false,
-                isRequestSent = true,
-                isEligible = false,
-                onSendRequest = { },
-                onCancelRequest = { id ->
-                    scope.launch {
-                        friendsService.cancelRequest(
-                            id
-                        )
-                    }
-                },
-                onAcceptRequest = { },
-                onRejectRequest = { },
-                onRemoveFriend = { },
-                onDonate = { }
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                stringResource(R.string.friend_requests_sent),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(16.dp)
             )
+            sentRequests.forEach { user ->
+                FriendsListItem(
+                    user = user,
+                    isFriend = false,
+                    isRequestPending = false,
+                    isRequestSent = true,
+                    isEligible = false,
+                    onSendRequest = { },
+                    onCancelRequest = { id ->
+                        scope.launch {
+                            friendsService.cancelRequest(
+                                id
+                            )
+                        }
+                    },
+                    onAcceptRequest = { },
+                    onRejectRequest = { },
+                    onRemoveFriend = { },
+                    onDonate = { }
+                )
+            }
         }
+
     }
 }
 
@@ -316,21 +375,46 @@ fun SearchResultsCard(
 ) {
 
     ElevatedCard() {
-        Text(stringResource(R.string.search_results))
-        searchResults.forEach { user ->
-            FriendsListItem(
-                user = user,
-                isFriend = friends.any { it.id == user.id },
-                isRequestPending = pendingRequests.any { it.id == user.id },
-                isRequestSent = sentRequests.any { it.id == user.id },
-                isEligible = !(friends.any { it.id == user.id } || pendingRequests.any { it.id == user.id } || sentRequests.any { it.id == user.id }),
-                onSendRequest = { id -> scope.launch { friendsService.sendFriendRequest(id) } },
-                onCancelRequest = { id -> scope.launch { friendsService.cancelRequest(id) } },
-                onAcceptRequest = { id -> scope.launch { friendsService.acceptFriendRequest(id) } },
-                onRejectRequest = { id -> scope.launch { friendsService.rejectFriendRequest(id) } },
-                onRemoveFriend = { id -> scope.launch { friendsService.removeFriend(id) } },
-                onDonate = { }
-            )
+        Box() {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    stringResource(R.string.search_results),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(16.dp)
+                )
+                searchResults.forEach { user ->
+                    FriendsListItem(
+                        user = user,
+                        isFriend = friends.any { it.id == user.id },
+                        isRequestPending = pendingRequests.any { it.id == user.id },
+                        isRequestSent = sentRequests.any { it.id == user.id },
+                        isEligible = !(friends.any { it.id == user.id } || pendingRequests.any { it.id == user.id } || sentRequests.any { it.id == user.id }),
+                        onSendRequest = { id -> scope.launch { friendsService.sendFriendRequest(id) } },
+                        onCancelRequest = { id -> scope.launch { friendsService.cancelRequest(id) } },
+                        onAcceptRequest = { id ->
+                            scope.launch {
+                                friendsService.acceptFriendRequest(
+                                    id
+                                )
+                            }
+                        },
+                        onRejectRequest = { id ->
+                            scope.launch {
+                                friendsService.rejectFriendRequest(
+                                    id
+                                )
+                            }
+                        },
+                        onRemoveFriend = { id -> scope.launch { friendsService.removeFriend(id) } },
+                        onDonate = { }
+                    )
+                }
+            }
         }
+
     }
 }
