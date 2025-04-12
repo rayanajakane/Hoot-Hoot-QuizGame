@@ -270,6 +270,7 @@ export class MatchRoomService {
     onUsersWhoVoted() {
         this.socketService.on(MatchEvents.SendVotingUsers, (user: string) => {
             this.userVoted = user;
+            user = user.toString().replace(/['"]+/g, '');
             this.votingUsers.push(user.toString());
         });
     }
