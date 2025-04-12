@@ -327,6 +327,7 @@ fun Navigation(
             RankingsPage(
                 modifier = modifier,
                 authViewModel = authViewModel,
+                shopViewModel = shopViewModel,
                 navigateToHome = {
                     navController.navigate(Route.Home)
                 },
