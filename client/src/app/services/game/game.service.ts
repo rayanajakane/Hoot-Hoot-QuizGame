@@ -74,7 +74,6 @@ export class GameService extends CommunicationService<Game> {
                 }
                 newGame.isVisible = false;
                 this.games.push(newGame);
-                //TODO: transalte
                 this.notificationService.displaySuccessMessage(translate('game-modification.creation-success'));
             },
 
