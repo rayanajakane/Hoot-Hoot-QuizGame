@@ -59,7 +59,6 @@ fun FriendsSearchScreen(
         friendsService.initialize(currentUserID)
         friendsService.returnAllData()
         shopViewModel.getCurrentBalance(currentUserID)
-        shopViewModel.listenForMoneyEvents()
     }
 
     val pendingRequests by friendsService.pendingRequests.collectAsState()

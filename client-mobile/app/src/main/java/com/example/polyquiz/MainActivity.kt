@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         val authViewModel: AuthViewModel by viewModels()
         val cameraViewModel: CameraViewModel by viewModels()
         val shopViewModel: ShopViewModel by viewModels()
-
+        shopViewModel.listenForMoneyEvents()
         setContent {
             val currentTheme by authViewModel.theme.collectAsState()
             val setTheme: (Theme) -> Unit = { selectedTheme ->
