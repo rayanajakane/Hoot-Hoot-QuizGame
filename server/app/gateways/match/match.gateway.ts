@@ -328,7 +328,13 @@ export class MatchGateway implements OnGatewayDisconnect {
         }
 
         if (this.matchRoomService.isCheaterMode && room.isPlaying && lessthanThreePlayers) {
-            this.sendError(roomCode, [LESS_THAN_3_PLAYERS]);
+            this.sendError(roomCode, LESS_THAN_3_PLAYERS);
+            this.deleteRoom(roomCode);
+            return;
+        }
+
+        if (this.matchRoomService.isCheaterMode && room.isPlaying && lessthanThreePlayers) {
+            this.sendError(roomCode, LESS_THAN_3_PLAYERS);
             this.deleteRoom(roomCode);
             return;
         }
