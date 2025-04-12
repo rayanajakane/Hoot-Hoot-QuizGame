@@ -1,7 +1,7 @@
 <div *transloco="let t; read: 'main-page'">
     <div *ngIf="authenticationService.isUserAuthenticated() && matchContextService.getContext() === 0" class="right-panel">
         <div class="sticky">
-            <button mat-raised-button [matMenuTriggerFor]="menu"><mat-icon>menu</mat-icon>Menu</button>
+            <button mat-raised-button [matMenuTriggerFor]="menu" color="basic"><mat-icon>menu</mat-icon>Menu</button>
             <mat-menu #menu="matMenu" yPosition="below" xPosition="after">
                 <button mat-menu-item routerLink="home"><mat-icon>home</mat-icon>{{ t('home') }}</button>
                 <button mat-menu-item routerLink="join-match"><mat-icon>play_circle</mat-icon>{{ t('join-match') }}</button>
@@ -10,11 +10,12 @@
                 <button mat-menu-item routerLink="edit-profile"><mat-icon>person</mat-icon>{{ t('edit-profile') }}</button>
                 <button mat-menu-item routerLink="shop"><mat-icon>shopping_cart</mat-icon>{{ t('shop') }}</button>
                 <button mat-menu-item routerLink="friends-search"><mat-icon>group</mat-icon>{{ t('friends') }}</button>
+                <button mat-menu-item routerLink="elo-rankings"><mat-icon>stars</mat-icon>{{ t('rankings') }}</button>
                 <button mat-menu-item (click)="authenticationService.signOut()"><mat-icon>logout</mat-icon>{{ t('logout') }}</button>
             </mat-menu>
             <div class="balance-container">
                 <mat-icon class="balance-icon">account_balance_wallet</mat-icon>
-                <span class="balance-text"> {{ moneyService.currentBalance | currency: 'USD' : 'symbol' }} </span>
+                <span class="balance-text"> {{ moneyService.currentBalance }}$</span>
             </div>
         </div>
     </div>

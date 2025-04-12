@@ -29,17 +29,19 @@ export class NotificationService {
         });
     }
 
-    notifyCheaterPlayer(username: string, successMessage:string): MatSnackBarRef<TextOnlySnackBar>{
+    notifyCheaterPlayer(username: string, successMessage: string): MatSnackBarRef<TextOnlySnackBar> {
         return this.openSnackBar(successMessage, '✔', {
             duration: NOTFICATION_DURATION,
             panelClass: ['cheater-snackbar'],
+            verticalPosition: 'top',
         });
     }
 
-    notifyRegularPlayer(username: string, successMessage:string): MatSnackBarRef<TextOnlySnackBar>{
+    notifyRegularPlayer(username: string, successMessage: string): MatSnackBarRef<TextOnlySnackBar> {
         return this.openSnackBar(successMessage, '✔', {
             duration: NOTFICATION_DURATION,
             panelClass: ['cheater-snackbar'],
+            verticalPosition: 'top',
         });
     }
 

@@ -42,8 +42,6 @@ fun PlayersListComponent(
     extraContent: @Composable () -> Unit = {}
 ) {
     val userId = matchRoomService.userId
-    var sortBy by remember { mutableStateOf("score") }
-    var sortOrder by remember { mutableStateOf("descending") }
 
     Column(
         modifier = modifier

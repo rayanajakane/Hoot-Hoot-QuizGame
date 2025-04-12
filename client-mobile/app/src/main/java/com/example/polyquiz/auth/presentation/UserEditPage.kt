@@ -3,6 +3,7 @@ package com.example.polyquiz.auth.presentation
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
+import androidx.activity.result.launch
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,9 +33,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.AutoFixNormal
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -59,6 +62,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -71,6 +75,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -84,14 +89,19 @@ import com.example.polyquiz.auth.domain.UsernameSuggestionService
 import com.example.polyquiz.auth.domain.UsernameSuggestionService.showUsernameDialog
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.MatchStats
+import com.example.polyquiz.constants.PremiumAvatar
 import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.constants.SIZE_CONSTANTS
 import com.example.polyquiz.constants.UserHistoryInfo
+import com.example.polyquiz.constants.Wallpaper
 import com.example.polyquiz.core.ThemeService
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.core.TranslationService
+import com.example.polyquiz.shop.domain.PremiumAvatarService
+import com.example.polyquiz.shop.domain.WallpaperService
 import com.example.polyquiz.ui.MenuButton
 import com.example.polyquiz.ui.theme.Theme
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -112,7 +122,8 @@ fun UserEditPage(
     navigateToJoinRoom: () -> Unit,
     navigateToLogin: () -> Unit,
     navigateToCamera: () -> Unit,
-    navigateToRankingsPage: () -> Unit
+    navigateToRankingsPage: () -> Unit,
+    navigateToShopPage: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val translationService = TranslationService
@@ -125,7 +136,11 @@ fun UserEditPage(
     val keyboardController = LocalSoftwareKeyboardController.current
     val availableThemes = mapOf(
         Theme.LIGHT to stringResource(R.string.light_theme),
-        Theme.DARK to stringResource(R.string.dark_theme)
+        Theme.DARK to stringResource(R.string.dark_theme),
+        Theme.LUIGI to stringResource(R.string.luigi_theme),
+        Theme.MARIO to stringResource(R.string.mario_theme),
+        Theme.SONIC to stringResource(R.string.sonic_theme),
+        Theme.PIKACHU to stringResource(R.string.pikachu_theme)
     )
     val availableLangs =
         mapOf("en" to stringResource(R.string.english), "fr" to stringResource(R.string.french))
@@ -173,6 +188,24 @@ fun UserEditPage(
         theme = selectedTheme
         Log.d("Theme changer", "Selected $theme")
     }
+    val purchasedAvatars by PremiumAvatarService.purchasedAvatars.collectAsState()
+    val purchasedWallpapers by WallpaperService.purchasedWallpapers.collectAsState()
+    val currentWallpaper by WallpaperService.currentWallpaper.collectAsState()
+    val purchasedThemes by ThemeService.purchasedThemes.collectAsState()
+    val availablePremiumThemes = remember(purchasedThemes) {
+        ThemeService.getPremiumThemes().filter { theme ->
+            purchasedThemes.contains(ThemeService.themeToString(theme))
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        WallpaperService.initialize(authViewModel)
+        PremiumAvatarService.initialize(authViewModel)
+        ThemeService.loadPurchasedThemes(authViewModel)
+    }
+
+    val scope = rememberCoroutineScope()
+
     DisposableEffect(Unit) {
         onDispose {
             authViewModel.setProfileUpdated(false)
@@ -344,6 +377,7 @@ fun UserEditPage(
                         navigateToFriendsPage,
                         navigateToJoinRoom,
                         navigateToRankingsPage,
+                        navigateToShopPage,
                         signOut = {
                             authViewModel.signOut()
                             navigateToLogin()
@@ -412,6 +446,85 @@ fun UserEditPage(
                                     onClickAvatar
                                 )
                             }
+                            if (purchasedAvatars.isNotEmpty()) {
+                                Text(stringResource(R.string.avatar_items))
+                                Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                                    purchasedAvatars.forEach { avatarId ->
+                                        val premiumAvatar = PremiumAvatar.entries.find { it.name == avatarId }
+                                        if (premiumAvatar != null) {
+                                            ClickableAvatarPlaceholder(
+                                                32.dp,
+                                                premiumAvatar.value,
+                                                onClickAvatar
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                            // Add wallpapers section
+                            Text(stringResource(R.string.wallpaper_items))
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                // No background option
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier
+                                        .size(width = 80.dp, height = 50.dp)
+                                        .clip(RoundedCornerShape(4.dp))
+                                        .background(Color.LightGray)
+                                        .border(
+                                            width = if (currentWallpaper == Wallpaper.None.value) 2.dp else 0.dp,
+                                            color = MaterialTheme.colorScheme.primary,
+                                            shape = RoundedCornerShape(4.dp)
+                                        )
+                                        .clickable {
+                                            scope.launch {
+                                                WallpaperService.setWallpaper(authViewModel, Wallpaper.None.value)
+                                            }
+                                        }
+                                ) {
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Icon(
+                                            imageVector = Icons.Default.Block,
+                                            contentDescription = "No background",
+                                            tint = Color.Gray
+                                        )
+                                        Text(
+                                            text = stringResource(R.string.no_background),
+                                            fontSize = 10.sp,
+                                            color = Color.Gray
+                                        )
+                                    }
+                                }
+
+                                // Purchased wallpapers
+                                purchasedWallpapers.forEach { wallpaperId ->
+                                    val wallpaper = Wallpaper.values().find { it.name == wallpaperId }
+                                    if (wallpaper != null && wallpaper != Wallpaper.None) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(width = 80.dp, height = 50.dp)
+                                                .clip(RoundedCornerShape(4.dp))
+                                                .border(
+                                                    width = if (currentWallpaper == wallpaper.value) 2.dp else 0.dp,
+                                                    color = MaterialTheme.colorScheme.primary,
+                                                    shape = RoundedCornerShape(4.dp)
+                                                )
+                                                .clickable {
+                                                    scope.launch {
+                                                        WallpaperService.setWallpaper(authViewModel, wallpaper.value)
+                                                    }
+                                                }
+                                        ) {
+                                            AsyncImage(
+                                                model = wallpaper.value,
+                                                contentDescription = "Wallpaper",
+                                                contentScale = ContentScale.Crop,
+                                                modifier = Modifier.fillMaxSize()
+                                            )
+                                        }
+                                    }
+                                }
+                            }
                         }
                         Column {
                             TextField(
@@ -477,7 +590,7 @@ fun UserEditPage(
                                 Text(text = usernameError, color = Color.Red)
                             }
                             Spacer(modifier = Modifier.height(8.dp))
-                            ThemeDropdown(context, availableThemes, currentTheme, onClickTheme)
+                            ThemeDropdown(context, availableThemes, availablePremiumThemes, currentTheme, onClickTheme)
                             Spacer(modifier = Modifier.height(8.dp))
                             ExposedDropdownMenuBox(
                                 expanded = expandedLang,
@@ -781,6 +894,7 @@ fun UserEditPage(
 fun ThemeDropdown(
     context: android.content.Context,
     themes: Map<Theme, String>,
+    premiumThemes: List<Theme>,
     currentTheme: Theme,
     onClick: (Theme) -> Unit
 ) {
@@ -811,25 +925,57 @@ fun ThemeDropdown(
             onDismissRequest = { expandedTheme = false }
         ) {
             themes.keys.forEach { theme ->
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            theme.displayName.asString(context),
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                    },
-                    onClick = {
-                        onClick(theme)
-                        selectedTheme = theme
-                        textFieldStateTheme.setTextAndPlaceCursorAtEnd(
-                            theme.displayName.asString(
-                                context
+                if (theme == Theme.LIGHT || theme == Theme.DARK) {
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                theme.displayName.asString(context),
+                                style = MaterialTheme.typography.bodyLarge
                             )
-                        )
-                        expandedTheme = false
-                    },
-                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                        },
+                        onClick = {
+                            onClick(theme)
+                            selectedTheme = theme
+                            textFieldStateTheme.setTextAndPlaceCursorAtEnd(
+                                theme.displayName.asString(
+                                    context
+                                )
+                            )
+                            expandedTheme = false
+                        },
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                    )
+                }
+            }
+            if (premiumThemes.isNotEmpty()) {
+                DropdownMenuText(
+                    text = stringResource(R.string.premium_themes),
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontStyle = FontStyle.Italic,
+                        color = MaterialTheme.colorScheme.outline
+                    )
                 )
+
+                premiumThemes.forEach { theme ->
+                    DropdownMenuItem(
+                        text = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    theme.displayName.asString(context),
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                                Spacer(Modifier.width(4.dp))
+                                Text("👑", fontSize = 14.sp)
+                            }
+                        },
+                        onClick = {
+                            onClick(theme)
+                            selectedTheme = theme
+                            expandedTheme = false
+                        },
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                    )
+                }
             }
         }
     }
@@ -937,6 +1083,22 @@ fun DeleteDialog(
                 Text(stringResource(R.string.cancel))
             }
         }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DropdownMenuText(
+    text: String,
+    modifier: Modifier = Modifier,
+    style: TextStyle = MaterialTheme.typography.bodyMedium
+) {
+    Text(
+        text = text,
+        modifier = modifier.padding(
+            vertical = 8.dp
+        ),
+        style = style
     )
 }
 

@@ -1,10 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { PresetAvatar } from '@app/constants/avatar-constants';
+import { MatchContext } from '@app/constants/states';
 import { Player } from '@app/interfaces/player';
 import { ConfettiService } from '@app/services/confetti/confetti.service';
 import { HistogramService } from '@app/services/histogram/histogram.service';
+import { MatchContextService } from '@app/services/match-context/match-context.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
+import { MoneyService } from '@app/services/money/money.service';
 import { GradesHistogram, Histogram, MultipleChoiceHistogram } from '@common/interfaces/histogram';
 import { Subscription } from 'rxjs/internal/Subscription';
 @Component({
@@ -26,7 +29,13 @@ export class ResultsPageComponent implements OnInit, OnDestroy {
         public readonly matchRoomService: MatchRoomService,
         private readonly histogramService: HistogramService,
         private readonly confettiService: ConfettiService,
+        public matchContext: MatchContextService,
+        public moneyService: MoneyService,
     ) {}
+
+    get contextOptions(): typeof MatchContext {
+        return MatchContext;
+    }
 
     get currentMultipleChoiceHistogram(): MultipleChoiceHistogram {
         return this.histogramsGame[this.currentQuestionIndex] as MultipleChoiceHistogram;

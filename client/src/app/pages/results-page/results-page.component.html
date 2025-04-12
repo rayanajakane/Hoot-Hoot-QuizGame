@@ -1,31 +1,42 @@
 <ng-container *transloco="let t">
     <div id="main-container">
-        <h1>R{{ t('history.result') }}</h1>
+        <h1>{{ t('history.result') }}</h1>
+        <div
+            *ngIf="matchContext.getContext() !== contextOptions.HostView"
+            [ngClass]="this.matchRoomService.isCheaterMode ? 'cheater-mode-balance-container' : 'balance-container'"
+        >
+            <mat-icon class="balance-icon">account_balance_wallet</mat-icon>
+            <span class="balance-text"> {{ t('page.new-total') }} {{ moneyService.currentBalance }}$</span>
+        </div>
         <div id="players-list">
-            <mat-card *ngFor="let player of this.players | sortPlayers: 'score' : 'descending'" class="player-card">
+            <mat-card
+                *ngFor="let player of this.players | sortPlayers: 'score' : 'descending'"
+                [ngClass]="this.matchRoomService.isCheaterMode ? 'cheater-mode-player-card' : 'player-card'"
+            >
                 <div class="username-avatar-container">
                     <div class="avatar-container">
                         <div class="avatar">
                             <img src="{{ player.photoUrl ? player.photoUrl : defaultAvatar }}" alt="" />
                         </div>
                     </div>
-
-                    <span class="username">
-                        <p [ngClass]="[player.isPlaying ? '' : 'inactive-player']">{{ player.username }}</p>
-                        <p *ngIf="player.id === this.matchRoomService.cheaterPlayer?.id" class="cheater-tag">
-                            <strong> {{ t('cheater-mode.cheater') }} </strong>
-                        </p>
-                    </span>
-                </div>
-                <div class="vote">
-                    <p *ngIf="this.matchRoomService.isCheaterMode">
-                        Votes: {{ this.matchRoomService.votesResults[player.username] ? this.matchRoomService.votesResults[player.username] : 0 }}
+                    <p *ngIf="player.id !== this.matchRoomService.cheaterPlayer?.id" [ngClass]="[player.isPlaying ? '' : 'inactive-player']">
+                        {{ player.username }}
+                    </p>
+                    <p
+                        *ngIf="player.id === this.matchRoomService.cheaterPlayer?.id"
+                        [ngClass]="[player.isPlaying ? 'cheater-tag' : 'cheater-tag inactive-player']"
+                    >
+                        {{ player.username + ' 😈' }}
                     </p>
                 </div>
 
+                <p *ngIf="this.matchRoomService.isCheaterMode" class="votes">
+                    {{ this.matchRoomService.votesResults[player.username] ? this.matchRoomService.votesResults[player.username] : 0 }} votes
+                </p>
+
                 <div class="player-performance">
                     <p>{{ player.score }} pts</p>
-                    <p>({{ player.bonusCount }}✨)</p>
+                    <p>{{ player.bonusCount }} bonus✨</p>
                 </div>
             </mat-card>
         </div>

@@ -52,5 +52,8 @@ object Route {
     object Drawing
 
     @Serializable
+    object ShopPage
+
+    @Serializable
     object VotingPage
 }

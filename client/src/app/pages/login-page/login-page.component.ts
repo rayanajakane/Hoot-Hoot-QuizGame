@@ -18,7 +18,7 @@ export class LoginPageComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.themeService.setTheme(Theme.LIGHT);
+        this.themeService.setTheme(Theme.LIGHT, false);
         this.autofocus();
     }
 

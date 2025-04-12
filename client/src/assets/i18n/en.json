@@ -67,7 +67,8 @@
         "chat-wallpapers": "Chat wallpapers",
         "no-background": "No background",
         "fr": "French",
-        "en": "English"
+        "en": "English",
+        "new-total": "New total: "
     },
     "nav": {
         "main-page": "Main page",
@@ -131,17 +132,17 @@
         "start-match": "Start Match",
         "creation": "creation",
         "modification": "modification",
-        "starting": "Game \"{{title}}\" starts in.."
+        "starting": "Game \"{{title}}\" starts in..."
     },
     "admin-edit-page": {
-        "cancel": "Cancel game {{state}}",
+        "cancel": "Cancel",
         "creation": "creation",
         "modification": "modification",
         "creation-title": "Game creation",
         "modification-title": "Game modification",
-        "create-game": "Create game",
-        "apply-changes": "Apply changes",
-        "add-question": "Add new question",
+        "create-game": "Save",
+        "apply-changes": "Save",
+        "add-question": "New question",
         "notice": "The game must contain at least 1 question. Click on \"Add new question\" or import a question from the bank."
     },
     "question-creation-form": {
@@ -187,7 +188,7 @@
         "wallpaper-items": "Chat Wallpapers"
     },
     "friends-search": {
-        "search-friend": "Search Friend",
+        "search-friend": "Search User (Non-Friend)",
         "search-input": "Search",
         "search-input-placeholder": "Username",
         "friend-requests-received": "Friend Requests received",
@@ -203,7 +204,7 @@
         "cancel-request": "Cancel",
         "add-friend": "Add Friend",
         "donate-money": "Donate Money",
-        "enter-donation-amout": "Enter donation amount",
+        "enter-donation-amout": "Enter donation amount: (Max $500 per day)",
         "donation-amount": "Donation amount"
     },
     "history": {
@@ -327,7 +328,7 @@
         "choose-estimated": "Chose an estimated value. Margin is +/- {{margin}}",
         "answer": "Answer",
         "out-of-bounds": "Value is out of bounds! Must be between {{lowerBound}} and {{upperBound}}",
-        "show-voting-button":"Go to voting page"
+        "show-voting-button": "Go to voting page"
     },
     "players-list": {
         "players": "Players"
@@ -342,11 +343,11 @@
         "title": "Title",
         "author": "Author"
     },
-    "cheater-mode":{
-        "notifyCheater":"You are the cheater",
-        "cheater": "Cheater",
-        "vote":"Vote",
-        "voteCheater":"Vote for the cheater",
+    "cheater-mode": {
+        "notifyCheater": "😈 You are the cheater",
+        "cheater": "😈",
+        "vote": "Vote",
+        "voteCheater": "Vote for the cheater 😈",
         "notifyRegularPlayer": "You are a regular player",
         "playerVoted": " has voted",
         "answer-hint": "Answer Hint: \"{{answer}}\"",
@@ -354,7 +355,7 @@
         "players-voted": "All players have voted",
         "players-amount-invalid": "The match needs at least 3 players"
     },
-    "questions-generations":{
+    "questions-generations": {
         "input": "Please provide a topic or theme to generate questions, and select the desired question type.",
         "generate": "Generate",
         "regenerate": "Regenerate other questions",
@@ -362,10 +363,10 @@
         "submit": "Submit",
         "language": "The question language",
         "choice-number": "Number of answer choices",
-        "choice":"Choice",
+        "choice": "Choice",
         "question-input": "Enter the question",
         "generate-IA": "Generate questions with IA",
-        "error": "Error while generating questions", 
+        "error": "Error while generating questions",
         "choice-input": "Enter the choice",
         "french": "French",
         "english": "English"

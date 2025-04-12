@@ -67,7 +67,8 @@
         "chat-wallpapers": "Arrière-plans de clavardage",
         "no-background": "Aucun arrière-plan",
         "fr": "Français",
-        "en": "Anglais"
+        "en": "Anglais",
+        "new-total": "Nouveau total: "
     },
     "nav": {
         "main-page": "Page principale",
@@ -130,17 +131,17 @@
         "locked-match": "Partie déverrouillée",
         "unlocked-match": "Partie verrouillée",
         "start-match": "Commencer la partie",
-        "starting": "Le jeu \"{{title}}\" commence dans.."
+        "starting": "Le jeu \"{{title}}\" commence dans..."
     },
     "admin-edit-page": {
-        "cancel": "Annuler la {{state}} du jeu",
+        "cancel": "Annuler",
         "creation": "création",
         "modification": "modification",
         "creation-title": "Création du jeu",
         "modification-title": "Modification du jeu",
-        "create-game": "Créer le jeu",
-        "apply-changes": "Appliquer les modifications",
-        "add-question": "Ajouter une nouvelle question",
+        "create-game": "Sauvegarder",
+        "apply-changes": "Sauvegarder",
+        "add-question": "Nouvelle question",
         "notice": "Le jeu doit contenir au moins 1 question. Cliquez sur \"Ajouter une nouvelle question\" ou importez une question de la banque."
     },
     "question-creation-form": {
@@ -186,7 +187,7 @@
         "wallpaper-items": "Arrière-plans de clavardage"
     },
     "friends-search": {
-        "search-friend": "Rechercher un ami",
+        "search-friend": "Rechercher un utilisateur (non-ami)",
         "search-input": "Rechercher",
         "search-input-placeholder": "Nom d'utilisateur",
         "friend-requests-received": "Demandes d'amis reçues",
@@ -202,8 +203,8 @@
         "cancel-request": "Annuler",
         "add-friend": "Ajouter un ami",
         "donate-money": "Donner de l'argent",
-        "enter-donation-amout": "Entrer le montant de la donation",
-        "donation-amount": "Montant de la donation"
+        "enter-donation-amout": "Entrer le montant du don: (Max 500$ par jour)",
+        "donation-amount": "Montant du don"
     },
     "history": {
         "match-history": "Historique des parties jouées",
@@ -251,7 +252,7 @@
     },
     "match-config": {
         "title-label": "Configuration de la partie",
-        "friends-label": "Partie entre amis uniquement",
+        "friends-label": "Partie entre amis",
         "cheater-mode": "Mode tricheur",
         "cheater-mode-description": "Pour jouer en mode tricheur : le jeu ne doit pas contenir de question de type réponse longue et doit comporter au moins trois joueurs",
         "friends-description": "Seuls vos amis pourront rejoindre cette partie.",
@@ -326,7 +327,7 @@
         "choose-estimated": "Choisissez une valeur estimée. La marge est de +/- {{margin}}",
         "answer": "Réponse",
         "out-of-bounds": "Valeur hors limites ! Doit être entre {{lowerBound}} et {{upperBound}}",
-        "show-voting-button":"Aller vers la page de vote"
+        "show-voting-button": "Aller vers la page de vote"
     },
     "players-list": {
         "players": "Joueurs"
@@ -341,11 +342,11 @@
         "title": "Titre",
         "author": "Auteur"
     },
-    "cheater-mode":{
-        "notifyCheater":"Vous êtes le/la tricheur/tricheuse de cette partie",
-        "cheater": "Tricheur",
-        "vote":"Voter" ,
-        "voteCheater":"Votez pour le tricheur",
+    "cheater-mode": {
+        "notifyCheater": "😈 Vous êtes le/la tricheur/tricheuse de cette partie",
+        "cheater": "😈",
+        "vote": "Voter",
+        "voteCheater": "Votez pour le tricheur 😈",
         "answer-hint": "Indice pour la réponse: \"{{answer}}\"",
         "notifyRegularPlayer": "Vous avez le rôle de joueur régulier dans cette partie",
         "playerVoted": " a voté",
@@ -353,8 +354,8 @@
         "players-voted": "Tous les joueurs ont voté",
         "players-amount-invalid": "Le nombre de joueurs doit être supérieur à 3"
     },
-    
-    "questions-generations":{
+
+    "questions-generations": {
         "input": "Veuillez fournir un sujet ou un thème pour générer des questions, et sélectionnez le type de question souhaité ",
         "generate": "Générer",
         "regenerate": "Regénérer d'autres questions",
@@ -362,9 +363,9 @@
         "submit": "Soumettre",
         "language": "La langue de la question",
         "choice-number": "Nombre de choix de réponses",
-        "choice":"Choix",
+        "choice": "Choix",
         "generate-IA": "Générer question IA",
-        "error": "Erreur lors de la génération de la question", 
+        "error": "Erreur lors de la génération de la question",
         "choice-input": "Entrez les choix",
         "french": "Français",
         "english": "Anglais",

@@ -78,7 +78,7 @@ describe('QuestionService', () => {
             data: {
                 modificationState: 0,
             },
-            height: '50%',
+            height: '95%',
             width: '100%',
             panelClass: 'centered-dialog',
         };

@@ -114,13 +114,13 @@ $pikachu-theme: mat.define-light-theme(
     }
 
     .received-message {
-        background-color: #f5f5f5;
+        background-color: #ffffff;
         color: #000;
         border-radius: 1em 1em 1em 0.15em;
     }
 
     .friends-section {
-        background: #f9f9f9;
+        background: #ffffff;
         h3 {
             color: #333;
         }
@@ -312,22 +312,13 @@ $pikachu-theme: mat.define-light-theme(
     @include mat.all-component-themes($luigi-theme);
 
     background-color: #e7f5e6 !important;
-    --mdc-elevated-card-container-color: #c2e5c1;
     --mdc-elevated-card-container-elevation: 0 2px 8px rgba(0, 0, 0, 0.1);
-    --mdc-filled-text-field-container-color: white;
-    --mdc-dialog-supporting-text-color: #333;
-    --mat-expansion-container-background-color: #99d498;
     --mdc-protected-button-container-color: mat.get-color-from-palette($primary-luigi, 500);
-    --mat-sidenav-container-background-color: #e7f5e6;
 
     color: #333;
 
     .color-variant {
         color: mat.get-color-from-palette($accent-luigi, 500) !important;
-    }
-
-    .mdc-snackbar__label {
-        color: black !important;
     }
 
     .signup-button {
@@ -341,7 +332,7 @@ $pikachu-theme: mat.define-light-theme(
     }
 
     .friends-section {
-        background: #c2e5c1;
+        background: #ffffff;
         h3 {
             color: #147e13;
         }
@@ -366,7 +357,7 @@ $pikachu-theme: mat.define-light-theme(
     }
 
     .received-message {
-        background-color: #c2e5c1;
+        background-color: #ffffff;
         color: #000;
         border-radius: 1em 1em 1em 0.15em;
     }
@@ -376,8 +367,8 @@ $pikachu-theme: mat.define-light-theme(
     }
 
     #header-bar {
-        background-color: mat.get-color-from-palette($primary-luigi, 500);
-        color: white;
+        background-color: #e7f5e6;
+        color: black !important;
     }
 
     #game-header-card {
@@ -421,7 +412,6 @@ $pikachu-theme: mat.define-light-theme(
     // Add some Ben 10 stylistic elements
     .mat-mdc-raised-button:not(:disabled) {
         border: 2px solid mat.get-color-from-palette($primary-luigi, 900);
-        font-weight: bold;
         letter-spacing: 0.5px;
     }
 
@@ -446,8 +436,8 @@ $pikachu-theme: mat.define-light-theme(
     color: #333;
 
     #header-bar {
-        background-color: mat.get-color-from-palette(mario.$m2-primary, 500);
-        color: white;
+        background-color: #fafafa;
+        color: black;
     }
 
     .alert {
@@ -461,13 +451,13 @@ $pikachu-theme: mat.define-light-theme(
     }
 
     .received-message {
-        background-color: #f5f5f5;
+        background-color: #ffffff;
         color: #000;
         border-radius: 1em 1em 1em 0.15em;
     }
 
     .friends-section {
-        background: #fff6ed;
+        background: #ffffff;
         h3 {
             color: #333;
         }
@@ -513,8 +503,8 @@ $pikachu-theme: mat.define-light-theme(
     color: #1a1a1a;
 
     #header-bar {
-        background-color: mat.get-color-from-palette(sonic.$m2-primary, 500);
-        color: white;
+        background-color: #fafafa;
+        color: black;
     }
 
     .alert {
@@ -528,13 +518,13 @@ $pikachu-theme: mat.define-light-theme(
     }
 
     .received-message {
-        background-color: #f5f5f5;
+        background-color: #ffffff;
         color: #000;
         border-radius: 1em 1em 1em 0.15em;
     }
 
     .friends-section {
-        background: #fef5ff;
+        background: #ffffff;
         h3 {
             color: mat.get-color-from-palette(sonic.$m2-primary, 900);
         }
@@ -587,7 +577,7 @@ $pikachu-theme: mat.define-light-theme(
     color: #3e2723; // Dark brown for contrast
 
     #header-bar {
-        background-color: mat.get-color-from-palette(pikachu.$m2-primary, 500);
+        background-color: #fafafa;
         color: black;
     }
 
@@ -602,13 +592,13 @@ $pikachu-theme: mat.define-light-theme(
     }
 
     .received-message {
-        background-color: #f5f5f5;
+        background-color: #ffffff;
         color: #000;
         border-radius: 1em 1em 1em 0.15em;
     }
 
     .friends-section {
-        background: mat.get-color-from-palette(pikachu.$m2-accent, 50);
+        background: #ffffff;
         h3 {
             color: mat.get-color-from-palette(pikachu.$m2-accent, 900);
         }
@@ -651,6 +641,18 @@ $pikachu-theme: mat.define-light-theme(
 
     .error-message {
         color: mat.get-color-from-palette($warn-pikachu);
+    }
+
+    .balance-container {
+        background-color: #e8eaf6;
+    }
+
+    .balance-icon {
+        color: #be9e0d;
+    }
+
+    .balance-text {
+        color: #3e2723;
     }
 }
 
@@ -838,4 +840,10 @@ mat-tool-tip {
 .tooltip-multiline *,
 mat-tool-tip * {
     text-align: left;
+}
+
+.text-overflow-ellipsis {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
