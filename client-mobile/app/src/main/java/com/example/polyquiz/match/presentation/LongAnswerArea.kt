@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -34,6 +35,7 @@ fun LongAnswerArea(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
+            .navigationBarsPadding()
     ) {
         if (matchContext != MatchContext.HOSTVIEW) {
                 if (!answerService.isSelectionEnabled && !answerService.showFeedback) {
@@ -80,8 +82,6 @@ fun LongAnswerArea(
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(300.dp)
-                        .background(Color.White)
                         .padding(8.dp)
                 ) {
                     items(answerService.playersAnswers) { playerAnswer ->
@@ -89,11 +89,12 @@ fun LongAnswerArea(
                     }
                 }
 
-
+                Spacer(modifier = Modifier.height(8.dp))
                 Button(
                     onClick = { answerService.sendGrades() },
                     enabled = answerService.isGradingComplete,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    shape = RoundedCornerShape(3.dp)
                 ) {
                     Text(
                         text = if (answerService.isGradingComplete) stringResource(R.string.submit_grading)
@@ -122,6 +123,7 @@ fun AnswerCard(playerAnswer: LongAnswerInfo) {
                     Button(
                         onClick = { playerAnswer.score = option.value.toString()
                                 answerService.handleGrading()},
+                        shape = RoundedCornerShape(3.dp)
                     ) {
                         Text("${option.value}%")
                     }

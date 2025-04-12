@@ -240,6 +240,7 @@ fun WaitPage(
                             onClick = {
                                 startMatch()
                             },
+                            shape = RoundedCornerShape(3.dp),
                             enabled = !disabled
 
                         ) {
