@@ -49,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -72,6 +73,7 @@ import com.example.polyquiz.match.domain.JoinMatchService.matchesInfos
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.ui.MenuButton
 import com.example.polyquiz.ui.features.camera.CameraViewModel
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
 @SuppressLint("MutableCollectionMutableState")
@@ -101,6 +103,8 @@ fun JoinMatchPage(
     val errorMessage by remember {
         derivedStateOf { MatchRoomService.errorMsg }
     }
+
+    val context = LocalContext.current
 
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -162,6 +166,7 @@ fun JoinMatchPage(
                 JoinMatchService.validateUsername(
                     username,
                     userId,
+                    context,
                     navigateToHome,
                     navigateToWaitPage,
                     navigateToMatchPage,
@@ -169,10 +174,20 @@ fun JoinMatchPage(
                     )
             },
             onError = { errorMessage ->
+                println("Error: $errorMessage")
+                val errors: List<String> = try {
+                    Gson().fromJson(errorMessage, Array<String>::class.java).toList()
+                } catch (e: Exception) {
+                    listOf(errorMessage)
+                }
+                val displayText = errors.joinToString(separator = "\n") { errorKey: String ->
+                    val cleanKey = errorKey.trim()
+                    StringValue.dynamicLookup(context, cleanKey).asString(context)
+                }
                 scope.launch {
                     SnackbarController.sendEvent(
                         event = SnackbarEvent(
-                            message = StringValue.DynamicString(errorMessage),
+                            message =  StringValue.DynamicString(displayText)
                         )
                     )
                 }

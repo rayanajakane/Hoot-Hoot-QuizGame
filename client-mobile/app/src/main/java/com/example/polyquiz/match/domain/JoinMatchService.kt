@@ -1,6 +1,7 @@
 package com.example.polyquiz.match.domain
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -70,12 +71,12 @@ object JoinMatchService : CommunicationService("match") {
         )
     }
 
-    fun validateUsername(username: String, userId: String, navigateToWaitPage: () -> Unit, navigateToHome: () -> Unit, navigateToMatchPage: () -> Unit) {
+    fun validateUsername(username: String, userId: String, context: Context, navigateToWaitPage: () -> Unit, navigateToHome: () -> Unit, navigateToMatchPage: () -> Unit) {
         postUsername(username,
             onSuccess = {
                 val code = matchRoomCode
                 matchRoomCode = ""
-                addPlayerToMatchRoom(code, username,userId, navigateToHome, navigateToWaitPage, navigateToMatchPage)
+                addPlayerToMatchRoom(code, username,userId, context, navigateToHome, navigateToWaitPage, navigateToMatchPage)
             },
             onError = { errorMessage ->
                 println("Error: $errorMessage")
@@ -83,8 +84,8 @@ object JoinMatchService : CommunicationService("match") {
         )
     }
 
-    fun addPlayerToMatchRoom(matchRoomCode: String, username: String, userId:String, navigateToHome: () -> Unit, navigateToWaitPage: () -> Unit, navigateToMatchPage: () -> Unit) {
-        MatchRoomService.connect()
+    fun addPlayerToMatchRoom(matchRoomCode: String, username: String, userId:String, context: Context, navigateToHome: () -> Unit, navigateToWaitPage: () -> Unit, navigateToMatchPage: () -> Unit) {
+        MatchRoomService.connect(context)
         MatchRoomService.joinRoom(matchRoomCode, username, userId)
     }
 
