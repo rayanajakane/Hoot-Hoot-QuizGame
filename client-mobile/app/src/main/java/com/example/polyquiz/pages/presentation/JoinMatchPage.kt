@@ -72,7 +72,6 @@ import com.example.polyquiz.match.domain.JoinMatchService.matchInfos
 import com.example.polyquiz.match.domain.JoinMatchService.matchesInfos
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.ui.MenuButton
-import com.google.gson.Gson
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
