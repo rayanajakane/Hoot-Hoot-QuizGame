@@ -117,6 +117,7 @@ fun UserEditPage(
     navigateToFriendsPage: () -> Unit,
     navigateToJoinRoom: () -> Unit,
     navigateToLogin: () -> Unit,
+    navigateToDrawing: () -> Unit,
     navigateToCamera: () -> Unit,
     navigateToRankingsPage: () -> Unit,
     navigateToShopPage: () -> Unit
@@ -390,6 +391,13 @@ fun UserEditPage(
                                     navigateToCamera()
                                 }, shape = RoundedCornerShape(3.dp)
                             ) { Text(stringResource(R.string.upload_avatar)) }
+                            Button(
+                                onClick = {
+                                    navigateToDrawing()
+                                },
+                                shape = RoundedCornerShape(3.dp)
+                            ) { Text(stringResource(R.string.draw_avatar)) }
+
                             Text(stringResource(R.string.preset_avatars))
                             Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                                 ClickableAvatarPlaceholder(

@@ -287,6 +287,9 @@ fun Navigation(
                 navigateToShopPage = {
                     navController.navigate(Route.ShopPage)
                 },
+                navigateToDrawing = {
+                    navController.navigate(Route.Drawing)
+                },
                 shopViewModel = shopViewModel
             )
         }
@@ -353,7 +356,6 @@ fun Navigation(
             DrawingScreen(
                 viewModel = viewModel,
                 navigateToUserEdit = { navController.navigate(Route.UserEditPage) },
-                uid = authViewModel.getUserId(),
                 cameraViewModel = cameraViewModel
             )
         }

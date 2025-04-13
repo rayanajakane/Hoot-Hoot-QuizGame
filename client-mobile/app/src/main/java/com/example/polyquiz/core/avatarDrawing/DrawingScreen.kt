@@ -5,7 +5,6 @@ import android.graphics.Paint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,16 +39,18 @@ import com.plcoding.drawinginjetpackcompose.allColors
 
 
 @Composable
-fun DrawingScreen(viewModel: DrawingViewModel, navigateToUserEdit: () -> Unit, uid: String, cameraViewModel: CameraViewModel) {
+fun DrawingScreen(
+    viewModel: DrawingViewModel,
+    navigateToUserEdit: () -> Unit,
+    cameraViewModel: CameraViewModel
+) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val context = LocalContext.current
-
-
+    LocalContext.current
 
     Row(
         modifier = Modifier.fillMaxSize(),
-        horizontalArrangement = Arrangement.Center, // Center children horizontally
-        verticalAlignment = Alignment.CenterVertically // Center children vertically
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         var canvasSize by remember { mutableStateOf(IntSize.Zero) }
 
@@ -61,11 +62,17 @@ fun DrawingScreen(viewModel: DrawingViewModel, navigateToUserEdit: () -> Unit, u
                 .size(800.dp)
                 .onSizeChanged { canvasSize = it }
                 .background(MaterialTheme.colorScheme.surfaceVariant)
-                .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f), RoundedCornerShape(8.dp))
+                .border(
+                    1.dp,
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+                    RoundedCornerShape(8.dp)
+                )
         )
 
         Column(
-            modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceBright),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.surfaceBright),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -75,15 +82,12 @@ fun DrawingScreen(viewModel: DrawingViewModel, navigateToUserEdit: () -> Unit, u
                 colors = allColors,
                 onSelectColor = { viewModel.onAction(DrawingAction.OnSelectColor(it)) },
                 onClearCanvas = { viewModel.onAction(DrawingAction.OnClearCanvasClick) },
-//                modifier = Modifier
-//                    .background(MaterialTheme.colorScheme.surfaceVariant)
-//                    .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f), RoundedCornerShape(8.dp))
-
             )
 
-            Button(onClick = {
+            Button(shape = RoundedCornerShape(3.dp), onClick = {
                 if (canvasSize.width > 0 && canvasSize.height > 0) {
-                    val bitmap = captureCanvasAsBitmap(state.paths, canvasSize.width, canvasSize.height)
+                    val bitmap =
+                        captureCanvasAsBitmap(state.paths, canvasSize.width, canvasSize.height)
                     cameraViewModel.setDrawingAvatar(bitmap)
                     navigateToUserEdit()
                 }
@@ -91,7 +95,7 @@ fun DrawingScreen(viewModel: DrawingViewModel, navigateToUserEdit: () -> Unit, u
                 Text(stringResource(R.string.save_canvas))
             }
 
-            Button(onClick = navigateToUserEdit) {
+            Button(onClick = navigateToUserEdit, shape = RoundedCornerShape(3.dp)) {
                 Text(text = stringResource(R.string.return_to_user_edit))
             }
         }
@@ -99,6 +103,7 @@ fun DrawingScreen(viewModel: DrawingViewModel, navigateToUserEdit: () -> Unit, u
     }
 
 }
+
 fun captureCanvasAsBitmap(paths: List<PathData>, width: Int, height: Int): Bitmap {
     val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
     val canvas = android.graphics.Canvas(bitmap)
