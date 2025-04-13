@@ -85,11 +85,24 @@ export class MatchGateway implements OnGatewayDisconnect {
         @ConnectedSocket() socket: Socket,
         @MessageBody() data: { gameId: string; hostId: string; isClassicMode: boolean; partyConfig: PartyConfig },
     ) {
-        if (data.partyConfig.isFriendsOnly) {
-            const friendshipErrors = await this.friendService.getFriendshipErrors(data.hostId, true);
-            if (friendshipErrors.length > 0) {
-                this.sendError(socket.id, friendshipErrors);
-                return;
+        console.log('Creating room', data.hostId);
+        // DEACTIVATED CALLS because no longer necessary + caused bugs where clients were stuck (pseudo-crash)
+        // COMMENTED to avoid confusion during eventual rebases
+        /*
+        if (data.partyConfig) {
+            if (data.partyConfig.isFriendsOnly) {
+                const friendshipErrors = await this.friendService.getFriendshipErrors(data.hostId, true);
+                if (friendshipErrors.length > 0) {
+                    this.sendError(socket.id, friendshipErrors);
+                    return;
+                }
+            }
+            if (data.partyConfig.isEntryFeeRequired) {
+                const moneyErrors = await this.moneyService.getMoneyError(data.hostId, data.partyConfig.entryFeeAmount);
+                if (moneyErrors.length > 0) {
+                    this.sendError(socket.id, moneyErrors);
+                    return;
+                }
             }
         }
         let selectedGame: Game = {} as Game;
@@ -328,13 +341,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         }
 
         if (this.matchRoomService.isCheaterMode && room.isPlaying && lessthanThreePlayers) {
-            this.sendError(roomCode, LESS_THAN_3_PLAYERS);
-            this.deleteRoom(roomCode);
-            return;
-        }
-
-        if (this.matchRoomService.isCheaterMode && room.isPlaying && lessthanThreePlayers) {
-            this.sendError(roomCode, LESS_THAN_3_PLAYERS);
+            this.sendError(roomCode, [LESS_THAN_3_PLAYERS]);
             this.deleteRoom(roomCode);
             return;
         }

@@ -64,8 +64,8 @@ fun ShopPage(
     val context = LocalContext.current
 
     LaunchedEffect(currentUserID) {
-        moneyService.getCurrentBalance(currentUserID)
-        moneyService.listenForMoneyEvents(context)
+        shopViewModel.getCurrentBalance(currentUserID)
+        shopViewModel.listenForMoneyEvents(context)
     }
 
     LaunchedEffect(Unit) {

@@ -17,7 +17,6 @@ import { QuestionService } from '@app/services/question/question.service';
 import { QuestionType } from '@common/constants/question-types';
 import { translate } from '@jsverse/transloco';
 
-
 export interface DialogManagement {
     modificationState: ManagementState;
 }

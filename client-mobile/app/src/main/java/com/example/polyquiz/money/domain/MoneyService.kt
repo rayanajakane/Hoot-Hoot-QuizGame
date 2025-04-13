@@ -39,7 +39,7 @@ class MoneyService() {
         onAvatarBought(onAvatarBoughtCallback)
         onThemeBought(onThemeBoughtCallback)
         onWallpaperBought(onWallpaperBoughtCallback)
-        handleError()
+        handleError(context)
     }
 
     fun stopListeningForMoneyEvents() {
