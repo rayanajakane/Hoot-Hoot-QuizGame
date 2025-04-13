@@ -39,6 +39,8 @@ fun ResultsPage(
 
     val allPlayers = remember { mutableStateOf(matchRoomService.players.toList()) }
 
+
+
     LaunchedEffect(MatchRoomService.isTimeToNavigateToResults) {
         MatchRoomService.isResults = false
     }
