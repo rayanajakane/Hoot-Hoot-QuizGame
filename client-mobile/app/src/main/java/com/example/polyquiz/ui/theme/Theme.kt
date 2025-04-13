@@ -66,8 +66,8 @@ private val LuigiColorScheme = lightColorScheme(
     onPrimary = Color.White,
     onSecondary = Color.White,
     onTertiary = Color.Black,
-    onBackground = Color(0xFF1B5E20), // Very Dark Green
-    onSurface = Color(0xFF1B5E20),    // Very Dark Green
+    onBackground = Color.Black,
+    onSurface = Color.Black,
     onError = Color.White
 )
 
@@ -81,8 +81,8 @@ private val MarioColorScheme = lightColorScheme(
     onPrimary = Color.White,
     onSecondary = Color.White,
     onTertiary = Color.Black,
-    onBackground = Color(0xFFB71C1C), // Dark Red
-    onSurface = Color(0xFFB71C1C),    // Dark Red
+    onBackground = Color.Black,
+    onSurface = Color.Black,
     onError = Color.White
 )
 
@@ -96,8 +96,8 @@ private val SonicColorScheme = lightColorScheme(
     onPrimary = Color.White,
     onSecondary = Color.White,
     onTertiary = Color.Black,
-    onBackground = Color(0xFF0D47A1), // Dark Blue
-    onSurface = Color(0xFF0D47A1),    // Dark Blue
+    onBackground = Color.Black,
+    onSurface = Color.Black,
     onError = Color.White
 )
 
@@ -111,8 +111,8 @@ private val PikachuColorScheme = lightColorScheme(
     onPrimary = Color.Black,
     onSecondary = Color.Black,
     onTertiary = Color.Black,
-    onBackground = Color(0xFF212121), // Very Dark Gray
-    onSurface = Color(0xFF212121),    // Very Dark Gray
+    onBackground = Color.Black,
+    onSurface = Color.Black,
     onError = Color.White
 )
 

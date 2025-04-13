@@ -1,6 +1,5 @@
 package com.example.polyquiz.shop.presentation
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
@@ -13,8 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalanceWallet
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,13 +30,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
-import com.example.polyquiz.money.domain.MoneyService
 import com.example.polyquiz.shop.domain.ShopItem
 import com.example.polyquiz.shop.domain.ShopViewModel
 import com.example.polyquiz.ui.MenuButton
@@ -47,9 +41,9 @@ import com.example.polyquiz.ui.MenuButton
 @Composable
 fun ShopPage(
     modifier: Modifier,
+    shopViewModel: ShopViewModel,
     authViewModel: AuthViewModel,
     currentUserID: String,
-    moneyService: MoneyService,
     navigateToLogin: () -> Unit,
     navigateToHome: () -> Unit,
     navigateToCreate: () -> Unit,
@@ -59,21 +53,19 @@ fun ShopPage(
     navigateToRankingsPage: () -> Unit,
     navigateToShop: () -> Unit
 ) {
-    val shopViewModel: ShopViewModel = viewModel()
-
     val avatarItems by shopViewModel.avatarItems.collectAsState()
     val themeItems by shopViewModel.themeItems.collectAsState()
     val wallpaperItems by shopViewModel.wallpaperItems.collectAsState()
     val isLoading by shopViewModel.isLoading.collectAsState()
     val dataInitialized by shopViewModel.dataInitialized.collectAsState()
-    val currentBalance by moneyService.currentBalance.collectAsState()
+    val currentBalance by shopViewModel.currentBalance.collectAsState()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
 
     LaunchedEffect(currentUserID) {
-        moneyService.getCurrentBalance(currentUserID)
-        moneyService.listenForMoneyEvents(context)
+        shopViewModel.getCurrentBalance(currentUserID)
+        shopViewModel.listenForMoneyEvents(context)
     }
 
     LaunchedEffect(Unit) {
@@ -114,7 +106,10 @@ fun ShopPage(
                     modifier = Modifier.padding(horizontal = 26.dp),
                     style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold)
                 )
-                Column( horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.Center) {
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.Center
+                ) {
                     MenuButton(
                         modifier = Modifier,
                         navigateToHome,
@@ -130,28 +125,7 @@ fun ShopPage(
                         },
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    Card(
-                        shape = RoundedCornerShape(8.dp),
-                        elevation = CardDefaults.cardElevation(4.dp),
-                        modifier = Modifier.padding(horizontal = 26.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .padding(8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.AccountBalanceWallet,
-                                contentDescription = stringResource(R.string.balance),
-                                tint = MaterialTheme.colorScheme.tertiary
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = "$$currentBalance",
-                                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                            )
-                        }
-                    }
+                    BalanceCard(currentBalance)
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -244,7 +218,9 @@ fun ShopItemCard(
                 contentScale = ContentScale.Crop
             )
 
-            Spacer(modifier = Modifier.height(8.dp).fillMaxWidth())
+            Spacer(modifier = Modifier
+                .height(8.dp)
+                .fillMaxWidth())
 
             Text(
                 text = "$${item.price}",
@@ -274,6 +250,32 @@ fun ShopItemCard(
                 Spacer(modifier = Modifier.height(24.dp))
             }
 
+        }
+    }
+}
+
+@Composable
+fun BalanceCard(currentBalance: Int) {
+    Card(
+        shape = RoundedCornerShape(8.dp),
+        elevation = CardDefaults.cardElevation(4.dp),
+        modifier = Modifier.padding(horizontal = 26.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.AccountBalanceWallet,
+                contentDescription = stringResource(R.string.balance),
+                tint = MaterialTheme.colorScheme.tertiary
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                text = "$currentBalance$",
+                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            )
         }
     }
 }

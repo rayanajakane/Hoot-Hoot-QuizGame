@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -71,6 +72,8 @@ import com.example.polyquiz.match.domain.JoinMatchService
 import com.example.polyquiz.match.domain.JoinMatchService.matchInfos
 import com.example.polyquiz.match.domain.JoinMatchService.matchesInfos
 import com.example.polyquiz.match.domain.MatchRoomService
+import com.example.polyquiz.shop.domain.ShopViewModel
+import com.example.polyquiz.shop.presentation.BalanceCard
 import com.example.polyquiz.ui.MenuButton
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.google.gson.Gson
@@ -80,6 +83,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun JoinMatchPage(
     modifier: Modifier,
+    shopViewModel: ShopViewModel,
     cameraViewModel: CameraViewModel,
     authViewModel: AuthViewModel,
     navigateToHome: () -> Unit,
@@ -95,6 +99,7 @@ fun JoinMatchPage(
     navigateToShopPage: () -> Unit
 ) {
     var room by remember { mutableStateOf("") }
+    val currentBalance by shopViewModel.currentBalance.collectAsState()
     val username by remember { mutableStateOf(authViewModel.getUsername()) }
     val userId by remember { mutableStateOf(authViewModel.getUserId()) }
     val scannedCode by cameraViewModel.scannedCode.collectAsState()
@@ -236,20 +241,24 @@ fun JoinMatchPage(
                         modifier = Modifier.padding(horizontal = 26.dp),
                         style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold)
                     )
-                    MenuButton(
-                        modifier = Modifier,
-                        navigateToHome,
-                        navigateToCreate,
-                        navigateToUserEdit,
-                        navigateToFriendsPage,
-                        navigateToJoinRoom,
-                        navigateToRankingsPage,
-                        navigateToShopPage,
-                        signOut = {
-                            authViewModel.signOut()
-                            navigateToLogin()
-                        }
-                    )
+                    Column(
+                        modifier = Modifier
+                            .imePadding()
+                            .statusBarsPadding()
+                    ) {
+                        MenuButton(
+                            modifier = Modifier,
+                            navigateToHome,
+                            navigateToCreate,
+                            navigateToUserEdit,
+                            navigateToFriendsPage,
+                            navigateToJoinRoom,
+                            navigateToRankingsPage,
+                            navigateToShopPage,
+                            signOut = { authViewModel.signOut() }
+                        )
+                        BalanceCard(currentBalance)
+                    }
                 }
 
 

@@ -171,6 +171,7 @@ fun QuestionArea(
         MatchRoomService.navigateToVotingPage
     ) {
         matchRoomService.isQuitting = false
+        answerService.resetStateForNewQuestion()
         answerService.playerScore = 0
         context = matchContextService.getContext()
 

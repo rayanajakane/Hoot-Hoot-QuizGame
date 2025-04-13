@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayCircleFilled
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Stars
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
@@ -29,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -49,6 +51,8 @@ import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.match.domain.MatchRoomService
+import com.example.polyquiz.shop.domain.ShopViewModel
+import com.example.polyquiz.shop.presentation.BalanceCard
 import com.example.polyquiz.ui.MenuButton
 import kotlinx.coroutines.launch
 
@@ -63,9 +67,11 @@ fun HomePage(
     navigateToFriendsPage: () -> Unit,
     navigateToJoinRoom: () -> Unit,
     authViewModel: AuthViewModel,
+    shopViewModel: ShopViewModel,
     navigateToRankingsPage: () -> Unit,
     navigateToShopPage: () -> Unit
 ) {
+    val currentBalance by shopViewModel.currentBalance.collectAsState()
     val authState = authViewModel.authState.observeAsState()
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
@@ -136,23 +142,28 @@ fun HomePage(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxSize()
-                // TODO : Top and right padding
                 .imePadding()
         ) {
-            MenuButton(
+            Column(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .imePadding()
-                    .statusBarsPadding(),
-                navigateToHome,
-                navigateToCreate,
-                navigateToUserEdit,
-                navigateToFriendsPage,
-                navigateToJoinRoom,
-                navigateToRankingsPage,
-                navigateToShopPage,
-                signOut = { authViewModel.signOut() }
-            )
+                    .statusBarsPadding()
+            ) {
+                MenuButton(
+                    modifier = Modifier,
+                    navigateToHome,
+                    navigateToCreate,
+                    navigateToUserEdit,
+                    navigateToFriendsPage,
+                    navigateToJoinRoom,
+                    navigateToRankingsPage,
+                    navigateToShopPage,
+                    signOut = { authViewModel.signOut() }
+                )
+                BalanceCard(currentBalance)
+            }
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
@@ -259,27 +270,6 @@ fun HomePage(
                     Spacer(modifier = Modifier.width(8.dp))
                     Column {
                         ElevatedButton(
-                            onClick = {
-                                navigateToRankingsPage()
-                            },
-                            shape = RoundedCornerShape(3.dp),
-                            modifier = Modifier
-                                .height(55.dp)
-                                .width(164.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceBright,
-                                contentColor = MaterialTheme.colorScheme.onSurface
-                            )
-                        ) {
-                            Icon(
-                                Icons.Filled.Group,
-                                contentDescription = stringResource(R.string.rankings)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(text = stringResource(R.string.rankings))
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        ElevatedButton(
                             onClick = { navigateToShopPage() },
                             shape = RoundedCornerShape(3.dp),
                             modifier = Modifier
@@ -296,6 +286,27 @@ fun HomePage(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(stringResource(R.string.buy_goodies))
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        ElevatedButton(
+                            onClick = {
+                                navigateToRankingsPage()
+                            },
+                            shape = RoundedCornerShape(3.dp),
+                            modifier = Modifier
+                                .height(55.dp)
+                                .width(164.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceBright,
+                                contentColor = MaterialTheme.colorScheme.onSurface
+                            )
+                        ) {
+                            Icon(
+                                Icons.Filled.Stars,
+                                contentDescription = stringResource(R.string.rankings)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(text = stringResource(R.string.rankings))
                         }
                     }
                 }

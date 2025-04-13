@@ -43,7 +43,7 @@ class AuthViewModel : ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val _authState = MutableLiveData<AuthState>()
     val authState: LiveData<AuthState> = _authState
-    var user: FirebaseUser? = null
+    private var user: FirebaseUser? = null
     private val database = Firebase.database
     private val TAG = "EmailAuthActivity"
 
@@ -82,10 +82,6 @@ class AuthViewModel : ViewModel() {
             sendUpdateProfileSnackbar()
             _profileUpdated.value = false
         }
-    }
-
-    fun getProfileUpdated(): Boolean {
-        return _profileUpdated.value
     }
 
     fun setTheme(theme: Theme) {
@@ -142,10 +138,6 @@ class AuthViewModel : ViewModel() {
 
     fun getCurrentWallpaperRef(): DatabaseReference {
         return getUserDatabaseRef().child("currentWallpaper")
-    }
-
-    fun getBalanceRef(): DatabaseReference {
-        return getUserDatabaseRef().child("balance")
     }
 
     fun updateEmail(newEmail: String, context: Context) {
@@ -667,7 +659,7 @@ class AuthViewModel : ViewModel() {
 
     private fun validateUsername(username: String, context: Context) {
         _usernameError.value = ""
-        if (username.matches(".*[^A-Za-z0-9_].*".toRegex())) {
+        if (username.matches(".*[^a-zA-ZÀ-ÿ0-9_].*".toRegex())) {
             _usernameError.value += StringValue.StringResource(R.string.special_char_username)
                 .asString(context) + "\n"
         }

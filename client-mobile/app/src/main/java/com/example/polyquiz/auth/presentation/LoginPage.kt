@@ -42,6 +42,7 @@ import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.SIZE_CONSTANTS
 import com.example.polyquiz.core.ThemeService
 import com.example.polyquiz.core.TranslationService
+import com.example.polyquiz.shop.domain.ShopViewModel
 import com.example.polyquiz.ui.theme.Theme
 import kotlinx.coroutines.launch
 
@@ -52,6 +53,7 @@ fun LoginPage(
     navigateToForgotPassword: () -> Unit,
     navigateToHome: () -> Unit,
     authViewModel: AuthViewModel,
+    shopViewModel: ShopViewModel,
     onThemeUpdated: (Theme) -> Unit
 ) {
     val context = LocalContext.current
@@ -63,6 +65,10 @@ fun LoginPage(
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+
+    LaunchedEffect(Unit) {
+        shopViewModel.initialize(authViewModel)
+    }
 
     LaunchedEffect(authState.value) {
         when (authState.value) {
@@ -80,6 +86,8 @@ fun LoginPage(
                ThemeService.getThemeFromDB(authViewModel.getUserConfigsDatabaseRef())  { theme ->
                    onThemeUpdated(theme)
                }
+                shopViewModel.getCurrentBalance(authViewModel.getUserId())
+                shopViewModel.listenForMoneyEvents()
                 navigateToHome()
             }
 

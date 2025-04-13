@@ -13,7 +13,6 @@ import com.example.polyquiz.constants.THEME_PRICE
 import com.example.polyquiz.constants.WALLPAPER_PRICE
 import com.example.polyquiz.constants.Wallpaper
 import com.example.polyquiz.core.ThemeService
-import com.example.polyquiz.money.domain.MoneyService
 import com.example.polyquiz.ui.theme.Theme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,10 +20,19 @@ import kotlinx.coroutines.launch
 import StringValue
 import android.content.Context
 import androidx.compose.ui.platform.LocalContext
+import com.example.polyquiz.constants.MoneyEvents
+import com.example.polyquiz.money.domain.DonationGivenData
+import com.example.polyquiz.money.domain.DonationReceivedData
+import com.example.vanillaprototype.socket.SocketHandler
+import com.google.firebase.auth.FirebaseAuth
+import com.google.gson.Gson
 import kotlinx.coroutines.delay
+import org.json.JSONObject
 
 class ShopViewModel : ViewModel() {
     private val TAG = "ShopViewModel"
+    private val _currentBalance = MutableStateFlow(0)
+    val currentBalance: StateFlow<Int> get() = _currentBalance
 
     private val _avatarItems = MutableStateFlow<List<ShopItem>>(emptyList())
     val avatarItems: StateFlow<List<ShopItem>> = _avatarItems
@@ -37,8 +45,6 @@ class ShopViewModel : ViewModel() {
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
-
-    private val moneyService = MoneyService()
 
     private val _dataInitialized = MutableStateFlow(false)
     val dataInitialized: StateFlow<Boolean> = _dataInitialized
@@ -57,10 +63,149 @@ class ShopViewModel : ViewModel() {
             onWallpaperBoughtCallback = { onItemBought(it, authViewModel, "wallpaper") }
         )
 
-        delay(500)
+        delay(50)
 
         loadShopItems()
         _dataInitialized.value = true
+    }
+
+    private val mSocket = SocketHandler.getSocket()
+
+    private fun getUserId(): String {
+        return FirebaseAuth.getInstance().currentUser?.uid ?: ""
+    }
+
+    fun listenForMoneyEvents(
+        onAvatarBoughtCallback: (ShopItem) -> Unit = {},
+        onThemeBoughtCallback: (ShopItem) -> Unit = {},
+        onWallpaperBoughtCallback: (ShopItem) -> Unit = {}
+    ) {
+        onReturnBalance()
+        onDonationGiven()
+        onDonationReceived()
+        onAvatarBought(onAvatarBoughtCallback)
+        onThemeBought(onThemeBoughtCallback)
+        onWallpaperBought(onWallpaperBoughtCallback)
+        handleError()
+    }
+
+    fun stopListeningForMoneyEvents() {
+        mSocket.off(MoneyEvents.RETURN_BALANCE.value)
+        mSocket.off(MoneyEvents.DONATION_GIVEN.value)
+        mSocket.off(MoneyEvents.DONATION_RECEIVED.value)
+        mSocket.off(MoneyEvents.AVATAR_BOUGHT.value)
+        mSocket.off(MoneyEvents.THEME_BOUGHT.value)
+        mSocket.off(MoneyEvents.WALLPAPER_BOUGHT.value)
+        mSocket.off(MoneyEvents.ERROR.value)
+    }
+
+    fun getCurrentBalance(userId: String) {
+        mSocket.emit(MoneyEvents.GET_BALANCE.value, userId)
+        Log.d(TAG, "Getting balance for $userId")
+    }
+
+    private fun onReturnBalance() {
+        mSocket.on(MoneyEvents.RETURN_BALANCE.value) { args: Array<Any> ->
+            if (args.isNotEmpty()) {
+                val balance = args[0].toString().toIntOrNull() ?: 0
+                _currentBalance.value = balance
+                Log.d(TAG, "Current balance: $balance")
+            }
+        }
+    }
+
+    fun donateMoney(userId: String, friendId: String, amount: Int) {
+        val data = JSONObject().apply {
+            put("user", userId)
+            put("friend", friendId)
+            put("amount", amount)
+        }
+        Log.d(TAG, "Donating $amount to $friendId")
+        mSocket.emit(MoneyEvents.DONATE_MONEY.value, data)
+    }
+
+    private fun onDonationGiven() {
+        mSocket.on(MoneyEvents.DONATION_GIVEN.value) { args: Array<Any> ->
+            if (args.isNotEmpty()) {
+                val json = args[0].toString()
+                try {
+                    val donationData = Gson().fromJson(json, DonationGivenData::class.java)
+//                    notificationService.displaySuccessMessage("You have donated ${donationData.amount} to ${donationData.to}")
+                    Log.d(TAG, "You have donated ${donationData.amount} to ${donationData.to}")
+                    _currentBalance.value = donationData.newBalance
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
+    private fun onDonationReceived() {
+        mSocket.on(MoneyEvents.DONATION_RECEIVED.value) { args: Array<Any> ->
+            if (args.isNotEmpty()) {
+                val json = args[0].toString()
+                try {
+                    val donationData = Gson().fromJson(json, DonationReceivedData::class.java)
+//                    notificationService.displaySuccessMessage("${donationData.from} has donated ${donationData.amount} to you")
+                    _currentBalance.value = donationData.newBalance
+                    Log.d(TAG, "${donationData.from} has donated ${donationData.amount} to you")
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
+    private fun onAvatarBought(callback: (ShopItem) -> Unit) {
+        mSocket.on(MoneyEvents.AVATAR_BOUGHT.value) { args: Array<Any> ->
+            if (args.isNotEmpty()) {
+                val json = args[0].toString()
+                try {
+                    val item = Gson().fromJson(json, ShopItem::class.java)
+                    callback(item)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
+    private fun onThemeBought(callback: (ShopItem) -> Unit) {
+        mSocket.on(MoneyEvents.THEME_BOUGHT.value) { args: Array<Any> ->
+            if (args.isNotEmpty()) {
+                val json = args[0].toString()
+                try {
+                    val item = Gson().fromJson(json, ShopItem::class.java)
+                    callback(item)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
+    private fun onWallpaperBought(callback: (ShopItem) -> Unit) {
+        mSocket.on(MoneyEvents.WALLPAPER_BOUGHT.value) { args: Array<Any> ->
+            if (args.isNotEmpty()) {
+                val json = args[0].toString()
+                try {
+                    val item = Gson().fromJson(json, ShopItem::class.java)
+                    callback(item)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
+    private fun handleError() {
+        mSocket.on(MoneyEvents.ERROR.value) { args: Array<Any> ->
+            if (args.isNotEmpty()) {
+                val errorMessage = args[0].toString()
+                Log.e(TAG, errorMessage)
+//                notificationService.displayErrorMessage(errorMessage)
+            }
+        }
     }
 
     private fun onItemBought(item: ShopItem, authViewModel: AuthViewModel, type: String) {
@@ -70,11 +215,13 @@ class ShopViewModel : ViewModel() {
                 PremiumAvatarService.updatePurchasedAvatars(item.id)
                 updateAvatarItem(item.id, true)
             }
+
             "theme" -> {
                 Log.d(TAG, "Updating purchased themes")
                 ThemeService.updatePurchasedThemes(item.id)
                 updateThemeItem(item.id, true)
             }
+
             "wallpaper" -> {
                 Log.d(TAG, "Updating purchased wallpapers")
                 WallpaperService.updatePurchasedWallpapers(item.id)
@@ -95,6 +242,7 @@ class ShopViewModel : ViewModel() {
                                 Log.e(TAG, "Failed to save avatar purchase", e)
                             }
                     }
+
                     "theme" -> {
                         val themeRef = authViewModel.getPurchasedThemesRef().child(item.id)
                         themeRef.setValue(true)
@@ -105,6 +253,7 @@ class ShopViewModel : ViewModel() {
                                 Log.e(TAG, "Failed to save theme purchase", e)
                             }
                     }
+
                     "wallpaper" -> {
                         val wallpaperRef = authViewModel.getPurchasedWallpapersRef().child(item.id)
                         wallpaperRef.setValue(true)
@@ -149,7 +298,11 @@ class ShopViewModel : ViewModel() {
                     id = ThemeService.themeToString(theme),
                     imageUrl = getThemeImage(theme),
                     price = THEME_PRICE,
-                    owned = ThemeService.purchasedThemes.value.contains(ThemeService.themeToString(theme))
+                    owned = ThemeService.purchasedThemes.value.contains(
+                        ThemeService.themeToString(
+                            theme
+                        )
+                    )
                 )
             }
             _themeItems.value = themes
@@ -183,7 +336,17 @@ class ShopViewModel : ViewModel() {
             return
         }
 
-        moneyService.buyAvatar(item)
+        val data = JSONObject().apply {
+            put("user", getUserId())
+            put("item", JSONObject().apply {
+                put("id", item.id)
+                put("imageUrl", item.imageUrl)
+                put("price", item.price)
+                put("owned", item.owned)
+            })
+        }
+        Log.d(TAG, "Buying avatar: ${item.id} for ${item.price}")
+        mSocket.emit(MoneyEvents.BUY_AVATAR.value, data)
     }
 
     fun buyTheme(item: ShopItem) {
@@ -197,7 +360,17 @@ class ShopViewModel : ViewModel() {
             }
         }
 
-        moneyService.buyTheme(item)
+        val data = JSONObject().apply {
+            put("user", getUserId())
+            put("item", JSONObject().apply {
+                put("id", item.id)
+                put("imageUrl", item.imageUrl)
+                put("price", item.price)
+                put("owned", item.owned)
+            })
+        }
+        Log.d(TAG, "Buying theme: ${item.id} for ${item.price}")
+        mSocket.emit(MoneyEvents.BUY_THEME.value, data)
     }
 
     fun buyWallpaper(item: ShopItem) {
@@ -212,7 +385,17 @@ class ShopViewModel : ViewModel() {
             return
         }
 
-        moneyService.buyWallpaper(item)
+        val data = JSONObject().apply {
+            put("user", getUserId())
+            put("item", JSONObject().apply {
+                put("id", item.id)
+                put("imageUrl", item.imageUrl)
+                put("price", item.price)
+                put("owned", item.owned)
+            })
+        }
+        Log.d(TAG, "Buying wallpaper: ${item.id} for ${item.price}")
+        mSocket.emit(MoneyEvents.BUY_WALLPAPER.value, data)
     }
 
     private fun updateAvatarItem(id: String, owned: Boolean) {
@@ -245,6 +428,6 @@ class ShopViewModel : ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-        moneyService.stopListeningForMoneyEvents()
+        stopListeningForMoneyEvents()
     }
 }
