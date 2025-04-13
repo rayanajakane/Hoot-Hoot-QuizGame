@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -26,6 +27,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.polyquiz.R
+import com.example.polyquiz.SnackbarController
+import com.example.polyquiz.SnackbarEvent
+import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.auth.domain.UserIdName
 import com.example.polyquiz.chat.presentation.ChatComponent
@@ -47,6 +51,7 @@ fun FriendsSearchScreen(
     shopViewModel: ShopViewModel,
     navigateToRankingsPage: () -> Unit,
     navigateToShopPage: () -> Unit,
+    navigateToLogin: () -> Unit,
     currentUserID: String,
 ) {
     val friendsService = remember { FriendsService() }
@@ -55,6 +60,33 @@ fun FriendsSearchScreen(
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+    val authState = authViewModel.authState.observeAsState()
+    LaunchedEffect(authState.value) {
+        when (authState.value) {
+            is AuthState.Unauthenticated -> {
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.StringResource(R.string.sign_out_feedback)
+                        )
+                    )
+                }
+                navigateToLogin()
+            }
+
+            is AuthState.Error -> {
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = (authState.value as AuthState.Error).message,
+                        )
+                    )
+                }
+            }
+
+            else -> Unit
+        }
+    }
 
     LaunchedEffect(currentUserID) {
         friendsService.initialize(currentUserID)
