@@ -96,8 +96,9 @@ fun SignupPage(
     }
 
     LaunchedEffect(Unit) {
+        authViewModel.resetSignUpFields()
         signupTrace.start()
-        shopViewModel.initialize( authViewModel, context)
+        shopViewModel.initialize(authViewModel, context)
     }
 
     LaunchedEffect(authState.value) {

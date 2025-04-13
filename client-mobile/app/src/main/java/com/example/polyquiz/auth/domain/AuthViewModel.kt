@@ -360,6 +360,7 @@ class AuthViewModel : ViewModel() {
 
         // Disconnect user from app
         auth.signOut()
+        resetSignUpFields()
         resetAuthState()
     }
 
