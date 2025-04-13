@@ -4,6 +4,7 @@ import com.example.polyquiz.auth.domain.UserIdName
 import com.example.polyquiz.constants.ChoiceInfo
 import com.example.vanillaprototype.socket.SocketHandler
 import com.example.polyquiz.constants.FriendsEvents
+import com.google.firebase.perf.FirebasePerformance
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,7 +12,6 @@ import kotlinx.coroutines.flow.StateFlow
 import org.json.JSONObject
 
 class FriendsService {
-
     private val _allUsers = MutableStateFlow(listOf<UserIdName>())
     val allUsers: StateFlow<List<UserIdName>> get() = _allUsers
 
@@ -34,6 +34,7 @@ class FriendsService {
     private var userId: String = ""
 
     fun initialize(userId: String) {
+
         this.userId = userId
     }
 

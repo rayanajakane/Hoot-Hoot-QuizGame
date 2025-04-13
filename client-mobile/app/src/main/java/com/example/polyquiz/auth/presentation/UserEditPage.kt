@@ -96,6 +96,8 @@ import com.example.polyquiz.shop.domain.WallpaperService
 import com.example.polyquiz.shop.presentation.BalanceCard
 import com.example.polyquiz.ui.MenuButton
 import com.example.polyquiz.ui.theme.Theme
+import com.google.firebase.perf.FirebasePerformance
+import com.google.firebase.perf.metrics.Trace
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -122,6 +124,7 @@ fun UserEditPage(
     navigateToRankingsPage: () -> Unit,
     navigateToShopPage: () -> Unit
 ) {
+    val saveProfileTrace: Trace = FirebasePerformance.getInstance().newTrace("save_profile_trace")
     val focusManager = LocalFocusManager.current
     val translationService = TranslationService
     val currentBalance by shopViewModel.currentBalance.collectAsState()
@@ -217,6 +220,7 @@ fun UserEditPage(
     }
 
     fun saveUserProfile() {
+        saveProfileTrace.start()
         // To hide the keyboard in case it's open
         keyboardController?.hide()
 
@@ -287,6 +291,7 @@ fun UserEditPage(
         }
 
         authViewModel.setProfileUpdated(true)
+        saveProfileTrace.stop()
     }
 
     // Delete dialog

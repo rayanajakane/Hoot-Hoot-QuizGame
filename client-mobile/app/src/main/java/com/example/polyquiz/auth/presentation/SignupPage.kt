@@ -50,6 +50,8 @@ import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.constants.SIZE_CONSTANTS
 import com.example.polyquiz.shop.domain.ShopViewModel
 import com.example.polyquiz.ui.features.camera.CameraViewModel
+import com.google.firebase.perf.FirebasePerformance
+import com.google.firebase.perf.metrics.Trace
 import kotlinx.coroutines.launch
 
 @Composable
@@ -84,13 +86,17 @@ fun SignupPage(
         cameraViewModel.setPresetAvatar(authViewModel, url)
     }
 
+    val signupTrace: Trace = FirebasePerformance.getInstance().newTrace("signup_trace")
+
     DisposableEffect(Unit) {
         onDispose {
+            signupTrace.stop()
             cameraViewModel.resetCapturedPhotoState()
         }
     }
 
     LaunchedEffect(Unit) {
+        signupTrace.start()
         shopViewModel.initialize( authViewModel, context)
     }
 
@@ -122,7 +128,7 @@ fun SignupPage(
             else -> Unit
         }
     }
-
+    signupTrace.start()
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -278,6 +284,7 @@ fun SignupPage(
                                     context,
                                     avatarToShow
                                 )
+                                signupTrace.stop()
                                 keyboardController?.hide()
                             }),
                             label = { Text(stringResource(R.string.password)) },
@@ -326,6 +333,7 @@ fun SignupPage(
                     Button(
                         onClick =
                         {
+                            signupTrace.stop()
                             authViewModel.signUp(email, username, password, context, avatarToShow)
                             keyboardController?.hide()
                         },

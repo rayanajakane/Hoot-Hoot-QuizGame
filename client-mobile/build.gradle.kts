@@ -4,4 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.google.gms.google.services) apply false
+
+    // Add the dependency for the Performance Monitoring Gradle plugin
+    id("com.google.firebase.firebase-perf") version "1.4.2" apply false
 }

@@ -37,6 +37,8 @@ import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.shop.domain.ShopItem
 import com.example.polyquiz.shop.domain.ShopViewModel
 import com.example.polyquiz.ui.MenuButton
+import com.google.firebase.perf.FirebasePerformance
+import com.google.firebase.perf.metrics.Trace
 
 @Composable
 fun ShopPage(
@@ -53,6 +55,7 @@ fun ShopPage(
     navigateToRankingsPage: () -> Unit,
     navigateToShop: () -> Unit
 ) {
+    val shopInitTrace: Trace = FirebasePerformance.getInstance().newTrace("init_shop_trace")
     val avatarItems by shopViewModel.avatarItems.collectAsState()
     val themeItems by shopViewModel.themeItems.collectAsState()
     val wallpaperItems by shopViewModel.wallpaperItems.collectAsState()
@@ -69,6 +72,7 @@ fun ShopPage(
     }
 
     LaunchedEffect(Unit) {
+        shopInitTrace.start()
         shopViewModel.initialize(authViewModel, context)
     }
 
@@ -94,6 +98,7 @@ fun ShopPage(
             }
             return
         }
+        shopInitTrace.stop()
 
         Column(modifier = modifier.padding(26.dp)) {
             Row(

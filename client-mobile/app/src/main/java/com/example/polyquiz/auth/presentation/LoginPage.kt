@@ -44,6 +44,8 @@ import com.example.polyquiz.core.ThemeService
 import com.example.polyquiz.core.TranslationService
 import com.example.polyquiz.shop.domain.ShopViewModel
 import com.example.polyquiz.ui.theme.Theme
+import com.google.firebase.perf.FirebasePerformance
+import com.google.firebase.perf.metrics.Trace
 import kotlinx.coroutines.launch
 
 @Composable
@@ -65,8 +67,16 @@ fun LoginPage(
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+    val loginTrace: Trace = FirebasePerformance.getInstance().newTrace("login_trace")
+
+    DisposableEffect(Unit) {
+        onDispose {
+            loginTrace.stop()
+        }
+    }
 
     LaunchedEffect(Unit) {
+        loginTrace.start()
         shopViewModel.initialize(authViewModel, context)
     }
 
@@ -104,6 +114,7 @@ fun LoginPage(
             else -> Unit
         }
     }
+    loginTrace.start()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -193,6 +204,7 @@ fun LoginPage(
                     onClick =
                     {
                         authViewModel.signIn(email, password, context)
+                        loginTrace.stop()
                         keyboardController?.hide()
                     },
                     enabled = authState.value != AuthState.Loading,
