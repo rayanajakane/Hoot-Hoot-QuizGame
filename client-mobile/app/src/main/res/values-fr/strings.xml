@@ -200,6 +200,9 @@
     <string name="timer_paused">Minutrie suspendue</string>
     <string name="timer_start">Minutrie partie</string>
     <string name="game_author">"Auteur"</string>
+    <string name="classic_mode">Classique</string>
+    <string name="cheater_mode_label">Tricheur</string>
+    <string name="game_mode">Mode de Jeu</string>
     <string name="match_errors_less_than_3_players">Il doit y avoir au moins 3 joueurs dans la partie.</string>
     <string name="search_games">Rechercher un jeu</string>
 </resources>
