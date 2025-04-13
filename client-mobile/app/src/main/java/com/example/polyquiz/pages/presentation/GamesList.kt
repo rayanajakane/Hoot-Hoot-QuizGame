@@ -47,6 +47,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.platform.LocalContext
 import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
+import com.example.polyquiz.chat.presentation.TruncatedText
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.Question
 
@@ -508,8 +509,8 @@ fun GameCard(game: Game, onClick: () -> Unit = {}) {
         onClick = onClick
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = game.title, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(8.dp))
+            TruncatedText(text = game.title, fontWeight = FontWeight.Bold, fontSize = 15.sp, maxChars = 20, modifier =Modifier )
+            Spacer(modifier = Modifier.height(20.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = stringResource(R.string.matches_played) + game.nMatchesPlayed.toInt())
             }
