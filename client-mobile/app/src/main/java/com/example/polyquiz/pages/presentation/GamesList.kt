@@ -504,8 +504,7 @@ fun GameCard(game: Game, onClick: () -> Unit = {}) {
         modifier = Modifier
             .padding()
             .shadow(4.dp, shape = RectangleShape)
-            .width(130.dp)
-            .height(155.dp),
+            .width(130.dp),
         onClick = onClick
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
