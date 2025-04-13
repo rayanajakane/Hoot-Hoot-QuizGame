@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { MoneyEvents } from '@common/events/money.events';
+import { translate } from '@jsverse/transloco';
 
 @Injectable({
     providedIn: 'root',
@@ -49,21 +50,24 @@ export class MoneyService {
 
     onDonationGiven() {
         this.socketHandler.on(MoneyEvents.DonationGiven, (data: { to: string; amount: number; newBalance: number }) => {
-            this.notificationService.displaySuccessMessage(`You have donated ${data.amount} to ${data.to}`);
+            this.notificationService.displaySuccessMessage(`${translate('money-status.donation-sent', { to: data.to, amount: data.amount })}`);
             this.currentBalance = data.newBalance;
         });
     }
 
     onDonationReceived() {
         this.socketHandler.on(MoneyEvents.DonationReceived, (data: { from: string; amount: number; newBalance: number }) => {
-            this.notificationService.displaySuccessMessage(`${data.from} has donated ${data.amount} to you`);
+            this.notificationService.displaySuccessMessage(
+                `${translate('money-status.donation-received', { from: data.from, amount: data.amount })}`,
+            );
             this.currentBalance = data.newBalance;
         });
     }
 
     handleError() {
-        this.socketHandler.on(MoneyEvents.Error, (error: string) => {
-            this.notificationService.displayErrorMessage(error);
+        this.socketHandler.on(MoneyEvents.Error, (error: string[]) => {
+            const displayMessage = error.map((message) => translate(message.trim())).join('\n');
+            this.notificationService.displayErrorMessage(displayMessage);
         });
     }
 }

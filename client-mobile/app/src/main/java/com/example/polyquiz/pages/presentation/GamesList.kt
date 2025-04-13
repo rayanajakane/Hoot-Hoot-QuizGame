@@ -40,9 +40,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.platform.LocalContext
 import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.match.domain.MatchRoomService
@@ -63,7 +65,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
     var showPartyConfigDialog by remember { mutableStateOf(false) }
     var gameIsValidCheaterMode by remember { mutableStateOf(false) }
     var partyConfigs by remember { mutableStateOf(PartyConfig(false, false)) }
-
+    val componentContext = LocalContext.current
     var titleQuery by remember { mutableStateOf("") }
     var authorQuery by remember { mutableStateOf("") }
     var searchResults by remember { mutableStateOf<List<Game>>(emptyList()) }
@@ -145,7 +147,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
         if (selectedGame?.isVisible!!) {
             gamesIsValid = true
             matchService.currentGame = selectedGame
-            matchService.saveBackupGame(selectedGame!!.id!!, userId, username, partyConfigs)
+            matchService.saveBackupGame(selectedGame!!.id!!, userId, username, componentContext,partyConfigs)
         } else {
             fetchGames()
         }

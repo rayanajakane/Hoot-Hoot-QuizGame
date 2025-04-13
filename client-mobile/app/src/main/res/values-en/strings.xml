@@ -162,6 +162,19 @@
     <string name="no_background">No background</string>
     <string name="regen">Generate other usernames</string>
     <string name="suggest_names">Username Suggestions</string>
+    <string name="money_errors_not_enough_money">You don\'t have enough money to make this transaction.</string>
+    <string name="money_errors_donation_amount_exceeded">With this donation, you will exceed the maximum amount of money allowed to send.</string>
+    <string name="money_errors_invalid_amount">The amount is invalid, it must be a positive number.</string>
+    <string name="money_errors_zero_amount">The amount is invalid, it must be a positive number larger than 0.</string>
+    <string name="money_errors_not_friends">You can only send money to your friends.</string>
+    <string name="match_errors_ban_player">he host banned you from the match.</string>
+    <string name="match_errors_no_more_host">The host left the match.</string>
+    <string name="match_errors_no_more_players">There are no more players in the match.</string>
+    <string name="match_errors_locked_room">The match is locked.</string>
+    <string name="match_errors_invalid_code">The access code is invalid.</string>
+    <string name="match_errors_banned_player">You have been banned from this match.</string>
+    <string name="match_friends_errors_not_friends_with_host">You are not friends with the host.</string>
+    <string name="match_friends_errors_no_friends">You don\'t have any friends.</string>
     <string name="panic_mode_activated">❗ PANIC MODE ACTIVATED! ❗</string>
     <string name="timer_paused">Timer paused</string>
     <string name="timer_start">Timer unpaused</string>
@@ -191,4 +204,5 @@
     <string name="classic_mode">Classic</string>
     <string name="cheater_mode_label">Cheater</string>
     <string name="game_mode">Game Mode</string>
+    <string name="match_errors_less_than_3_players">The match needs at least 3 players.</string>
 </resources>

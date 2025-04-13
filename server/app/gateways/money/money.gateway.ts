@@ -26,15 +26,16 @@ export class MoneyGateway {
         const roundedAmount = Math.round(data.amount * 100) / 100;
         data.amount = Number.isInteger(roundedAmount) ? Math.trunc(roundedAmount) : roundedAmount;
         console.log('Donating money:', data);
-        const moneyErrors = await this.moneyService.getMoneyError(data.user, data.amount, true);
-        if (moneyErrors) {
+        const friendUid = (await this.firebaseAuthService.getUserById(data.friend)).uid;
+        const moneyErrors = await this.moneyService.getMoneyError(data.user, data.amount, true, friendUid);
+        if (moneyErrors.length > 0) {
             this.sendError(client.id, moneyErrors);
             return;
         }
 
+        const friendUsername = (await this.firebaseAuthService.getUserById(data.friend)).displayName;
         const success = await this.moneyService.donateMoney(data.user, data.friend, data.amount);
         if (!success) return;
-        const friendUsername = (await this.firebaseAuthService.getUserById(data.friend)).displayName;
         const userUsername = (await this.firebaseAuthService.getUserById(data.user)).displayName;
         client.emit(MoneyEvents.DonationGiven, {
             to: friendUsername,
@@ -55,11 +56,11 @@ export class MoneyGateway {
     @SubscribeMessage(MoneyEvents.BuyAvatar)
     async buyAvatar(client: Socket, data: PurchaseInfo) {
         if (data.item.owned) {
-            this.sendError(client.id, 'Avatar already owned');
+            // this.sendError(client.id, 'Avatar already owned');
             return;
         }
         const moneyErrors = await this.moneyService.getMoneyError(data.user, data.item.price, false);
-        if (moneyErrors) {
+        if (moneyErrors.length > 0) {
             this.sendError(client.id, moneyErrors);
             return;
         }
@@ -73,11 +74,11 @@ export class MoneyGateway {
     async buyTheme(client: Socket, data: PurchaseInfo) {
         console.log('Buying theme:', data);
         if (data.item.owned) {
-            this.sendError(client.id, 'Theme already owned');
+            // this.sendError(client.id, 'Theme already owned');
             return;
         }
         const moneyErrors = await this.moneyService.getMoneyError(data.user, data.item.price, false);
-        if (moneyErrors) {
+        if (moneyErrors.length > 0) {
             this.sendError(client.id, moneyErrors);
             return;
         }
@@ -90,11 +91,11 @@ export class MoneyGateway {
     async buyWallpaper(client: Socket, data: PurchaseInfo) {
         console.log('Buying wallpaper:', data);
         if (data.item.owned) {
-            this.sendError(client.id, 'Wallpaper already owned');
+            // this.sendError(client.id, 'Wallpaper already owned');
             return;
         }
         const moneyErrors = await this.moneyService.getMoneyError(data.user, data.item.price, false);
-        if (moneyErrors) {
+        if (moneyErrors.length > 0) {
             this.sendError(client.id, moneyErrors);
             return;
         }
@@ -108,7 +109,7 @@ export class MoneyGateway {
         if (userId) this.userSockets.delete(userId);
     }
 
-    sendError(socketId: string, error: string) {
+    sendError(socketId: string, error: string[]) {
         console.log('Sending error:', error);
         this.server.to(socketId).emit(MoneyEvents.Error, error);
     }

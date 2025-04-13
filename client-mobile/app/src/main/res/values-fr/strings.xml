@@ -162,6 +162,19 @@
     <string name="no_background">Aucun arrière-plan</string>
     <string name="regen">Générer d\'autres noms</string>
     <string name="suggest_names">Suggestions de noms d\'utilisateurs</string>
+    <string name="money_errors_not_enough_money">Vous n\'avez pas assez d\'argent pour effectuer cette transaction.</string>
+    <string name="money_errors_donation_amount_exceeded">Avec cette donation, vous dépassez la limite quotidienne.</string>
+    <string name="money_errors_invalid_amount">Le montant est invalide, il doit être un nombre positif.</string>
+    <string name="money_errors_zero_amount">Le montant est invalide, il doit être un nombre positif supérieur à 0.</string>
+    <string name="money_errors_not_friends">Vous ne pouvez pas donner de l\'argent à quelqu\'un qui n\'est pas dans votre liste d\'amis.</string>
+    <string name="match_errors_ban_player">L\'organisateur vous a banni.</string>
+    <string name="match_errors_no_more_host">L\'organisateur a quitté la partie.</string>
+    <string name="match_errors_no_more_players">Il n\'y a plus de joueurs dans la partie.</string>
+    <string name="match_errors_locked_room">La partie est verrouillée.</string>
+    <string name="match_errors_invalid_code">Le code est invalide.</string>
+    <string name="match_errors_banned_player">Vous avez été banni de cette partie.</string>
+    <string name="match_friends_errors_not_friends_with_host">Vous n\'êtes pas ami avec l\'hôte.</string>
+    <string name="match_friends_errors_no_friends">Vous n\'avez pas d\'amis.</string>
     <string name="panic_mode_activated">❗ MODE PANIQUE ACTIVÉ! ❗</string>
     <string name="cheater_mode_notify_cheater">Vous êtes le/la tricheur/tricheuse de cette partie</string>
     <string name="cheater_mode_cheater">Tricheur/se</string>
@@ -190,5 +203,6 @@
     <string name="classic_mode">Classique</string>
     <string name="cheater_mode_label">Tricheur</string>
     <string name="game_mode">Mode de Jeu</string>
+    <string name="match_errors_less_than_3_players">Il doit y avoir au moins 3 joueurs dans la partie.</string>
     <string name="search_games">Rechercher un jeu</string>
 </resources>

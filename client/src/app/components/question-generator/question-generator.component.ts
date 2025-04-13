@@ -1,13 +1,13 @@
-import { Component, EventEmitter, HostListener, Inject, Output } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { TextDialogData } from '@app/interfaces/dialog-data/text-dialog-data';
-import { QuestionCreationFormComponent } from '@app/components/question-creation-form/question-creation-form.component';
-import { FormGroup } from '@angular/forms';
-import { Choice } from '@app/interfaces/choice';
 import { HttpResponse } from '@angular/common/http';
+import { Component, EventEmitter, HostListener, Inject, Output } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { QuestionCreationFormComponent } from '@app/components/question-creation-form/question-creation-form.component';
+import { QCM, QRE, QRL } from '@app/constants/question-types';
+import { Choice } from '@app/interfaces/choice';
+import { TextDialogData } from '@app/interfaces/dialog-data/text-dialog-data';
 import { QuestionService } from '@app/services/question/question.service';
-import { TranslocoService } from '@jsverse/transloco';
-import { translate } from '@jsverse/transloco';
+import { translate, TranslocoService } from '@jsverse/transloco';
 
 interface GeneratedQuestion {
     question: {
@@ -27,6 +27,9 @@ interface GeneratedQuestion {
     styleUrl: './question-generator.component.scss',
 })
 export class QuestionGeneratorComponent {
+    qcm = QCM;
+    qre = QRE;
+    qrl = QRL;
     questionCreationComponent: QuestionCreationFormComponent;
     @Output() questionGenerated: EventEmitter<any> = new EventEmitter<any>();
     dialogForm: FormGroup;

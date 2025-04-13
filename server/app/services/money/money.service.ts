@@ -1,10 +1,11 @@
 import { DonationRecord } from '@app/constants/donation-record';
-import { DONATION_LIMIT_EXCEEDED, INVALID_AMOUNT, LOW_BALANCE, ZERO_AMOUNT } from '@app/constants/money-errors';
+import { DONATION_LIMIT_EXCEEDED, INVALID_AMOUNT, LOW_BALANCE, NOT_FRIENDS, ZERO_AMOUNT } from '@app/constants/money-errors';
 import { FirebaseRepositoryService } from '@app/modules/firebase/firebase-repository/firebase-repository.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { MAX_REWARD, MIN_REWARD } from '@common/constants/match-constants';
 import { Injectable } from '@nestjs/common';
 import { Database } from 'firebase-admin/lib/database/database';
+import { FriendsService } from '../friends/friends.service';
 @Injectable()
 export class MoneyService {
     private database: Database;
@@ -13,6 +14,7 @@ export class MoneyService {
     constructor(
         private readonly firebaseService: FirebaseRepositoryService,
         private matchRoomService: MatchRoomService,
+        private friendService: FriendsService,
     ) {
         this.database = this.firebaseService.database;
     }
@@ -70,7 +72,7 @@ export class MoneyService {
         return true;
     }
 
-    async getMoneyError(uid: string, amount: number, isDonation: boolean = false): Promise<string> {
+    async getMoneyError(uid: string, amount: number, isDonation: boolean = false, friendId: string = ''): Promise<string[]> {
         const errors: string[] = [];
         const balance = await this.getCurrentBalance(uid);
 
@@ -85,13 +87,20 @@ export class MoneyService {
             if (amount == 0) {
                 errors.push(ZERO_AMOUNT);
             }
+
             const donationsToday = await this.getAndClearDonationsToday(uid);
             if (donationsToday + amount > this.DAILY_DONATION_LIMIT) {
                 errors.push(DONATION_LIMIT_EXCEEDED);
             }
+
+            const friends = await this.friendService.getFriendsList(uid);
+            const isFriend = friends.some((friend) => friend.id === friendId);
+            if (!isFriend) {
+                errors.push(NOT_FRIENDS);
+            }
         }
 
-        return errors.join(' ');
+        return errors;
     }
 
     async rewardPlayers(roomCode: string): Promise<void> {

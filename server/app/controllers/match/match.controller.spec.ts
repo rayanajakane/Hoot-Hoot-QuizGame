@@ -100,7 +100,7 @@ describe('MatchController', () => {
     });
 
     it('validateMatchRoomCode() should return OK if the code is valid', () => {
-        matchRoomService.getRoomCodeErrors.returns('');
+        matchRoomService.getRoomCodeErrors.returns([]);
         const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.OK);
@@ -111,7 +111,7 @@ describe('MatchController', () => {
     });
 
     it('validateMatchRoomCode() should return FORBIDDEN if the code is invalid', () => {
-        matchRoomService.getRoomCodeErrors.returns(INVALID_CODE);
+        matchRoomService.getRoomCodeErrors.returns([INVALID_CODE]);
         const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.FORBIDDEN);
@@ -121,7 +121,7 @@ describe('MatchController', () => {
         controller.validateMatchRoomCode({ matchRoomCode: '' }, res);
     });
     it('validateUsername() should return OK if the username is valid', () => {
-        playerRoomService.getUsernameErrors.returns('');
+        playerRoomService.getUsernameErrors.returns([]);
         const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.OK);
@@ -131,7 +131,7 @@ describe('MatchController', () => {
         controller.validateUsername({ matchRoomCode: '', username: '' }, res);
     });
     it('validateUsername() should return FORBIDDEN if the username is invalid', () => {
-        playerRoomService.getUsernameErrors.returns(HOST_CONFLICT);
+        playerRoomService.getUsernameErrors.returns([HOST_CONFLICT]);
         const res = {} as any as Response;
         res.status = (code) => {
             expect(code).toEqual(HttpStatus.FORBIDDEN);

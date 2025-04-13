@@ -243,7 +243,7 @@ describe('MatchRoomService', () => {
         validRoom.isLocked = false;
         jest.spyOn(service, 'getRoom').mockReturnValue(MOCK_MATCH_ROOM);
         const result = service.getRoomCodeErrors(validRoom.code);
-        expect(result).toEqual('');
+        expect(result).toEqual([]);
     });
 
     it('getRoomCodeErrors() should return LOCKED_ROOM error if the room is found and is locked', () => {
@@ -251,13 +251,13 @@ describe('MatchRoomService', () => {
         invalidRoom.isLocked = true;
         jest.spyOn(service, 'getRoom').mockReturnValue(MOCK_MATCH_ROOM);
         const result = service.getRoomCodeErrors(invalidRoom.code);
-        expect(result).toEqual(LOCKED_ROOM);
+        expect(result).toEqual([LOCKED_ROOM]);
     });
 
     it('getRoomCodeErrors() should return INVALID_CODE if the room is not found', () => {
         jest.spyOn(service, 'getRoom').mockReturnValue(undefined);
         const result = service.getRoomCodeErrors('');
-        expect(result).toEqual(INVALID_CODE);
+        expect(result).toEqual([INVALID_CODE]);
     });
 
     it('canStartMatch() should return true if room is locked and has at least one player', () => {

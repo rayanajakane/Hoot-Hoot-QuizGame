@@ -2,6 +2,7 @@ package com.example.polyquiz.match.domain
 
 import StringValue
 import android.annotation.SuppressLint
+import android.content.Context
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.constants.MatchEvents
 import com.example.polyquiz.constants.MatchStatus
@@ -17,6 +18,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.example.polyquiz.R
+import com.example.polyquiz.SnackbarController
+import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.constants.AnswerEvents
 import com.example.polyquiz.constants.ChatEvents
@@ -27,6 +30,7 @@ import com.example.polyquiz.constants.Route
 import com.example.polyquiz.constants.VotingData
 import com.example.polyquiz.pages.presentation.VotingPage
 import com.example.polyquiz.elo.domain.EloService
+import kotlinx.coroutines.launch
 import com.example.polyquiz.match.domain.AnswerService.gradeAnswers
 import com.example.polyquiz.match.domain.AnswerService.playersAnswers
 import com.google.gson.reflect.TypeToken
@@ -34,6 +38,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import org.json.JSONArray
 import org.json.JSONException
 import java.util.Arrays
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @SuppressLint("StaticFieldLeak")
 object MatchRoomService {
@@ -92,7 +99,7 @@ object MatchRoomService {
     fun getRoomCode(): String = _matchRoomCode.value
     fun retrieveUsername(): String = username
 
-    fun connect() {
+    fun connect(context: Context) {
         if (!hasEnteredRoom) {
             hasEnteredRoom = true
             resetMatchValues()
@@ -104,13 +111,13 @@ object MatchRoomService {
             onStartCooldown()
             onHostQuit()
             onPlayerKick()
-            handleError()
             onMatchCheaterModeStarted()
             onVoting()
             onVotingResults()
             onSelectedCheater()
             onCurrentAnswers()
             onUsersWhoVoted()
+            handleError(context)
             onRouteToResultsPage()
         }
     }
@@ -324,11 +331,27 @@ object MatchRoomService {
         }
     }
 
-    fun handleError() {
+    fun handleError(context: Context) {
         socket.on(MatchEvents.ERROR.value) { args ->
             if (args.isNotEmpty()) {
-                val errorMessage = args[0] as? String ?: "Unknown error"
-                errorMsg = errorMessage
+                val errors: List<String> = try {
+                    Gson().fromJson(args[0].toString(), Array<String>::class.java).toList()
+                } catch (e: Exception) {
+                    listOf(args[0].toString())
+                }
+
+                val displayText = errors.joinToString(separator = "\n") { errorKey: String ->
+                    val cleanKey = errorKey.trim()
+                    StringValue.dynamicLookup(context, cleanKey).asString(context)
+                }
+
+                val event = SnackbarEvent(
+                    message = StringValue.DynamicString(displayText)
+                )
+
+                CoroutineScope(Dispatchers.Main).launch {
+                    SnackbarController.sendEvent(event)
+                }
             }
         }
     }

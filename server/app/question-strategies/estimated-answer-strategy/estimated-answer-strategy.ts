@@ -25,8 +25,16 @@ export class EstimatedAnswerStrategy extends QuestionStrategy {
     calculateScore(matchRoom: MatchRoom, players: Player[]) {
         const currentQuestionPoints = matchRoom.currentQuestion.points;
         const margin = matchRoom.currentQuestion.estimatedParameters.margin;
-        const correctAnswer: number = parseInt(matchRoom.currentQuestionAnswer[0]); // TODO: use matchRoom.currentQuestionAnswer
+        const correctAnswer: number = parseInt(matchRoom.currentQuestionAnswer[0]);
         players.forEach((player) => {
+            if ((player.answer as EstimatedAnswer).answer === Infinity) {
+                if (player.answer.timestamp !== Infinity) {
+                    const lowerBound = matchRoom.currentQuestion?.estimatedParameters?.lowerBound;
+                    (player.answer as EstimatedAnswer).answer = lowerBound;
+                }
+            }
+
+            console.log('player.answer', player.answer);
             const playerAnswer = (player.answer as EstimatedAnswer).answer;
             if (this.isAnswerWithinMargin(playerAnswer, correctAnswer, margin)) {
                 player.answerCorrectness = AnswerCorrectness.GOOD;

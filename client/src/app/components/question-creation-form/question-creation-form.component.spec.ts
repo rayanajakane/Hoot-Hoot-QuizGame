@@ -252,17 +252,17 @@ describe('QuestionCreationFormComponent', () => {
 
     it('should return the correct button text for GameCreate state', () => {
         component.modificationState = ManagementState.GameCreate;
-        expect(component.getButtonText()).toBe('Vérifier si la question est valide');
+        expect(component.getButtonText()).toBe('Valider');
     });
 
     it('should return the correct button text for BankModify state', () => {
         component.modificationState = ManagementState.BankModify;
-        expect(component.getButtonText()).toBe('Modifier la question');
+        expect(component.getButtonText()).toBe('Modifier');
     });
 
     it('should return an empty string for an GameModify state', () => {
         component.modificationState = ManagementState.GameModify;
-        expect(component.getButtonText()).toBe('Modifier la question');
+        expect(component.getButtonText()).toBe('Modifier');
     });
 
     it('should handle drag and drop event', () => {

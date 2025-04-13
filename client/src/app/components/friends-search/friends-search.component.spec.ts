@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { FriendsSearchComponent } from '@app/components/friends-search/friends-search.component';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { FriendsService } from '@app/services/friends/friends.service';
 import { TranslocoService } from '@jsverse/transloco';
-import { FriendsSearchComponent } from './friends-search.component';
 
 describe('FriendsSearchComponent', () => {
     let component: FriendsSearchComponent;

@@ -204,8 +204,13 @@ export class MatchRoomService {
     }
 
     handleError() {
-        this.socketService.on(MatchEvents.Error, (errorMessage: string) => {
-            this.notificationService.displayErrorMessage(errorMessage);
+        this.socketService.on(MatchEvents.Error, (errorMessage: any) => {
+            const message = errorMessage.toString();
+            const displayMessage = message
+                .split('\n')
+                .map((line: string) => translate(line.trim()))
+                .join(' ');
+            this.notificationService.displayErrorMessage(displayMessage);
         });
     }
 

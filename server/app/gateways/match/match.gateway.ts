@@ -55,13 +55,16 @@ export class MatchGateway implements OnGatewayDisconnect {
         const matchRoom = this.matchRoomService.getRoom(data.roomCode);
         const codeErrors = this.matchRoomService.getRoomCodeErrors(data.roomCode);
         const usernameErrors = this.playerRoomService.getUsernameErrors(data.roomCode, data.userId);
-        let errorMessage = codeErrors + usernameErrors;
+        let errorMessage = [];
+        errorMessage = errorMessage.concat(codeErrors);
+        errorMessage = errorMessage.concat(usernameErrors);
+        console.log('Joining room', matchRoom.partyConfig, data.userId);
         if (matchRoom.partyConfig.isFriendsOnly || matchRoom.partyConfig.isEntryFeeRequired) {
             const partyErrors = await this.partyService.canJoinParty(data.userId, data.roomCode);
-            errorMessage += partyErrors;
+            errorMessage = errorMessage.concat(partyErrors);
         }
 
-        if (errorMessage) {
+        if (errorMessage.length > 0) {
             this.sendError(socket.id, errorMessage);
         } else {
             socket.join(data.roomCode);
@@ -72,6 +75,7 @@ export class MatchGateway implements OnGatewayDisconnect {
             }
             const newPlayer = await this.playerRoomService.addPlayer(socket, data.roomCode, data.userId, data.username);
             this.returnAllMatches();
+            console.log('New player', newPlayer.username);
             return { code: data.roomCode, username: newPlayer.username, userId: newPlayer.id };
         }
     }
@@ -88,14 +92,14 @@ export class MatchGateway implements OnGatewayDisconnect {
         if (data.partyConfig) {
             if (data.partyConfig.isFriendsOnly) {
                 const friendshipErrors = await this.friendService.getFriendshipErrors(data.hostId, true);
-                if (friendshipErrors) {
+                if (friendshipErrors.length > 0) {
                     this.sendError(socket.id, friendshipErrors);
                     return;
                 }
             }
             if (data.partyConfig.isEntryFeeRequired) {
                 const moneyErrors = await this.moneyService.getMoneyError(data.hostId, data.partyConfig.entryFeeAmount);
-                if (moneyErrors) {
+                if (moneyErrors.length > 0) {
                     this.sendError(socket.id, moneyErrors);
                     return;
                 }
@@ -203,7 +207,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         const playerToBan = this.playerRoomService.getPlayerById(data.roomCode, data.userId);
         if (playerToBan) {
             this.playerRoomService.deletePlayer(data.roomCode, data.userId);
-            this.sendError(playerToBan.socket.id, BAN_PLAYER);
+            this.sendError(playerToBan.socket.id, [BAN_PLAYER]);
             this.server.in(playerToBan.socket.id).emit(MatchEvents.KickPlayer);
             playerToBan.socket.leave(data.roomCode);
             // this.server.in(playerToBan.socket.id).disconnectSockets();
@@ -281,7 +285,7 @@ export class MatchGateway implements OnGatewayDisconnect {
 
         // !hostRoom.currentQuestionIndex is true when in wait page (=== 0)
         if (hostRoom.isPlaying || !hostRoom.currentQuestionIndex) {
-            this.sendError(hostRoomCode, NO_MORE_HOST);
+            this.sendError(hostRoomCode, [NO_MORE_HOST]);
             const endDate = new Date();
             if (hostRoom.players) {
                 hostRoom.players.forEach((player) => {
@@ -329,19 +333,13 @@ export class MatchGateway implements OnGatewayDisconnect {
         socket.leave(roomCode);
         const isRoomEmpty = this.isRoomEmpty(room);
         if (room.isPlaying && isRoomEmpty) {
-            this.sendError(roomCode, NO_MORE_PLAYERS);
+            this.sendError(roomCode, [NO_MORE_PLAYERS]);
             this.deleteRoom(roomCode);
             return;
         }
 
-        if(this.matchRoomService.isCheaterMode && room.isPlaying && lessthanThreePlayers ) {
-            this.sendError(roomCode, LESS_THAN_3_PLAYERS);
-            this.deleteRoom(roomCode);
-            return;
-        }
-
-        if(this.matchRoomService.isCheaterMode && room.isPlaying && lessthanThreePlayers ) {
-            this.sendError(roomCode, LESS_THAN_3_PLAYERS);
+        if (this.matchRoomService.isCheaterMode && room.isPlaying && lessthanThreePlayers) {
+            this.sendError(roomCode, [LESS_THAN_3_PLAYERS]);
             this.deleteRoom(roomCode);
             return;
         }
@@ -370,7 +368,8 @@ export class MatchGateway implements OnGatewayDisconnect {
         this.server.to(matchRoomCode).emit(MatchEvents.FetchPlayersData, this.playerRoomService.getPlayersStringified(matchRoomCode));
     }
 
-    sendError(socketId: string, error: string) {
+    sendError(socketId: string, error: string[]) {
+        console.log('Sending error:', error);
         this.server.to(socketId).emit(MatchEvents.Error, error);
     }
 
@@ -378,7 +377,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         return room.players.every((player) => !player.isPlaying || !player.socket.rooms.has(room.code));
     }
 
-   private isRoomLessThanThreePlayers(room: MatchRoom) {
+    private isRoomLessThanThreePlayers(room: MatchRoom) {
         return room.players.filter((player) => player.isPlaying || player.socket.rooms.has(room.code)).length < 4;
     }
 
