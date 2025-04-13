@@ -20,6 +20,8 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.MatchContext
+import com.google.firebase.perf.FirebasePerformance
+import com.google.firebase.perf.metrics.Trace
 import org.json.JSONObject
 import java.util.Timer
 import kotlin.concurrent.schedule
@@ -41,6 +43,8 @@ object AnswerService {
     var currentLongAnswer by mutableStateOf("")
     private val mSocket = SocketHandler.getSocket()
 
+    val answerTrace: Trace = FirebasePerformance.getInstance().newTrace("answer_trace")
+
     fun listenToAnswerEvents() {
         onFeedback()
         onBonusPoints()
@@ -53,6 +57,7 @@ object AnswerService {
     // TODO : fix on feedback pl0x : args is empty and or null
     // server sends : Feedback :  { score: 0, answerCorrectness: 0, correctAnswer: [ '0' ] }
     fun onFeedback() {
+        answerTrace.start()
         Log.d("answer service", "called onFeedback")
         Log.d("answer socket", "Socket is null? : id=${mSocket.id()} and ${mSocket.isActive}, and connected= ${mSocket.connected()}")
         mSocket.on(AnswerEvents.FEEDBACK.value) { args ->
@@ -75,6 +80,7 @@ object AnswerService {
             } else {
                 isNextQuestionButtonEnabled = true
             }
+            answerTrace.stop()
         }
     }
 
