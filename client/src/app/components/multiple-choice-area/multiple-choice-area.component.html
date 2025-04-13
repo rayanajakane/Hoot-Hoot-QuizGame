@@ -19,7 +19,7 @@
 
 <div id="answers-container" *ngIf="!matchRoomService.isCooldown && matchContextService.getContext() === contextOptions.HostView">
     <button
-        disabled
+        disabled = "!answerService.isSelectionEnabled"
         mat-raised-button
         *ngFor="let choice of matchRoomService.currentQuestion.choices; let i = index"
         class="answer"

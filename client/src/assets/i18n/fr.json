@@ -411,7 +411,7 @@
         "answer-hint": "Indice pour la réponse: \"{{answer}}\"",
         "notifyRegularPlayer": "Vous avez le rôle de joueur régulier dans cette partie",
         "playerVoted": " a voté",
-        "players-still-voting": "Joueurs en train de voter",
+        "players-still-voting": "Les joueurs votent",
         "players-voted": "Tous les joueurs ont voté",
         "players-amount-invalid": "Le nombre de joueurs doit être supérieur à 3"
     },
@@ -425,7 +425,7 @@
         "language": "La langue de la question",
         "choice-number": "Nombre de choix de réponses",
         "choice": "Choix",
-        "generate-IA": "Générer question IA",
+        "generate-IA": "Générer avec l'IA",
         "error": "Erreur lors de la génération de la question",
         "choice-input": "Entrez les choix",
         "french": "Français",

@@ -23,7 +23,6 @@ export class AnswerService {
     gradeAnswers: boolean;
     isGradingComplete: boolean;
     isNextQuestionButtonEnabled: boolean;
-    isSelectionEnabled: boolean;
     correctAnswer: string[];
     answerCorrectness: AnswerCorrectness;
     playerScore: number;
@@ -33,9 +32,12 @@ export class AnswerService {
     currentLongAnswer: string;
 
     private showingFeedback: boolean = false;
+    private isSelectedEnabled: boolean = false;
 
     private showingFeedbackSubject = new BehaviorSubject<boolean>(this.showingFeedback);
     showingFeedback$ = this.showingFeedbackSubject.asObservable();
+    private isSelectionEnabledSubject = new BehaviorSubject<boolean>(this.isSelectedEnabled);
+    isSelectionEnabled$ = this.isSelectionEnabledSubject.asObservable();
 
     // Allow more constructor parameters to decouple services
     // eslint-disable-next-line max-params
@@ -55,6 +57,15 @@ export class AnswerService {
     set showFeedback(value: boolean) {
         this.showingFeedback = value;
         this.showingFeedbackSubject.next(value);
+    }
+
+    get isSelectionEnabled(): boolean {
+        return this.isSelectedEnabled;
+    }
+
+    set isSelectionEnabled(value: boolean) {
+        this.isSelectedEnabled = value;
+        this.isSelectionEnabledSubject.next(value);
     }
 
     listenToAnswerEvents() {
