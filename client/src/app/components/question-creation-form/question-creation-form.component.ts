@@ -14,7 +14,7 @@ import { BankService } from '@app/services/bank/bank.service';
 import { QuestionService } from '@app/services/question/question.service';
 import { QuestionType } from '@common/constants/question-types';
 import { translate } from '@jsverse/transloco';
-import { QuestionGeneratorComponent } from '../question-generator/question-generator.component';
+import { QuestionGeneratorComponent } from '@app/components/question-generator/question-generator.component';
 
 export interface DialogManagement {
     modificationState: ManagementState;
@@ -89,10 +89,12 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
             if (this.questionForm.get('type')?.value === QuestionType.EstimatedAnswer) {
                 this.questionForm.get('type')?.setValue(QuestionType.EstimatedAnswer);
                 const estimatedParams = this.questionForm.get('estimatedParameters') as FormGroup;
-                estimatedParams.get('lowerBound')?.setValue(generatedQuestion.lowerBound);
-                estimatedParams.get('upperBound')?.setValue(generatedQuestion.upperBound);
-                estimatedParams.get('correctAnswer')?.setValue(generatedQuestion.exactValue);
-                estimatedParams.get('margin')?.setValue(generatedQuestion.errorMargin);
+                estimatedParams.patchValue({
+                    lowerBound: generatedQuestion.lowerBound,
+                    upperBound: generatedQuestion.upperBound,
+                    correctAnswer: generatedQuestion.exactValue,
+                    margin: generatedQuestion.errorMargin,
+                });
             }
         }
     }
