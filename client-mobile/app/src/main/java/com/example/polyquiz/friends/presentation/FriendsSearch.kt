@@ -65,6 +65,7 @@ fun FriendsSearchScreen(
     val sentRequests by friendsService.sentRequests.collectAsState()
     val friends by friendsService.friends.collectAsState()
     val allUsers by friendsService.allUsers.collectAsState()
+    val allDataLoaded by friendsService.allDataLoaded.collectAsState()
 
     fun isFriend(user: UserIdName): Boolean {
         return friends.any { it.id == user.id }
@@ -139,7 +140,7 @@ fun FriendsSearchScreen(
     ) {
         ChatComponent(modifier = Modifier, authViewModel = authViewModel)
 
-        if (pendingRequests.isEmpty() || sentRequests.isEmpty() || friends.isEmpty() || allUsers.isEmpty()) {
+        if (!allDataLoaded) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center

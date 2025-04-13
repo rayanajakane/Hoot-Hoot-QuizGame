@@ -27,6 +27,9 @@ class FriendsService {
     private val _searchResults = MutableStateFlow<List<UserIdName>>(emptyList())
     val searchResults: StateFlow<List<UserIdName>> get() = _searchResults
 
+    private val _allDataLoaded = MutableStateFlow(false)
+    val allDataLoaded: StateFlow<Boolean> = _allDataLoaded
+
     private val mSocket = SocketHandler.getSocket()
     private var userId: String = ""
 
@@ -35,17 +38,30 @@ class FriendsService {
     }
 
     fun returnAllData() {
+        _allDataLoaded.value = false
         onReturnUsers();
         mSocket.emit(FriendsEvents.RETURN_ALL_DATA.value, userId);
     }
 
     fun onReturnUsers() {
+
+        var loadedDataTypes = 0
+        val totalDataTypes = 4
+
+        fun checkLoadedDataTypes() {
+            loadedDataTypes++
+            if (loadedDataTypes == totalDataTypes) {
+                _allDataLoaded.value = true
+            }
+        }
+
         mSocket.on(FriendsEvents.RETURN_ALL_USERS.value) { args: Array<Any> ->
             if (args.isNotEmpty()) {
                 val type = object : TypeToken<List<UserIdName>>() {}.type
                 val data: List<UserIdName> = Gson().fromJson(args[0].toString(), type)
                 _allUsers.value = data
                 _searchResults.value = _allUsers.value
+                checkLoadedDataTypes()
             }
         }
         mSocket.on(FriendsEvents.RETURN_ALL_FRIENDS.value) { args: Array<Any> ->
@@ -53,6 +69,7 @@ class FriendsService {
                 val type = object : TypeToken<List<UserIdName>>() {}.type
                 val data: List<UserIdName> = Gson().fromJson(args[0].toString(), type)
                 _friends.value = data
+                checkLoadedDataTypes()
             }
         }
         mSocket.on(FriendsEvents.RETURN_ALL_PENDING_REQUESTS.value) { args: Array<Any> ->
@@ -60,6 +77,7 @@ class FriendsService {
                 val type = object : TypeToken<List<UserIdName>>() {}.type
                 val data: List<UserIdName> = Gson().fromJson(args[0].toString(), type)
                 _pendingRequests.value = data
+                checkLoadedDataTypes()
             }
         }
         mSocket.on(FriendsEvents.RETURN_ALL_SENT_REQUESTS.value) { args: Array<Any> ->
@@ -67,6 +85,7 @@ class FriendsService {
                 val type = object : TypeToken<List<UserIdName>>() {}.type
                 val data: List<UserIdName> = Gson().fromJson(args[0].toString(), type)
                 _sentRequests.value = data
+                checkLoadedDataTypes()
             }
         }
     }
