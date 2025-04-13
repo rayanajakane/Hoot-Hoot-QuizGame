@@ -91,7 +91,7 @@
         "games-list": "Games list",
         "game-details": "Game details ",
         "select-game": "Select a game from the games list",
-        "time-per-QCM": "Time per QCM:",
+        "time-per-QCM": "Time per MCQ and EAQ:",
         "popular-games": "Popular Games",
         "n-matches-played": "Matches Played:",
         "all-games": "All Games",
@@ -153,8 +153,8 @@
         "remove-image": "Remove an image",
         "add-bank": "Add to bank",
         "add-question-bank": "Add question to bank",
-        "verify-question": "Check if question is valid",
-        "modify-question": "Modify the question",
+        "verify-question": "Validate",
+        "modify-question": "Edit",
         "question-choice": "Answer choice",
         "delete-choice": "Delete choice",
         "tooltip-answer-true": "Check to make answer correct",
@@ -303,7 +303,9 @@
         "creation-error": "The game could not be created. 😿 ",
         "modification-error": "The game could not be modified. 😿 ",
         "creation-success": "Game created successfully! 😺",
-        "modification-success": "Game modified successfully! 😺"
+        "modification-success": "Game modified successfully! 😺",
+        "rename-game": "Rename the game",
+        "title": "New title"
     },
     "admin-question-bank": {
         "back-page": "Back",
@@ -333,6 +335,62 @@
     },
     "players-list": {
         "players": "Players"
+    },
+    "money-errors": {
+        "not-enough-money": "You don't have enough money to make this transaction.",
+        "donation-amount-exceeded": "With this donation, you will exceed the maximum amount of money allowed to send.",
+        "invalid-amount": "The amount is invalid, it must be a positive number.",
+        "zero-amount": "The amount is invalid, it must be a positive number larger than 0.",
+        "not-friends": "You can only send money to your friends."
+    },
+    "money-status": {
+        "donation-received": "{{from}} has donated {{amount}} $ to you.",
+        "donation-sent": "You have donated {{amount}} $ to {{to}}."
+    },
+    "match-errors": {
+        "ban_player": "The host banned you from the match.",
+        "no_more_host": "The host left the match.",
+        "no_more_players": "There are no more players in the match.",
+        "locked-room": "The match is locked.",
+        "invalid-code": "The access code is invalid.",
+        "banned-player": "You have been banned from this match.",
+        "less_than_3_players": "The match needs at least 3 players."
+    },
+    "match-friends-errors": {
+        "not_friends_with_host": "You are not friends with the host.",
+        "no_friends": "You don't have any friends."
+    },
+    "request-errors": {
+        "error-game-not-found": "The game has not been found.",
+        "error-game-same-title": "A game with the same title already exists.",
+        "error-invalid-game": "The game is invalid: ",
+        "error-wrong-format": "At least one of the elements of the game is invalid.",
+        "error-question-not-found": "The question has not been found.",
+        "error-question-same-title-bank": "The question already exists in the question bank.",
+        "error-invalid-question": "The question is invalid: ",
+        "error-default": "Error",
+        "error-could-not-add": "The question could not be added. 😿",
+        "error-could-not-delete": "The question could not be deleted. 😿",
+        "error-could-not-get": "The question could not be retrieved. 😿"
+    },
+    "game-validation-errors": {
+        "error-repeat-choices": "There shouldn't be any repeated choices in the same question.",
+        "error-choices-number": "There should be between 2 and 4 choices in a question.",
+        "error-points": "The number of points must between 10 and 100.",
+        "error-empty-question": "The question cannot be empty.",
+        "error-choices-ratio": "There should be at least one correct and one incorrect choice.",
+        "error-empty-title": "The title of the game cannot be empty.",
+        "error-empty-description": "The description of the game cannot be empty.",
+        "error-duration": "The duration of the game must be between 10 and 60 seconds.",
+        "error-question-number": "There should be at least one question in the game.",
+        "error-question-type": "The type of the question should either be QCM, QRL or QRE.",
+        "error-invalid-bounds": "The lower bound must be smaller than the upper bound.",
+        "error-margin-too-big": "The margin should be positive and less than 25% of the interval.",
+        "error-answer-out-of-bounds": "The correct answer must be included in the bounds.",
+        "error-answer-not-integer": "The correct answer must be an integer.",
+        "error-lower-bound-not-integer": "The lower bound must be an integer.",
+        "error-upper-bound-not-integer": "The upper bound must be an integer.",
+        "error-margin-not-integer": "The margin must be an integer."
     },
     "username-suggestion": {
         "title": "Usernames Suggestions",
@@ -366,10 +424,20 @@
         "choice-number": "Number of answer choices",
         "choice": "Choice",
         "question-input": "Enter the question",
-        "generate-IA": "Generate questions with IA",
+        "generate-IA": "Generate with AI",
         "error": "Error while generating questions",
         "choice-input": "Enter the choice",
         "french": "French",
         "english": "English"
+    },
+    "question": {
+        "qcm": "MCQ",
+        "qrl": "LAQ",
+        "qre": "EAQ"
+    },
+    "question-long-label": {
+        "qcm": "MCQ - Multiple Choices",
+        "qrl": "LAQ - Long Answer     ",
+        "qre": "EAQ - Estimated Answer"
     }
 }

@@ -10,6 +10,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Text
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.draw.clip
+
+import coil.compose.rememberAsyncImagePainter
+
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -50,6 +58,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -61,7 +70,11 @@ import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.constants.AnswerCorrectness
+import com.example.polyquiz.match.domain.MatchRoomService.isCooldown
+import com.example.polyquiz.constants.AnswerEvents
+import com.example.polyquiz.match.domain.AnswerService.showFeedback
 import kotlinx.coroutines.launch
+import com.example.polyquiz.match.domain.MatchRoomService.isCooldown
 
 @Composable
 fun QuestionArea(
@@ -278,6 +291,7 @@ fun QuestionArea(
                 }
 
             }
+
 
             Spacer(modifier = Modifier.height(12.dp))
             if (context != MatchContext.HOSTVIEW) {

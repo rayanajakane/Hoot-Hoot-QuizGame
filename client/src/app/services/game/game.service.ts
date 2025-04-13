@@ -6,6 +6,7 @@ import { ManagementState } from '@app/constants/states';
 import { Game } from '@app/interfaces/game';
 import { CommunicationService } from '@app/services/communication/communication.service';
 import { NotificationService } from '@app/services/notification/notification.service';
+import { translate } from '@jsverse/transloco';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -32,7 +33,14 @@ export class GameService extends CommunicationService<Game> {
                 this.games = [...data];
                 this.isLoadingGames = false;
             },
-            error: (error: HttpErrorResponse) => this.notificationService.displayErrorMessage(`Échec d'obtention des jeux 😿\n ${error.message}`),
+            error: (error: HttpErrorResponse) => {
+                const message = error.message || '';
+                const displayMessage = message
+                    .split('\n')
+                    .map((line) => translate(line.trim()))
+                    .join(' ');
+                this.notificationService.displayErrorMessage(`${translate('request-errors.error-could-not-get')}\n  ${displayMessage}`);
+            },
         });
     }
 
@@ -43,7 +51,14 @@ export class GameService extends CommunicationService<Game> {
     deleteGame(id: string): void {
         this.delete(id).subscribe({
             next: () => (this.games = this.games.filter((game: Game) => game.id !== id)),
-            error: (error: HttpErrorResponse) => this.notificationService.displayErrorMessage(`Échec de supression du jeu 😿\n ${error.message}`),
+            error: (error: HttpErrorResponse) => {
+                const message = error.message || '';
+                const displayMessage = message
+                    .split('\n')
+                    .map((line) => translate(line.trim()))
+                    .join(' ');
+                this.notificationService.displayErrorMessage(`${translate('request-errors.error-could-not-delete')}\n ${displayMessage}`);
+            },
         });
     }
 
@@ -59,21 +74,28 @@ export class GameService extends CommunicationService<Game> {
                 }
                 newGame.isVisible = false;
                 this.games.push(newGame);
-                this.notificationService.displaySuccessMessage('Jeu ajouté avec succès! 😺');
+                this.notificationService.displaySuccessMessage(translate('game-modification.creation-success'));
             },
+
             error: (error: HttpErrorResponse) => {
-                if (error.message === 'Un jeu du même titre existe déjà.' || error.status === HttpStatusCode.Conflict) {
+                if (error.message === translate('request-errors.error-game-same-title') || error.status === HttpStatusCode.Conflict) {
                     this.openDialog(newGame);
                 } else {
-                    this.notificationService.displayErrorMessage(`Le jeu n'a pas pu être ajouté. 😿 \n ${error.message}`);
+                    const message = error.message || '';
+                    const displayMessage = message
+                        .split('\n')
+                        .map((line) => translate(line.trim()))
+                        .join('\n');
+                    this.notificationService.displayErrorMessage(`${translate('request-errors.error-could-not-add')} \n ${displayMessage}`);
                 }
             },
         });
     }
 
     openDialog(newGame: Game): void {
+        //TODO: transalte
         const dialogRef = this.dialog.open(DialogTextInputComponent, {
-            data: { input: '', title: 'Veillez renommer le jeu.', placeholder: 'Nouveau titre' },
+            data: { input: '', title: translate('game-modification.rename-game'), placeholder: translate('game-modification.title') },
         });
 
         dialogRef.afterClosed().subscribe((result: string) => {

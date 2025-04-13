@@ -36,4 +36,19 @@ sealed class StringValue {
             else -> ""
         }
     }
+
+    companion object {
+        fun dynamicLookup(context: Context, errorKey: String): StringValue {
+            val resourceName = errorKey.replace("-", "_").replace(".", "_")
+            val resId = context.resources.getIdentifier(resourceName, "string", context.packageName)
+            println("Resource ID for $resourceName: $resId")
+            return if (resId != 0) {
+                println("Found resource ID: $resId")
+                StringResource(resId)
+            } else {
+                println("Resource ID not found for $resourceName, returning DynamicString")
+                DynamicString(errorKey)
+            }
+        }
+        }
 }

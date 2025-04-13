@@ -67,7 +67,7 @@ fun LoginPage(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(Unit) {
-        shopViewModel.initialize(authViewModel)
+        shopViewModel.initialize(authViewModel, context)
     }
 
     LaunchedEffect(authState.value) {
@@ -87,7 +87,7 @@ fun LoginPage(
                    onThemeUpdated(theme)
                }
                 shopViewModel.getCurrentBalance(authViewModel.getUserId())
-                shopViewModel.listenForMoneyEvents()
+                shopViewModel.listenForMoneyEvents(context)
                 navigateToHome()
             }
 

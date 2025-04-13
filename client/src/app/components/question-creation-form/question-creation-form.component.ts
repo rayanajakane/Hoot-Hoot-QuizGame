@@ -5,8 +5,10 @@ import { Component, EventEmitter, Inject, Input, OnChanges, OnInit, Optional, Ou
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { QuestionGeneratorComponent } from '@app/components/question-generator/question-generator.component';
 import { IMAGE_MAX_FILE_SIZE } from '@app/constants/image-constants';
 import { MAX_CHOICES, MIN_CHOICES, SNACK_BAR_DISPLAY_TIME, VALID_MARGIN_FRACTION } from '@app/constants/question-creation';
+import { QCM, QRE, QRL } from '@app/constants/question-types';
 import { ManagementState } from '@app/constants/states';
 import { Choice } from '@app/interfaces/choice';
 import { Question } from '@app/interfaces/question';
@@ -14,7 +16,6 @@ import { BankService } from '@app/services/bank/bank.service';
 import { QuestionService } from '@app/services/question/question.service';
 import { QuestionType } from '@common/constants/question-types';
 import { translate } from '@jsverse/transloco';
-import { QuestionGeneratorComponent } from '../question-generator/question-generator.component';
 
 export interface DialogManagement {
     modificationState: ManagementState;
@@ -30,7 +31,10 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
     @Output() createQuestionEvent: EventEmitter<Question> = new EventEmitter<Question>();
     @Output() modifyQuestionEvent: EventEmitter<Question> = new EventEmitter<Question>();
 
-    response: string = '';
+    qcm = QCM;
+    qre = QRE;
+    qrl = QRL;
+
     modifyingForm: boolean = false;
     questionFormControl = new FormControl('', [Validators.required]);
     questionForm: FormGroup;

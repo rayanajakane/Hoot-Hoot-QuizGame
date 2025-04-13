@@ -126,13 +126,13 @@ export class MatchRoomService {
         this.qrCodeService.deleteQrCode(matchRoomCode);
     }
 
-    getRoomCodeErrors(matchRoomCode: string): string {
-        let errors = '';
+    getRoomCodeErrors(matchRoomCode: string): string[] {
+        let errors = [];
         const room = this.getRoom(matchRoomCode);
         if (!room) {
-            errors += INVALID_CODE;
+            errors.push(INVALID_CODE);
         } else if (room.isLocked) {
-            errors += LOCKED_ROOM;
+            errors.push(LOCKED_ROOM);
         }
         return errors;
     }

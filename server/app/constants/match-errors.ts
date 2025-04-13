@@ -1,6 +1,6 @@
 // TODO : remove
 
-export const BAN_PLAYER = "L'organisateur vous a banni.";
-export const NO_MORE_HOST = "L'organisateur a quitté la partie.";
-export const NO_MORE_PLAYERS = "Il n'y a plus de joueurs.";
-export const LESS_THAN_3_PLAYERS = "Il faut au moins 3 joueurs pour jouer.";
+export const BAN_PLAYER = 'match-errors.ban_player';
+export const NO_MORE_HOST = 'match-errors.no_more_host';
+export const NO_MORE_PLAYERS = 'match-errors.no_more_players';
+export const LESS_THAN_3_PLAYERS = 'match-errors.less_than_3_players';

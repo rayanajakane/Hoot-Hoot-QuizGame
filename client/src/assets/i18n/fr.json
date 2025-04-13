@@ -91,7 +91,7 @@
         "games-list": "Liste des jeux",
         "game-details": "Détails du jeu ",
         "select-game": "Sélectionner un jeu dans la liste des jeux",
-        "time-per-QCM": "Temps par QCM:",
+        "time-per-QCM": "Temps par QCM et QRE:",
         "popular-games": "Jeux populaires",
         "n-matches-played": "Parties jouées:",
         "all-games": "Tous les jeux",
@@ -152,8 +152,8 @@
         "remove-image": "Retirer l'image",
         "add-bank": "Ajouter à la banque",
         "add-question-bank": "Ajouter la question à la banque",
-        "verify-question": "Vérifier si la question est valide",
-        "modify-question": "Modifier la question",
+        "verify-question": "Valider",
+        "modify-question": "Modifier",
         "question-choice": "Choix de réponse",
         "delete-choice": "Supprimer le choix",
         "tooltip-answer-true": "Cocher pour rendre le choix vrai",
@@ -301,8 +301,10 @@
     "game-modification": {
         "creation-error": "Le jeu n'a pas pu être créé. 😿 ",
         "modification-error": "Le jeu n'a pas pu être modifié. 😿 ",
-        "creation-success": "Jeu créé' avec succès! 😺",
-        "modification-success": "Jeu modifié avec succès! 😺"
+        "creation-success": "Jeu créé avec succès! 😺",
+        "modification-success": "Jeu modifié avec succès! 😺",
+        "rename-game": "Veillez renommer le jeu",
+        "title": "Nouveau titre"
     },
     "admin-question-bank": {
         "back-page": "Page précédente",
@@ -332,6 +334,62 @@
     },
     "players-list": {
         "players": "Joueurs"
+    },
+    "money-errors": {
+        "not-enough-money": "Vous n'avez pas assez d'argent pour effectuer cette transaction.",
+        "donation-amount-exceeded": "Avec cette donation, vous dépassez la limite quotidienne.",
+        "invalid-amount": "Le montant est invalide, il doit être un nombre positif.",
+        "zero-amount": "Le montant est invalide, il doit être un nombre positif supérieur à 0.",
+        "not-friends": "Vous ne pouvez pas donner de l'argent à quelqu'un qui n'est pas dans votre liste d'amis."
+    },
+    "money-status": {
+        "donation-received": "{{from}} vous a donné {{amount}} $.",
+        "donation-sent": "Vous avez donné {{amount}} $ à {{to}}."
+    },
+    "match-errors": {
+        "ban_player": "L'organisateur vous a banni.",
+        "no_more_host": "L'organisateur a quitté la partie.",
+        "no_more_players": "Il n'y a plus de joueurs dans la partie.",
+        "locked-room": "La partie est verrouillée.",
+        "invalid-code": "Le code est invalide.",
+        "banned-player": "Vous avez été banni de cette partie.",
+        "less_than_3_players": "Il doit y avoir au moins 3 joueurs dans la partie."
+    },
+    "match-friends-errors": {
+        "not_friends_with_host": "Vous n'êtes pas ami avec l'hôte.",
+        "no_friends": "Vous n'avez pas d'amis."
+    },
+    "request-errors": {
+        "error-game-not-found": "Le jeu est introuvable.",
+        "error-game-same-title": "Un jeu du même titre existe déjà.",
+        "error-invalid-game": "Le jeu est invalide: ",
+        "error-wrong-format": "Au moins un des éléments du jeu ne suit pas le format attendu.",
+        "error-question-not-found": "La question est introuvable.",
+        "error-question-same-title-bank": "La question existe déjà dans la banque.",
+        "error-invalid-question": "La question est invalide: ",
+        "error-default": "Erreur",
+        "error-could-not-add": "Le jeu n'a pas pu être ajouté. 😿",
+        "error-could-not-delete": "Le jeu n'a pas pu être supprimé. 😿",
+        "error-could-not-get": "Le jeu n'a pas pu être récupéré. 😿"
+    },
+    "game-validation-errors": {
+        "error-repeat-choices": "Il ne doit pas y avoir de choix répétés dans la même question.",
+        "error-choices-number": "Il doit y avoir entre 2 et 4 choix dans une question.",
+        "error-points": "Le nombre de points doit être entre 10 et 100.",
+        "error-empty-question": "Le texte de la question ne peut pas être vide.",
+        "error-choices-ratio": "Il doit y avoir au moins un choix correct et un choix incorrect.",
+        "error-empty-title": "Le titre du jeu ne peut pas être vide.",
+        "error-empty-description": "La description du jeu ne peut pas être vide.",
+        "error-duration": "La durée du jeu doit être comprise entre 10 et 60 secondes.",
+        "error-question-number": "Le jeu doit contenir au moins une question.",
+        "error-question-type": "Le type de la question doit être soit QCM, QRL ou QRE.",
+        "error-invalid-bounds": "La borne inférieure doit être inférieure à la borne supérieure.",
+        "error-margin-too-big": "La marge doit être positive et inférieure à 25 % de l'intervalle.",
+        "error-answer-out-of-bounds": "La réponse correcte doit se situer entre les bornes.",
+        "error-answer-not-integer": "La réponse correcte doit être un nombre entier.",
+        "error-lower-bound-not-integer": "La borne inférieure doit être un nombre entier.",
+        "error-upper-bound-not-integer": "La borne supérieure doit être un nombre entier.",
+        "error-margin-not-integer": "La marge doit être un nombre entier."
     },
     "username-suggestion": {
         "title": "Suggestions de noms d'utilisateurs",
@@ -371,5 +429,15 @@
         "french": "Français",
         "english": "Anglais",
         "question-input": "Veuillez écrire la question"
+    },
+    "question": {
+        "qcm": "QCM",
+        "qrl": "QRL",
+        "qre": "QRE"
+    },
+    "question-long-label": {
+        "qcm": "QCM - Choix Multiples",
+        "qrl": "QRL - Réponse Longue ",
+        "qre": "QRE - Réponse Estimée"
     }
 }
