@@ -70,10 +70,10 @@
     <string name="clear_canvas">Réinitialiser le canvas</string>
     <string name="light_theme">Thème clair</string>
     <string name="dark_theme">Thème sombre</string>
-    <string name="luigi_theme">Thème Luigi</string>
-    <string name="mario_theme">Thème Mario</string>
-    <string name="sonic_theme">Thème Sonic</string>
-    <string name="pikachu_theme">Thème Pikachu</string>
+    <string name="luigi_theme">Thème Biosphère</string>
+    <string name="mario_theme">Thème Magma</string>
+    <string name="sonic_theme">Thème Atmosphère</string>
+    <string name="pikachu_theme">Thème Lithosphère</string>
     <string name="premium_themes">Thèmes Premiums</string>
     <string name="username_edit">Veuillez choisir un identifiant</string>
     <string name="your_elo">Votre elo</string>

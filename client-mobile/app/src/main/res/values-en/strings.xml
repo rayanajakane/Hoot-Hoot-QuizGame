@@ -54,10 +54,10 @@
     <string name="delete_feedback">✅  Deleted profile successfully!</string>
     <string name="light_theme">Light theme</string>
     <string name="dark_theme">Dark theme</string>
-    <string name="luigi_theme">Luigi Theme</string>
-    <string name="mario_theme">Mario Theme</string>
-    <string name="sonic_theme">Sonic Theme</string>
-    <string name="pikachu_theme">Pikachu Theme</string>
+    <string name="luigi_theme">Biosphere Theme</string>
+    <string name="mario_theme">Magma Theme</string>
+    <string name="sonic_theme">Atmosphere Theme</string>
+    <string name="pikachu_theme">Lithosphere Theme</string>
     <string name="premium_themes">Premium themes</string>
     <string name="popular_games">Popular Games</string>
     <string name="games_list">Games List</string>
