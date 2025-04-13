@@ -139,7 +139,6 @@ object AnswerService {
         gradeAnswers = false
         val gradesInfo =
             GradesInfo(matchRoomCode = MatchRoomService.getRoomCode(), grades = playersAnswers)
-        println(gradesInfo)
         val gradesInfoStringified = Gson().toJson(gradesInfo)
         val gradesInfoJsonObject = JSONObject(gradesInfoStringified)
         mSocket.emit(AnswerEvents.GRADES.value, gradesInfoJsonObject)
