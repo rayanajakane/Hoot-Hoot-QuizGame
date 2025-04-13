@@ -5,13 +5,13 @@
         </mat-panel-title>
         <mat-panel-description class="question-options">
             <p>{{ question.points }} pts</p>
-            <div class="question-type-container">
+            <div class="question-type-container" *transloco="let t">
                 <i *ngIf="question.type === 'QCM'" class="material-icons">widgets</i>
-                <p *ngIf="question.type === 'QCM'" class="question-type">QCM</p>
+                <p *ngIf="question.type === 'QCM'" class="question-type">{{ t('question.qcm') }}</p>
                 <i *ngIf="question.type === 'QRL'" class="material-icons color-variant">article</i>
-                <p *ngIf="question.type === 'QRL'" class="question-type color-variant">QRL</p>
+                <p *ngIf="question.type === 'QRL'" class="question-type color-variant">{{ t('question.qrl') }}</p>
                 <i *ngIf="question.type === 'QRE'" class="material-icons color-variant-2">balance</i>
-                <p *ngIf="question.type === 'QRE'" class="question-type color-variant-2">QRE</p>
+                <p *ngIf="question.type === 'QRE'" class="question-type color-variant-2">{{ t('question.qre') }}</p>
             </div>
 
             <p *ngIf="isBankQuestion && question.creatorName" class="text-overflow-ellipsis">{{ question.creatorName }}</p>

@@ -3,6 +3,7 @@ import { PANIC_SOUND } from '@app/constants/sounds-sources';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { SocketHandlerService } from '@app/services/socket-handler/socket-handler.service';
 import { TimerEvents } from '@common/events/timer.events';
+import { translate } from '@jsverse/transloco';
 
 @Injectable({
     providedIn: 'root',
@@ -31,6 +32,6 @@ export class AudioPlayerService {
     }
 
     private playAudio() {
-        this.audioObject.play().catch(() => this.notificationService.displayErrorMessage('❗ MODE PANIQUE ACTIVÉ! ❗'));
+        this.audioObject.play().catch(() => this.notificationService.displayErrorMessage(translate('question-area.panic-mode-activated')));
     }
 }

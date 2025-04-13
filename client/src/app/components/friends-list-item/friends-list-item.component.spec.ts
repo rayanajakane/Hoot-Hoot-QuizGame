@@ -1,9 +1,9 @@
 // cSpell:ignore Transloco jsverse TRANSLOCO TRANSPILER
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { FriendsListItemComponent } from '@app/components/friends-list-item/friends-list-item.component';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { TranslocoService } from '@jsverse/transloco';
-import { FriendsListItemComponent } from './friends-list-item.component';
 
 describe('FriendsListItemComponent', () => {
     let component: FriendsListItemComponent;

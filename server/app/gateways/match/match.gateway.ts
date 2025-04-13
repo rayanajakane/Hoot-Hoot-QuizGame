@@ -92,14 +92,14 @@ export class MatchGateway implements OnGatewayDisconnect {
         if (data.partyConfig) {
             if (data.partyConfig.isFriendsOnly) {
                 const friendshipErrors = await this.friendService.getFriendshipErrors(data.hostId, true);
-                if (friendshipErrors) {
+                if (friendshipErrors.length > 0) {
                     this.sendError(socket.id, friendshipErrors);
                     return;
                 }
             }
             if (data.partyConfig.isEntryFeeRequired) {
                 const moneyErrors = await this.moneyService.getMoneyError(data.hostId, data.partyConfig.entryFeeAmount);
-                if (moneyErrors) {
+                if (moneyErrors.length > 0) {
                     this.sendError(socket.id, moneyErrors);
                     return;
                 }

@@ -91,7 +91,7 @@
         "games-list": "Games list",
         "game-details": "Game details ",
         "select-game": "Select a game from the games list",
-        "time-per-QCM": "Time per QCM:",
+        "time-per-QCM": "Time per MCQ and EAQ:",
         "popular-games": "Popular Games",
         "n-matches-played": "Matches Played:",
         "all-games": "All Games",
@@ -153,8 +153,8 @@
         "remove-image": "Remove an image",
         "add-bank": "Add to bank",
         "add-question-bank": "Add question to bank",
-        "verify-question": "Check if question is valid",
-        "modify-question": "Modify the question",
+        "verify-question": "Validate",
+        "modify-question": "Edit",
         "question-choice": "Answer choice",
         "delete-choice": "Delete choice",
         "tooltip-answer-true": "Check to make answer correct",
@@ -330,6 +330,7 @@
         "choose-estimated": "Chose an estimated value. Margin is +/- {{margin}}",
         "answer": "Answer",
         "out-of-bounds": "Value is out of bounds! Must be between {{lowerBound}} and {{upperBound}}",
+        "panic-mode-activated": "❗ PANIC MODE ACTIVATED! ❗",
         "show-voting-button": "Go to voting page"
     },
     "players-list": {
@@ -423,10 +424,20 @@
         "choice-number": "Number of answer choices",
         "choice": "Choice",
         "question-input": "Enter the question",
-        "generate-IA": "Generate questions with IA",
+        "generate-IA": "Generate with AI",
         "error": "Error while generating questions",
         "choice-input": "Enter the choice",
         "french": "French",
         "english": "English"
+    },
+    "question": {
+        "qcm": "MCQ",
+        "qrl": "LAQ",
+        "qre": "EAQ"
+    },
+    "question-long-label": {
+        "qcm": "MCQ - Multiple Choices",
+        "qrl": "LAQ - Long Answer     ",
+        "qre": "EAQ - Estimated Answer"
     }
 }

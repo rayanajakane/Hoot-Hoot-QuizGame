@@ -5,6 +5,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { JoinMatchService } from '@app/services/join-match/join-match.service';
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { NotificationService } from '@app/services/notification/notification.service';
+import { getTranslocoModule } from '@app/transloco-testing.module';
 import { of, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
@@ -20,7 +21,7 @@ describe('JoinMatchService', () => {
         matchRoomSpy = jasmine.createSpyObj(MatchRoomService, ['connect', 'joinRoom', 'gameOver']);
         notificationSpy = jasmine.createSpyObj(NotificationService, ['displayErrorMessage']);
         TestBed.configureTestingModule({
-            imports: [HttpClientTestingModule],
+            imports: [HttpClientTestingModule, getTranslocoModule()],
             providers: [
                 { provide: MatchRoomService, useValue: matchRoomSpy },
                 { provide: NotificationService, useValue: notificationSpy },

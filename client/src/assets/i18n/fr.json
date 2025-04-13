@@ -91,7 +91,7 @@
         "games-list": "Liste des jeux",
         "game-details": "Détails du jeu ",
         "select-game": "Sélectionner un jeu dans la liste des jeux",
-        "time-per-QCM": "Temps par QCM:",
+        "time-per-QCM": "Temps par QCM et QRE:",
         "popular-games": "Jeux populaires",
         "n-matches-played": "Parties jouées:",
         "all-games": "Tous les jeux",
@@ -152,8 +152,8 @@
         "remove-image": "Retirer l'image",
         "add-bank": "Ajouter à la banque",
         "add-question-bank": "Ajouter la question à la banque",
-        "verify-question": "Vérifier si la question est valide",
-        "modify-question": "Modifier la question",
+        "verify-question": "Valider",
+        "modify-question": "Modifier",
         "question-choice": "Choix de réponse",
         "delete-choice": "Supprimer le choix",
         "tooltip-answer-true": "Cocher pour rendre le choix vrai",
@@ -329,6 +329,7 @@
         "choose-estimated": "Choisissez une valeur estimée. La marge est de +/- {{margin}}",
         "answer": "Réponse",
         "out-of-bounds": "Valeur hors limites ! Doit être entre {{lowerBound}} et {{upperBound}}",
+        "panic-mode-activated": "❗ MODE PANIQUE ACTIVÉ! ❗",
         "show-voting-button": "Aller vers la page de vote"
     },
     "players-list": {
@@ -375,7 +376,7 @@
         "error-repeat-choices": "Il ne doit pas y avoir de choix répétés dans la même question.",
         "error-choices-number": "Il doit y avoir entre 2 et 4 choix dans une question.",
         "error-points": "Le nombre de points doit être entre 10 et 100.",
-        "error-empty-question": "Le texte de la ne peut pas être vide.",
+        "error-empty-question": "Le texte de la question ne peut pas être vide.",
         "error-choices-ratio": "Il doit y avoir au moins un choix correct et un choix incorrect.",
         "error-empty-title": "Le titre du jeu ne peut pas être vide.",
         "error-empty-description": "La description du jeu ne peut pas être vide.",
@@ -422,11 +423,21 @@
         "language": "La langue de la question",
         "choice-number": "Nombre de choix de réponses",
         "choice": "Choix",
-        "generate-IA": "Générer question IA",
+        "generate-IA": "Générer avec l'IA",
         "error": "Erreur lors de la génération de la question",
         "choice-input": "Entrez les choix",
         "french": "Français",
         "english": "Anglais",
         "question-input": "Veuillez écrire la question"
+    },
+    "question": {
+        "qcm": "QCM",
+        "qrl": "QRL",
+        "qre": "QRE"
+    },
+    "question-long-label": {
+        "qcm": "QCM - Choix Multiples",
+        "qrl": "QRL - Réponse Longue ",
+        "qre": "QRE - Réponse Estimée"
     }
 }

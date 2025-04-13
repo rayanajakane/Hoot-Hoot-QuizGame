@@ -3,6 +3,7 @@ package com.example.polyquiz.match.domain
 import StringValue
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Context
 import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.constants.MatchEvents
 import com.example.polyquiz.constants.MatchStatus
@@ -18,6 +19,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.example.polyquiz.R
+import com.example.polyquiz.SnackbarController
+import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.chat.domain.ChatService
@@ -40,6 +43,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import org.json.JSONArray
 import org.json.JSONException
 import java.util.Arrays
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @SuppressLint("StaticFieldLeak")
 object MatchRoomService {
@@ -110,8 +116,13 @@ object MatchRoomService {
             onStartCooldown()
             onHostQuit()
             onPlayerKick()
+            onMatchCheaterModeStarted()
+            onVoting()
+            onVotingResults()
+            onSelectedCheater()
+            onCurrentAnswers()
+            onUsersWhoVoted()
             handleError(context)
-//            onPlayerChatStateToggle()
             onRouteToResultsPage()
         }
     }
@@ -158,10 +169,10 @@ object MatchRoomService {
                 val firstArg = args[0]
                 if (firstArg is JSONArray) {
                     if (firstArg.length() > 0) {
-                        val user = firstArg.getString(0)
+                        val user = firstArg.getString(0).removeSuffix("'").removePrefix("'")
                         userVoted = user
                     } else {
-                        Log.d("onUsersWhoVoted","JSONArray object is empty.")
+                        Log.e("onUsersWhoVoted","JSONArray object is empty.")
                     }
                 }
             }

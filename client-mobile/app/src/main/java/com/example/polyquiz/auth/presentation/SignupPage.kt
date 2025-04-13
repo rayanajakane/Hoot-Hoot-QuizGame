@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoFixNormal
@@ -148,7 +149,6 @@ fun SignupPage(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        // TODO: Select avatar
                         if (avatarToShow is Bitmap) {
                             Log.d("Signup page", "Set avatar to show as Bitmap")
                             TemporaryAvatar(128.dp, avatarToShow)
@@ -164,6 +164,7 @@ fun SignupPage(
                             {
                                 navigateToCamera()
                             },
+                            shape = RoundedCornerShape(3.dp),
                         ) { Text(stringResource(R.string.upload_avatar)) }
                         Text(stringResource(R.string.preset_avatars))
                         Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -295,16 +296,19 @@ fun SignupPage(
                             containerColor = MaterialTheme.colorScheme.surfaceBright,
                             contentColor = MaterialTheme.colorScheme.onSurface
 
-                        )
+                        ),
+                        shape = RoundedCornerShape(3.dp)
                     ) {
                         Text(stringResource(R.string.return_to_login))
                     }
+                    Spacer(modifier = Modifier.width(8.dp))
                     Button(
                         onClick =
                         {
                             authViewModel.signUp(email, username, password, context, avatarToShow)
                             keyboardController?.hide()
                         },
+                        shape = RoundedCornerShape(3.dp),
                         enabled = authState.value != AuthState.Loading
                     ) {
                         Text(stringResource(R.string.signup_action))

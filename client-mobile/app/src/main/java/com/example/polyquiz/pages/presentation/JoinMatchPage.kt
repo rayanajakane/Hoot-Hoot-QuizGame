@@ -74,6 +74,7 @@ import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.ui.MenuButton
 import com.google.gson.Gson
 import com.example.polyquiz.ui.features.camera.CameraViewModel
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
 @SuppressLint("MutableCollectionMutableState")
@@ -206,8 +207,8 @@ fun JoinMatchPage(
 
     fun joinRoom(code: String) {
         submitCode(code)
-//        navigateToWaitPage()
     }
+
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -334,7 +335,6 @@ fun JoinMatchPage(
                             text = stringResource(R.string.playing_matches), fontSize = 30.sp,
                             fontWeight = FontWeight.Bold
                         )
-                        // TODO : Change if. Must show aucune partie even if one is unlocked but not en cours
                         if (matchInfos.isEmpty()) {
                             Text(
                                 text = stringResource(R.string.no_match),
@@ -343,7 +343,7 @@ fun JoinMatchPage(
                         } else {
                             Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
                                 playingMatches().forEach { match ->
-                                    MatchCard(match = match, onClick = {})
+                                    MatchCard(match = match, onClick = {}, false)
                                 }
                             }
                         }
@@ -356,100 +356,198 @@ fun JoinMatchPage(
 
 
 @Composable
-fun MatchCard(match: MatchPageInfo, onClick: () -> Unit = {}) {
-    Card(
-        onClick = onClick,
-        shape = RectangleShape,
-        modifier = Modifier
-            .padding(5.dp)
-            .width(140.dp)
-            .height(220.dp)
-            .shadow(4.dp, shape = RectangleShape)
-            .background(Color.White)
-    ) {
-        Column(
-            modifier = Modifier.padding(15.dp),
-            verticalArrangement = Arrangement.SpaceBetween,
+fun MatchCard(match: MatchPageInfo, onClick: () -> Unit = {}, clickable: Boolean = true) {
+    if(clickable){
+        Card(
+            onClick = onClick,
+            shape = RectangleShape,
+            modifier = Modifier
+                .padding(5.dp)
+                .width(140.dp)
+                .height(220.dp)
+                .shadow(4.dp, shape = RectangleShape)
+                .background(Color.White)
         ) {
-            TruncatedText(
-                text = match.gameTitle,
-                fontSize = 15.sp,
-                maxChars = 10,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-            )
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Rounded.People,
-                    contentDescription = null
+            Column(
+                modifier = Modifier.padding(15.dp),
+                verticalArrangement = Arrangement.SpaceBetween,
+            ) {
+                TruncatedText(
+                    text = match.gameTitle,
+                    fontSize = 15.sp,
+                    maxChars = 10,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
                 )
-                Spacer(modifier = Modifier.width(10.dp))
-                Text(text = match.nPlayers.toString())
-            }
-            Column {
-                if (match.partyConfig?.isFriendsOnly == true) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.height(24.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Group,
-                            contentDescription = "Friends Only",
-                            // TODO : Remove hardcoded color here
-                            tint = Color(0xFF1976d2),
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Rounded.People,
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(text = match.nPlayers.toString())
+                }
+                Column {
+                    if (match.partyConfig?.isFriendsOnly == true) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.height(24.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Group,
+                                contentDescription = "Friends Only",
+                                // TODO : Remove hardcoded color here
+                                tint = Color(0xFF1976d2),
 
-                            modifier = Modifier.requiredSize(18.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = stringResource(R.string.friends),
-                            style = MaterialTheme.typography.bodySmall
-                        )
+                                modifier = Modifier.requiredSize(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = stringResource(R.string.friends),
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                    } else {
+                        Spacer(modifier = Modifier.height(24.dp))
                     }
-                } else {
-                    Spacer(modifier = Modifier.height(24.dp))
-                }
-                if (match.partyConfig?.isEntryFeeRequired == true) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.height(24.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.AttachMoney,
-                            contentDescription = "Entry Fee",
-                            // TODO : Remove hardcoded color
-                            tint = Color(0xFF2e7d32),
-                            modifier = Modifier.requiredSize(18.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = match.partyConfig.entryFeeAmount.toString(),
-                            style = MaterialTheme.typography.bodySmall
-                        )
+                    if (match.partyConfig?.isEntryFeeRequired == true) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.height(24.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.AttachMoney,
+                                contentDescription = "Entry Fee",
+                                // TODO : Remove hardcoded color
+                                tint = Color(0xFF2e7d32),
+                                modifier = Modifier.requiredSize(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = match.partyConfig.entryFeeAmount.toString(),
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                    }
+                    if (match.partyConfig?.isCheaterMode == true) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.height(24.dp)
+                        ) {
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = stringResource(R.string.cheater_mode),
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
                     }
                 }
-                if (match.partyConfig?.isCheaterMode == true) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.height(24.dp)
+                if (onClick != {} && !match.isLocked) {
+                    Button(
+                        onClick = onClick,
+                        modifier = Modifier.padding(top = 10.dp),
+                        shape = RoundedCornerShape(3.dp)
                     ) {
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = stringResource(R.string.cheater_mode),
-                            style = MaterialTheme.typography.bodySmall
-                        )
+                        Text(text = stringResource(R.string.join_action))
                     }
                 }
             }
-            if (onClick != {} && !match.isLocked) {
-                Button(
-                    onClick = onClick,
-                    modifier = Modifier.padding(top = 10.dp),
-                    shape = RoundedCornerShape(3.dp)
-                ) {
-                    Text(text = stringResource(R.string.join_action))
+        }
+    } else {
+        Card(
+            shape = RectangleShape,
+            modifier = Modifier
+                .padding(5.dp)
+                .width(140.dp)
+                .height(220.dp)
+                .shadow(4.dp, shape = RectangleShape)
+                .background(Color.White)
+        ) {
+            Column(
+                modifier = Modifier.padding(15.dp),
+                verticalArrangement = Arrangement.SpaceBetween,
+            ) {
+                TruncatedText(
+                    text = match.gameTitle,
+                    fontSize = 15.sp,
+                    maxChars = 10,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Rounded.People,
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(text = match.nPlayers.toString())
+                }
+                Column {
+                    if (match.partyConfig?.isFriendsOnly == true) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.height(24.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Group,
+                                contentDescription = "Friends Only",
+                                // TODO : Remove hardcoded color here
+                                tint = Color(0xFF1976d2),
+
+                                modifier = Modifier.requiredSize(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = stringResource(R.string.friends),
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                    } else {
+                        Spacer(modifier = Modifier.height(24.dp))
+                    }
+                    if (match.partyConfig?.isEntryFeeRequired == true) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.height(24.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.AttachMoney,
+                                contentDescription = "Entry Fee",
+                                // TODO : Remove hardcoded color
+                                tint = Color(0xFF2e7d32),
+                                modifier = Modifier.requiredSize(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = match.partyConfig.entryFeeAmount.toString(),
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                    }
+                    if (match.partyConfig?.isCheaterMode == true) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.height(24.dp)
+                        ) {
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = stringResource(R.string.cheater_mode),
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                    }
+                }
+                if (onClick != {} && !match.isLocked) {
+                    Button(
+                        onClick = onClick,
+                        modifier = Modifier.padding(top = 10.dp),
+                        shape = RoundedCornerShape(3.dp)
+                    ) {
+                        Text(text = stringResource(R.string.join_action))
+                    }
                 }
             }
         }
     }
+
 }

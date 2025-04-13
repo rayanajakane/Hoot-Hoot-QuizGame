@@ -161,16 +161,7 @@ $pikachu-theme: mat.define-light-theme(
     .error-snackbar {
         white-space: pre-wrap;
     }
-
-    .success-snackbar {
-        white-space: pre-wrap;
-    }
-
     .error-snackbar {
-        white-space: pre-wrap;
-    }
-
-    .success-snackbar {
         white-space: pre-wrap;
     }
 }
@@ -427,6 +418,12 @@ $pikachu-theme: mat.define-light-theme(
     .error-message {
         color: mat.get-color-from-palette($warn-luigi);
     }
+    .error-snackbar {
+        white-space: pre-wrap;
+    }
+    .error-snackbar {
+        white-space: pre-wrap;
+    }
 }
 
 .mario-theme {
@@ -493,6 +490,12 @@ $pikachu-theme: mat.define-light-theme(
 
     .error-message {
         color: mat.get-color-from-palette($warn-mario);
+    }
+    .error-snackbar {
+        white-space: pre-wrap;
+    }
+    .error-snackbar {
+        white-space: pre-wrap;
     }
 }
 
@@ -566,6 +569,12 @@ $pikachu-theme: mat.define-light-theme(
 
     .error-message {
         color: mat.get-color-from-palette(sonic.$m2-error);
+    }
+    .error-snackbar {
+        white-space: pre-wrap;
+    }
+    .error-snackbar {
+        white-space: pre-wrap;
     }
 }
 
@@ -653,6 +662,12 @@ $pikachu-theme: mat.define-light-theme(
 
     .balance-text {
         color: #3e2723;
+    }
+    .error-snackbar {
+        white-space: pre-wrap;
+    }
+    .error-snackbar {
+        white-space: pre-wrap;
     }
 }
 

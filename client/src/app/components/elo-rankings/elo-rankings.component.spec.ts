@@ -2,10 +2,10 @@ import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card'; // Import required Angular Material modules
 import { MatIconModule } from '@angular/material/icon';
+import { EloRankingsComponent } from '@app/components/elo-rankings/elo-rankings.component';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { EloService } from '@app/services/elo/elo.service';
 import { getTranslocoTestingModules } from '@app/transloco-testing.module';
-import { EloRankingsComponent } from './elo-rankings.component';
 
 describe('EloRankingsComponent', () => {
     let component: EloRankingsComponent;

@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { ConfirmDialogComponent } from '@app/components/confirm-dialog/confirm-dialog.component';
 import { of } from 'rxjs';
-import { ConfirmDialogComponent } from './confirm-dialog.component';
 
 const mockData = { icon: 'warning', title: 'Title', text: 'Confirmation message', disableClose: true };
 

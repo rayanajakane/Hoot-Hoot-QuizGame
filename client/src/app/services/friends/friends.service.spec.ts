@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { TranslocoService } from '@jsverse/transloco';
 
-import { FriendsService } from './friends.service';
+import { FriendsService } from '@app/services/friends/friends.service';
 
 describe('FriendsService', () => {
     let service: FriendsService;

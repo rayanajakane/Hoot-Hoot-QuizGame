@@ -85,8 +85,7 @@ export class GameService extends CommunicationService<Game> {
                     const displayMessage = message
                         .split('\n')
                         .map((line) => translate(line.trim()))
-                        .join(' ');
-                    //TODO: transalte
+                        .join('\n');
                     this.notificationService.displayErrorMessage(`${translate('request-errors.error-could-not-add')} \n ${displayMessage}`);
                 }
             },

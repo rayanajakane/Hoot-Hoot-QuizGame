@@ -7,9 +7,16 @@ import com.example.vanillaprototype.socket.SocketHandler
 import com.example.polyquiz.constants.TimerEvents
 import com.example.polyquiz.constants.TimerInfo
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 object TimeService {
-    var isTimerPaused: Boolean = false
+    private val _isTimerPaused = MutableStateFlow(false)
+    val isTimerPaused: StateFlow<Boolean> get() = _isTimerPaused
+
+    private val _isPanicking = MutableStateFlow(false)
+    val isPanicking: StateFlow<Boolean> get() = _isPanicking
+
     private var counter: MutableState<Int> = mutableStateOf(0)
     private var initialValue: Int = 0
     private val mSocket = SocketHandler.getSocket()
@@ -26,8 +33,20 @@ object TimeService {
             counter.value = newTime
         }
 
+    fun setIsTimerPaused(value: Boolean) {
+        _isTimerPaused.value = value
+    }
+
+    fun setIsPanicking(value: Boolean) {
+        _isPanicking.value = value
+    }
+
     fun listenToTimerEvents() {
+        Log.d("Timer", "Listening to timer events")
         handleTimer()
+        onPauseTimer()
+        onPanicTimer()
+        onResumeTimer()
     }
 
     fun handleTimer() {
@@ -39,15 +58,35 @@ object TimeService {
             }
         }
     }
-    fun startTimer(roomCode: String, time: Int) {
-        val timeCodeObject = mapOf("roomCode" to roomCode, "time" to time)
-        val timeJsonObject = Gson().toJson(timeCodeObject)
-        mSocket.emit(TimerEvents.START_TIMER.value, timeJsonObject);
+
+    fun pauseTimer(roomCode: String) {
+        _isTimerPaused.value = !_isTimerPaused.value
+        mSocket.emit(TimerEvents.PAUSE_TIMER.value, roomCode)
     }
-    fun stopTimer(roomCode: String) {
-        val roomCodeObject = mapOf("roomCode" to roomCode)
-        val roomJsonObject = Gson().toJson(roomCodeObject)
-        mSocket.emit(TimerEvents.STOP_TIMER.value, roomJsonObject);
+
+    fun triggerPanicTimer(roomCode: String) {
+        _isPanicking.value = true
+        mSocket.emit(TimerEvents.PANIC_TIMER.value, roomCode)
+    }
+
+    fun onPauseTimer() {
+        mSocket.on(TimerEvents.PAUSE_TIMER.value) {
+            Log.d("Timer", "paused timer")
+            _isTimerPaused.value = true
+        }
+    }
+
+    fun onResumeTimer() {
+        mSocket.on(TimerEvents.RESUME_TIMER.value) {
+            Log.d("Timer", "resumed timer")
+            _isTimerPaused.value = false
+        }
+    }
+
+    fun onPanicTimer() {
+        mSocket.on(TimerEvents.PANIC_TIMER.value) {
+            _isPanicking.value = true
+        }
     }
 
     fun computeTimerProgress(): Float {
