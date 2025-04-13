@@ -310,7 +310,8 @@ fun Navigation(
                 },
                 navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
                 navigateToRankingsPage = { navController.navigate(Route.RankingsPage) },
-                navigateToShopPage = { navController.navigate(Route.ShopPage) }
+                navigateToShopPage = { navController.navigate(Route.ShopPage) },
+                navigateToLogin = { navController.navigate(Route.Login) }
             )
         }
         composable<Route.MainCameraScreen> {
