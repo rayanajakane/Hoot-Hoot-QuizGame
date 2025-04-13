@@ -25,8 +25,6 @@ import com.example.polyquiz.money.domain.DonationReceivedData
 import com.example.vanillaprototype.socket.SocketHandler
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
-import android.content.Context
-import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
