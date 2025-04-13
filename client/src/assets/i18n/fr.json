@@ -9,7 +9,7 @@
             "password-too-short": "Le mot de passe est trop court (minimum: 6 caractères).",
             "invalid-username-password": "Le nom d'utilisateur et/ou le mot de passe sont invalides.",
             "username-already-exists": "Ce nom d'utilisateur est déjà pris",
-            "other-error": "Une erreur inconnue est survenue.",
+            "other-error": "Une erreur est survenue.",
             "invalid-email": "Adresse courriel invalide.",
             "username-too-short": "Nom d'utilisateur trop court. Min {{length}} caractères.",
             "username-too-long": "Nom d'utilisateur trop long. Max {{length}} caractères.",
@@ -60,10 +60,10 @@
         "sent-email-extra-info": "Si vous avez déjà un compte, vous recevrez un courriel pour réinitialiser votre mot de passe.",
         "dark-theme": "Thème sombre",
         "light-theme": "Thème clair",
-        "luigi-theme": "Thème Luigi",
-        "mario-theme": "Thème Mario",
-        "sonic-theme": "Thème Sonic",
-        "pikachu-theme": "Thème Pikachu",
+        "luigi-theme": "Thème Biosphère",
+        "mario-theme": "Thème Magma",
+        "sonic-theme": "Thème Atmosphère",
+        "pikachu-theme": "Thème Lithsophère",
         "chat-wallpapers": "Arrière-plans de clavardage",
         "no-background": "Aucun arrière-plan",
         "fr": "Français",
@@ -330,7 +330,7 @@
         "answer": "Réponse",
         "out-of-bounds": "Valeur hors limites ! Doit être entre {{lowerBound}} et {{upperBound}}",
         "panic-mode-activated": "❗ MODE PANIQUE ACTIVÉ! ❗",
-        "show-voting-button":  "Aller vers la page de vote"
+        "show-voting-button": "Aller vers la page de vote"
     },
     "players-list": {
         "players": "Joueurs"
@@ -366,7 +366,7 @@
         "submit": "Soumettre",
         "language": "La langue de la question",
         "choice-number": "Nombre de choix de réponses",
-        "choice":  "Choix",
+        "choice": "Choix",
         "generate-IA": "Générer question IA",
         "error": "Erreur lors de la génération de la question",
         "choice-input": "Entrez les choix",

@@ -116,7 +116,7 @@
 
 input[matInput] {
     width: 100%;
-    max-width: 17vw;
+    max-width: calc(100% - 48px);
 }
 
 #chat-send-icon {

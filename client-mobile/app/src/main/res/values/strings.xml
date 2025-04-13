@@ -41,7 +41,6 @@
     <string name="visual_themes">Thèmes visuels</string>
     <string name="language">Langue</string>
     <string name="edit_profile">Modification du profil</string>
-    <string name="home_page">Page principale</string>
     <string name="user_edit">Modification du Profil</string>
     <string name="save">Enregistrer</string>
     <string name="danger_zone">Zone dangereuse</string>
@@ -58,8 +57,8 @@
     <string name="games_details">Détails du jeu</string>
     <string name="games_description">"Description: "</string>
     <string name="games_time">"Durée: "</string>
-    <string name="game_title">"Titre: "</string>
-    <string name="game_author">"Auteur: "</string>
+    <string name="game_title">"Titre"</string>
+    <string name="game_author">"Auteur"</string>
     <string name="questions">Questions </string>
     <string name="select_game">"Sélectionner un jeu dans la liste des jeux"</string>
     <string name="play">"Jouer"</string>
@@ -179,10 +178,19 @@
     <string name="cheater_mode_players_min">Ce mode nécessite au moins 3 joueurs</string>
     <string name="cheater_mode_players_info"> Pour jouer en mode tricheur : le jeu ne doit pas contenir de question de type réponse longue et doit comporter au moins trois joueurs </string>
     <string name="switch_camera">Changer camera</string>
+    <string name="home_page">Accueil</string>
+    <string name="friend_requests_sent">Demandes d\'amis envoyées</string>
+    <string name="friend_requests_received">Demandes d\'amis reçues</string>
+    <string name="my_friends">Mes amis</string>
+    <string name="search_results">Résultats de la recherche</string>
+    <string name="search_friend">🔍 Rechercher un ami</string>
+    <string name="search">Rechercher</string>
+    <string name="no_reaction">Aucune réaction</string>
     <string name="panic_mode_activated">❗ MODE PANIQUE ACTIVÉ! ❗</string>
     <string name="timer_paused">Minutrie suspendue</string>
     <string name="timer_start">Minutrie partie</string>
     <string name="classic_mode">Classique</string>
     <string name="cheater_mode_label">Tricheur</string>
     <string name="game_mode">Mode de Jeu</string>
+    <string name="search_games">Rechercher un jeu</string>
 </resources>

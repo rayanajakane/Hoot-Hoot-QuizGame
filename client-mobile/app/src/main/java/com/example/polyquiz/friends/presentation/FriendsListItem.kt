@@ -23,6 +23,7 @@ import com.example.polyquiz.ui.theme.HotPink
 
 @Composable
 fun FriendsListItem(
+    modifier: Modifier = Modifier,
     user: UserIdName,
     isFriend: Boolean,
     isRequestPending: Boolean,
@@ -36,7 +37,7 @@ fun FriendsListItem(
     onDonate: (String) -> Unit
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,

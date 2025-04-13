@@ -38,7 +38,9 @@ import com.example.polyquiz.match.domain.PartyConfig
 import com.example.polyquiz.match.presentation.PartyConfigDialog
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.polyquiz.SnackbarController
@@ -265,7 +267,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                         modifier = Modifier.weight(1f)
                     ) {
                         Text(
-                            text = "Search Games",
+                            text = stringResource(R.string.search_games),
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
 
@@ -273,7 +275,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                             OutlinedTextField(
                                 value = titleQuery,
                                 onValueChange = { titleQuery = it },
-                                label = { Text("Title") },
+                                label = { stringResource(R.string.game_title) },
                                 modifier = Modifier
                                     .weight(0.5f)
                                     .padding(bottom = 8.dp),
@@ -282,7 +284,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                             OutlinedTextField(
                                 value = authorQuery,
                                 onValueChange = { authorQuery = it },
-                                label = { Text("Author") },
+                                label = { stringResource(R.string.game_author) },
                                 modifier = Modifier.weight(0.5f),
                                 singleLine = true
                             )
@@ -328,10 +330,12 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                             Text(
                                 text = game.title,
                                 maxLines = 1,
+                                color = MaterialTheme.colorScheme.onBackground
                             )
                             Text(
                                 text = game.authorName ?: "",
                                 maxLines = 1,
+                                color = MaterialTheme.colorScheme.onBackground
                             )
                         }
                     }
@@ -351,7 +355,12 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                 modifier = Modifier.padding(2.dp),
                 horizontalArrangement = Arrangement.Start
             ) {
-
+                Text(
+                    text = stringResource(R.string.games_details),
+                    modifier = Modifier.padding(8.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 22.sp,
+                )
                 if (selectedGame != null) {
                     loadSelectedGame(selectedGame!!)
                     matchService.currentGame = selectedGame

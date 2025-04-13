@@ -106,7 +106,9 @@
                 [placeholder]="'...'"
                 (keydown.enter)="sendMessage(message.value); message.value = ''"
             />
-            <mat-icon id="chat-send-icon" (click)="sendMessage(message.value); message.value = ''">send</mat-icon>
+            <mat-button mat-icon-button type="button" id="chat-send-icon" (click)="sendMessage(message.value); message.value = ''"
+                ><mat-icon>send</mat-icon></mat-button
+            >
         </mat-form-field>
     </form>
 </div>
