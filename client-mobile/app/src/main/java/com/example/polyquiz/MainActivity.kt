@@ -38,10 +38,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         SocketHandler.setSocket()
+        val context  = applicationContext
         val authViewModel: AuthViewModel by viewModels()
         val cameraViewModel: CameraViewModel by viewModels()
         val shopViewModel: ShopViewModel by viewModels()
-        shopViewModel.listenForMoneyEvents()
+        shopViewModel.listenForMoneyEvents(context)
         setContent {
             val currentTheme by authViewModel.theme.collectAsState()
             val setTheme: (Theme) -> Unit = { selectedTheme ->

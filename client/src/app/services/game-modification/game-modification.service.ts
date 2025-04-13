@@ -122,12 +122,13 @@ export class GameModificationService {
                 this.router.navigate(['/admin/games/']);
             },
             // TODO : test this line pl0x
-            error: (error: HttpErrorResponse) =>
+            error: (error: HttpErrorResponse) => {
                 this.notificationService.displayErrorMessage(
                     this.state === ManagementState.GameModify
-                        ? translate('game-modification.modification-error')
+                        ? translate('game-modification.modification-error') + `\n ${error.message}`
                         : translate('game-modification.creation-error') + `\n ${error.message}`,
-                ),
+                );
+            },
         });
     }
 
@@ -148,7 +149,7 @@ export class GameModificationService {
                 error: (error: HttpErrorResponse) =>
                     this.notificationService.displayErrorMessage(
                         this.state === ManagementState.GameModify
-                            ? translate('game-modification.modification-error')
+                            ? translate('game-modification.modification-error') + `\n ${error.message}`
                             : translate('game-modification.creation-error') + `\n ${error.message}`,
                     ),
             });
@@ -227,8 +228,14 @@ export class GameModificationService {
                 this.isLoadingBank = false;
             },
             // TODO : Server sends transloco code
-            error: (error: HttpErrorResponse) =>
-                this.notificationService.displayErrorMessage(`${translate('bank-status.unretrieved')}\n ${error.message}`),
+            error: (error: HttpErrorResponse) => {
+                const message = error.message || '';
+                const displayMessage = message
+                    .split('\n')
+                    .map((line) => translate(line.trim()))
+                    .join('\n');
+                this.notificationService.displayErrorMessage(`${translate('bank-status.unretrieved')}\n ${displayMessage}`);
+            },
         });
     }
 
@@ -301,8 +308,14 @@ export class GameModificationService {
                     this.addQuestionToBank(newQuestion);
                 }
             },
-            error: (error: HttpErrorResponse) =>
-                this.notificationService.displayErrorMessage(`${translate('question-status.unverified')} \n ${error.message}`),
+            error: (error: HttpErrorResponse) => {
+                const message = error.message || '';
+                const displayMessage = message
+                    .split('\n')
+                    .map((line) => translate(line.trim()))
+                    .join('\n');
+                this.notificationService.displayErrorMessage(`${translate('question-status.unverified')}\n${displayMessage}`);
+            },
         });
     }
 

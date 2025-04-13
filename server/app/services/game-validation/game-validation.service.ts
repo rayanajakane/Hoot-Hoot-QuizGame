@@ -138,7 +138,7 @@ export class GameValidationService {
         game.questions.forEach((question: CreateQuestionDto, index: number) => {
             const questionErrorMessages = this.findQuestionErrors(question);
             if (questionErrorMessages.length) {
-                errorMessages.push(`La question ${index + 1} est invalide:`);
+                errorMessages.push(`❌ Question ${index + 1} : `);
                 questionErrorMessages.forEach((message: string) => errorMessages.push(message));
             }
         });

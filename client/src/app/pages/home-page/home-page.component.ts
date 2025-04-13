@@ -5,7 +5,7 @@ import { DialogTextInputComponent } from '@app/components/dialog-text-input/dial
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { JoinMatchService } from '@app/services/join-match/join-match.service';
 import { NotificationService } from '@app/services/notification/notification.service';
-import { TranslocoService } from '@jsverse/transloco';
+import { translate, TranslocoService } from '@jsverse/transloco';
 
 @Component({
     selector: 'app-home-page',
@@ -50,7 +50,10 @@ export class HomePageComponent {
                 this.joinMatchService.validateUsername(this.authenticationService.userDisplayName, this.authenticationService.userId);
             },
             error: (error: HttpErrorResponse) => {
-                this.notificationService.displayErrorMessage(`${JSON.parse(error.error)['message']}`);
+                const message = JSON.parse(error.error)['message'];
+                console.log(message);
+                const displayMessage = translate(message.trim());
+                this.notificationService.displayErrorMessage(`${displayMessage}`);
                 this.joinMatchService.matchRoomCode = '';
             },
         });

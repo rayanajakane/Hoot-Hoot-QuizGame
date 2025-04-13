@@ -37,7 +37,8 @@ export class MatchController {
     @Post('validate-code')
     validateMatchRoomCode(@Body() data: MatchRoomCodeInfo, @Res() response: Response) {
         const errors = this.matchRoomService.getRoomCodeErrors(data.matchRoomCode);
-        if (!errors) {
+        console.log(errors.length);
+        if (errors.length === 0) {
             response.status(HttpStatus.OK).send();
         } else {
             response.status(HttpStatus.FORBIDDEN).send({ message: errors });
@@ -47,7 +48,7 @@ export class MatchController {
     @Post('validate-username')
     validateUsername(@Body() data: MatchUsernameInfo, @Res() response: Response) {
         const errors = this.playerRoomService.getUsernameErrors(data.matchRoomCode, data.username);
-        if (!errors) {
+        if (errors.length === 0) {
             response.status(HttpStatus.OK).send();
         } else {
             response.status(HttpStatus.FORBIDDEN).send({ message: errors });

@@ -153,8 +153,8 @@ export class FriendsService {
         });
     }
 
-    async getFriendshipErrors(userId: string, isRoomCreation: boolean, friendId: string = ''): Promise<string> {
-        let errors = '';
+    async getFriendshipErrors(userId: string, isRoomCreation: boolean, friendId: string = ''): Promise<string[]> {
+        let errors = [];
         const friendsList = await this.getFriendsList(userId);
         const isFriend = friendsList.some((friend) => friend.id === friendId);
 
@@ -164,7 +164,7 @@ export class FriendsService {
         ]);
 
         errorConditions.forEach((hasError: boolean, message: string) => {
-            if (hasError) errors += message;
+            if (hasError) errors.push(message);
         });
 
         return errors;

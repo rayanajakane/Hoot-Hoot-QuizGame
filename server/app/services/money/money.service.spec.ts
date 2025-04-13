@@ -3,16 +3,19 @@ import { FirebaseRepositoryService } from '@app/modules/firebase/firebase-reposi
 import { MatchRoomService } from '@app/services/match-room/match-room.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { SinonStubbedInstance, createStubInstance } from 'sinon';
+import { FriendsService } from '../friends/friends.service';
 import { MoneyService } from './money.service';
 
 describe('MoneyService', () => {
     let service: MoneyService;
     let firebaseAuthSpy: SinonStubbedInstance<FirebaseAuthService>;
     let matchRoomSpy: SinonStubbedInstance<MatchRoomService>;
+    let friendsSpy: SinonStubbedInstance<FriendsService>;
 
     beforeEach(async () => {
         firebaseAuthSpy = createStubInstance(FirebaseAuthService);
         matchRoomSpy = createStubInstance(MatchRoomService);
+        friendsSpy = createStubInstance(FriendsService);
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 MoneyService,
@@ -30,6 +33,7 @@ describe('MoneyService', () => {
                 },
                 { provide: FirebaseAuthService, useValue: firebaseAuthSpy },
                 { provide: MatchRoomService, useValue: matchRoomSpy },
+                { provide: FriendsService, useValue: friendsSpy },
             ],
         }).compile();
 
