@@ -1,6 +1,6 @@
 <li class="user-item" *transloco="let t; read: 'friends-search'">
     <div class="user-info">
-        <img class="avatar" [src]="user.photoUrl ? user.photoUrl : defaultAvatar" alt="Avatar" />
+        <img class="avatar" [src]="user.photoUrl ? user.photoUrl : defaultAvatar" alt="Avatar" loading="lazy" />
         <span class="username text-overflow-ellipsis">{{ user.name }}</span>
     </div>
     <ng-container [ngSwitch]="true">
