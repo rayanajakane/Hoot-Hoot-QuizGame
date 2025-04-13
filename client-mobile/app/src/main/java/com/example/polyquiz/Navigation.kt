@@ -347,7 +347,7 @@ fun Navigation(
                 navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
                 navigateToLogin = { navController.navigate(Route.Login) },
                 navigateToRankingsPage = { navController.navigate(Route.RankingsPage) },
-                navigateToShop = { navController.navigate(Route.ShopPage) }
+                navigateToShop = { navController.navigate(Route.ShopPage) },
             )
         }
         composable<Route.Drawing> {
