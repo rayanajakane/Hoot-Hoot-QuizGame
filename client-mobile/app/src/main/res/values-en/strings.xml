@@ -201,5 +201,8 @@
     <string name="search_friend">🔍 Search Friend</string>
     <string name="search">Search</string>
     <string name="no_reaction">No reaction</string>
+    <string name="classic_mode">Classic</string>
+    <string name="cheater_mode_label">Cheater</string>
+    <string name="game_mode">Game Mode</string>
     <string name="match_errors_less_than_3_players">The match needs at least 3 players.</string>
 </resources>
