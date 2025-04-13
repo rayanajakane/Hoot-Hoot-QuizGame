@@ -1,5 +1,6 @@
 package com.example.polyquiz.chat.domain
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.polyquiz.auth.domain.UserIdName
@@ -42,6 +43,7 @@ object ChatService {
     }
 
     fun sendMessage(text: String, userId: String, username: String, photoUrl: String, roomCode: String?) {
+        val startTime = System.currentTimeMillis()
         if (text.filterNot { it.isWhitespace() }.isNotEmpty()) {
             if (roomCode != null) {
                 val newMessage = Message(
@@ -53,6 +55,8 @@ object ChatService {
                 val newMessageInfoStringified = Gson().toJson(newMessageInfo)
                 val newMessageInfoJsonObject = JSONObject(newMessageInfoStringified)
                 mSocket.emit(ChatEvents.ROOM_MESSAGE.value, newMessageInfoJsonObject)
+                val elapsedTime = System.currentTimeMillis() - startTime
+                Log.d("Send message", "Elapsed time : $elapsedTime")
             }
             else {
                 val newMessage = Message(
@@ -63,6 +67,8 @@ object ChatService {
                 val newMessageStringified = Gson().toJson(newMessage)
                 val newMessageJsonObject = JSONObject(newMessageStringified)
                 mSocket.emit(ChatEvents.GENERAL_MESSAGE.value, newMessageJsonObject)
+                val elapsedTime = System.currentTimeMillis() - startTime
+                Log.d("Send message", "Elapsed time : $elapsedTime")
             }
         }
     }
@@ -70,16 +76,20 @@ object ChatService {
 
     fun handleReceivedMessage() {
         mSocket.on(ChatEvents.SENT_GENERAL_MESSAGE.value) { args ->
+            val startTime = System.currentTimeMillis()
             if (args[0] != null) {
                 handleGeneralEmoji()
                 val newMessage = Gson().fromJson(args[0].toString(), Message::class.java) as Message
                 addMessage(newMessage)
+                val elapsedTime = System.currentTimeMillis() - startTime
+                Log.d("Receive message", "Elapsed time : $elapsedTime")
             }
         }
     }
 
     fun handleRoomEmoji() {
         mSocket.on(ChatEvents.SENT_ROOM_EMOJI.value) { args ->
+            val startTime = System.currentTimeMillis()
             if (args[0] != null) {
                 val updatedMessage =
                     Gson().fromJson(args[0].toString(), Message::class.java) as Message
@@ -91,6 +101,8 @@ object ChatService {
                         _matchRoomMessages.postValue(updatedMessages)
                     }
                 }
+                val elapsedTime = System.currentTimeMillis() - startTime
+                Log.d("handle emoji", "Elapsed time : $elapsedTime")
             }
 
         }
@@ -115,11 +127,14 @@ object ChatService {
 
     fun handleRoomMessage() {
         mSocket.on(ChatEvents.NEW_MESSAGE.value) { args ->
+            val startTime = System.currentTimeMillis()
             if (args[0] != null) {
                 handleRoomEmoji()
                 val newMessage = Gson().fromJson(args[0].toString(), MessageInfo::class.java) as MessageInfo
                 addRoomMessage(newMessage.message)
             }
+            val elapsedTime = System.currentTimeMillis() - startTime
+            Log.d("handleRoomMessage", "Elapsed time : $elapsedTime")
         }
     }
 
@@ -139,6 +154,7 @@ object ChatService {
     }
     fun handleGeneralEmoji() {
         mSocket.on(ChatEvents.SENT_GENERAL_EMOJI.value) { args ->
+            val startTime = System.currentTimeMillis()
             if (args[0] != null) {
                 val updatedMessage =
                     Gson().fromJson(args[0].toString(), Message::class.java) as Message
@@ -151,6 +167,8 @@ object ChatService {
                     }
                 }
             }
+            val elapsedTime = System.currentTimeMillis() - startTime
+            Log.d("handleGeneralEmoji", "Elapsed time : $elapsedTime")
 
         }
     }
