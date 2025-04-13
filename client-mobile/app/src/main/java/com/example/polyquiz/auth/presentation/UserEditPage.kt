@@ -486,7 +486,7 @@ fun UserEditPage(
 
                                 // Purchased wallpapers
                                 purchasedWallpapers.forEach { wallpaperId ->
-                                    val wallpaper = Wallpaper.values().find { it.name == wallpaperId }
+                                    val wallpaper = Wallpaper.entries.find { it.name == wallpaperId }
                                     if (wallpaper != null && wallpaper != Wallpaper.None) {
                                         Box(
                                             modifier = Modifier

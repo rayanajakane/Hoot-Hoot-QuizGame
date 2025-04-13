@@ -109,7 +109,7 @@ class ShopViewModel : ViewModel() {
     private fun onReturnBalance() {
         mSocket.on(MoneyEvents.RETURN_BALANCE.value) { args: Array<Any> ->
             if (args.isNotEmpty()) {
-                val balance = args[0].toString().toIntOrNull() ?: 0
+                val balance = args[0] as Int
                 _currentBalance.value = balance
                 Log.d(TAG, "Current balance: $balance")
             }
