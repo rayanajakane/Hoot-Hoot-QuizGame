@@ -40,6 +40,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.polyquiz.SnackbarController
@@ -354,7 +355,12 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                 modifier = Modifier.padding(2.dp),
                 horizontalArrangement = Arrangement.Start
             ) {
-
+                Text(
+                    text = stringResource(R.string.games_details),
+                    modifier = Modifier.padding(8.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 22.sp,
+                )
                 if (selectedGame != null) {
                     loadSelectedGame(selectedGame!!)
                     matchService.currentGame = selectedGame

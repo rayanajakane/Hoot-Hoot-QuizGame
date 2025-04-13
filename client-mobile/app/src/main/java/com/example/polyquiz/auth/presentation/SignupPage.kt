@@ -48,6 +48,7 @@ import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.auth.domain.UsernameSuggestionService
 import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.constants.SIZE_CONSTANTS
+import com.example.polyquiz.shop.domain.ShopViewModel
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import kotlinx.coroutines.launch
 
@@ -58,6 +59,7 @@ fun SignupPage(
     navigateToLogin: () -> Unit,
     navigateToCamera: () -> Unit,
     authViewModel: AuthViewModel,
+    shopViewModel: ShopViewModel,
     cameraViewModel: CameraViewModel
 ) {
     val context = LocalContext.current
@@ -77,7 +79,7 @@ fun SignupPage(
     val keyboardController = LocalSoftwareKeyboardController.current
     val avatarURL by authViewModel.avatarURL.collectAsState()
     val temporaryAvatar by cameraViewModel.temporaryAvatar.collectAsState()
-    val avatarToShow =  temporaryAvatar ?: avatarURL
+    val avatarToShow = temporaryAvatar ?: avatarURL
     val onClickAvatar: (String) -> Unit = { url ->
         cameraViewModel.setPresetAvatar(authViewModel, url)
     }
@@ -86,6 +88,10 @@ fun SignupPage(
         onDispose {
             cameraViewModel.resetCapturedPhotoState()
         }
+    }
+
+    LaunchedEffect(Unit) {
+        shopViewModel.initialize(authViewModel)
     }
 
     LaunchedEffect(authState.value) {
@@ -98,6 +104,8 @@ fun SignupPage(
                         )
                     )
                 }
+                shopViewModel.getCurrentBalance(authViewModel.getUserId())
+                shopViewModel.listenForMoneyEvents()
                 navigateToChat()
             }
 
@@ -172,7 +180,11 @@ fun SignupPage(
                             ClickableAvatarPlaceholder(32.dp, PresetAvatar.B.value, onClickAvatar)
                             ClickableAvatarPlaceholder(32.dp, PresetAvatar.C.value, onClickAvatar)
                             ClickableAvatarPlaceholder(32.dp, PresetAvatar.D.value, onClickAvatar)
-                            ClickableAvatarPlaceholder(32.dp, PresetAvatar.DEFAULT.value, onClickAvatar)
+                            ClickableAvatarPlaceholder(
+                                32.dp,
+                                PresetAvatar.DEFAULT.value,
+                                onClickAvatar
+                            )
                         }
                     }
                     Column() {
@@ -223,7 +235,10 @@ fun SignupPage(
                                     )
                                 }
                                 IconButton(
-                                    onClick = { UsernameSuggestionService.showUsernameDialog = !UsernameSuggestionService.showUsernameDialog},
+                                    onClick = {
+                                        UsernameSuggestionService.showUsernameDialog =
+                                            !UsernameSuggestionService.showUsernameDialog
+                                    },
 
                                     modifier = Modifier
                                         .size(40.dp)
@@ -256,7 +271,13 @@ fun SignupPage(
                             },
                             singleLine = true,
                             keyboardActions = KeyboardActions(onDone = {
-                                authViewModel.signUp(email, username, password, context, avatarToShow)
+                                authViewModel.signUp(
+                                    email,
+                                    username,
+                                    password,
+                                    context,
+                                    avatarToShow
+                                )
                                 keyboardController?.hide()
                             }),
                             label = { Text(stringResource(R.string.password)) },
@@ -318,7 +339,6 @@ fun SignupPage(
         }
     }
 }
-
 
 
 @Composable()

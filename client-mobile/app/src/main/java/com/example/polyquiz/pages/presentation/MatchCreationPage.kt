@@ -24,6 +24,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -42,6 +44,8 @@ import com.example.polyquiz.SnackbarEvent
 import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.chat.presentation.ChatComponent
+import com.example.polyquiz.shop.domain.ShopViewModel
+import com.example.polyquiz.shop.presentation.BalanceCard
 import com.example.polyquiz.ui.MenuButton
 import kotlinx.coroutines.launch
 
@@ -50,6 +54,7 @@ import kotlinx.coroutines.launch
 fun MatchCreationPage(
     modifier: Modifier,
     authViewModel: AuthViewModel,
+    shopViewModel: ShopViewModel,
     navigateToHome: () -> Unit,
     navigateToCreate: () -> Unit,
     navigateToUserEdit: () -> Unit,
@@ -60,6 +65,7 @@ fun MatchCreationPage(
     navigateToRankingsPage: () -> Unit,
     navigateToShopPage: () -> Unit
 ) {
+    val currentBalance by shopViewModel.currentBalance.collectAsState()
     val authState = authViewModel.authState.observeAsState()
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
@@ -110,20 +116,24 @@ fun MatchCreationPage(
                         text = stringResource(R.string.host_match),
                         style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold)
                     )
-                    MenuButton(
-                        modifier = Modifier,
-                        navigateToHome,
-                        navigateToCreate,
-                        navigateToUserEdit,
-                        navigateToFriendsPage,
-                        navigateToJoinRoom,
-                        navigateToRankingsPage,
-                        navigateToShopPage,
-                        signOut = {
-                            authViewModel.signOut()
-                            navigateToLogin()
-                        }
-                    )
+                    Column(
+                        modifier = Modifier
+                            .imePadding()
+                            .statusBarsPadding()
+                    ) {
+                        MenuButton(
+                            modifier = Modifier,
+                            navigateToHome,
+                            navigateToCreate,
+                            navigateToUserEdit,
+                            navigateToFriendsPage,
+                            navigateToJoinRoom,
+                            navigateToRankingsPage,
+                            navigateToShopPage,
+                            signOut = { authViewModel.signOut() }
+                        )
+                        BalanceCard(currentBalance)
+                    }
                 }
                 GameList(
                     modifier = Modifier,

@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
 import com.example.polyquiz.auth.domain.AuthViewModel
+import com.example.polyquiz.shop.domain.ShopViewModel
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.example.polyquiz.ui.theme.PolyQuizTheme
 import com.example.polyquiz.ui.theme.Theme
@@ -39,7 +40,8 @@ class MainActivity : AppCompatActivity() {
         SocketHandler.setSocket()
         val authViewModel: AuthViewModel by viewModels()
         val cameraViewModel: CameraViewModel by viewModels()
-
+        val shopViewModel: ShopViewModel by viewModels()
+        shopViewModel.listenForMoneyEvents()
         setContent {
             val currentTheme by authViewModel.theme.collectAsState()
             val setTheme: (Theme) -> Unit = { selectedTheme ->
@@ -80,7 +82,8 @@ class MainActivity : AppCompatActivity() {
                         cameraViewModel = cameraViewModel,
                         context = applicationContext,
                         currentTheme = currentTheme,
-                        onThemeUpdated = setTheme
+                        onThemeUpdated = setTheme,
+                        shopViewModel = shopViewModel
                     )
                 }
             }
