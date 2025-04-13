@@ -77,7 +77,6 @@ fun LoginPage(
 
     LaunchedEffect(Unit) {
         loginTrace.start()
-        shopViewModel.initialize(authViewModel, context)
     }
 
     LaunchedEffect(authState.value) {
@@ -96,6 +95,7 @@ fun LoginPage(
                ThemeService.getThemeFromDB(authViewModel.getUserConfigsDatabaseRef())  { theme ->
                    onThemeUpdated(theme)
                }
+                shopViewModel.initialize(authViewModel, context)
                 shopViewModel.getCurrentBalance(authViewModel.getUserId())
                 shopViewModel.listenForMoneyEvents(context)
                 navigateToHome()

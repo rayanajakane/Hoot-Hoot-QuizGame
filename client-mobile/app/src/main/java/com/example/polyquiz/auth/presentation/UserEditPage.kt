@@ -357,7 +357,10 @@ fun UserEditPage(
                             navigateToJoinRoom,
                             navigateToRankingsPage,
                             navigateToShopPage,
-                            signOut = { authViewModel.signOut() }
+                            signOut = {
+                                authViewModel.signOut()
+                                navigateToLogin()
+                            }
                         )
                         BalanceCard(currentBalance)
                     }
