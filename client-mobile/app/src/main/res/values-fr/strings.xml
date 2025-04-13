@@ -41,7 +41,7 @@
     <string name="visual_themes">Thèmes visuels</string>
     <string name="language">Langue</string>
     <string name="edit_profile">Modification du profil</string>
-    <string name="home_page">Page principale</string>
+    <string name="home_page">Accueil</string>
     <string name="user_edit">Modification du Profil</string>
     <string name="save">Enregistrer</string>
     <string name="danger_zone">Zone dangereuse</string>
@@ -177,6 +177,13 @@
     <string name="cheater_mode_players_min">Ce mode nécessite au moins 3 joueurs</string>
     <string name="cheater_mode_players_info">Pour jouer en mode tricheur : le jeu ne doit pas contenir de question de type réponse longue et doit comporter au moins trois joueurs</string>
     <string name="switch_camera">Changer camera</string>
+    <string name="friend_requests_sent">Demandes d\'amis envoyées</string>
+    <string name="friend_requests_received">Demandes d\'amis reçues</string>
+    <string name="my_friends">Mes amis</string>
+    <string name="search_results">Résultats de la recherche</string>
+    <string name="search_friend">🔍 Rechercher un ami</string>
+    <string name="search">Rechercher</string>
+    <string name="no_reaction">Aucune réaction</string>
     <string name="timer_paused">Minutrie suspendue</string>
     <string name="timer_start">Minutrie partie</string>
     <string name="game_author">"Auteur"</string>

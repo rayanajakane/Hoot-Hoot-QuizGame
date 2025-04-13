@@ -41,7 +41,7 @@
     <string name="visual_themes">Visual themes</string>
     <string name="language">Language</string>
     <string name="edit_profile">Edit profile</string>
-    <string name="home_page">Home page</string>
+    <string name="home_page">Home</string>
     <string name="user_edit">Edit profile</string>
     <string name="save">Save</string>
     <string name="danger_zone">Danger zone</string>
@@ -179,6 +179,13 @@
     <string name="cheater_mode_players_min">This mode needs at least 3 players</string>
     <string name="cheater_mode_players_info"> To play in this mode: the game should not contain a question of type long answer, and must contain at least three players</string>
     <string name="switch_camera">Switch Camera</string>
+    <string name="friend_requests_sent">Friend Requests sent</string>
+    <string name="friend_requests_received">Friend Requests received</string>
+    <string name="my_friends">My friends</string>
+    <string name="search_results">Search Results</string>
     <string name="game_author">Author</string>
     <string name="search_games">Search Games</string>
+    <string name="search_friend">🔍 Search Friend</string>
+    <string name="search">Search</string>
+    <string name="no_reaction">No reaction</string>
 </resources>

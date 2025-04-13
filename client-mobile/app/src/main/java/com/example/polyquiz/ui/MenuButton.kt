@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayCircleFilled
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Stars
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -108,6 +109,16 @@ fun MenuButton(
                 onClick = { navigateToUserEdit() }
             )
             DropdownMenuItem(
+                text = { Text(stringResource(R.string.buy_goodies)) },
+                leadingIcon = {
+                    Icon(
+                        Icons.Filled.ShoppingCart,
+                        contentDescription = stringResource(R.string.buy_goodies)
+                    )
+                },
+                onClick = { navigateToShop() }
+            )
+            DropdownMenuItem(
                 text = { Text(stringResource(R.string.friends)) },
                 leadingIcon = {
                     Icon(
@@ -121,21 +132,11 @@ fun MenuButton(
                 text = { Text(stringResource(R.string.rankings)) },
                 leadingIcon = {
                     Icon(
-                        Icons.Filled.Group,
+                        Icons.Filled.Stars,
                         contentDescription = stringResource(R.string.rankings)
                     )
                 },
                 onClick = { navigateToRankingsPage() }
-            )
-            DropdownMenuItem(
-                text = { Text(stringResource(R.string.buy_goodies)) },
-                leadingIcon = {
-                    Icon(
-                        Icons.Filled.ShoppingCart,
-                        contentDescription = stringResource(R.string.buy_goodies)
-                    )
-                },
-                onClick = { navigateToShop() }
             )
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.logout_action)) },
