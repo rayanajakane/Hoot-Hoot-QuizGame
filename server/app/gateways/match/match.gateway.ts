@@ -105,6 +105,8 @@ export class MatchGateway implements OnGatewayDisconnect {
                 }
             }
         }
+        */
+
         let selectedGame: Game = {} as Game;
         selectedGame = this.matchBackupService.getBackupGame(data.gameId);
         const newMatchRoom: MatchRoom = await this.matchRoomService.addRoom(selectedGame, socket, data.hostId, data.partyConfig, data.isClassicMode);
@@ -316,7 +318,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         }
 
         socket.leave(roomCode);
-
+        
         const room = this.matchRoomService.getRoom(roomCode);
         const isOnePlayerLeft = this.isOnePlayerLeft(room);
         const lessthanThreePlayers = this.isRoomLessThanThreePlayers(room);
@@ -331,8 +333,7 @@ export class MatchGateway implements OnGatewayDisconnect {
                 await this.routeToResultsPage({} as Socket, roomCode);
             }
         }
-
-      
+        
         const isRoomEmpty = this.isRoomEmpty(room);
         if (room.isPlaying && isRoomEmpty) {
             this.sendError(roomCode, [NO_MORE_PLAYERS]);
@@ -350,7 +351,6 @@ export class MatchGateway implements OnGatewayDisconnect {
             this.deleteRoom(roomCode);
             return;
         }
-
         this.handleSendPlayersData(roomCode);
         this.returnAllMatches();
     }
