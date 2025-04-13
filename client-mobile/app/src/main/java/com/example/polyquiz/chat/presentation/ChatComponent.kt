@@ -88,6 +88,7 @@ import com.example.polyquiz.chat.domain.ChatService
 import com.example.polyquiz.chat.domain.Message
 import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.constants.SIZE_CONSTANTS
+import com.example.polyquiz.constants.Wallpaper
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.shop.domain.WallpaperService
@@ -152,79 +153,79 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
             .imePadding()
             .statusBarsPadding()
     ) {
-        Column(
-            verticalArrangement = Arrangement.SpaceAround,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.weight(1f)
-        ) {
-            TruncatedText(
-                text = username,
-                fontSize = 30.sp,
-                maxChars = 20,
-                FontWeight(800),
-                Modifier.padding(20.dp, 20.dp, 20.dp, 0.dp)
-            )
-            ChatSelectionMenu(selectedChat) { newChat -> selectedChat = newChat }
-            Spacer(modifier = Modifier.height(8.dp))
-            // REFERENCE: https://youtu.be/P3xQdINdrWY
-            // To handle the situation where there would be no message to display.
-            messages?.let {
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                    state = listState,
-                    modifier = Modifier
-                        .weight(1f),
-                ) {
-                    itemsIndexed(it) { _: Int, message: Message ->
-                        MessageContainer(message, userId, username)
-                    }
-                }
-            } ?: LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(20.dp, 20.dp, 20.dp, 0.dp)
-            ) {
-
+        Box {
+            if(currentWallpaper !== Wallpaper.None.value) {
+                Image(
+                    painter = rememberAsyncImagePainter(model = currentWallpaper),
+                    contentDescription = "Wallpaper",
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier.fillMaxHeight()
+                )
             }
-            TextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(0.dp, 10.dp, 0.dp, 70.dp),
-                value = newMessageText,
-                onValueChange = {
-                    if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) newMessageText = it
-                },
-                label = { Text(text = stringResource(R.string.message_label)) },
-                singleLine = true,
-                shape = RoundedCornerShape(0.dp),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(onDone = {
-                    if (selectedChat == "General") {
-                        ChatService.sendMessage(
-                            newMessageText,
-                            userId,
-                            username,
-                            avatarURL,
-                            null
-                        )
-                    } else {
-                        ChatService.sendMessage(
-                            newMessageText,
-                            userId,
-                            username,
-                            avatarURL,
-                            MatchRoomService.getRoomCode()
-                        )
+
+            Column(
+                verticalArrangement = Arrangement.SpaceAround,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.matchParentSize()
+            ) {
+                if(currentWallpaper !== Wallpaper.None.value) {
+                    TruncatedText(
+                        text = username,
+                        fontSize = 30.sp,
+                        maxChars = 20,
+                        color = MaterialTheme.colorScheme.onTertiary,
+                        fontWeight = FontWeight(800),
+                        modifier = Modifier.padding(20.dp, 20.dp, 20.dp, 0.dp)
+                    )
+                } else {
+                    TruncatedText(
+                        text = username,
+                        fontSize = 30.sp,
+                        maxChars = 20,
+                        FontWeight(800),
+                        Modifier.padding(20.dp, 20.dp, 20.dp, 0.dp)
+                    )
+                }
+
+                ChatSelectionMenu(selectedChat) { newChat -> selectedChat = newChat }
+                Spacer(modifier = Modifier.height(8.dp))
+                // REFERENCE: https://youtu.be/P3xQdINdrWY
+                // To handle the situation where there would be no message to display.
+                messages?.let {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                        state = listState,
+                        modifier = Modifier
+                            .weight(1f),
+                    ) {
+                        itemsIndexed(it) { _: Int, message: Message ->
+                            MessageContainer(message, userId, username, currentWallpaper != Wallpaper.None.value)
+                        }
                     }
-                    newMessageText = ""
-                }),
-                trailingIcon = {
-                    val image = Icons.AutoMirrored.Filled.Send;
-                    IconButton(onClick = {
+                } ?: LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(20.dp, 20.dp, 20.dp, 0.dp)
+                ) {
+
+                }
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp, 10.dp, 0.dp, 70.dp),
+                    value = newMessageText,
+                    onValueChange = {
+                        if (it.length <= SIZE_CONSTANTS.MAX_INPUT_LENGTH) newMessageText = it
+                    },
+                    label = { Text(text = stringResource(R.string.message_label)) },
+                    singleLine = true,
+                    shape = RoundedCornerShape(0.dp),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(onDone = {
                         if (selectedChat == "General") {
                             ChatService.sendMessage(
                                 newMessageText,
@@ -243,18 +244,42 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                             )
                         }
                         newMessageText = ""
-                    }) {
-                        Icon(imageVector = image, "send")
+                    }),
+                    trailingIcon = {
+                        val image = Icons.AutoMirrored.Filled.Send;
+                        IconButton(onClick = {
+                            if (selectedChat == "General") {
+                                ChatService.sendMessage(
+                                    newMessageText,
+                                    userId,
+                                    username,
+                                    avatarURL,
+                                    null
+                                )
+                            } else {
+                                ChatService.sendMessage(
+                                    newMessageText,
+                                    userId,
+                                    username,
+                                    avatarURL,
+                                    MatchRoomService.getRoomCode()
+                                )
+                            }
+                            newMessageText = ""
+                        }) {
+                            Icon(imageVector = image, "send")
+                        }
                     }
-                }
-            )
+                )
+            }
         }
+
     }
 }
 
 
 @Composable
-fun MessageContainer(message: Message, currentUserId: String, username: String) {
+fun MessageContainer(message: Message, currentUserId: String, username: String, hasWallpaper: Boolean) {
     val containerWidth = 225.dp
     val containerAlignment: Alignment.Horizontal
     val containerCorner: RoundedCornerShape
@@ -282,7 +307,11 @@ fun MessageContainer(message: Message, currentUserId: String, username: String) 
     Row(modifier = Modifier.fillMaxSize()) {
         // Avatar box if not author
         if (message.authorId != currentUserId) {
-            Box(modifier = Modifier.align(Alignment.Bottom).padding(bottom = 20.dp, start = 10.dp)) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.Bottom)
+                    .padding(bottom = 20.dp, start = 10.dp)
+            ) {
                 AvatarImage(message.photoUrl)
             }
         }
@@ -293,17 +322,34 @@ fun MessageContainer(message: Message, currentUserId: String, username: String) 
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.width(containerWidth)
                 ) {
-                    TruncatedText(
-                        message.authorUsername,
-                        fontSize = 16.sp,
-                        maxChars = 11,
-                        FontWeight(600),
-                        Modifier
-                    )
-                    Text(
-                        text = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(message.date)
-                            .toString()
-                    )
+                    if(hasWallpaper) {
+                        TruncatedText(
+                            message.authorUsername,
+                            fontSize = 16.sp,
+                            maxChars = 11,
+                            FontWeight(600),
+                            Modifier,
+                            MaterialTheme.colorScheme.onTertiary
+                        )
+                        Text(
+                            text = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(message.date)
+                                .toString(),
+                            color = MaterialTheme.colorScheme.onTertiary
+                        )
+                    } else {
+                        TruncatedText(
+                            message.authorUsername,
+                            fontSize = 16.sp,
+                            maxChars = 11,
+                            FontWeight(600),
+                            Modifier
+                        )
+                        Text(
+                            text = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(message.date)
+                                .toString()
+                        )
+                    }
+
                 }
                 Card(
                     colors = CardDefaults.cardColors(containerColor = containerColor),
@@ -322,7 +368,9 @@ fun MessageContainer(message: Message, currentUserId: String, username: String) 
         }
         // Avatar box if author
         if (message.authorId == currentUserId) {
-            Box(modifier = Modifier.align(Alignment.Bottom).padding(bottom = 20.dp, end = 10.dp)) {
+            Box(modifier = Modifier
+                .align(Alignment.Bottom)
+                .padding(bottom = 20.dp, end = 10.dp)) {
                 AvatarImage(message.photoUrl)
             }
         }
@@ -427,7 +475,12 @@ fun ReactionsRow(
         modifier = Modifier.padding(top = 1.dp),
         horizontalArrangement = Arrangement.Absolute.Left,
     ) {
-        ReactionButton("👍", message.userLikes.size, users = message.userLikes, username = username) {
+        ReactionButton(
+            "👍",
+            message.userLikes.size,
+            users = message.userLikes,
+            username = username
+        ) {
             ChatService.reactToMessage(
                 message.id,
                 ChatEmoji.LIKE,
@@ -436,7 +489,12 @@ fun ReactionsRow(
                 if (roomCode.isNullOrEmpty()) null else roomCode
             )
         }
-        ReactionButton("❤️", message.userLoves.size, users = message.userLoves, username = username) {
+        ReactionButton(
+            "❤️",
+            message.userLoves.size,
+            users = message.userLoves,
+            username = username
+        ) {
             ChatService.reactToMessage(
                 message.id,
                 ChatEmoji.LOVE,
@@ -445,7 +503,12 @@ fun ReactionsRow(
                 if (roomCode.isNullOrEmpty()) null else roomCode
             )
         }
-        ReactionButton("👎", message.userDislikes.size, users = message.userDislikes, username = username) {
+        ReactionButton(
+            "👎",
+            message.userDislikes.size,
+            users = message.userDislikes,
+            username = username
+        ) {
             ChatService.reactToMessage(
                 message.id,
                 ChatEmoji.DISLIKE,
@@ -456,9 +519,16 @@ fun ReactionsRow(
         }
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReactionButton(emoji: String, count: Int, users: List<UserIdName>, username: String, onClick: () -> Unit) {
+fun ReactionButton(
+    emoji: String,
+    count: Int,
+    users: List<UserIdName>,
+    username: String,
+    onClick: () -> Unit
+) {
     val interactionSource = remember { MutableInteractionSource() }
     val viewConfig = LocalViewConfiguration.current
     var usernameList = users.map { it.name }
@@ -490,13 +560,15 @@ fun ReactionButton(emoji: String, count: Int, users: List<UserIdName>, username:
     }
 
     TooltipBox(
-        tooltip = { PlainTooltip {
-            if(usernameList.isEmpty()) {
-                Text(stringResource(R.string.no_reaction))
-            } else {
-                Text(usernameList.joinToString())
+        tooltip = {
+            PlainTooltip {
+                if (usernameList.isEmpty()) {
+                    Text(stringResource(R.string.no_reaction))
+                } else {
+                    Text(usernameList.joinToString())
+                }
             }
-        } },
+        },
         positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
         state = rememberTooltipState()
     ) {
@@ -541,7 +613,7 @@ fun TruncatedText(
     maxChars: Int,
     fontWeight: FontWeight,
     modifier: Modifier,
-    color : Color = MaterialTheme.colorScheme.onSurface,
+    color: Color = MaterialTheme.colorScheme.onSurface,
     style: TextStyle = TextStyle()
 
 ) {

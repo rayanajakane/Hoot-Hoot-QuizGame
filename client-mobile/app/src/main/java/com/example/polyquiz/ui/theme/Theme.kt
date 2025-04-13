@@ -30,6 +30,7 @@ private val DarkColorScheme = darkColorScheme(
     onSurface = Color.White,
     onError = Color.Black,
     tertiary = HotPink,
+    onTertiary = Color.Black
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -44,6 +45,7 @@ private val LightColorScheme = lightColorScheme(
     onSurface = Color.Black,
     onError = Color.White,
     tertiary = HotPink,
+    onTertiary = Color.Black
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
