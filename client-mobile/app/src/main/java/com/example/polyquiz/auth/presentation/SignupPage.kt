@@ -91,7 +91,7 @@ fun SignupPage(
     }
 
     LaunchedEffect(Unit) {
-        shopViewModel.initialize(authViewModel)
+        shopViewModel.initialize( authViewModel, context)
     }
 
     LaunchedEffect(authState.value) {
@@ -105,7 +105,7 @@ fun SignupPage(
                     )
                 }
                 shopViewModel.getCurrentBalance(authViewModel.getUserId())
-                shopViewModel.listenForMoneyEvents()
+                shopViewModel.listenForMoneyEvents(context)
                 navigateToChat()
             }
 

@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import StringValue
+import android.content.Context
 import com.example.polyquiz.constants.MoneyEvents
 import com.example.polyquiz.money.domain.DonationGivenData
 import com.example.polyquiz.money.domain.DonationReceivedData
@@ -26,6 +27,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import android.content.Context
 import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import org.json.JSONObject
 
@@ -56,7 +59,7 @@ class ShopViewModel : ViewModel() {
         PremiumAvatarService.initialize(authViewModel)
         ThemeService.loadPurchasedThemes(authViewModel)
 
-        moneyService.listenForMoneyEvents(
+        listenForMoneyEvents(
             context,
             onAvatarBoughtCallback = { onItemBought(it, authViewModel, "avatar") },
             onThemeBoughtCallback = { onItemBought(it, authViewModel, "theme") },
@@ -76,6 +79,7 @@ class ShopViewModel : ViewModel() {
     }
 
     fun listenForMoneyEvents(
+        context: Context,
         onAvatarBoughtCallback: (ShopItem) -> Unit = {},
         onThemeBoughtCallback: (ShopItem) -> Unit = {},
         onWallpaperBoughtCallback: (ShopItem) -> Unit = {}
@@ -86,7 +90,7 @@ class ShopViewModel : ViewModel() {
         onAvatarBought(onAvatarBoughtCallback)
         onThemeBought(onThemeBoughtCallback)
         onWallpaperBought(onWallpaperBoughtCallback)
-        handleError()
+        handleError(context)
     }
 
     fun stopListeningForMoneyEvents() {
@@ -198,12 +202,27 @@ class ShopViewModel : ViewModel() {
         }
     }
 
-    private fun handleError() {
+    private fun handleError(context: Context) {
         mSocket.on(MoneyEvents.ERROR.value) { args: Array<Any> ->
             if (args.isNotEmpty()) {
-                val errorMessage = args[0].toString()
-                Log.e(TAG, errorMessage)
-//                notificationService.displayErrorMessage(errorMessage)
+                val errors: List<String> = try {
+                    Gson().fromJson(args[0].toString(), Array<String>::class.java).toList()
+                } catch (e: Exception) {
+                    listOf(args[0].toString())
+                }
+
+                val displayText = errors.joinToString(separator = "\n") { errorKey: String ->
+                    val cleanKey = errorKey.trim()
+                    StringValue.dynamicLookup(context, cleanKey).asString(context)
+                }
+
+                val event = SnackbarEvent(
+                    message = StringValue.DynamicString(displayText)
+                )
+
+                CoroutineScope(Dispatchers.Main).launch {
+                    SnackbarController.sendEvent(event)
+                }
             }
         }
     }
