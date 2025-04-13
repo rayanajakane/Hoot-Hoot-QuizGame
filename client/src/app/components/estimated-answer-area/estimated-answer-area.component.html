@@ -16,9 +16,9 @@
         </div>
 
         <div class="input-error-container">
-            <mat-form-field appearance="outline" class="number-input">
+            <mat-form-field appearance="outline" class="number-input" >
                 <mat-label>{{ t('question-area.answer') }}</mat-label>
-                <input matInput type="text" [formControl]="currentLongAnswerControl" (input)="onInputChange()" [class.error]="isOutOfBounds" />
+                <input matInput type="text" [formControl]="currentLongAnswerControl" (input)="onInputChange()" [class.error]="isOutOfBounds"/>
             </mat-form-field>
 
             <p *ngIf="isOutOfBounds" class="error-message">
@@ -29,10 +29,10 @@
         <div class="slider-container">
             <span class="bound-label">{{ lowerBound }}</span>
             <mat-slider class="full-width" [min]="lowerBound" [max]="upperBound" [step]="1">
-                <input matSliderThumb [formControl]="currentLongAnswerControl" (input)="onSliderChange($event)" />
+                <input matSliderThumb  [formControl]="currentLongAnswerControl" (input)="onSliderChange($event)"/>
             </mat-slider>
             <span class="bound-label">{{ upperBound }}</span>
-        </div>
+        </div> 
         <p *ngIf="answerService.showFeedback" class="correct-answer">
             {{
                 t('question-area.good-answer-qre', {
@@ -48,7 +48,7 @@
             <input
                 matInput
                 type="text"
-                disabled
+                disabled 
                 placeholder="{{ matchRoomService.currentAnswers[0] }}"
                 value="{{ matchRoomService.currentAnswers[0] }}"
             />

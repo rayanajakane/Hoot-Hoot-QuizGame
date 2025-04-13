@@ -48,6 +48,7 @@ describe('EstimatedAnswerAreaComponent', () => {
         ]);
         answerSpy.currentLongAnswer = '0';
         answerSpy.showingFeedback$ = jasmine.createSpyObj('showFeedback$', ['subscribe']);
+        answerSpy.isSelectionEnabled$ = jasmine.createSpyObj('isSelectedEnabled$', ['subscribe']);
         answerSpy.showFeedback = false;
         questionContextSpy = jasmine.createSpyObj('MatchContextService', ['getContext']);
 

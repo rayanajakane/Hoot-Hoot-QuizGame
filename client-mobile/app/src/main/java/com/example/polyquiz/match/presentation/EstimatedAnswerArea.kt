@@ -123,7 +123,7 @@ fun EstimatedAnswerArea(
                     .padding(vertical = 8.dp)
                     .align(Alignment.CenterHorizontally),
                 singleLine = true,
-                enabled = !isDisabled,
+                enabled = answerService.isSelectionEnabled,
                 isError = isOutOfBounds
             )
             if (matchContext === MatchContext.CHEATERVIEW) {
@@ -136,7 +136,6 @@ fun EstimatedAnswerArea(
                         .align(Alignment.CenterHorizontally),
                 )
             }
-
 
             if (isOutOfBounds) {
                 Text(
@@ -169,7 +168,7 @@ fun EstimatedAnswerArea(
                     },
                     valueRange = lowerBound..upperBound,
                     modifier = Modifier.weight(1f),
-                    enabled = !isDisabled
+                    enabled = answerService.isSelectionEnabled
                 )
                 Text(
                     text = upperBound.toInt().toString(),

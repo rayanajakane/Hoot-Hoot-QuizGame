@@ -412,7 +412,7 @@
         "notifyRegularPlayer": "You are a regular player",
         "playerVoted": " has voted",
         "answer-hint": "Answer Hint: \"{{answer}}\"",
-        "players-still-voting": "Players are still voting",
+        "players-still-voting": "Players are voting",
         "players-voted": "All players have voted",
         "players-amount-invalid": "The match needs at least 3 players"
     },

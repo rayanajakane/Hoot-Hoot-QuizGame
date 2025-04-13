@@ -371,8 +371,6 @@ fun MatchCard(match: MatchPageInfo, onClick: () -> Unit = {}, clickable: Boolean
             shape = RectangleShape,
             modifier = Modifier
                 .padding(5.dp)
-                .width(140.dp)
-                .height(220.dp)
                 .shadow(4.dp, shape = RectangleShape)
                 .background(Color.White)
         ) {

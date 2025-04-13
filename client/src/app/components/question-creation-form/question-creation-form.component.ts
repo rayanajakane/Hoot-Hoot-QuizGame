@@ -93,10 +93,12 @@ export class QuestionCreationFormComponent implements OnInit, OnChanges {
             if (this.questionForm.get('type')?.value === QuestionType.EstimatedAnswer) {
                 this.questionForm.get('type')?.setValue(QuestionType.EstimatedAnswer);
                 const estimatedParams = this.questionForm.get('estimatedParameters') as FormGroup;
-                estimatedParams.get('lowerBound')?.setValue(generatedQuestion.lowerBound);
-                estimatedParams.get('upperBound')?.setValue(generatedQuestion.upperBound);
-                estimatedParams.get('correctAnswer')?.setValue(generatedQuestion.exactValue);
-                estimatedParams.get('margin')?.setValue(generatedQuestion.errorMargin);
+                estimatedParams.patchValue({
+                    lowerBound: generatedQuestion.lowerBound,
+                    upperBound: generatedQuestion.upperBound,
+                    correctAnswer: generatedQuestion.exactValue,
+                    margin: generatedQuestion.errorMargin,
+                });
             }
         }
     }
