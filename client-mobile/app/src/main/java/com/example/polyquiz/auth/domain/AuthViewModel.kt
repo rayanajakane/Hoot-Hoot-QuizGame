@@ -554,6 +554,7 @@ class AuthViewModel : ViewModel() {
                                             task.result.user?.let { this.getUserDatabaseRef(it.uid) }
                                         userRef?.child("isOnline")?.setValue(true)
                                         userRef?.child("isOnline")?.onDisconnect()?.setValue(false)
+                                        userRef?.child("balance")?.setValue(50)
                                         usernameRef.setValue(username.lowercase())
                                         _username.value = user?.displayName ?: ""
                                         _email.value = user?.email ?: ""
