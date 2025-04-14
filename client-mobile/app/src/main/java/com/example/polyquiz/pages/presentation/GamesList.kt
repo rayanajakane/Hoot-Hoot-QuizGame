@@ -148,7 +148,13 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
         if (selectedGame?.isVisible!!) {
             gamesIsValid = true
             matchService.currentGame = selectedGame
-            matchService.saveBackupGame(selectedGame!!.id!!, userId, username, componentContext,partyConfigs)
+            matchService.saveBackupGame(
+                selectedGame!!.id!!,
+                userId,
+                username,
+                componentContext,
+                partyConfigs
+            )
         } else {
             fetchGames()
         }
@@ -278,7 +284,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                             OutlinedTextField(
                                 value = titleQuery,
                                 onValueChange = { titleQuery = it },
-                                label = { stringResource(R.string.game_title) },
+                                label = { Text(stringResource(R.string.game_title)) },
                                 modifier = Modifier
                                     .weight(0.5f)
                                     .padding(bottom = 8.dp),
@@ -287,7 +293,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                             OutlinedTextField(
                                 value = authorQuery,
                                 onValueChange = { authorQuery = it },
-                                label = { stringResource(R.string.game_author) },
+                                label = { Text(stringResource(R.string.game_author)) },
                                 modifier = Modifier.weight(0.5f),
                                 singleLine = true
                             )
@@ -451,10 +457,10 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
 ////                                    modifier = Modifier
 ////                                        .offset(x = -18.dp, y = 5.dp),
 ////                                )
-                                Text(
-                                    text = stringResource(R.string.play),
-                                    textAlign = TextAlign.Center,
-                                )
+                            Text(
+                                text = stringResource(R.string.play),
+                                textAlign = TextAlign.Center,
+                            )
 //                            }
                         }
 
@@ -508,8 +514,14 @@ fun GameCard(game: Game, onClick: () -> Unit = {}) {
         onClick = onClick
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            TruncatedText(text = game.title, fontWeight = FontWeight.Bold, fontSize = 15.sp, maxChars = 20, modifier =Modifier )
-            Spacer(modifier = Modifier.height(20.dp))
+            TruncatedText(
+                text = game.title,
+                fontWeight = FontWeight.Bold,
+                fontSize = 15.sp,
+                maxChars = 20,
+                modifier = Modifier
+            )
+            Spacer(modifier = Modifier.height(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = stringResource(R.string.matches_played) + game.nMatchesPlayed.toInt())
             }

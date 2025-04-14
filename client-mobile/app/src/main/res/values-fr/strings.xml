@@ -183,14 +183,14 @@
     <string name="cheater_mode_answer_hint">Indice pour la réponse: "</string>
     <string name="cheater_mode_notify_regular_player">Vous avez le rôle de joueur régulier dans cette partie</string>
     <string name="cheater_mode_player_voted"> a voté</string>
-    <string name="cheater_mode_players_still_voting">Joueurs en train de voter</string>
+    <string name="cheater_mode_players_still_voting">Phase de vote</string>
     <string name="cheater_mode_go_to_vote_button">Aller à la page de vote</string>
     <string name="cheater_mode_players_voted">Tous les joueurs ont voté</string>
     <string name="cheater_mode">Mode tricheur</string>
     <string name="cheater_mode_players_min">Ce mode nécessite au moins 3 joueurs</string>
     <string name="cheater_mode_players_info">Pour jouer en mode tricheur : le jeu ne doit pas contenir de question de type réponse longue et doit comporter au moins trois joueurs</string>
     <string name="switch_camera">Changer camera</string>
-    <string name="game_author">"Auteur: "</string>
+    <string name="game_author">Auteur</string>
     <string name="money_errors_not_enough_money">Vous n\'avez pas assez d\'argent pour effectuer cette transaction.</string>
     <string name="money_errors_donation_amount_exceeded">Avec cette donation, vous dépassez la limite quotidienne.</string>
     <string name="money_errors_invalid_amount">Le montant est invalide, il doit être un nombre positif.</string>
@@ -205,4 +205,7 @@
     <string name="match_friends_errors_not_friends_with_host">Vous n\'êtes pas ami avec l\'hôte.</string>
     <string name="match_friends_errors_no_friends">Vous n\'avez pas d\'amis.</string>
     <string name="match_errors_less_than_3_players">Il doit y avoir au moins 3 joueurs dans la partie.</string>
+    <string name="donation_given">Vous avez donné %d $ à %s</string>
+    <string name="donation_recieved">%s vous a donné %d $.</string>
+    <string name="new_total">Nouveau total: %d $</string>
 </resources>

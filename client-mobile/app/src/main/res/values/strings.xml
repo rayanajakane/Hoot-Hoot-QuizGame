@@ -184,7 +184,7 @@
     <string name="cheater_mode_answer_hint">Indice pour la réponse: "</string>
     <string name="cheater_mode_notify_regular_player">Vous avez le rôle de joueur régulier dans cette partie</string>
     <string name="cheater_mode_player_voted"> a voté</string>
-    <string name="cheater_mode_players_still_voting">Joueurs en train de voter</string>
+    <string name="cheater_mode_players_still_voting">Phase de vote</string>
     <string name="cheater_mode_go_to_vote_button">Aller à la page de vote</string>
     <string name="cheater_mode_players_voted">Tous les joueurs ont voté</string>
     <string name="cheater_mode">Mode tricheur</string>
@@ -208,4 +208,7 @@
     <string name="match_friends_errors_not_friends_with_host">Vous n\'êtes pas ami avec l\'hôte.</string>
     <string name="match_friends_errors_no_friends">Vous n\'avez pas d\'amis.</string>
     <string name="match_errors_less_than_3_players">Il doit y avoir au moins 3 joueurs dans la partie.</string>
+    <string name="donation_given">Vous avez donné %d $ à %s</string>
+    <string name="donation_recieved">%s vous a donné %d $.</string>
+    <string name="new_total">Nouveau total: %d $</string>
 </resources>
