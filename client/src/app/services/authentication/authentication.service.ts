@@ -279,6 +279,8 @@ export class AuthenticationService {
         this.matchRoomService.disconnectFromRoom();
         this.socketHandler.disconnect();
         this.socketHandler.socket.removeListener(ChatEvents.NewMessage);
+        this.socketHandler.socket.removeListener(ChatEvents.SentGeneralEmoji);
+        this.socketHandler.socket.removeListener(ChatEvents.SentRoomEmoji);
         this.chatService.clearMessages();
         this.moneyService.stopListeningForMoneyEvents();
         this.socketHandler.socket.removeListener(EloEvents.ReturnElo);
