@@ -34,7 +34,7 @@
         <mat-sidenav-content>
             <div id="header-bar">
                 <h1 class="page-title">
-                    {{ state === managementState.GameModify ? t('admin-edit-page.creation-title') : t('admin-edit-page.modification-title') }}
+                    {{ state === managementState.GameModify ? t('admin-edit-page.modification-title') : t('admin-edit-page.creation-title') }}
                 </h1>
 
                 <div class="buttons-container">
@@ -67,7 +67,7 @@
                         <mat-icon class="pending-changes" *ngIf="this.gameModificationService.isPendingChanges">pending</mat-icon>
                         {{
                             t('admin-edit-page.cancel', {
-                                state: state === managementState.GameModify ? t('admin-edit-page.modification') : t('admin-edit-page.creation')
+                                state: state === managementState.GameModify ? t('admin-edit-page.creation') : t('admin-edit-page.modification')
                             })
                         }}
                     </button>
