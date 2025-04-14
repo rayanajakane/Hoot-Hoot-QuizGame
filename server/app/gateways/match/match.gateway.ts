@@ -53,6 +53,9 @@ export class MatchGateway implements OnGatewayDisconnect {
     @SubscribeMessage(MatchEvents.JoinRoom)
     async joinRoom(@ConnectedSocket() socket: Socket, @MessageBody() data: UserInfo) {
         const matchRoom = this.matchRoomService.getRoom(data.roomCode);
+        if (matchRoom.players.find((player) => player.id === data.userId)) {
+            return;
+        }
         const codeErrors = this.matchRoomService.getRoomCodeErrors(data.roomCode);
         const usernameErrors = this.playerRoomService.getUsernameErrors(data.roomCode, data.userId);
         let errorMessage = [];
@@ -318,7 +321,7 @@ export class MatchGateway implements OnGatewayDisconnect {
         }
 
         socket.leave(roomCode);
-        
+
         const room = this.matchRoomService.getRoom(roomCode);
         const isOnePlayerLeft = this.isOnePlayerLeft(room);
         const lessthanThreePlayers = this.isRoomLessThanThreePlayers(room);
@@ -333,7 +336,7 @@ export class MatchGateway implements OnGatewayDisconnect {
                 await this.routeToResultsPage({} as Socket, roomCode);
             }
         }
-        
+
         const isRoomEmpty = this.isRoomEmpty(room);
         if (room.isPlaying && isRoomEmpty) {
             this.sendError(roomCode, [NO_MORE_PLAYERS]);
