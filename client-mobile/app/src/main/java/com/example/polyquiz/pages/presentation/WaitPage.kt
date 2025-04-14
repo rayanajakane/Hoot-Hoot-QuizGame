@@ -38,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -95,7 +96,7 @@ fun WaitPage(
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     val scope = rememberCoroutineScope()
-    var qrCodeUrl : String ="";
+    var qrCodeUrl : String  by remember { mutableStateOf("") };
     val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
 
@@ -137,8 +138,9 @@ fun WaitPage(
 
         val URLCodeRef = ImageStorage.getURLCodeRef(MatchRoomService.matchRoomCode.value)
 
-        qrCodeUrl = getImageURL(URLCodeRef) { url ->
+        getImageURL(URLCodeRef) { url ->
             if (url != null) {
+                qrCodeUrl =url
                 Log.d("QRCodeURL",url)
             }
         }.toString()
@@ -243,11 +245,11 @@ fun WaitPage(
                         fontWeight = FontWeight.ExtraBold
                     )
 
-//                    AsyncImage(
-//                        model = qrCodeUrl,
-//                        contentDescription = null,
-//                        modifier = Modifier
-//                    )
+                    Image(
+                        painter = rememberAsyncImagePainter(model = qrCodeUrl),
+                        contentDescription = ""
+                    )
+
                     if (isHost()) {
                         LockMatchToggle(onToggleLock)
                         var disabled = true
