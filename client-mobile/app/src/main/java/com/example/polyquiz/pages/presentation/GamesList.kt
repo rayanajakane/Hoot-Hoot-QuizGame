@@ -359,51 +359,92 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                 .weight(1f)
                 .fillMaxHeight()
         ) {
-            Row(
-
-                modifier = Modifier.padding(2.dp),
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Text(
-                    text = stringResource(R.string.games_details),
-                    modifier = Modifier.padding(8.dp),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 22.sp,
-                )
-                if (selectedGame != null) {
-                    loadSelectedGame(selectedGame!!)
-                    matchService.currentGame = selectedGame
-                    Column(modifier = Modifier.fillMaxWidth(.6f)) {
+            Box(modifier = Modifier.fillMaxSize().padding(end = 8.dp)) {
+                if (selectedGame == null) {
+                    Column(modifier = Modifier.align(Alignment.TopStart)) {
                         Text(
-                            text = stringResource(R.string.game_title) + selectedGame!!.title,
-                            modifier = Modifier.padding(8.dp),
-                            fontWeight = FontWeight.Bold
+                            text = stringResource(R.string.games_details),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 22.sp,
+                            modifier = Modifier.padding(8.dp)
                         )
+
+                        Text(
+                            text = stringResource(R.string.select_game),
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
+                } else {
+                    Button(
+                        onClick = {
+                            canStartCheaterMode(selectedGame!!.questions!!);
+                            showPartyConfigDialog = true
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.tertiary,
+                            contentColor = MaterialTheme.colorScheme.onTertiary
+                        ),
+                        shape = RoundedCornerShape(5.dp),
+                        modifier = Modifier.align(Alignment.TopEnd)
+                    )
+                    {
+                        Text(
+                            text = stringResource(R.string.play),
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .padding(8.dp)
+                            .verticalScroll(
+                                rememberScrollState()
+                            )
+                    ) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                            Text(
+                                text = stringResource(R.string.games_details),
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 22.sp,
+                            )
+                            // If question title too long, show under game details. Found 15 is a good number
+                            if (selectedGame!!.title.length < 15) {
+                                Text(
+                                    text = "\"${selectedGame!!.title}\"",
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                        if (selectedGame!!.title.length >= 15) {
+                            Text(
+                                text = "\"${selectedGame!!.title}\"",
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                         Spacer(modifier = Modifier.height(10.dp))
-                        Row(modifier = Modifier.padding(8.dp)) {
+                        Row {
                             Text(
                                 text = stringResource(R.string.games_description),
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = selectedGame!!.description,
+                                text = " ${selectedGame!!.description}",
                             )
                         }
-
-                        Row(modifier = Modifier.padding(8.dp)) {
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Row {
                             Text(
                                 text = stringResource(R.string.games_time),
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = "${selectedGame!!.duration} minutes",
+                                text = " ${selectedGame!!.duration.toInt()} sec.",
                                 fontWeight = FontWeight.Normal
                             )
                         }
-
+                        Spacer(modifier = Modifier.height(10.dp))
                         Text(
                             text = stringResource(R.string.questions),
-                            modifier = Modifier.padding(8.dp),
                             fontWeight = FontWeight.Bold
                         )
                         selectedGame!!.questions?.forEachIndexed { index, question ->
@@ -413,68 +454,7 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                             )
                         }
                     }
-
-
-                    Column() {
-//                        Button(
-//                            onClick = {
-//                                createMatch(MatchContext.HOSTVIEW)
-//                            },
-//                            shape = RoundedCornerShape(5.dp),
-//                            colors = ButtonDefaults.buttonColors(
-//                                containerColor = MaterialTheme.colorScheme.primary,
-//                                contentColor = MaterialTheme.colorScheme.onPrimary
-//                            ),
-//                            modifier = Modifier
-//                                .padding(10.dp)
-//                                .width(160.dp)
-//                                .height(60.dp)
-//                        ) {
-//                            Text(text = stringResource(R.string.play))
-//
-//                        }
-                        Button(
-                            onClick = {
-                                canStartCheaterMode(selectedGame!!.questions!!);
-                                showPartyConfigDialog = true
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.tertiary,
-                                contentColor = MaterialTheme.colorScheme.onTertiary
-                            ),
-                            shape = RoundedCornerShape(5.dp),
-                            modifier = Modifier
-                                .padding(10.dp)
-                                .width(160.dp)
-                                .height(60.dp)
-
-                        )
-                        {
-//                            Row(modifier = Modifier.fillMaxWidth()) {
-////                                Icon(
-////                                    Icons.Filled.Settings,
-////                                    contentDescription = stringResource(R.string.play),
-////                                    modifier = Modifier
-////                                        .offset(x = -18.dp, y = 5.dp),
-////                                )
-                            Text(
-                                text = stringResource(R.string.play),
-                                textAlign = TextAlign.Center,
-                            )
-//                            }
-                        }
-
-                    }
-
-
-                } else {
-                    Text(
-                        text = stringResource(R.string.select_game),
-                        modifier = Modifier.padding(8.dp)
-                    )
                 }
-                Spacer(modifier = Modifier.height(16.dp))
-
             }
             if (showPartyConfigDialog) {
                 PartyConfigDialog(
