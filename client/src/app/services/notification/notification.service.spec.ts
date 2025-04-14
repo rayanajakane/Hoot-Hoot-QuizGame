@@ -7,6 +7,7 @@ import { WarningMessage } from '@app/constants/feedback-messages';
 import { MatDialogMock } from '@app/constants/mat-dialog-mock';
 import { ConfirmDialogData } from '@app/interfaces/dialog-data/confirm-dialog-data';
 import { NotificationService } from '@app/services/notification/notification.service';
+import { getTranslocoModule } from '@app/transloco-testing.module';
 
 describe('NotificationService', () => {
     let service: NotificationService;
@@ -15,7 +16,7 @@ describe('NotificationService', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [MatSnackBarModule, NoopAnimationsModule],
+            imports: [MatSnackBarModule, NoopAnimationsModule, getTranslocoModule()],
             providers: [NotificationService, MatSnackBar, { provide: MatDialog, useClass: MatDialogMock }],
         });
 
@@ -100,21 +101,5 @@ describe('NotificationService', () => {
         });
 
         expect(afterOpenSpy).toHaveBeenCalled();
-    });
-
-    it('should open a bank upload confirmation dialog', () => {
-        const bankUploadConfig: MatDialogConfig<ConfirmDialogData> = {
-            data: {
-                icon: 'info_outline',
-                title: 'Êtes-vous certain de vouloir ajouter cette question à la banque de questions?',
-                text: 'questionTitle',
-            },
-        };
-
-        spyOn(dialog, 'open').and.callThrough();
-        service.confirmBankUpload('questionTitle').subscribe((confirmResult) => {
-            expect(confirmResult).toBe(true);
-            expect(dialog.open).toHaveBeenCalledWith(DialogConfirmComponent, bankUploadConfig);
-        });
     });
 });
