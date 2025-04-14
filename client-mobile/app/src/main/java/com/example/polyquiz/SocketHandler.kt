@@ -33,6 +33,7 @@ object SocketHandler {
             mSocket.connect()
             ChatService.deleteMessages()
             ChatService.handleReceivedMessage()
+            ChatService.handleRoomMessage()
             EloService.returnElo()
 
         }
@@ -41,6 +42,7 @@ object SocketHandler {
     @Synchronized
     fun disconnect() {
         mSocket.off(ChatEvents.SENT_GENERAL_MESSAGE.value)
+        mSocket.off(ChatEvents.NEW_MESSAGE.value)
         ChatService.deleteMessages()
         mSocket.off(EloEvents.RETURN_ELO.value)
         mSocket.disconnect()

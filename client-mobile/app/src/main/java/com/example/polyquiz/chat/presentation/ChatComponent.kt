@@ -109,6 +109,10 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
         mutableStateOf(if (roomCode.isNotEmpty()) "Match" else "General")
     }
 
+    LaunchedEffect(Unit) {
+        authViewModel.setAvatarToFirebaseAvatar()
+    }
+
     LaunchedEffect(selectedChat) {
         if (selectedChat == "Match") {
             ChatService.channel = ChatChannel.ROOM.value
@@ -593,12 +597,6 @@ fun ReactionButton(
             ),
             modifier = Modifier
                 .heightIn(min = 32.dp)
-                .pointerInput(Unit) {
-                    detectTapGestures(onLongPress = {
-                        // TODO : Show list of users
-                        Log.d("Emoji", "Users, $users")
-                    })
-                }
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
