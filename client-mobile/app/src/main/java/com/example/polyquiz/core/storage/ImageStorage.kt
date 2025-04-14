@@ -15,6 +15,10 @@ object ImageStorage {
         return storageRef.child("avatars/${uid}");
     }
 
+    fun getURLCodeRef(uid: String): StorageReference {
+        return storageRef.child("qrCodes/${uid}.png");
+    }
+
     fun deleteAvatar(uid: String) {
         val avatarRef = getAvatarRef(uid)
         avatarRef.delete().addOnSuccessListener {
