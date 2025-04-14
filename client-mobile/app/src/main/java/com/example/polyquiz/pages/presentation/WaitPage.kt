@@ -65,6 +65,7 @@ import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.constants.StartMatchFeedback
 import com.example.polyquiz.core.storage.ImageStorage
+import com.example.polyquiz.core.storage.ImageStorage.getImageURL
 import com.example.polyquiz.match.domain.Game
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
@@ -77,6 +78,7 @@ import com.example.polyquiz.match.domain.Player
 import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.match.presentation.TimerComponent
 import com.example.polyquiz.ui.theme.Theme
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnrememberedMutableState")
@@ -93,6 +95,8 @@ fun WaitPage(
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     val scope = rememberCoroutineScope()
+    var qrCodeUrl : String ="";
+    val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
 
     fun resetWaitPage() {
@@ -129,7 +133,18 @@ fun WaitPage(
             MatchContextService.setContext(MatchContext.PLAYERVIEW)
             Log.d("WaitPage", "IsPlayer")
         }
+
+
+        val URLCodeRef = ImageStorage.getURLCodeRef(MatchRoomService.matchRoomCode.value)
+
+        qrCodeUrl = getImageURL(URLCodeRef) { url ->
+            if (url != null) {
+                Log.d("QRCodeURL",url)
+            }
+        }.toString()
+
     }
+
 
     LaunchedEffect(MatchRoomService.hasBeenKickedOut) {
         if (MatchRoomService.hasBeenKickedOut) {
@@ -213,7 +228,7 @@ fun WaitPage(
                     )
                 }
             } else {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally){
                     Text(
                         text = stringResource(R.string.waiting_to_start),
                         fontSize = 32.sp,
@@ -227,6 +242,12 @@ fun WaitPage(
                         fontSize = 36.sp,
                         fontWeight = FontWeight.ExtraBold
                     )
+
+//                    AsyncImage(
+//                        model = qrCodeUrl,
+//                        contentDescription = null,
+//                        modifier = Modifier
+//                    )
                     if (isHost()) {
                         LockMatchToggle(onToggleLock)
                         var disabled = true
