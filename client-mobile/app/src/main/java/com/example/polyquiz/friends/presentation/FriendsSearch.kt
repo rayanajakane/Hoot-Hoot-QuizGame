@@ -1,5 +1,6 @@
 package com.example.polyquiz.friends.presentation
 
+import android.util.Log
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -181,6 +182,7 @@ fun FriendsSearchScreen(
         ChatComponent(modifier = Modifier, authViewModel = authViewModel)
 
         if (!allDataLoaded) {
+            Log.d("Friends", "FriendsPage: Data not loaded yet")
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -189,13 +191,13 @@ fun FriendsSearchScreen(
             }
             return
         }
-
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxSize()
                 .imePadding()
         ) {
+            Log.d("Friends", "FriendsPage: Data has loaded")
             Text(
                 stringResource(R.string.friends),
                 style = MaterialTheme.typography.headlineLarge,

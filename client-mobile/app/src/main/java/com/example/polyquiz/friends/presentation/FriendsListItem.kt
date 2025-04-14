@@ -73,7 +73,7 @@ fun FriendsListItem(
                     Spacer(modifier = Modifier.width(4.dp))
                     Button(
                         onClick = { onRemoveFriend(user.id) },
-                        colors = ButtonDefaults.buttonColors(containerColor = BrightRed),
+                        colors = ButtonDefaults.buttonColors(containerColor = BrightRed, contentColor = Color.White),
                         shape = RoundedCornerShape(3.dp),
                     ) {
                         Text(text = "Remove Friend")
