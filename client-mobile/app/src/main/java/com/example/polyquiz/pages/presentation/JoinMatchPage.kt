@@ -77,6 +77,7 @@ import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.shop.domain.ShopViewModel
 import com.example.polyquiz.shop.presentation.BalanceCard
 import com.example.polyquiz.ui.MenuButton
+import com.example.polyquiz.ui.debounced
 import com.example.polyquiz.ui.features.camera.CameraViewModel
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
@@ -397,7 +398,7 @@ fun JoinMatchPage(
 fun MatchCard(match: MatchPageInfo, onClick: () -> Unit = {}, clickable: Boolean = true) {
     if(clickable){
         Card(
-            onClick = onClick,
+            debounced(onClick),
             shape = RectangleShape,
             modifier = Modifier
                 .padding(5.dp)
@@ -454,7 +455,6 @@ fun MatchCard(match: MatchPageInfo, onClick: () -> Unit = {}, clickable: Boolean
                             Icon(
                                 imageVector = Icons.Filled.AttachMoney,
                                 contentDescription = "Entry Fee",
-                                // TODO : Remove hardcoded color
                                 tint = Color(0xFF2e7d32),
                                 modifier = Modifier.requiredSize(18.dp)
                             )
@@ -480,7 +480,7 @@ fun MatchCard(match: MatchPageInfo, onClick: () -> Unit = {}, clickable: Boolean
                 }
                 if (onClick != {} && !match.isLocked) {
                     Button(
-                        onClick = onClick,
+                        debounced(onClick),
                         modifier = Modifier.padding(top = 10.dp),
                         shape = RoundedCornerShape(3.dp)
                     ) {
