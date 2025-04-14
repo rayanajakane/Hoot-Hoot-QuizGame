@@ -10,19 +10,14 @@
 
                 <div class="cheater-mode-container">
                     <button
-                        *ngIf="partyConfig.canPlayCheaterMode"
+                        [disabled]="!partyConfig.canPlayCheaterMode"
                         mat-raised-button
                         [color]="partyConfig.isCheaterMode ? 'primary' : ''"
                         (click)="partyConfig.isCheaterMode = true"
                     >
                         {{ t('match-config.cheater-mode') }}
                     </button>
-                    <button
-                        *ngIf="partyConfig.canPlayCheaterMode"
-                        mat-icon-button
-                        (click)="showCheaterModeDescription = !showCheaterModeDescription"
-                        class="info-button"
-                    >
+                    <button mat-icon-button (click)="showCheaterModeDescription = !showCheaterModeDescription" class="info-button">
                         <mat-icon>info</mat-icon>
                     </button>
                 </div>
