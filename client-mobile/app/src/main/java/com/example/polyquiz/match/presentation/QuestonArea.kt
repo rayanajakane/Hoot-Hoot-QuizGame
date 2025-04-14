@@ -100,6 +100,8 @@ fun QuestionArea(
     val isTimerPaused by TimeService.isTimerPaused.collectAsState()
     val isPanicking by TimeService.isPanicking.collectAsState()
 
+    var isTimerPausedButtonEnabled by remember { mutableStateOf(false) }
+
     val mediaPlayer = MediaPlayer.create(LocalContext.current, R.raw.panic)
 
     LaunchedEffect(isPanicking) {
@@ -480,6 +482,7 @@ fun QuestionArea(
                             } else if (!answerService.isNextQuestionButtonEnabled) {
                                 Button(
                                     onClick = {
+                                        isTimerPausedButtonEnabled = !isTimerPausedButtonEnabled
                                         timeService.pauseTimer(matchRoomService.getRoomCode())
                                     },
                                     shape = RoundedCornerShape(3.dp)
