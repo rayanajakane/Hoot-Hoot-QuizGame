@@ -67,7 +67,6 @@ fun LoginPage(
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    val translationService = TranslationService
     val loginTrace: Trace = FirebasePerformance.getInstance().newTrace("login_trace")
 
     DisposableEffect(Unit) {
@@ -78,8 +77,6 @@ fun LoginPage(
 
     LaunchedEffect(Unit) {
         loginTrace.start()
-        authViewModel.setTheme(Theme.LIGHT)
-        translationService.setLanguage("fr")
     }
 
     LaunchedEffect(authState.value) {

@@ -15,10 +15,6 @@ object ImageStorage {
         return storageRef.child("avatars/${uid}");
     }
 
-    fun getURLCodeRef(uid: String): StorageReference {
-        return storageRef.child("qrCodes/${uid}.png");
-    }
-
     fun deleteAvatar(uid: String) {
         val avatarRef = getAvatarRef(uid)
         avatarRef.delete().addOnSuccessListener {
@@ -30,16 +26,15 @@ object ImageStorage {
 
     // https://firebase.google.com/docs/storage/android/upload-files#upload_from_data_in_memory
     fun uploadAvatar(capturedImage: Bitmap, uid: String, callback: (String?) -> Unit) {
-        Log.d("Update profile", "Called uploadAvatar")
         // TODO : Put in constants
         val IMAGE_MAX_FILE_SIZE: Long = 1024 * 1024
 
         val baos = ByteArrayOutputStream()
-        capturedImage.compress(Bitmap.CompressFormat.JPEG, 60, baos)
+        capturedImage.compress(Bitmap.CompressFormat.JPEG, 80, baos)
         val byteArray = baos.toByteArray()
 
         if (byteArray.size > IMAGE_MAX_FILE_SIZE) {
-            Log.e("Update profile", "File too large")
+            Log.e("Avatar storage", "File too large")
             callback(null)
             return
         }
@@ -52,14 +47,12 @@ object ImageStorage {
             imageRef.downloadUrl.addOnSuccessListener { uri ->
                 val imageUrl = uri.toString()
                 callback(imageUrl)
-                Log.d("Update profile", "Image uploaded successfully! URL: $imageUrl")
-            }.addOnFailureListener { exception ->
-                Log.d("Update profile", "CACA : ${exception.message}")
+                Log.d("Avatar storage", "Image uploaded successfully! URL: $imageUrl")
             }
         }.addOnFailureListener { exception ->
             callback(null)
             // TODO : Handle failure
-            Log.e("Update profile", "Error uploading image: ${exception.message}")
+            Log.e("Avatar storage", "Error uploading image: ${exception.message}")
         }
     }
 

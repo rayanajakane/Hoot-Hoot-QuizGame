@@ -296,7 +296,7 @@ fun ShopItemCard(
 }
 
 @Composable
-fun BalanceCard(currentBalance: Int, isNewBalance: Boolean = false) {
+fun BalanceCard(currentBalance: Int) {
     Card(
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(4.dp),
@@ -314,7 +314,7 @@ fun BalanceCard(currentBalance: Int, isNewBalance: Boolean = false) {
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = if(isNewBalance) stringResource(R.string.new_total, currentBalance) else "$currentBalance$",
+                text = "$currentBalance$",
                 style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
             )
         }

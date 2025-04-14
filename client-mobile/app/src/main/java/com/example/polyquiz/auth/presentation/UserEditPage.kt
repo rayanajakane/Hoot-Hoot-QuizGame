@@ -300,7 +300,7 @@ fun UserEditPage(
                 if (updateUsernameTask) {
                     authViewModel.emitUpdates()
                 } else {
-                    Log.e("Update profile", "An error has occurred when updating username")
+                    Log.e("Update profile", "An error has occured when updating username")
                 }
             }
         }
@@ -443,27 +443,27 @@ fun UserEditPage(
                             Text(stringResource(R.string.preset_avatars))
                             Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                                 ClickableAvatarPlaceholder(
-                                    50.dp,
+                                    32.dp,
                                     PresetAvatar.A.value,
                                     onClickAvatar
                                 )
                                 ClickableAvatarPlaceholder(
-                                    50.dp,
+                                    32.dp,
                                     PresetAvatar.B.value,
                                     onClickAvatar
                                 )
                                 ClickableAvatarPlaceholder(
-                                    50.dp,
+                                    32.dp,
                                     PresetAvatar.C.value,
                                     onClickAvatar
                                 )
                                 ClickableAvatarPlaceholder(
-                                    50.dp,
+                                    32.dp,
                                     PresetAvatar.D.value,
                                     onClickAvatar
                                 )
                                 ClickableAvatarPlaceholder(
-                                    50.dp,
+                                    32.dp,
                                     PresetAvatar.DEFAULT.value,
                                     onClickAvatar
                                 )
@@ -475,7 +475,7 @@ fun UserEditPage(
                                         val premiumAvatar = PremiumAvatar.entries.find { it.name == avatarId }
                                         if (premiumAvatar != null) {
                                             ClickableAvatarPlaceholder(
-                                                50.dp,
+                                                32.dp,
                                                 premiumAvatar.value,
                                                 onClickAvatar
                                             )

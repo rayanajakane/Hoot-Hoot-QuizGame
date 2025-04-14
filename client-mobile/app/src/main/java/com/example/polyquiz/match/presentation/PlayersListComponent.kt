@@ -14,7 +14,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -118,7 +117,6 @@ fun PlayerCard(
                         modifier = Modifier
                             .size(40.dp)
                             .clip(CircleShape),
-                        contentScale = ContentScale.FillBounds,
                         placeholder = rememberAsyncImagePainter(model = PresetAvatar.DEFAULT.value)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
