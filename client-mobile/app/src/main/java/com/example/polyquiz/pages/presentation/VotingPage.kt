@@ -120,12 +120,12 @@ fun VotingPage(
                 .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
-                text = stringResource(R.string.cheater_mode_vote_cheater) + " \uD83D\uDE08",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
             if (context != MatchContext.HOSTVIEW) {
+                Text(
+                    text = stringResource(R.string.cheater_mode_vote_cheater) + " \uD83D\uDE08",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
                 LazyColumn(
                 ) {
                     items(players) { player ->

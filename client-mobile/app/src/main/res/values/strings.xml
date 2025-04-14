@@ -210,5 +210,5 @@
     <string name="match_errors_less_than_3_players">Il doit y avoir au moins 3 joueurs dans la partie.</string>
     <string name="donation_given">Vous avez donné %d $ à %s</string>
     <string name="donation_recieved">%s vous a donné %d $.</string>
-    <string name="new_total">Nouveau total: %d $</string>
+    <string name="new_total">Nouveau total: %s $</string>
 </resources>
