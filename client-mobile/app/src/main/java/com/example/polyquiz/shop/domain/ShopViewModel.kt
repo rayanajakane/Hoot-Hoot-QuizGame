@@ -164,7 +164,7 @@ class ShopViewModel : ViewModel() {
                     viewModelScope.launch {
                         SnackbarController.sendEvent(
                             event = SnackbarEvent(
-                                message = StringValue.StringResource(R.string.donation_given, donationData.amount, donationData.from)
+                                message = StringValue.StringResource(R.string.donation_recieved, donationData.from, donationData.amount)
                             )
                         )
 

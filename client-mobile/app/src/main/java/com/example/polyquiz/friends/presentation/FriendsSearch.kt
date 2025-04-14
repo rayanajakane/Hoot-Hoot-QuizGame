@@ -3,6 +3,7 @@ package com.example.polyquiz.friends.presentation
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material3.AlertDialog
@@ -135,19 +136,25 @@ fun FriendsSearchScreen(
                 )
             },
             confirmButton = {
-                Button(onClick = {
-                    val amountInt = donationAmount.toIntOrNull() ?: 0
-                    if (amountInt > 0) {
-                        shopViewModel.donateMoney(currentUserID, selectedFriendId, amountInt)
-                    }
-                    showDonationDialog = false
-                    donationAmount = ""
-                }) {
+                Button(
+                    onClick = {
+                        val amountInt = donationAmount.toIntOrNull() ?: 0
+                        if (amountInt > 0) {
+                            shopViewModel.donateMoney(currentUserID, selectedFriendId, amountInt)
+                        }
+                        showDonationDialog = false
+                        donationAmount = ""
+                    },
+                    shape = RoundedCornerShape(3.dp),
+                ) {
                     Text(text = "OK")
                 }
             },
             dismissButton = {
-                Button(onClick = { showDonationDialog = false }) {
+                Button(
+                    onClick = { showDonationDialog = false },
+                    shape = RoundedCornerShape(3.dp),
+                ) {
                     Text(text = "Cancel")
                 }
             }
@@ -221,6 +228,7 @@ fun FriendsSearchScreen(
                     .fillMaxSize()
                     .padding(16.dp)
                     .padding(top = 100.dp)
+                    .navigationBarsPadding()
             ) {
                 LazyColumn {
                     if (pendingRequests.isNotEmpty()) {

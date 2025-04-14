@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -64,6 +65,7 @@ fun FriendsListItem(
                     Button(
                         onClick = { },
                         enabled = false,
+                        shape = RoundedCornerShape(3.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = LightGray)
                     ) {
                         Text(text = "Friends")
@@ -71,56 +73,65 @@ fun FriendsListItem(
                     Spacer(modifier = Modifier.width(4.dp))
                     Button(
                         onClick = { onRemoveFriend(user.id) },
-                        colors = ButtonDefaults.buttonColors(containerColor = BrightRed)
+                        colors = ButtonDefaults.buttonColors(containerColor = BrightRed),
+                        shape = RoundedCornerShape(3.dp),
                     ) {
                         Text(text = "Remove Friend")
                     }
                     Spacer(modifier = Modifier.width(4.dp))
                     Button(
                         onClick = { onDonate(user.id) },
-                        colors = ButtonDefaults.buttonColors(containerColor = HotPink)
+                        colors = ButtonDefaults.buttonColors(containerColor = HotPink),
+                        shape = RoundedCornerShape(3.dp),
                     ) {
                         Text(text = "Donate Money")
                     }
                 }
             }
+
             isRequestPending -> {
                 Row {
                     Button(
                         onClick = { onAcceptRequest(user.id) },
-                        colors = ButtonDefaults.buttonColors(containerColor = HotPink)
+                        colors = ButtonDefaults.buttonColors(containerColor = HotPink),
+                        shape = RoundedCornerShape(3.dp),
                     ) {
                         Text(text = "Accept")
                     }
                     Spacer(modifier = Modifier.width(4.dp))
                     Button(
                         onClick = { onRejectRequest(user.id) },
-                        colors = ButtonDefaults.buttonColors(containerColor = BrightRed)
+                        colors = ButtonDefaults.buttonColors(containerColor = BrightRed),
+                        shape = RoundedCornerShape(3.dp),
                     ) {
                         Text(text = "Decline")
                     }
                 }
             }
+
             isRequestSent -> {
                 Row {
                     Button(
                         onClick = { },
                         enabled = false,
-                        colors = ButtonDefaults.buttonColors(containerColor = LightGray)
+                        colors = ButtonDefaults.buttonColors(containerColor = LightGray),
+                        shape = RoundedCornerShape(3.dp),
                     ) {
                         Text(text = "Request Sent")
                     }
                     Spacer(modifier = Modifier.width(4.dp))
                     Button(
                         onClick = { onCancelRequest(user.id) },
-                        colors = ButtonDefaults.buttonColors(containerColor = HotPink)
+                        colors = ButtonDefaults.buttonColors(containerColor = HotPink),
+                        shape = RoundedCornerShape(3.dp),
                     ) {
                         Text(text = "Cancel")
                     }
                 }
             }
+
             else -> {
-                Button(onClick = { onSendRequest(user.id) }) {
+                Button(onClick = { onSendRequest(user.id) }, shape = RoundedCornerShape(3.dp)) {
                     Text(text = "Add Friend")
                 }
             }
