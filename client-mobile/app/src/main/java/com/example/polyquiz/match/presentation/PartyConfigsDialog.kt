@@ -80,31 +80,32 @@ fun PartyConfigDialog(
                     }
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    if (MatchRoomService.canPlayCheaterMode) {
-                        Button(
-                            onClick = { partyConfig = partyConfig.copy(isCheaterMode = true) },
-                            shape = RoundedCornerShape(3.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = if (partyConfig.isCheaterMode)
-                                    MaterialTheme.colorScheme.primary
-                                else
-                                    MaterialTheme.colorScheme.surfaceContainerHighest,
-                                contentColor = if (partyConfig.isCheaterMode)
-                                    MaterialTheme.colorScheme.onPrimary
-                                else
-                                    MaterialTheme.colorScheme.onSurface,
-                            )
-                        ) {
-                            Text(text = stringResource(id = R.string.cheater_mode_label))
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        IconButton(
-                            onClick = { showInfoCheaterMode = !showInfoCheaterMode },
-                            modifier = Modifier.size(30.dp)
-                        ) {
-                            Icon(imageVector = Icons.Default.Info, contentDescription = null)
-                        }
+
+                    Button(
+                        onClick = { partyConfig = partyConfig.copy(isCheaterMode = true) },
+                        shape = RoundedCornerShape(3.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (partyConfig.isCheaterMode)
+                                MaterialTheme.colorScheme.primary
+                            else
+                                MaterialTheme.colorScheme.surfaceContainerHighest,
+                            contentColor = if (partyConfig.isCheaterMode)
+                                MaterialTheme.colorScheme.onPrimary
+                            else
+                                MaterialTheme.colorScheme.onSurface,
+                        ),
+                        enabled = MatchRoomService.canPlayCheaterMode
+                    ) {
+                        Text(text = stringResource(id = R.string.cheater_mode_label))
                     }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    IconButton(
+                        onClick = { showInfoCheaterMode = !showInfoCheaterMode },
+                        modifier = Modifier.size(30.dp)
+                    ) {
+                        Icon(imageVector = Icons.Default.Info, contentDescription = null)
+                    }
+
                 }
                 if (showInfoCheaterMode) {
                     Spacer(modifier = Modifier.height(8.dp))
@@ -145,7 +146,9 @@ fun PartyConfigDialog(
                     Spacer(modifier = Modifier.weight(1f))
                     Switch(
                         checked = partyConfig.isEntryFeeRequired,
-                        onCheckedChange = { partyConfig = partyConfig.copy(isEntryFeeRequired = it) }
+                        onCheckedChange = {
+                            partyConfig = partyConfig.copy(isEntryFeeRequired = it)
+                        }
                     )
                 }
                 if (partyConfig.isEntryFeeRequired) {
