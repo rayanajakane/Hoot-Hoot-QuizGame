@@ -54,6 +54,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -77,6 +78,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.polyquiz.R
+import com.example.polyquiz.SnackbarController
+import com.example.polyquiz.SnackbarEvent
+import com.example.polyquiz.auth.domain.AuthState
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.auth.domain.HistoryService
 import com.example.polyquiz.auth.domain.UsernameSuggestionService
@@ -170,6 +174,37 @@ fun UserEditPage(
             })
         }
     }
+
+
+    val authState = authViewModel.authState.observeAsState()
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(authState.value) {
+        when (authState.value) {
+            is AuthState.Unauthenticated -> {
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.StringResource(R.string.sign_out_feedback)
+                        )
+                    )
+                }
+                navigateToLogin()
+            }
+
+            is AuthState.Error -> {
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = (authState.value as AuthState.Error).message,
+                        )
+                    )
+                }
+            }
+
+            else -> Unit
+        }
+    }
+
     val textFieldStateLang = rememberTextFieldState(currentLang)
     val avatarURL by authViewModel.avatarURL.collectAsState()
     val isPresetAvatar by cameraViewModel.isPresetAvatar.collectAsState()
@@ -204,7 +239,6 @@ fun UserEditPage(
         ThemeService.loadPurchasedThemes(authViewModel)
     }
 
-    val scope = rememberCoroutineScope()
 
     DisposableEffect(Unit) {
         onDispose {
@@ -232,6 +266,10 @@ fun UserEditPage(
 
         val isSameUsername = (username.lowercase() == authViewModel.getUsername().lowercase())
 
+        // Save wallpaper
+        scope.launch {
+            WallpaperService.setWallpaper(authViewModel, currentWallpaper)
+        }
 
         // Update avatar image
         val capturedImage = cameraViewModel.state.value.capturedImage
@@ -266,7 +304,7 @@ fun UserEditPage(
                 if (updateUsernameTask) {
                     authViewModel.emitUpdates()
                 } else {
-                    Log.e("Update profile", "An error has occured when updating username")
+                    Log.e("Update profile", "An error has occurred when updating username")
                 }
             }
         }
@@ -357,7 +395,10 @@ fun UserEditPage(
                             navigateToJoinRoom,
                             navigateToRankingsPage,
                             navigateToShopPage,
-                            signOut = { authViewModel.signOut() }
+                            signOut = {
+                                authViewModel.signOut()
+                                navigateToLogin()
+                            }
                         )
                         BalanceCard(currentBalance)
                     }
@@ -406,27 +447,27 @@ fun UserEditPage(
                             Text(stringResource(R.string.preset_avatars))
                             Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                                 ClickableAvatarPlaceholder(
-                                    32.dp,
+                                    50.dp,
                                     PresetAvatar.A.value,
                                     onClickAvatar
                                 )
                                 ClickableAvatarPlaceholder(
-                                    32.dp,
+                                    50.dp,
                                     PresetAvatar.B.value,
                                     onClickAvatar
                                 )
                                 ClickableAvatarPlaceholder(
-                                    32.dp,
+                                    50.dp,
                                     PresetAvatar.C.value,
                                     onClickAvatar
                                 )
                                 ClickableAvatarPlaceholder(
-                                    32.dp,
+                                    50.dp,
                                     PresetAvatar.D.value,
                                     onClickAvatar
                                 )
                                 ClickableAvatarPlaceholder(
-                                    32.dp,
+                                    50.dp,
                                     PresetAvatar.DEFAULT.value,
                                     onClickAvatar
                                 )
@@ -435,10 +476,11 @@ fun UserEditPage(
                                 Text(stringResource(R.string.avatar_items))
                                 Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                                     purchasedAvatars.forEach { avatarId ->
-                                        val premiumAvatar = PremiumAvatar.entries.find { it.name == avatarId }
+                                        val premiumAvatar =
+                                            PremiumAvatar.entries.find { it.name == avatarId }
                                         if (premiumAvatar != null) {
                                             ClickableAvatarPlaceholder(
-                                                32.dp,
+                                                50.dp,
                                                 premiumAvatar.value,
                                                 onClickAvatar
                                             )
@@ -462,9 +504,10 @@ fun UserEditPage(
                                             shape = RoundedCornerShape(4.dp)
                                         )
                                         .clickable {
-                                            scope.launch {
-                                                WallpaperService.setWallpaper(authViewModel, Wallpaper.None.value)
-                                            }
+                                            WallpaperService.setTempWallpaper(Wallpaper.None.value)
+//                                            scope.launch {
+//                                                WallpaperService.setWallpaper(authViewModel, Wallpaper.None.value)
+//                                            }
                                         }
                                 ) {
                                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -483,7 +526,8 @@ fun UserEditPage(
 
                                 // Purchased wallpapers
                                 purchasedWallpapers.forEach { wallpaperId ->
-                                    val wallpaper = Wallpaper.values().find { it.name == wallpaperId }
+                                    val wallpaper =
+                                        Wallpaper.entries.find { it.name == wallpaperId }
                                     if (wallpaper != null && wallpaper != Wallpaper.None) {
                                         Box(
                                             modifier = Modifier
@@ -495,9 +539,10 @@ fun UserEditPage(
                                                     shape = RoundedCornerShape(4.dp)
                                                 )
                                                 .clickable {
-                                                    scope.launch {
-                                                        WallpaperService.setWallpaper(authViewModel, wallpaper.value)
-                                                    }
+                                                    WallpaperService.setTempWallpaper(wallpaper.value)
+//                                                    scope.launch {
+//                                                        WallpaperService.setWallpaper(authViewModel, wallpaper.value)
+//                                                    }
                                                 }
                                         ) {
                                             AsyncImage(
@@ -575,7 +620,13 @@ fun UserEditPage(
                                 Text(text = usernameError, color = Color.Red)
                             }
                             Spacer(modifier = Modifier.height(8.dp))
-                            ThemeDropdown(context, availableThemes, availablePremiumThemes, currentTheme, onClickTheme)
+                            ThemeDropdown(
+                                context,
+                                availableThemes,
+                                availablePremiumThemes,
+                                currentTheme,
+                                onClickTheme
+                            )
                             Spacer(modifier = Modifier.height(8.dp))
                             ExposedDropdownMenuBox(
                                 expanded = expandedLang,

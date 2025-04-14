@@ -411,7 +411,7 @@
         "answer-hint": "Indice pour la réponse: \"{{answer}}\"",
         "notifyRegularPlayer": "Vous avez le rôle de joueur régulier dans cette partie",
         "playerVoted": " a voté",
-        "players-still-voting": "Les joueurs votent",
+        "players-still-voting": "Phase de vote",
         "players-voted": "Tous les joueurs ont voté",
         "players-amount-invalid": "Le nombre de joueurs doit être supérieur à 3"
     },

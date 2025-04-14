@@ -28,7 +28,7 @@
         </div>
 
         <div *ngIf="this.matchContextService.getContext() === matchContext.HostView && this.matchRoomService.votingUsers">
-            <p *ngIf="this.playersPlaying.length != this.totalVotesOfActivePlayers" class="host-text">{{ t('cheater-mode.players-still-voting') }}</p>
+            <p class="host-text">{{ t('cheater-mode.players-still-voting') }}</p>
             <div id="players-list">
                 <mat-card *ngFor="let player of this.matchRoomService.players" class="player-card">
                     <p class="player-username">{{ player.username }}</p>

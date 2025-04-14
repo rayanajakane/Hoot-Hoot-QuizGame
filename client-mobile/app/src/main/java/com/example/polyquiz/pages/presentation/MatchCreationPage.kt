@@ -73,6 +73,16 @@ fun MatchCreationPage(
 
     LaunchedEffect(authState.value) {
         when (authState.value) {
+            is AuthState.Unauthenticated -> {
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.StringResource(R.string.sign_out_feedback)
+                        )
+                    )
+                }
+                navigateToLogin()
+            }
 
             is AuthState.Error -> {
                 scope.launch {
@@ -87,6 +97,7 @@ fun MatchCreationPage(
             else -> Unit
         }
     }
+
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier

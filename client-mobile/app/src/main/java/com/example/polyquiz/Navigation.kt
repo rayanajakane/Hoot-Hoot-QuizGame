@@ -181,6 +181,7 @@ fun Navigation(
                 navigateToHome = { navController.navigate(Route.Home) },
                 extraContent = {},
                 matchContextService = MatchContextService,
+                shopViewModel = shopViewModel,
                 players = players,
                 modifier = modifier
             )
@@ -310,7 +311,8 @@ fun Navigation(
                 },
                 navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
                 navigateToRankingsPage = { navController.navigate(Route.RankingsPage) },
-                navigateToShopPage = { navController.navigate(Route.ShopPage) }
+                navigateToShopPage = { navController.navigate(Route.ShopPage) },
+                navigateToLogin = { navController.navigate(Route.Login) }
             )
         }
         composable<Route.MainCameraScreen> {
@@ -346,7 +348,7 @@ fun Navigation(
                 navigateToJoinRoom = { navController.navigate(Route.JoinMatchPage) },
                 navigateToLogin = { navController.navigate(Route.Login) },
                 navigateToRankingsPage = { navController.navigate(Route.RankingsPage) },
-                navigateToShop = { navController.navigate(Route.ShopPage) }
+                navigateToShop = { navController.navigate(Route.ShopPage) },
             )
         }
         composable<Route.Drawing> {

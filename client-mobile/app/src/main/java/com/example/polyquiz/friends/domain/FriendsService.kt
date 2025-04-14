@@ -1,5 +1,6 @@
 package com.example.polyquiz.friends.domain
 
+import android.util.Log
 import com.example.polyquiz.auth.domain.UserIdName
 import com.example.polyquiz.constants.ChoiceInfo
 import com.example.vanillaprototype.socket.SocketHandler
@@ -39,6 +40,7 @@ class FriendsService {
     }
 
     fun returnAllData() {
+        Log.d("Friends", "Return all data")
         _allDataLoaded.value = false
         onReturnUsers();
         mSocket.emit(FriendsEvents.RETURN_ALL_DATA.value, userId);
@@ -53,6 +55,7 @@ class FriendsService {
             loadedDataTypes++
             if (loadedDataTypes == totalDataTypes) {
                 _allDataLoaded.value = true
+                Log.d("Friends", "CheckLoadedData all data loaded")
             }
         }
 

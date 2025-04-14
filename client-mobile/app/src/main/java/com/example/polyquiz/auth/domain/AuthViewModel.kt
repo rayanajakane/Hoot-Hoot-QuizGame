@@ -163,6 +163,13 @@ class AuthViewModel : ViewModel() {
         return _avatarURL.value
     }
 
+
+    fun setAvatarToFirebaseAvatar() : String {
+        val url = user!!.photoUrl.toString()
+        _avatarURL.value = url
+        return url
+    }
+
     fun setAvatarUrl(url: String) {
         _avatarURL.value = url
         Log.d("Set avatar", "Set avatar url to $url")
@@ -360,6 +367,7 @@ class AuthViewModel : ViewModel() {
 
         // Disconnect user from app
         auth.signOut()
+        resetSignUpFields()
         resetAuthState()
     }
 
@@ -554,6 +562,7 @@ class AuthViewModel : ViewModel() {
                                             task.result.user?.let { this.getUserDatabaseRef(it.uid) }
                                         userRef?.child("isOnline")?.setValue(true)
                                         userRef?.child("isOnline")?.onDisconnect()?.setValue(false)
+                                        userRef?.child("balance")?.setValue(50)
                                         usernameRef.setValue(username.lowercase())
                                         _username.value = user?.displayName ?: ""
                                         _email.value = user?.email ?: ""

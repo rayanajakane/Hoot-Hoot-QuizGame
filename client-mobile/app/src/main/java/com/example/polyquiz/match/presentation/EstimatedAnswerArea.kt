@@ -16,6 +16,7 @@ import com.example.polyquiz.constants.EstimatedQuestionFeedback
 import com.example.polyquiz.match.domain.AnswerService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.constants.MatchContext
+import com.example.polyquiz.constants.QuestionType
 import com.example.polyquiz.ui.theme.AndroidGreen
 import com.example.polyquiz.ui.theme.BrightRed
 
@@ -45,7 +46,7 @@ fun EstimatedAnswerArea(
 
         if (matchContext === MatchContext.HOSTVIEW) {
             OutlinedTextField(
-                value = MatchRoomService.currentAnswers[0],
+                value = if(MatchRoomService.currentAnswers.isNotEmpty()) MatchRoomService.currentAnswers[0] else "null",
                 onValueChange = {},
                 label = { Text(stringResource(R.string.answer)) },
                 modifier = Modifier
@@ -57,7 +58,8 @@ fun EstimatedAnswerArea(
                 isError = isOutOfBounds
             )
             Slider(
-                value = MatchRoomService.currentAnswers[0].toFloat(),
+                value = if(MatchRoomService.currentAnswers.isNotEmpty()) MatchRoomService.currentAnswers[0].toFloat() else 0f,
+//                value = MatchRoomService.currentAnswers[0].toFloat(),
                 onValueChange = {
                     sliderValue = it
                     isInputCleared = false
@@ -73,7 +75,7 @@ fun EstimatedAnswerArea(
         }
         if (matchContext != MatchContext.HOSTVIEW) {
             Text(
-                text = if (isDisabled ) {
+                text = if (isDisabled) {
                     stringResource(
                         R.string.good_answer_qre,
                         answerService.feedback.correctAnswer!![0], estimatedParams!!.margin
@@ -139,7 +141,11 @@ fun EstimatedAnswerArea(
 
             if (isOutOfBounds) {
                 Text(
-                    text = stringResource(R.string.out_of_bounds, lowerBound.toInt(), upperBound.toInt()),
+                    text = stringResource(
+                        R.string.out_of_bounds,
+                        lowerBound.toInt(),
+                        upperBound.toInt()
+                    ),
                     // TODO : Check hardcoded value
                     color = BrightRed,
                     fontSize = 14.sp,

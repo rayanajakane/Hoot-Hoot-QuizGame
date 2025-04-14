@@ -67,13 +67,13 @@ fun PartyConfigDialog(
                         shape = RoundedCornerShape(3.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = if (!partyConfig.isCheaterMode)
-                                MaterialTheme.colorScheme.secondary
+                                MaterialTheme.colorScheme.primary
                             else
-                                MaterialTheme.colorScheme.tertiary,
+                                MaterialTheme.colorScheme.surfaceContainerHighest,
                             contentColor = if (!partyConfig.isCheaterMode)
-                                MaterialTheme.colorScheme.onSecondary
+                                MaterialTheme.colorScheme.onPrimary
                             else
-                                MaterialTheme.colorScheme.onTertiary,
+                                MaterialTheme.colorScheme.onSurface,
                         )
                     ) {
                         Text(text = stringResource(id = R.string.classic_mode))
@@ -86,13 +86,13 @@ fun PartyConfigDialog(
                             shape = RoundedCornerShape(3.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = if (partyConfig.isCheaterMode)
-                                    MaterialTheme.colorScheme.secondary
+                                    MaterialTheme.colorScheme.primary
                                 else
-                                    MaterialTheme.colorScheme.tertiary,
+                                    MaterialTheme.colorScheme.surfaceContainerHighest,
                                 contentColor = if (partyConfig.isCheaterMode)
-                                    MaterialTheme.colorScheme.onSecondary
+                                    MaterialTheme.colorScheme.onPrimary
                                 else
-                                    MaterialTheme.colorScheme.onTertiary,
+                                    MaterialTheme.colorScheme.onSurface,
                             )
                         ) {
                             Text(text = stringResource(id = R.string.cheater_mode_label))

@@ -24,6 +24,23 @@ object WallpaperService {
         loadPurchasedWallpapers(authViewModel)
     }
 
+    fun setWallpaperFromFirebase(authViewModel: AuthViewModel) {
+        val wallpaperRef = authViewModel.getCurrentWallpaperRef()
+        wallpaperRef.get().addOnSuccessListener { databaseSnapshot: DataSnapshot ->
+            if(databaseSnapshot.exists()) {
+                val wallpaper = databaseSnapshot.value.toString()
+                _currentWallpaper.value = wallpaper
+                Log.d("WallpaperService", "Found wallpaper : $wallpaper")
+            } else {
+                _currentWallpaper.value = Wallpaper.None.value
+                Log.e("WallpaperService", "User does not have a wallpaper saved to DB")
+            }
+        }.addOnFailureListener {
+            Log.e("WallpaperService", "An error occurred when getting from DB")
+        }
+
+    }
+
     private fun loadCurrentWallpaper(authViewModel: AuthViewModel) {
         val wallpaperRef = authViewModel.getCurrentWallpaperRef()
 
@@ -57,6 +74,10 @@ object WallpaperService {
                 Log.e(TAG, "Failed to read purchased wallpapers", error.toException())
             }
         })
+    }
+
+    fun setTempWallpaper(wallpaper: String) {
+        _currentWallpaper.value = wallpaper
     }
 
     suspend fun setWallpaper(authViewModel: AuthViewModel, wallpaper: String): Boolean {
