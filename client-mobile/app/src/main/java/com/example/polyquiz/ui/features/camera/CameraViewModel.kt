@@ -46,7 +46,7 @@ class CameraViewModel : ViewModel() {
     }
 
     fun updateCapturedPhotoState(updatedPhoto: Bitmap?) {
-        Log.d("CameraViewModel", "Updated photo state to $updatedPhoto")
+        Log.d("Update profile", "Updated photo state to $updatedPhoto")
         _state.value = _state.value.copy(capturedImage = updatedPhoto)
         _isPresetAvatar.value = false
         setTemporaryAvatar(updatedPhoto)
