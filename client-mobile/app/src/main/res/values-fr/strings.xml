@@ -190,7 +190,7 @@
     <string name="cheater_mode_players_min">Ce mode nécessite au moins 3 joueurs</string>
     <string name="cheater_mode_players_info">Pour jouer en mode tricheur : le jeu ne doit pas contenir de question de type réponse longue et doit comporter au moins trois joueurs</string>
     <string name="switch_camera">Changer camera</string>
-    <string name="game_author">"Auteur: "</string>
+    <string name="game_author">Auteur</string>
     <string name="money_errors_not_enough_money">Vous n\'avez pas assez d\'argent pour effectuer cette transaction.</string>
     <string name="money_errors_donation_amount_exceeded">Avec cette donation, vous dépassez la limite quotidienne.</string>
     <string name="money_errors_invalid_amount">Le montant est invalide, il doit être un nombre positif.</string>
