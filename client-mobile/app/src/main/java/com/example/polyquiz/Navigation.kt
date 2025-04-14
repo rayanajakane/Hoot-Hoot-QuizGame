@@ -181,6 +181,7 @@ fun Navigation(
                 navigateToHome = { navController.navigate(Route.Home) },
                 extraContent = {},
                 matchContextService = MatchContextService,
+                shopViewModel = shopViewModel,
                 players = players,
                 modifier = modifier
             )
