@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.polyquiz.R
@@ -25,6 +26,8 @@ import com.example.polyquiz.chat.presentation.ChatComponent
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.Player
+import com.example.polyquiz.shop.domain.ShopViewModel
+import com.example.polyquiz.shop.presentation.BalanceCard
 
 @Composable
 fun ResultsPage(
@@ -32,14 +35,14 @@ fun ResultsPage(
     matchRoomService: MatchRoomService,
     matchContextService: MatchContextService,
     navigateToHome: () -> Unit,
+    shopViewModel: ShopViewModel,
     players: List<Player>,
     modifier: Modifier = Modifier,
     extraContent: @Composable () -> Unit = {}
 ) {
 
     val allPlayers = remember { mutableStateOf(matchRoomService.players.toList()) }
-
-
+    val currentBalance by shopViewModel.currentBalance.collectAsState()
 
     LaunchedEffect(MatchRoomService.isTimeToNavigateToResults) {
         MatchRoomService.isResults = false
@@ -74,12 +77,32 @@ fun ResultsPage(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = stringResource(R.string.results),
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(8.dp)
-            )
+            if(matchRoomService.hostId == authViewModel.getUserId()) {
+                Text(
+                    text = stringResource(R.string.results),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(8.dp)
+                )
+            }
+            else{
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.results),
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(8.dp)
+                    )
+                    BalanceCard(currentBalance, true)
+                }
+            }
 
             LazyColumn(modifier = Modifier.weight(1f)) {
                 items(allPlayers.value) { player ->

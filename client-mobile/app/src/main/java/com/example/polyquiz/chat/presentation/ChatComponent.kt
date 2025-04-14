@@ -109,6 +109,10 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
         mutableStateOf(if (roomCode.isNotEmpty()) "Match" else "General")
     }
 
+    LaunchedEffect(Unit) {
+        authViewModel.setAvatarToFirebaseAvatar()
+    }
+
     LaunchedEffect(selectedChat) {
         if (selectedChat == "Match") {
             ChatService.channel = ChatChannel.ROOM.value
@@ -153,8 +157,8 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
             .imePadding()
             .statusBarsPadding()
     ) {
-        Box {
-            if(currentWallpaper !== Wallpaper.None.value) {
+        Box(modifier = Modifier.weight(1f)) {
+            if (currentWallpaper !== Wallpaper.None.value) {
                 Image(
                     painter = rememberAsyncImagePainter(model = currentWallpaper),
                     contentDescription = "Wallpaper",
@@ -166,9 +170,9 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
             Column(
                 verticalArrangement = Arrangement.SpaceAround,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.matchParentSize()
+                modifier = if (currentWallpaper !== Wallpaper.None.value) Modifier.matchParentSize() else Modifier.align(Alignment.TopStart),
             ) {
-                if(currentWallpaper !== Wallpaper.None.value) {
+                if (currentWallpaper !== Wallpaper.None.value) {
                     TruncatedText(
                         text = username,
                         fontSize = 30.sp,
@@ -199,7 +203,12 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
                             .weight(1f),
                     ) {
                         itemsIndexed(it) { _: Int, message: Message ->
-                            MessageContainer(message, userId, username, currentWallpaper != Wallpaper.None.value)
+                            MessageContainer(
+                                message,
+                                userId,
+                                username,
+                                currentWallpaper != Wallpaper.None.value
+                            )
                         }
                     }
                 } ?: LazyColumn(
@@ -279,7 +288,12 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
 
 
 @Composable
-fun MessageContainer(message: Message, currentUserId: String, username: String, hasWallpaper: Boolean) {
+fun MessageContainer(
+    message: Message,
+    currentUserId: String,
+    username: String,
+    hasWallpaper: Boolean
+) {
     val containerWidth = 225.dp
     val containerAlignment: Alignment.Horizontal
     val containerCorner: RoundedCornerShape
@@ -322,7 +336,7 @@ fun MessageContainer(message: Message, currentUserId: String, username: String, 
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.width(containerWidth)
                 ) {
-                    if(hasWallpaper) {
+                    if (hasWallpaper) {
                         TruncatedText(
                             message.authorUsername,
                             fontSize = 16.sp,
@@ -368,9 +382,11 @@ fun MessageContainer(message: Message, currentUserId: String, username: String, 
         }
         // Avatar box if author
         if (message.authorId == currentUserId) {
-            Box(modifier = Modifier
-                .align(Alignment.Bottom)
-                .padding(bottom = 20.dp, end = 10.dp)) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.Bottom)
+                    .padding(bottom = 20.dp, end = 10.dp)
+            ) {
                 AvatarImage(message.photoUrl)
             }
         }
@@ -581,12 +597,6 @@ fun ReactionButton(
             ),
             modifier = Modifier
                 .heightIn(min = 32.dp)
-                .pointerInput(Unit) {
-                    detectTapGestures(onLongPress = {
-                        // TODO : Show list of users
-                        Log.d("Emoji", "Users, $users")
-                    })
-                }
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(

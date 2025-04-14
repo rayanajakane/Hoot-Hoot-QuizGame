@@ -38,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -46,6 +47,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -64,6 +66,7 @@ import com.example.polyquiz.constants.MatchContext
 import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.constants.StartMatchFeedback
 import com.example.polyquiz.core.storage.ImageStorage
+import com.example.polyquiz.core.storage.ImageStorage.getImageURL
 import com.example.polyquiz.match.domain.Game
 import com.example.polyquiz.match.domain.MatchContextService
 import com.example.polyquiz.match.domain.MatchRoomService
@@ -76,6 +79,7 @@ import com.example.polyquiz.match.domain.Player
 import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.match.presentation.TimerComponent
 import com.example.polyquiz.ui.theme.Theme
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnrememberedMutableState")
@@ -92,6 +96,8 @@ fun WaitPage(
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     val scope = rememberCoroutineScope()
+    var qrCodeUrl: String by remember { mutableStateOf("") };
+    val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
 
     fun resetWaitPage() {
@@ -128,7 +134,19 @@ fun WaitPage(
             MatchContextService.setContext(MatchContext.PLAYERVIEW)
             Log.d("WaitPage", "IsPlayer")
         }
+
+
+        val URLCodeRef = ImageStorage.getURLCodeRef(MatchRoomService.matchRoomCode.value)
+
+        getImageURL(URLCodeRef) { url ->
+            if (url != null) {
+                qrCodeUrl = url
+                Log.d("QRCodeURL", url)
+            }
+        }.toString()
+
     }
+
 
     LaunchedEffect(MatchRoomService.hasBeenKickedOut) {
         if (MatchRoomService.hasBeenKickedOut) {
@@ -144,7 +162,7 @@ fun WaitPage(
 
     val onToggleLock: () -> Unit = {
         MatchRoomService.toggleLock()
-        if(matchRoomService.isCheaterMode && matchRoomService.players.size < 3){
+        if (matchRoomService.isCheaterMode && matchRoomService.players.size < 3) {
             scope.launch {
                 SnackbarController.sendEvent(
                     event = SnackbarEvent(
@@ -163,11 +181,10 @@ fun WaitPage(
     }
 
     fun startMatch() {
-        if(matchRoomService.isCheaterMode){
+        if (matchRoomService.isCheaterMode) {
             matchRoomService.startMatchCheaterMode();
-        }
-        else {
-        matchRoomService.startMatch()
+        } else {
+            matchRoomService.startMatch()
         }
     }
 
@@ -219,20 +236,36 @@ fun WaitPage(
                         fontWeight = FontWeight.ExtraBold
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = stringResource(R.string.access_code), fontSize = 28.sp, fontWeight = FontWeight.SemiBold)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = MatchRoomService.getRoomCode(),
-                        fontSize = 36.sp,
-                        fontWeight = FontWeight.ExtraBold
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = stringResource(R.string.access_code),
+                                fontSize = 28.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = MatchRoomService.getRoomCode(),
+                                fontSize = 40.sp,
+                                fontWeight = FontWeight.ExtraBold
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Image(
+                            painter = rememberAsyncImagePainter(model = qrCodeUrl),
+                            contentDescription = "QR",
+                            modifier = Modifier.size(150.dp)
+                        )
+                    }
+
+
                     if (isHost()) {
                         LockMatchToggle(onToggleLock)
                         var disabled = true
-                        if(matchRoomService.isCheaterMode){
-                            disabled  = !matchRoomService.isLocked || (matchRoomService.players.size < 3)
-                        }
-                        else {
+                        if (matchRoomService.isCheaterMode) {
+                            disabled =
+                                !matchRoomService.isLocked || (matchRoomService.players.size < 3)
+                        } else {
                             disabled =
                                 !matchRoomService.isLocked || players.isEmpty() || (matchRoomService.partyConfig.isEntryFeeRequired && matchRoomService.players.size <= 1)
                         }
@@ -300,12 +333,14 @@ fun LockMatchToggle(onToggleLock: () -> Unit) {
 
 @Composable
 fun PlayerCard(player: Player, isHost: Boolean, onClick: (String) -> Unit) {
-    ElevatedCard(colors = CardColors(
-        containerColor = MaterialTheme.colorScheme.surface,
-        disabledContainerColor = MaterialTheme.colorScheme.background,
-        disabledContentColor = MaterialTheme.colorScheme.background,
-        contentColor = MaterialTheme.colorScheme.onSurface,
-    )) {
+    ElevatedCard(
+        colors = CardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            disabledContainerColor = MaterialTheme.colorScheme.background,
+            disabledContentColor = MaterialTheme.colorScheme.background,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        )
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth(0.8f)
@@ -319,6 +354,7 @@ fun PlayerCard(player: Player, isHost: Boolean, onClick: (String) -> Unit) {
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape),
+                contentScale = ContentScale.FillBounds,
                 placeholder = rememberAsyncImagePainter(model = PresetAvatar.DEFAULT.value)
             )
             Spacer(modifier = Modifier.width(8.dp))
