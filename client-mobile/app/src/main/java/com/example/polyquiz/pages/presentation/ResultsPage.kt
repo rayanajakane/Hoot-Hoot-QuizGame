@@ -123,7 +123,7 @@ fun ResultsPage(
             context = matchContextService,
             players = allPlayers.value,
             modifier = Modifier
-                .width(250.dp)
+                .width(300.dp)
                 .fillMaxHeight()
                 .navigationBarsPadding(),
             extraContent = {

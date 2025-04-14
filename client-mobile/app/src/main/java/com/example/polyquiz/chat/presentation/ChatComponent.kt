@@ -141,7 +141,7 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
     LaunchedEffect(messages?.size) {
         messages?.let { list ->
             if (list.isNotEmpty()) {
-                listState.scrollToItem(list.size - 1)
+                listState.animateScrollToItem(list.size - 1)
             }
         }
     }
