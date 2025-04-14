@@ -183,12 +183,12 @@ fun SignupPage(
                         ) { Text(stringResource(R.string.upload_avatar)) }
                         Text(stringResource(R.string.preset_avatars))
                         Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                            ClickableAvatarPlaceholder(32.dp, PresetAvatar.A.value, onClickAvatar)
-                            ClickableAvatarPlaceholder(32.dp, PresetAvatar.B.value, onClickAvatar)
-                            ClickableAvatarPlaceholder(32.dp, PresetAvatar.C.value, onClickAvatar)
-                            ClickableAvatarPlaceholder(32.dp, PresetAvatar.D.value, onClickAvatar)
+                            ClickableAvatarPlaceholder(50.dp, PresetAvatar.A.value, onClickAvatar)
+                            ClickableAvatarPlaceholder(50.dp, PresetAvatar.B.value, onClickAvatar)
+                            ClickableAvatarPlaceholder(50.dp, PresetAvatar.C.value, onClickAvatar)
+                            ClickableAvatarPlaceholder(50.dp, PresetAvatar.D.value, onClickAvatar)
                             ClickableAvatarPlaceholder(
-                                32.dp,
+                                50.dp,
                                 PresetAvatar.DEFAULT.value,
                                 onClickAvatar
                             )
