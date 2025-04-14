@@ -84,7 +84,7 @@ export class MoneyService {
         if (balance < amount) {
             errors.push(LOW_BALANCE);
         }
-        if (amount < 0) {
+        if (amount < 0 || amount.toString().includes('e') || amount.toString().includes('E')) {
             errors.push(INVALID_AMOUNT);
         }
 
