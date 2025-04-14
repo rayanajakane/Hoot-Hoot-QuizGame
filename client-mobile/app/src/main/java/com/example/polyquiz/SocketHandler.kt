@@ -16,7 +16,7 @@ object SocketHandler {
     @Synchronized
     fun setSocket() {
         try {
-            mSocket = IO.socket(Environment.SERVER_LOCAL_ADDRESS.value)
+            mSocket = IO.socket(Environment.SERVER_ADDRESS_WITHOUT_API.value)
         } catch (e: Exception) {
             Log.e("ERROR", e.toString())
         }
