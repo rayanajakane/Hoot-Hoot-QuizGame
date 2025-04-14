@@ -408,6 +408,7 @@ object MatchRoomService {
 
     fun onNextQuestion() {
         socket.on(MatchEvents.GO_TO_NEXT_QUESTION.value) { args ->
+            val startTime = System.currentTimeMillis()
             if (args.isNotEmpty()) {
                 isCooldown = false
 
@@ -418,6 +419,8 @@ object MatchRoomService {
                     currentQuestion = gson.fromJson(jsonString, Question::class.java)
                 }
             }
+            val elapsedTime = System.currentTimeMillis() - startTime
+            Log.d("onNextQuestion", "Elapsed time : $elapsedTime")
         }
     }
 
