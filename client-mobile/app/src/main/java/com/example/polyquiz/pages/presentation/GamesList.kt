@@ -359,8 +359,13 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                 .weight(1f)
                 .fillMaxHeight()
         ) {
-            Box(modifier = Modifier.fillMaxSize().padding(end = 8.dp)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(end = 8.dp)
+            ) {
                 if (selectedGame == null) {
+                    Log.d("GamesList", "No selected game")
                     Column(modifier = Modifier.align(Alignment.TopStart)) {
                         Text(
                             text = stringResource(R.string.games_details),
@@ -375,24 +380,6 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                         )
                     }
                 } else {
-                    Button(
-                        onClick = {
-                            canStartCheaterMode(selectedGame!!.questions!!);
-                            showPartyConfigDialog = true
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.tertiary,
-                            contentColor = MaterialTheme.colorScheme.onTertiary
-                        ),
-                        shape = RoundedCornerShape(5.dp),
-                        modifier = Modifier.align(Alignment.TopEnd)
-                    )
-                    {
-                        Text(
-                            text = stringResource(R.string.play),
-                            textAlign = TextAlign.Center,
-                        )
-                    }
                     Column(
                         modifier = Modifier
                             .align(Alignment.TopStart)
@@ -401,7 +388,11 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                                 rememberScrollState()
                             )
                     ) {
-                        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
                             Text(
                                 text = stringResource(R.string.games_details),
                                 fontWeight = FontWeight.Bold,
@@ -414,6 +405,23 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                                     fontWeight = FontWeight.Bold
                                 )
                             }
+                            Button(
+                                onClick = {
+                                    canStartCheaterMode(selectedGame!!.questions!!);
+                                    showPartyConfigDialog = true
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.tertiary,
+                                    contentColor = MaterialTheme.colorScheme.onTertiary
+                                ),
+                                shape = RoundedCornerShape(5.dp),
+                            )
+                            {
+                                Text(
+                                    text = stringResource(R.string.play),
+                                    textAlign = TextAlign.Center,
+                                )
+                            }
                         }
                         if (selectedGame!!.title.length >= 15) {
                             Text(
@@ -422,15 +430,16 @@ fun GameList(modifier: Modifier, navigateToWaitPage: () -> Unit, authViewModel: 
                             )
                         }
                         Spacer(modifier = Modifier.height(10.dp))
-                        Row {
-                            Text(
-                                text = stringResource(R.string.games_description),
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = " ${selectedGame!!.description}",
-                            )
-                        }
+
+                        Text(
+                            text = stringResource(R.string.games_description),
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Text(
+                            text = " ${selectedGame!!.description}",
+                        )
+
                         Spacer(modifier = Modifier.height(10.dp))
                         Row {
                             Text(
