@@ -21,7 +21,12 @@ export class MoneyService {
 
     async getCurrentBalance(uid: string): Promise<number> {
         const snapshot = await this.database.ref(`users/${uid}/balance`).once('value');
-        return snapshot.exists() ? snapshot.val() : 0;
+        if (snapshot.exists()) {
+            const value = snapshot.val();
+            const roundedAmount = Math.round(value * 100) / 100;
+            return Number.isInteger(roundedAmount) ? Math.trunc(roundedAmount) : roundedAmount;
+        }
+        return 0;
     }
 
     async updateBalance(uid: string, amount: number): Promise<number> {
@@ -79,7 +84,7 @@ export class MoneyService {
         if (balance < amount) {
             errors.push(LOW_BALANCE);
         }
-        if (amount < 0) {
+        if (amount < 0 || amount.toString().includes('e') || amount.toString().includes('E')) {
             errors.push(INVALID_AMOUNT);
         }
 

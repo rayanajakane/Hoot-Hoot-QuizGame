@@ -441,5 +441,11 @@
         "qcm": "MCQ - Multiple Choices",
         "qrl": "LAQ - Long Answer     ",
         "qre": "EAQ - Estimated Answer"
+    },
+    "qrl": {
+        "answer": "Answer",
+        "grade-cta": "Please grade the players' answers.",
+        "submit": "SUBMIT CORRECTION",
+        "players-to-grade": "There are still players to grade."
     }
 }
