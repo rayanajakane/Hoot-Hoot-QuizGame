@@ -441,5 +441,11 @@
         "qcm": "QCM - Choix Multiples",
         "qrl": "QRL - Réponse Longue ",
         "qre": "QRE - Réponse Estimée"
+    },
+    "qrl": {
+        "answer": "Réponse",
+        "grade-cta": "Veillez noter les réponses des joueurs!",
+        "submit": "SOUMETTRE CORRECTION",
+        "players-to-grade": "Il reste des joueurs à évaluer."
     }
 }

@@ -40,7 +40,7 @@ export class EstimatedAnswerStrategy extends QuestionStrategy {
                 player.answerCorrectness = AnswerCorrectness.GOOD;
                 player.nGoodAnswers++;
                 player.score += currentQuestionPoints;
-                if (this.isCorrectAnswer(playerAnswer, correctAnswer)) {
+                if (this.isCorrectAnswer(playerAnswer, correctAnswer) && margin !== 0) {
                     this.computePlayerBonus(player, currentQuestionPoints);
                 }
             }

@@ -1,11 +1,11 @@
-<div id="main-container">
+<div id="main-container" *transloco="let t">
     <div class="answer-area" *ngIf="matchContextService.getContext() !== 'hostView'">
         <div class="prompt">
             <h1 [class.hidden]="answerService.isSelectionEnabled || this.answerService.showFeedback">En attente de correction...</h1>
         </div>
         <form class="long-answer-form">
             <mat-form-field class="text-form" appearance="outline">
-                <mat-label class="text-label">Réponse</mat-label>
+                <mat-label class="text-label">{{ t('qrl.answer') }}</mat-label>
                 <textarea
                     class="text-input"
                     matInput
@@ -21,13 +21,11 @@
         </form>
     </div>
 
-    <div id="histogram-container" *ngIf="matchContextService.getContext() === 'hostView'">
-        <app-long-answer-histogram *ngIf="!this.answerService.gradeAnswers && !this.answerService.isGradingComplete"></app-long-answer-histogram>
-    </div>
+    <div id="histogram-container" *ngIf="matchContextService.getContext() === 'hostView'"></div>
 
     <div class="grading-area" *ngIf="matchContextService.getContext() === 'hostView' && this.answerService.gradeAnswers">
         <div class="prompt">
-            <h1>Veuillez noter les réponses des joueurs!</h1>
+            <h1>{{ t('qrl.grade-cta') }}</h1>
         </div>
         <cdk-virtual-scroll-viewport class="grades-scroll" itemSize="350">
             <div *cdkVirtualFor="let player of this.answerService.playersAnswers | sortAnswers" class="player-answer">
@@ -54,8 +52,8 @@
             [disabled]="!this.answerService.isGradingComplete"
             (click)="this.answerService.sendGrades()"
         >
-            <p *ngIf="this.answerService.isGradingComplete">SOUMETTRE CORRECTION</p>
-            <p *ngIf="!this.answerService.isGradingComplete">Il reste des joueurs à évaluer</p>
+            <p *ngIf="this.answerService.isGradingComplete">{{ t('qrl.submit') }}</p>
+            <p *ngIf="!this.answerService.isGradingComplete">{{ t('qrl.players-to-grade') }}</p>
         </button>
     </div>
 </div>
