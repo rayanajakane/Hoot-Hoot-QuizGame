@@ -100,8 +100,6 @@ fun QuestionArea(
     val isTimerPaused by TimeService.isTimerPaused.collectAsState()
     val isPanicking by TimeService.isPanicking.collectAsState()
 
-    var isTimerPausedButtonEnabled by remember { mutableStateOf(false) }
-
     val mediaPlayer = MediaPlayer.create(LocalContext.current, R.raw.panic)
 
     LaunchedEffect(isPanicking) {
@@ -117,25 +115,31 @@ fun QuestionArea(
         }
     }
 
+    var firstRun by remember { mutableStateOf(true) }
     LaunchedEffect(isTimerPaused) {
-        if(!isTimerPaused) {
-            scope.launch {
-                SnackbarController.sendEvent(
-                    event = SnackbarEvent(
-                        message = StringValue.StringResource(R.string.timer_start)
-                    )
-                )
-            }
+        if (firstRun) {
+            firstRun = false
         } else {
-            scope.launch {
-                SnackbarController.sendEvent(
-                    event = SnackbarEvent(
-                        message = StringValue.StringResource(R.string.timer_paused)
+            if (!isTimerPaused) {
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.StringResource(R.string.timer_start)
+                        )
                     )
-                )
+                }
+            } else {
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.StringResource(R.string.timer_paused)
+                        )
+                    )
+                }
             }
         }
     }
+
 
     LaunchedEffect (matchRoomService.isCheaterMode){
         if (matchRoomService.isCheaterMode) {
@@ -482,7 +486,6 @@ fun QuestionArea(
                             } else if (!answerService.isNextQuestionButtonEnabled) {
                                 Button(
                                     onClick = {
-                                        isTimerPausedButtonEnabled = !isTimerPausedButtonEnabled
                                         timeService.pauseTimer(matchRoomService.getRoomCode())
                                     },
                                     shape = RoundedCornerShape(3.dp)
