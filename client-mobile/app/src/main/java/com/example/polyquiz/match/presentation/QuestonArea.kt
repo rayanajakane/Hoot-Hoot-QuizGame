@@ -115,25 +115,31 @@ fun QuestionArea(
         }
     }
 
+    var firstRun by remember { mutableStateOf(true) }
     LaunchedEffect(isTimerPaused) {
-        if(!isTimerPaused) {
-            scope.launch {
-                SnackbarController.sendEvent(
-                    event = SnackbarEvent(
-                        message = StringValue.StringResource(R.string.timer_start)
-                    )
-                )
-            }
+        if (firstRun) {
+            firstRun = false
         } else {
-            scope.launch {
-                SnackbarController.sendEvent(
-                    event = SnackbarEvent(
-                        message = StringValue.StringResource(R.string.timer_paused)
+            if (!isTimerPaused) {
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.StringResource(R.string.timer_start)
+                        )
                     )
-                )
+                }
+            } else {
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = StringValue.StringResource(R.string.timer_paused)
+                        )
+                    )
+                }
             }
         }
     }
+
 
     LaunchedEffect (matchRoomService.isCheaterMode){
         if (matchRoomService.isCheaterMode) {
