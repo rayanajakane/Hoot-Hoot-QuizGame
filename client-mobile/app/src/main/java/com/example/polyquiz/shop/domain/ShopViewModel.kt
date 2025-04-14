@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import StringValue
 import android.content.Context
+import androidx.compose.ui.res.stringResource
 import com.example.polyquiz.constants.MoneyEvents
 import com.example.polyquiz.money.domain.DonationGivenData
 import com.example.polyquiz.money.domain.DonationReceivedData
@@ -132,9 +133,19 @@ class ShopViewModel : ViewModel() {
                 val json = args[0].toString()
                 try {
                     val donationData = Gson().fromJson(json, DonationGivenData::class.java)
-//                    notificationService.displaySuccessMessage("You have donated ${donationData.amount} to ${donationData.to}")
+
                     Log.d(TAG, "You have donated ${donationData.amount} to ${donationData.to}")
                     _currentBalance.value = donationData.newBalance
+                    viewModelScope.launch {
+                        SnackbarController.sendEvent(
+                            event = SnackbarEvent(
+                                message = StringValue.StringResource(R.string.donation_given, donationData.amount, donationData.to)
+                            )
+                        )
+
+                    }
+
+
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -148,9 +159,16 @@ class ShopViewModel : ViewModel() {
                 val json = args[0].toString()
                 try {
                     val donationData = Gson().fromJson(json, DonationReceivedData::class.java)
-//                    notificationService.displaySuccessMessage("${donationData.from} has donated ${donationData.amount} to you")
                     _currentBalance.value = donationData.newBalance
                     Log.d(TAG, "${donationData.from} has donated ${donationData.amount} to you")
+                    viewModelScope.launch {
+                        SnackbarController.sendEvent(
+                            event = SnackbarEvent(
+                                message = StringValue.StringResource(R.string.donation_given, donationData.amount, donationData.from)
+                            )
+                        )
+
+                    }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
