@@ -46,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -319,6 +320,7 @@ fun PlayerCard(player: Player, isHost: Boolean, onClick: (String) -> Unit) {
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape),
+                contentScale = ContentScale.FillBounds,
                 placeholder = rememberAsyncImagePainter(model = PresetAvatar.DEFAULT.value)
             )
             Spacer(modifier = Modifier.width(8.dp))

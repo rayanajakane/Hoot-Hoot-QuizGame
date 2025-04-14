@@ -300,7 +300,7 @@ fun UserEditPage(
                 if (updateUsernameTask) {
                     authViewModel.emitUpdates()
                 } else {
-                    Log.e("Update profile", "An error has occured when updating username")
+                    Log.e("Update profile", "An error has occurred when updating username")
                 }
             }
         }
