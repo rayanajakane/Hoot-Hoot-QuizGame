@@ -205,4 +205,6 @@
     <string name="switch_camera">Switch Camera</string>
     <string name="game_author">"Author: "</string>
     <string name="match_errors_less_than_3_players">The match needs at least 3 players.</string>
+    <string name="donation_given">You have donated %d $ to %s.</string>
+    <string name="donation_recieved">%s has donated %d $ to you.</string>
 </resources>
