@@ -16,7 +16,7 @@ object SocketHandler {
     @Synchronized
     fun setSocket() {
         try {
-            mSocket = IO.socket(Environment.SERVER_LOCAL_ADDRESS.value)
+            mSocket = IO.socket(Environment.SERVER_ADDRESS_WITHOUT_API.value)
         } catch (e: Exception) {
             Log.e("ERROR", e.toString())
         }
@@ -33,6 +33,7 @@ object SocketHandler {
             mSocket.connect()
             ChatService.deleteMessages()
             ChatService.handleReceivedMessage()
+            ChatService.handleRoomMessage()
             EloService.returnElo()
 
         }
@@ -41,6 +42,7 @@ object SocketHandler {
     @Synchronized
     fun disconnect() {
         mSocket.off(ChatEvents.SENT_GENERAL_MESSAGE.value)
+        mSocket.off(ChatEvents.NEW_MESSAGE.value)
         ChatService.deleteMessages()
         mSocket.off(EloEvents.RETURN_ELO.value)
         mSocket.disconnect()
