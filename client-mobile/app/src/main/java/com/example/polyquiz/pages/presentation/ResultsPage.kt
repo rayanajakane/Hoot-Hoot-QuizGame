@@ -100,7 +100,7 @@ fun ResultsPage(
                             .weight(1f)
                             .padding(8.dp)
                     )
-                    BalanceCard(currentBalance)
+                    BalanceCard(currentBalance, true)
                 }
             }
 
