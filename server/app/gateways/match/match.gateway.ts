@@ -53,11 +53,6 @@ export class MatchGateway implements OnGatewayDisconnect {
     @SubscribeMessage(MatchEvents.JoinRoom)
     async joinRoom(@ConnectedSocket() socket: Socket, @MessageBody() data: UserInfo) {
         const matchRoom = this.matchRoomService.getRoom(data.roomCode);
-        console.log('Joining room', matchRoom.players);
-        if (matchRoom.players.find((player) => player.id === data.userId)) {
-            console.log('Player already in room', data.userId);
-            return;
-        }
         const codeErrors = this.matchRoomService.getRoomCodeErrors(data.roomCode);
         const usernameErrors = this.playerRoomService.getUsernameErrors(data.roomCode, data.userId);
         let errorMessage = [];

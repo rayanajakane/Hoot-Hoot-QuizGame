@@ -2,6 +2,7 @@ package com.example.polyquiz.match.presentation
 
 import android.media.MediaPlayer
 import android.util.Log
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -44,6 +45,8 @@ import com.example.polyquiz.match.domain.MatchRoomService
 import com.example.polyquiz.match.domain.TimeService
 import com.example.polyquiz.constants.UserInfo
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.BarChart
@@ -75,6 +78,7 @@ import com.example.polyquiz.constants.AnswerEvents
 import com.example.polyquiz.match.domain.AnswerService.showFeedback
 import kotlinx.coroutines.launch
 import com.example.polyquiz.match.domain.MatchRoomService.isCooldown
+import com.example.polyquiz.ui.rememberImeState
 
 @Composable
 fun QuestionArea(
@@ -101,6 +105,9 @@ fun QuestionArea(
     val isPanicking by TimeService.isPanicking.collectAsState()
 
     val mediaPlayer = MediaPlayer.create(LocalContext.current, R.raw.panic)
+
+    val imeState = rememberImeState()
+    val scrollState = rememberScrollState()
 
     LaunchedEffect(isPanicking) {
         if (isPanicking) {
@@ -206,6 +213,12 @@ fun QuestionArea(
         }
     }
 
+    LaunchedEffect(key1 = imeState.value) {
+        if (imeState.value) {
+            scrollState.animateScrollTo(335, tween(200))
+        }
+    }
+
     // To avoid memory leaks
     DisposableEffect(Unit) {
         onDispose {
@@ -232,7 +245,9 @@ fun QuestionArea(
         Column(
             modifier = Modifier
                 .weight(1f)
+                .verticalScroll(scrollState)
                 .background(MaterialTheme.colorScheme.background)
+                .imePadding()
                 .navigationBarsPadding(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
