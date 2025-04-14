@@ -111,6 +111,7 @@ fun ChatComponent(modifier: Modifier, authViewModel: AuthViewModel) {
 
     LaunchedEffect(Unit) {
         authViewModel.setAvatarToFirebaseAvatar()
+        WallpaperService.setWallpaperFromFirebase(authViewModel)
     }
 
     LaunchedEffect(selectedChat) {

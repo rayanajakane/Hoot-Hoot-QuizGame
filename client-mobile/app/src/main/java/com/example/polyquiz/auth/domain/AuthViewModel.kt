@@ -163,6 +163,7 @@ class AuthViewModel : ViewModel() {
         return _avatarURL.value
     }
 
+
     fun setAvatarToFirebaseAvatar() : String {
         val url = user!!.photoUrl.toString()
         _avatarURL.value = url

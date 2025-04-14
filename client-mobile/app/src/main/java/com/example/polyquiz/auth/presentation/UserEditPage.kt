@@ -266,6 +266,10 @@ fun UserEditPage(
 
         val isSameUsername = (username.lowercase() == authViewModel.getUsername().lowercase())
 
+        // Save wallpaper
+        scope.launch {
+            WallpaperService.setWallpaper(authViewModel, currentWallpaper)
+        }
 
         // Update avatar image
         val capturedImage = cameraViewModel.state.value.capturedImage
@@ -472,7 +476,8 @@ fun UserEditPage(
                                 Text(stringResource(R.string.avatar_items))
                                 Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                                     purchasedAvatars.forEach { avatarId ->
-                                        val premiumAvatar = PremiumAvatar.entries.find { it.name == avatarId }
+                                        val premiumAvatar =
+                                            PremiumAvatar.entries.find { it.name == avatarId }
                                         if (premiumAvatar != null) {
                                             ClickableAvatarPlaceholder(
                                                 50.dp,
@@ -499,9 +504,10 @@ fun UserEditPage(
                                             shape = RoundedCornerShape(4.dp)
                                         )
                                         .clickable {
-                                            scope.launch {
-                                                WallpaperService.setWallpaper(authViewModel, Wallpaper.None.value)
-                                            }
+                                            WallpaperService.setTempWallpaper(Wallpaper.None.value)
+//                                            scope.launch {
+//                                                WallpaperService.setWallpaper(authViewModel, Wallpaper.None.value)
+//                                            }
                                         }
                                 ) {
                                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -520,7 +526,8 @@ fun UserEditPage(
 
                                 // Purchased wallpapers
                                 purchasedWallpapers.forEach { wallpaperId ->
-                                    val wallpaper = Wallpaper.entries.find { it.name == wallpaperId }
+                                    val wallpaper =
+                                        Wallpaper.entries.find { it.name == wallpaperId }
                                     if (wallpaper != null && wallpaper != Wallpaper.None) {
                                         Box(
                                             modifier = Modifier
@@ -532,9 +539,10 @@ fun UserEditPage(
                                                     shape = RoundedCornerShape(4.dp)
                                                 )
                                                 .clickable {
-                                                    scope.launch {
-                                                        WallpaperService.setWallpaper(authViewModel, wallpaper.value)
-                                                    }
+                                                    WallpaperService.setTempWallpaper(wallpaper.value)
+//                                                    scope.launch {
+//                                                        WallpaperService.setWallpaper(authViewModel, wallpaper.value)
+//                                                    }
                                                 }
                                         ) {
                                             AsyncImage(
@@ -612,7 +620,13 @@ fun UserEditPage(
                                 Text(text = usernameError, color = Color.Red)
                             }
                             Spacer(modifier = Modifier.height(8.dp))
-                            ThemeDropdown(context, availableThemes, availablePremiumThemes, currentTheme, onClickTheme)
+                            ThemeDropdown(
+                                context,
+                                availableThemes,
+                                availablePremiumThemes,
+                                currentTheme,
+                                onClickTheme
+                            )
                             Spacer(modifier = Modifier.height(8.dp))
                             ExposedDropdownMenuBox(
                                 expanded = expandedLang,
