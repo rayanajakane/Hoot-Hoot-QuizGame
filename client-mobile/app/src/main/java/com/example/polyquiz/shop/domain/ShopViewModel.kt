@@ -33,8 +33,8 @@ import org.json.JSONObject
 
 class ShopViewModel : ViewModel() {
     private val TAG = "ShopViewModel"
-    private val _currentBalance = MutableStateFlow(0)
-    val currentBalance: StateFlow<Int> get() = _currentBalance
+    private val _currentBalance = MutableStateFlow(0.0)
+    val currentBalance: StateFlow<Double> get() = _currentBalance
 
     private val _avatarItems = MutableStateFlow<List<ShopItem>>(emptyList())
     val avatarItems: StateFlow<List<ShopItem>> = _avatarItems
@@ -110,9 +110,9 @@ class ShopViewModel : ViewModel() {
     private fun onReturnBalance() {
         mSocket.on(MoneyEvents.RETURN_BALANCE.value) { args: Array<Any> ->
             if (args.isNotEmpty()) {
-                val balance = args[0] as Int
-                _currentBalance.value = balance
-                Log.d(TAG, "Current balance: $balance")
+                Log.d(TAG, "Current balance: ${args[0]}")
+                val balance = args[0].toString().toDoubleOrNull() ?: 0
+                _currentBalance.value = balance as Double
             }
         }
     }
@@ -135,7 +135,7 @@ class ShopViewModel : ViewModel() {
                     val donationData = Gson().fromJson(json, DonationGivenData::class.java)
 
                     Log.d(TAG, "You have donated ${donationData.amount} to ${donationData.to}")
-                    _currentBalance.value = donationData.newBalance
+                    _currentBalance.value = donationData.newBalance.toDouble()
                     viewModelScope.launch {
                         SnackbarController.sendEvent(
                             event = SnackbarEvent(
@@ -159,7 +159,7 @@ class ShopViewModel : ViewModel() {
                 val json = args[0].toString()
                 try {
                     val donationData = Gson().fromJson(json, DonationReceivedData::class.java)
-                    _currentBalance.value = donationData.newBalance
+                    _currentBalance.value = donationData.newBalance.toDouble()
                     Log.d(TAG, "${donationData.from} has donated ${donationData.amount} to you")
                     viewModelScope.launch {
                         SnackbarController.sendEvent(

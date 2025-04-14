@@ -203,7 +203,7 @@ fun ShopPage(
 fun ShopSection(
     title: String,
     items: List<ShopItem>,
-    currentBalance: Int,
+    currentBalance: Double,
     onBuyClick: (ShopItem) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -235,7 +235,7 @@ fun ShopSection(
 @Composable
 fun ShopItemCard(
     item: ShopItem,
-    currentBalance: Int,
+    currentBalance: Double,
     onBuyClick: (ShopItem) -> Unit
 ) {
     Card(
@@ -296,7 +296,7 @@ fun ShopItemCard(
 }
 
 @Composable
-fun BalanceCard(currentBalance: Int, isNewBalance: Boolean = false) {
+fun BalanceCard(currentBalance: Double, isNewBalance: Boolean = false) {
     Card(
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(4.dp),
@@ -313,8 +313,9 @@ fun BalanceCard(currentBalance: Int, isNewBalance: Boolean = false) {
                 tint = MaterialTheme.colorScheme.tertiary
             )
             Spacer(modifier = Modifier.width(4.dp))
+            val currBalanceDisplay = if (currentBalance % 1 == 0.0) "${currentBalance.toInt()}" else "$currentBalance"
             Text(
-                text = if(isNewBalance) stringResource(R.string.new_total, currentBalance) else "$currentBalance$",
+                text = if (isNewBalance) stringResource(R.string.new_total, currBalanceDisplay) else "$currBalanceDisplay$",
                 style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
             )
         }
