@@ -25,7 +25,7 @@ export class FriendsService {
             photoUrl: user.photoURL || '',
             isOnline: usersStatus[user.uid] ? usersStatus[user.uid].isOnline || false : false,
         }));
-        return allUsers.filter((user) => user.id !== userId);
+        return allUsers.filter((user) => user.id !== userId && user.name !== 'Unknown User');
     }
 
     async getFriendsList(userId: string): Promise<UserIdName[]> {
@@ -54,7 +54,7 @@ export class FriendsService {
                 }
             }),
         );
-        return friends;
+        return friends.filter((friend) => friend.name !== 'Unknown User');
     }
 
     async getPendingRequests(userId: string): Promise<UserIdName[]> {
@@ -83,7 +83,7 @@ export class FriendsService {
                 }
             }),
         );
-        return requests;
+        return requests.filter((friend) => friend.name !== 'Unknown User');
     }
 
     async getSentRequests(userId: string): Promise<UserIdName[]> {
@@ -112,7 +112,7 @@ export class FriendsService {
                 }
             }),
         );
-        return requests;
+        return requests.filter((friend) => friend.name !== 'Unknown User');
     }
 
     async sendFriendRequest(fromUserId: string, toUserId: string): Promise<void> {
