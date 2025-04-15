@@ -1,7 +1,7 @@
 <ng-container *transloco="let t">
     <div id="main-container" (keyup.enter)="signUp()">
         <mat-card id="main-card">
-            <h1>{{ t('page.signup-title') }}</h1>
+            <h1>Nouveau compte</h1>
             <form id="form" [formGroup]="form">
                 <div class="two-columns-container">
                     <div id="avatars-container">
@@ -11,11 +11,11 @@
                             </div>
                             <input class="avatar" type="file" #avatar (change)="setCustomAvatar($event)" accept="image/png, image/jpeg" />
                             <button mat-raised-button type="button" color="primary" (click)="avatar.click()">
-                                <mat-icon>upload</mat-icon>{{ t('page.upload-avatar') }}
+                                <mat-icon>upload</mat-icon>Téléverser un avatar
                             </button>
                         </div>
                         <div id="avatar-choices-container">
-                            <p>{{ t('page.avatar-choices') }}</p>
+                            <p>Avatars prédéfinis</p>
                             <div id="avatar-choices">
                                 <div class="avatar-mini" *ngFor="let enum of presetAvatar | keyvalue" (click)="setPresetAvatar(enum.value)">
                                     <img src="{{ enum.value }}" alt="" />
@@ -25,7 +25,7 @@
                     </div>
                     <div>
                         <mat-form-field id="email">
-                            <mat-label>{{ t('page.email') }}</mat-label>
+                            <mat-label>Courriel</mat-label>
                             <input
                                 required
                                 matInput
@@ -38,14 +38,14 @@
                                 cdkFocusInitial
                                 id="email-input"
                             />
-                            <mat-error *ngIf="form.get('email')?.hasError('required')">{{ t('auth.error.invalid-email') }} </mat-error>
-                            <mat-error *ngIf="form.get('email')?.hasError('email')">{{ t('auth.error.invalid-email') }} </mat-error>
+                            <mat-error *ngIf="form.get('email')?.hasError('required')">Adresse courriel invalide</mat-error>
+                            <mat-error *ngIf="form.get('email')?.hasError('email')">Adresse courriel invalide</mat-error>
                         </mat-form-field>
                         <mat-form-field
                             id="username"
                             [ngClass]="{ 'mat-form-field-invalid': form.get('username')?.invalid && form.get('username')?.touched }"
                         >
-                            <mat-label>{{ t('page.username') }}</mat-label>
+                            <mat-label>Nom d'utilisateur</mat-label>
                             <input
                                 required
                                 matInput
@@ -60,28 +60,32 @@
                                 <mat-icon>auto_fix_high</mat-icon>
                             </button>
                             <mat-error *ngIf="form.get('username')?.hasError('containsSpecialChar')"
-                                >{{ t('auth.error.username-special-char') }}
+                                >Ne doit pas contenir des charactères spéciaux.
                             </mat-error>
                             <mat-error *ngIf="form.get('username')?.hasError('minlength')"
-                                >{{ t('auth.error.username-too-short', { length: minUsernameLength }) }}
+                                >Nom d'utilisateur trop court. Min {{ minUsernameLength }} caractères.
                             </mat-error>
                             <mat-error *ngIf="form.get('username')?.hasError('maxlength')"
-                                >{{ t('auth.error.username-too-long', { length: maxUsernameLength }) }}
+                                >Nom d'utilisateur trop long. Min {{ maxUsernameLength }} caractères.
                             </mat-error>
                         </mat-form-field>
 
                         <mat-form-field id="password">
-                            <mat-label>{{ t('page.password') }}</mat-label>
+                            <mat-label>Mot de passe</mat-label>
                             <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" maxlength="200" />
-                            <mat-error *ngIf="form.get('password')?.hasError('noLowercase')">{{ t('auth.error.password-lowercase') }} </mat-error>
-                            <mat-error *ngIf="form.get('password')?.hasError('noUppercase')">{{ t('auth.error.password-uppercase') }} </mat-error>
-                            <mat-error *ngIf="form.get('password')?.hasError('noDigit')">{{ t('auth.error.password-digit') }} </mat-error>
-                            <mat-error *ngIf="form.get('password')?.hasError('noSpecial')">{{ t('auth.error.password-special') }} </mat-error>
+                            <mat-error *ngIf="form.get('password')?.hasError('noLowercase')"
+                                >Devrait contenir au moins 1 lettre minuscule.
+                            </mat-error>
+                            <mat-error *ngIf="form.get('password')?.hasError('noUppercase')"
+                                >Devrait contenir au moins 1 lettre majuscule.
+                            </mat-error>
+                            <mat-error *ngIf="form.get('password')?.hasError('noDigit')">Devrait contenir au moins 1 chiffre.</mat-error>
+                            <mat-error *ngIf="form.get('password')?.hasError('noSpecial')">Devrait contenir au moins 1 caractère spécial.</mat-error>
                             <mat-error *ngIf="form.get('password')?.hasError('minlength')"
-                                >{{ t('auth.error.password-too-short', { length: passwordMinLength }) }}
+                                >Le mot de passe est trop court (minimum: 6 caractères).
                             </mat-error>
                             <mat-error *ngIf="form.get('password')?.hasError('maxlength')"
-                                >{{ t('auth.error.password-too-long', { length: passwordMaxLength }) }}
+                                >Mot de passe trop long. Max {{ passwordMaxLength }} caractères
                             </mat-error>
                             <button
                                 type="button"
@@ -97,10 +101,8 @@
                     </div>
                 </div>
                 <div id="buttons-container">
-                    <button mat-raised-button type="button" routerLink="/login">{{ t('page.return-to-login') }}</button>
-                    <button mat-raised-button type="button" color="primary" (click)="signUp()" id="signup-button">
-                        {{ t('page.signup-action') }}
-                    </button>
+                    <button mat-raised-button type="button" routerLink="/login">Retour à la page de connexion</button>
+                    <button mat-raised-button type="button" color="primary" (click)="signUp()" id="signup-button">S'inscrire</button>
                 </div>
             </form>
         </mat-card>
