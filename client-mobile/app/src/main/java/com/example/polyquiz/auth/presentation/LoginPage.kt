@@ -42,6 +42,7 @@ import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.constants.SIZE_CONSTANTS
 import com.example.polyquiz.core.ThemeService
 import com.example.polyquiz.core.TranslationService
+import com.example.polyquiz.friends.domain.FriendsService
 import com.example.polyquiz.shop.domain.ShopViewModel
 import com.example.polyquiz.ui.theme.Theme
 import com.google.firebase.perf.FirebasePerformance
@@ -69,6 +70,7 @@ fun LoginPage(
     val keyboardController = LocalSoftwareKeyboardController.current
     val translationService = TranslationService
     val loginTrace: Trace = FirebasePerformance.getInstance().newTrace("login_trace")
+//    val friendsService = remember { FriendsService() }
 
     DisposableEffect(Unit) {
         onDispose {
@@ -100,7 +102,8 @@ fun LoginPage(
                }
                 shopViewModel.initialize(authViewModel, context)
                 shopViewModel.getCurrentBalance(authViewModel.getUserId())
-                shopViewModel.listenForMoneyEvents(context)
+//                shopViewModel.listenForMoneyEvents(context)
+//                friendsService.initialize(authViewModel.getUserId())
                 navigateToHome()
             }
 
