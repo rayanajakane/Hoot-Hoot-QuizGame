@@ -208,6 +208,12 @@
     <string name="donation_given">You have donated %d $ to %s.</string>
     <string name="donation_recieved">%s has donated %d $ to you.</string>
     <string name="new_total">"New Total: %s $ "</string>
-    <string name="enter_donation_amount">Enter the Donation Amount</string>
+    <string name="enter_donation_amount">Enter donation amount: (Max $500 per day</string>
     <string name="amount">Amount</string>
+    <string name="add_friend">Add Friend</string>
+    <string name="request_sent">⏳ Request Sent</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
+    <string name="remove_friend">Remove Friend</string>
+    <string name="donate_money">Donate Money</string>
 </resources>

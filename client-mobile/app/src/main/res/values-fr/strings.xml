@@ -208,6 +208,12 @@
     <string name="donation_given">Vous avez donné %d $ à %s</string>
     <string name="donation_recieved">%s vous a donné %d $.</string>
     <string name="new_total">Nouveau total: %s $</string>
-    <string name="enter_donation_amount">Veuillez entrer le montant du don</string>
+    <string name="enter_donation_amount">Entrer le montant du don: (Max 500$ par jour)</string>
     <string name="amount">Montant</string>
+    <string name="add_friend">Ajouter un ami</string>
+    <string name="request_sent">⏳ Demande envoyée</string>
+    <string name="accept">Accepter</string>
+    <string name="decline">Refuser</string>
+    <string name="remove_friend">Retirer l\'ami</string>
+    <string name="donate_money">Donner de l\'argent</string>
 </resources>
