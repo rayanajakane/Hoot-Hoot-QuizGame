@@ -62,6 +62,7 @@ import { SortHistoryPipe } from '@app/pipes/sort-history.pipe';
 import { SortPlayersPipe } from '@app/pipes/sort-players.pipe';
 import { TranslocoRootModule } from '@app/transloco-root.module';
 import { FIREBASE_CONFIG } from 'src/environments/firebase-config';
+import { SignupUsernameSuggestionDialogComponent } from './signup-username-suggestion-dialog/signup-username-suggestion-dialog.component';
 
 /**
  * Main module that is used in main.ts.
@@ -120,6 +121,7 @@ import { FIREBASE_CONFIG } from 'src/environments/firebase-config';
         ShopPageComponent,
         UsernameSuggestionDialogComponent,
         VotingDialogComponent,
+        SignupUsernameSuggestionDialogComponent,
     ],
     imports: [
         AppMaterialModule,

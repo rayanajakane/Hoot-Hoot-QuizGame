@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { UsernameSuggestionDialogComponent } from '@app/components/username-suggestion-dialog/username-suggestion-dialog.component';
 import { MAX_LENGTH, MIN_LENGTH, PW_MAX_LENGTH, PW_MIN_LENGTH } from '@app/constants/authentication';
 import { PresetAvatar } from '@app/constants/avatar-constants';
 import { IMAGE_MAX_FILE_SIZE } from '@app/constants/image-constants';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { NotificationService } from '@app/services/notification/notification.service';
+import { SignupUsernameSuggestionDialogComponent } from '@app/signup-username-suggestion-dialog/signup-username-suggestion-dialog.component';
 import { TranslocoService } from '@jsverse/transloco';
 
 @Component({
@@ -190,7 +190,7 @@ export class SignupPageComponent implements OnInit {
     }
 
     openUsernameDialog() {
-        const dialogRef = this.dialog.open(UsernameSuggestionDialogComponent);
+        const dialogRef = this.dialog.open(SignupUsernameSuggestionDialogComponent);
         dialogRef.afterClosed().subscribe((username: string) => {
             if (username) {
                 this.form.controls['username'].setValue(username);
