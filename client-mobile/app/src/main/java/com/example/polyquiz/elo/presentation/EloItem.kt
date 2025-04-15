@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.polyquiz.auth.domain.UserIdName
@@ -46,6 +47,7 @@ fun EloItem(
             Image(
                 painter = painter,
                 contentDescription = "Avatar",
+                contentScale = ContentScale.FillBounds,
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
@@ -57,7 +59,7 @@ fun EloItem(
         Spacer(modifier = Modifier.width(24.dp)) // Creates more gap between name section and elo
 
         Text(
-            text = elo.toString(),
+            text = "$elo + ELO",
             modifier = Modifier
                 .wrapContentWidth(Alignment.End)
         )

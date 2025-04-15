@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.polyquiz.auth.domain.UserIdName
@@ -53,7 +54,8 @@ fun FriendsListItem(
                 contentDescription = "Avatar",
                 modifier = Modifier
                     .size(40.dp)
-                    .clip(CircleShape)
+                    .clip(CircleShape),
+                contentScale = ContentScale.FillBounds
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(text = user.name)

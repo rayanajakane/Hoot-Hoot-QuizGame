@@ -1,6 +1,7 @@
 package com.example.polyquiz.core
 
 
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import com.google.firebase.database.DataSnapshot

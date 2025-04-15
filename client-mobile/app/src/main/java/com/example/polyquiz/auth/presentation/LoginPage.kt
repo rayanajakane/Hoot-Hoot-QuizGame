@@ -1,6 +1,8 @@
 package com.example.polyquiz.auth.presentation
 
 import StringValue
+import android.util.Log
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,6 +36,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.os.LocaleListCompat
 import com.example.polyquiz.R
 import com.example.polyquiz.SnackbarController
 import com.example.polyquiz.SnackbarEvent
@@ -48,6 +51,7 @@ import com.example.polyquiz.ui.theme.Theme
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 @Composable
 fun LoginPage(
@@ -81,7 +85,9 @@ fun LoginPage(
     LaunchedEffect(Unit) {
         loginTrace.start()
         authViewModel.setTheme(Theme.LIGHT)
-        translationService.setLanguage("fr")
+        AppCompatDelegate.setApplicationLocales(
+            LocaleListCompat.forLanguageTags("fr")
+        )
     }
 
     LaunchedEffect(authState.value) {
