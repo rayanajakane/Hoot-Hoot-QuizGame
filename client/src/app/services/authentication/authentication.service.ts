@@ -4,6 +4,7 @@ import { FirebaseError } from '@angular/fire/app';
 import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { PresetAvatar } from '@app/constants/avatar-constants';
+import { Language } from '@app/interfaces/language';
 import { AuthError } from '@app/services/authentication/auth-error';
 import { ChatService } from '@app/services/chat/chat.service';
 import { EloService } from '@app/services/elo/elo.service';
@@ -342,6 +343,7 @@ export class AuthenticationService {
     private handleAuthErrorMessage(error: FirebaseError): string {
         switch (error.code) {
             case 'SessionAlreadyExists': {
+                this.translocoService.setActiveLang(Language.FR);
                 return "L'utilisateur est déjà connecté";
             }
             case 'UsernameAlreadyExists': {
