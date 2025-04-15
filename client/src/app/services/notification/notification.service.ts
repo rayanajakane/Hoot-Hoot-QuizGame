@@ -4,6 +4,7 @@ import { MatSnackBar, MatSnackBarConfig, MatSnackBarRef, TextOnlySnackBar } from
 import { DialogConfirmComponent } from '@app/components/dialog-confirm/dialog-confirm.component';
 import { NOTFICATION_DURATION } from '@app/constants/feedback-messages';
 import { ConfirmDialogData } from '@app/interfaces/dialog-data/confirm-dialog-data';
+import { translate } from '@jsverse/transloco';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -64,7 +65,7 @@ export class NotificationService {
         const bankUploadConfig: MatDialogConfig<ConfirmDialogData> = {
             data: {
                 icon: 'info_outline',
-                title: 'Êtes-vous certain de vouloir ajouter cette question à la banque de questions?',
+                title: translate('admin-edit-page.add-to-bank'),
                 text: questionTitle,
             },
         };

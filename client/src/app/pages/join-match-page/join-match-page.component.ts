@@ -1,17 +1,23 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthenticationService } from '@app/services/authentication/authentication.service';
 import { JoinMatchService } from '@app/services/join-match/join-match.service';
 import { NotificationService } from '@app/services/notification/notification.service';
 import { MatchPageInfo } from '@common/interfaces/match-page-info';
 import { translate } from '@jsverse/transloco';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+
 @Component({
     selector: 'app-join-match-page',
     standalone: false,
     templateUrl: './join-match-page.component.html',
     styleUrl: './join-match-page.component.scss',
 })
-export class JoinMatchPageComponent {
+export class JoinMatchPageComponent implements OnInit, OnDestroy {
+    private joinCodeClickSubject = new Subject<string>();
+    private joinCodeClickSubscription: Subscription;
+
     constructor(
         private readonly joinMatchService: JoinMatchService,
         private readonly notificationService: NotificationService,
@@ -32,12 +38,24 @@ export class JoinMatchPageComponent {
 
     ngOnInit() {
         this.joinMatchService.getAllMatches();
+
+        this.joinCodeClickSubscription = this.joinCodeClickSubject
+            .pipe(debounceTime(500))
+            .subscribe((roomCode: string) => this.processJoinCode(roomCode));
     }
+
     ngOnDestroy() {
         this.joinMatchService.stopReturningAllMatches();
+        if (this.joinCodeClickSubscription) {
+            this.joinCodeClickSubscription.unsubscribe();
+        }
     }
 
     submitCode(roomCode: string): void {
+        this.joinCodeClickSubject.next(roomCode);
+    }
+
+    private processJoinCode(roomCode: string): void {
         this.joinMatchService.matchRoomCode = '';
         this.joinMatchService.validateMatchRoomCode(roomCode).subscribe({
             next: () => {

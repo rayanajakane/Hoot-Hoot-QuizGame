@@ -63,9 +63,9 @@
     <string name="games_list">Games List</string>
     <string name="no_games_available">There are no games available </string>
     <string name="games_details">Game Details</string>
-    <string name="games_description">"Description "</string>
-    <string name="games_time">"Time "</string>
-    <string name="questions">Questions</string>
+    <string name="games_description">Description:</string>
+    <string name="games_time">Time per MCQ and EAQ:</string>
+    <string name="questions">Questions:</string>
     <string name="game_title">Title</string>
     <string name="select_game">"Select a Game in the List of Games"</string>
     <string name="play">Play</string>
@@ -207,5 +207,13 @@
     <string name="match_errors_less_than_3_players">The match needs at least 3 players.</string>
     <string name="donation_given">You have donated %d $ to %s.</string>
     <string name="donation_recieved">%s has donated %d $ to you.</string>
-    <string name="new_total">"New Total: %d $ "</string>
+    <string name="new_total">"New Total: %s $ "</string>
+    <string name="enter_donation_amount">Enter donation amount: (Max $500 per day</string>
+    <string name="amount">Amount</string>
+    <string name="add_friend">Add Friend</string>
+    <string name="request_sent">⏳ Request Sent</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
+    <string name="remove_friend">Remove Friend</string>
+    <string name="donate_money">Donate Money</string>
 </resources>

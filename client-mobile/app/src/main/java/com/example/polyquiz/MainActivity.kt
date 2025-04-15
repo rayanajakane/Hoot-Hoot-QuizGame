@@ -21,6 +21,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.lifecycleScope
+import com.example.polyquiz.auth.domain.AuthState
 
 import com.example.polyquiz.auth.domain.AuthViewModel
 import com.example.polyquiz.shop.domain.ShopViewModel
@@ -42,7 +44,20 @@ class MainActivity : AppCompatActivity() {
         val authViewModel: AuthViewModel by viewModels()
         val cameraViewModel: CameraViewModel by viewModels()
         val shopViewModel: ShopViewModel by viewModels()
-        shopViewModel.listenForMoneyEvents(context)
+        authViewModel.authState.observe(this) { state ->
+            if (state is AuthState.Authenticated) {
+                lifecycleScope.launch {
+                    shopViewModel.initialize(authViewModel, context)
+                }
+            }
+            if (state is AuthState.Unauthenticated) {
+                lifecycleScope.launch {
+//                    shopViewModel.stopListeningForMoneyEvents()
+                    shopViewModel.onCleared()
+                    println("ShopViewModel cleared")
+                }
+            }
+        }
         setContent {
             val currentTheme by authViewModel.theme.collectAsState()
             val setTheme: (Theme) -> Unit = { selectedTheme ->

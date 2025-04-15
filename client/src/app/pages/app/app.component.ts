@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
     ngOnInit(): void {
         this.themeService.initLightTheme();
         this.authenticationService.authenticatedUser.subscribe(async (user) => {
-            if (user) {
+            if (user || user !== null) {
                 const currentLangugage = await this.translationService.getLanguageFromDB();
                 const currentTheme = await this.themeService.getThemeFromDB();
                 this.translationService.setLanguage(currentLangugage);

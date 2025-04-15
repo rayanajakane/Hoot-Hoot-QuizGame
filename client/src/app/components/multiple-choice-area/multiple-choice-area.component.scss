@@ -15,12 +15,13 @@
     width: 28vw;
     height: 15vh;
     font-size: 1rem;
-    overflow: hidden;
 }
 
 .answer p {
-    max-width: 28vw;
+    max-width: 25vw;
     max-height: 15vh;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 button.answer.selected {
@@ -64,8 +65,9 @@ button.answer.selected {
     border-radius: 50%;
     display: inline-block;
     position: absolute;
-    top: -0.25rem;
-    right: -2rem;
+    top: -2vh;
+    left: 25vw;
+    z-index: 999;
 }
 
 .dot::before {

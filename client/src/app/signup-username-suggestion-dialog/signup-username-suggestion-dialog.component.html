@@ -1,0 +1,15 @@
+<ng-container *transloco="let t">
+    <h1 mat-dialog-title class="dialog-title">Suggestions de noms d'utilisateurs</h1>
+    <div mat-dialog-content>
+        <mat-radio-group class="username-radio-group" [(ngModel)]="selectedUsername">
+            <div *ngFor="let username of this.usernameSuggestionService.usernames">
+                <mat-radio-button class="radio-button" [value]="username">{{ username }}</mat-radio-button>
+            </div>
+        </mat-radio-group>
+        <button type="button" id="regenerate-button" mat-raised-button color="primary" (click)="regenerate()">Générer d'autres noms</button>
+    </div>
+    <div mat-dialog-actions align="end">
+        <button type="button" mat-button (click)="onCancel()">{{ t('common.cancel') }}</button>
+        <button type="button" mat-raised-button color="primary" (click)="onConfirm()">OK</button>
+    </div>
+</ng-container>

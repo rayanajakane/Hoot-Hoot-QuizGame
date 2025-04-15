@@ -345,7 +345,6 @@ class AuthViewModel : ViewModel() {
                         )
                     )
                 }
-                SocketHandler.getSocket().emit(FriendsEvents.UPDATE_DATA.value)
 
                 SocketHandler.getSocket().emit(FriendsEvents.USER_DELETED.value, userId)
 

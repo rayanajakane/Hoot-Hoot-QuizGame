@@ -128,12 +128,14 @@ fun FriendsSearchScreen(
     if (showDonationDialog) {
         AlertDialog(
             onDismissRequest = { showDonationDialog = false },
-            title = { Text(text = "Enter Donation Amount") },
+            title = { Text(
+                text = stringResource(R.string.enter_donation_amount)
+            ) },
             text = {
                 OutlinedTextField(
                     value = donationAmount,
                     onValueChange = { donationAmount = it },
-                    label = { Text(text = "Amount") }
+                    label = { Text(text = stringResource(R.string.amount)) }
                 )
             },
             confirmButton = {
@@ -156,7 +158,7 @@ fun FriendsSearchScreen(
                     onClick = { showDonationDialog = false },
                     shape = RoundedCornerShape(3.dp),
                 ) {
-                    Text(text = "Cancel")
+                    Text(text = stringResource(R.string.cancel))
                 }
             }
         )

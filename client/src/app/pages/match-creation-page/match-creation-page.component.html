@@ -27,8 +27,8 @@
                 </div>
             </div>
             <mat-card class="game-match-card-header card-header-background">
-                <p>{{ t('admin-main-page.game-title') }}</p>
-                <p>{{ t('admin-main-page.author') }}</p>
+                <p class="wrap">{{ t('admin-main-page.game-title') }}</p>
+                <p class="wrap">{{ t('admin-main-page.author') }}</p>
             </mat-card>
             <app-game-list-item
                 *ngFor="let game of searchResults"
@@ -42,16 +42,6 @@
             <div id="game-details-header">
                 <h2>{{ t('match-creation-page.game-details') }}{{ selectedGame ? '"' + selectedGame.title + '"' : '' }}</h2>
                 <div id="buttons-container">
-                    <!-- <button
-                        mat-raised-button
-                        color="primary"
-                        (click)="createStandardMatch()"
-                        *ngIf="gameIsValid && !isRandomGame"
-                        [disabled]="buttonClicked"
-                    >
-                        {{ t('common.play') }}
-                    </button> -->
-
                     <button
                         mat-raised-button
                         color="primary"
@@ -68,15 +58,15 @@
                 <div id="game-details" *ngIf="gameIsValid && !isLoadingSelectedGame; else elseBlock">
                     <div>
                         <strong><i class="material-icons">notes</i> Description: </strong>
-                        <span id="game-description">{{ selectedGame.description }}</span>
+                        <span id="game-description" class="wrap">{{ selectedGame.description }}</span>
                     </div>
                     <div id="time-container">
                         <strong><i class="material-icons">access_time</i> {{ t('match-creation-page.time-per-QCM') }}</strong>
-                        <span id="game-time-duration">{{ selectedGame.duration }} sec.</span>
+                        <span id="game-time-duration" class="wrap">{{ selectedGame.duration }} sec.</span>
                     </div>
                     <div class="list">
                         <strong><i class="material-icons">contact_support</i> Questions : </strong>
-                        <span id="game-questions" *ngFor="let question of selectedGame.questions; let i = index"
+                        <span id="game-questions" class="wrap" *ngFor="let question of selectedGame.questions; let i = index"
                             >{{ i + 1 }}. {{ question.text }}<br
                         /></span>
                     </div>

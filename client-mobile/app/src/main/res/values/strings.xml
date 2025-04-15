@@ -56,10 +56,10 @@
     <string name="no_games_available">Aucun jeu disponible </string>
     <string name="games_details">Détails du jeu</string>
     <string name="games_description">"Description: "</string>
-    <string name="games_time">"Durée: "</string>
+    <string name="games_time">"Temps par QCM et QRE: "</string>
     <string name="game_title">"Titre"</string>
     <string name="game_author">"Auteur"</string>
-    <string name="questions">Questions </string>
+    <string name="questions">Questions:</string>
     <string name="select_game">"Sélectionner un jeu dans la liste des jeux"</string>
     <string name="play">"Jouer"</string>
     <string name="matches_played">"Parties Jouées: "</string>
@@ -210,5 +210,13 @@
     <string name="match_errors_less_than_3_players">Il doit y avoir au moins 3 joueurs dans la partie.</string>
     <string name="donation_given">Vous avez donné %d $ à %s</string>
     <string name="donation_recieved">%s vous a donné %d $.</string>
-    <string name="new_total">Nouveau total: %d $</string>
+    <string name="new_total">Nouveau total: %s $</string>
+    <string name="enter_donation_amount">Entrer le montant du don: (Max 500$ par jour)</string>
+    <string name="amount">Montant</string>
+    <string name="add_friend">Ajouter un ami</string>
+    <string name="request_sent">⏳ Demande envoyée</string>
+    <string name="accept">Accepter</string>
+    <string name="decline">Refuser</string>
+    <string name="remove_friend">Retirer l\'ami</string>
+    <string name="donate_money">Donner de l\'argent</string>
 </resources>

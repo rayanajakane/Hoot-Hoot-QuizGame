@@ -142,6 +142,7 @@
         "create-game": "Sauvegarder",
         "apply-changes": "Sauvegarder",
         "add-question": "Nouvelle question",
+        "add-to-bank": "Êtes-vous sûr de vouloir ajouter cette question à la banque ?",
         "notice": "Le jeu doit contenir au moins 1 question. Cliquez sur \"Ajouter une nouvelle question\" ou importez une question de la banque."
     },
     "question-creation-form": {

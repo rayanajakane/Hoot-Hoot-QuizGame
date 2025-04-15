@@ -143,6 +143,7 @@
         "create-game": "Save",
         "apply-changes": "Save",
         "add-question": "New question",
+        "add-to-bank": "Are you sure you want to add this question to the bank?",
         "notice": "The game must contain at least 1 question. Click on \"Add new question\" or import a question from the bank."
     },
     "question-creation-form": {

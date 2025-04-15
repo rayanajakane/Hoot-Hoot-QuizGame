@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -120,12 +121,12 @@ fun VotingPage(
                 .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
-                text = stringResource(R.string.cheater_mode_vote_cheater) + " \uD83D\uDE08",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
             if (context != MatchContext.HOSTVIEW) {
+                Text(
+                    text = stringResource(R.string.cheater_mode_vote_cheater) + " \uD83D\uDE08",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
                 LazyColumn(
                 ) {
                     items(players) { player ->
@@ -346,6 +347,7 @@ fun PlayerInfo(player: Player) {
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape),
+            contentScale = ContentScale.FillBounds,
             placeholder = rememberAsyncImagePainter(model = PresetAvatar.DEFAULT.value)
         )
         Spacer(modifier = Modifier.width(8.dp))

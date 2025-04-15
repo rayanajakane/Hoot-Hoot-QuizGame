@@ -35,7 +35,6 @@ object SocketHandler {
             ChatService.handleReceivedMessage()
             ChatService.handleRoomMessage()
             EloService.returnElo()
-
         }
     }
 

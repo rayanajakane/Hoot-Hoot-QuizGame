@@ -4,6 +4,7 @@ import { FirebaseError } from '@angular/fire/app';
 import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { PresetAvatar } from '@app/constants/avatar-constants';
+import { Language } from '@app/interfaces/language';
 import { AuthError } from '@app/services/authentication/auth-error';
 import { ChatService } from '@app/services/chat/chat.service';
 import { EloService } from '@app/services/elo/elo.service';
@@ -279,6 +280,8 @@ export class AuthenticationService {
         this.matchRoomService.disconnectFromRoom();
         this.socketHandler.disconnect();
         this.socketHandler.socket.removeListener(ChatEvents.NewMessage);
+        this.socketHandler.socket.removeListener(ChatEvents.SentGeneralEmoji);
+        this.socketHandler.socket.removeListener(ChatEvents.SentRoomEmoji);
         this.chatService.clearMessages();
         this.moneyService.stopListeningForMoneyEvents();
         this.socketHandler.socket.removeListener(EloEvents.ReturnElo);
@@ -340,13 +343,14 @@ export class AuthenticationService {
     private handleAuthErrorMessage(error: FirebaseError): string {
         switch (error.code) {
             case 'SessionAlreadyExists': {
-                return this.translocoService.translate('auth.error.user-already-connected');
+                this.translocoService.setActiveLang(Language.FR);
+                return "L'utilisateur est déjà connecté";
             }
             case 'UsernameAlreadyExists': {
                 return this.translocoService.translate('auth.error.username-already-exists');
             }
             case 'auth/email-already-in-use': {
-                return this.translocoService.translate('auth.error.email-already-in-use');
+                return 'Ce courriel est déjà utilisé';
             }
             case 'auth/weak-password': {
                 return this.translocoService.translate('auth.error.password-too-short');

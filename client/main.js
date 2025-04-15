@@ -12,7 +12,7 @@ function initWindow() {
         width: 1920,
         webPreferences: {
             nodeIntegration: true,
-            devTools: true,
+            devTools: false,
         },
     });
 

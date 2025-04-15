@@ -16,6 +16,15 @@ export class UsernameSuggestionService extends CommunicationService<string> {
         this.usernames = [];
     }
 
+    getFrenchUsernameSuggestions(): void {
+        this.getAll('fr').subscribe({
+            next: (data: string[]) => {
+                this.usernames = [...data];
+            },
+            error: (error: HttpErrorResponse) => console.log(error),
+        });
+    }
+
     getUsernameSuggestions(): void {
         this.getAll(this.transloco.getActiveLang()).subscribe({
             next: (data: string[]) => {
