@@ -211,4 +211,6 @@
     <string name="donation_given">Vous avez donné %d $ à %s</string>
     <string name="donation_recieved">%s vous a donné %d $.</string>
     <string name="new_total">Nouveau total: %s $</string>
+    <string name="enter_donation_amount">Veuillez entrer le montant du don</string>
+    <string name="amount">Montant</string>
 </resources>
