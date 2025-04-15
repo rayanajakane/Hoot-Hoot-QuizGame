@@ -51,7 +51,12 @@ class ShopViewModel : ViewModel() {
     private val _dataInitialized = MutableStateFlow(false)
     val dataInitialized: StateFlow<Boolean> = _dataInitialized
 
+//    private var isInitialized = false
+
     suspend fun initialize(authViewModel: AuthViewModel, context: Context) {
+//        if (isInitialized) return
+//        isInitialized = true
+
         _isLoading.value = true
 
         WallpaperService.initialize(authViewModel)
@@ -64,9 +69,7 @@ class ShopViewModel : ViewModel() {
             onThemeBoughtCallback = { onItemBought(it, authViewModel, "theme") },
             onWallpaperBoughtCallback = { onItemBought(it, authViewModel, "wallpaper") }
         )
-
         delay(50)
-
         loadShopItems()
         _dataInitialized.value = true
     }
@@ -461,7 +464,7 @@ class ShopViewModel : ViewModel() {
         }
     }
 
-    override fun onCleared() {
+    public override fun onCleared() {
         super.onCleared()
         stopListeningForMoneyEvents()
     }

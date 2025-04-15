@@ -70,6 +70,7 @@ fun ShopPage(
     val currentBalance by shopViewModel.currentBalance.collectAsState()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+
     val context = LocalContext.current
 
 
@@ -102,14 +103,14 @@ fun ShopPage(
         }
     }
 
-    LaunchedEffect(currentUserID) {
-        shopViewModel.getCurrentBalance(currentUserID)
-        shopViewModel.listenForMoneyEvents(context)
-    }
-
+//    LaunchedEffect(currentUserID) {
+//        shopViewModel.getCurrentBalance(currentUserID)
+//        shopViewModel.listenForMoneyEvents(context)
+//    }
+//
     LaunchedEffect(Unit) {
         shopInitTrace.start()
-        shopViewModel.initialize(authViewModel, context)
+//        shopViewModel.initialize(authViewModel, context)
     }
 
     Row(

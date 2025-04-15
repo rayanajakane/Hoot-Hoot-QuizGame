@@ -18,6 +18,7 @@
     overflow: auto;
     white-space: nowrap;
     margin-bottom: 2rem;
+    max-width: 60vw;
 }
 
 .match-title {
@@ -27,6 +28,7 @@
 
 .match-card {
     display: flex;
+    min-width: 8rem;
     max-width: 22rem;
     height: 10rem;
     flex-direction: column;

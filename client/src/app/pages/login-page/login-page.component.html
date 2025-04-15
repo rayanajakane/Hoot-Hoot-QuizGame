@@ -1,25 +1,25 @@
 <ng-container *transloco="let t">
     <div id="main-container" (keyup.enter)="signIn()">
         <mat-card id="main-card">
-            <h1>{{ t('page.login-title') }}</h1>
+            <h1>Connexion</h1>
             <div id="form">
                 <mat-form-field id="email">
-                    <mat-label>{{ t('page.email') }}</mat-label>
+                    <mat-label>Courriel</mat-label>
                     <input matInput placeholder="" [(ngModel)]="email" id="email-input" maxlength="200" autofocus cdkFocusInitial />
                 </mat-form-field>
                 <div id="password-container">
                     <mat-form-field id="Password">
-                        <mat-label>{{ t('page.password') }}</mat-label>
+                        <mat-label>Mot de passe</mat-label>
                         <input matInput [type]="hide ? 'password' : 'text'" maxlength="200" [(ngModel)]="password" />
                         <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
                             <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
                         </button>
                     </mat-form-field>
-                    <button mat-button color="primary" routerLink="/forgot-password">{{ t('page.forgot-password') }}</button>
+                    <button mat-button color="primary" routerLink="/forgot-password">Mot de passe oublié ?</button>
                 </div>
             </div>
-            <button mat-raised-button color="primary" (click)="signIn()">{{ t('page.login-action') }}</button>
-            <button mat-raised-button routerLink="/signup" class="signup-button">{{ t('page.signup-action') }}</button>
+            <button mat-raised-button color="primary" (click)="signIn()">Connexion</button>
+            <button mat-raised-button routerLink="/signup" class="signup-button">S'inscrire</button>
         </mat-card>
     </div>
 </ng-container>

@@ -13,8 +13,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.example.polyquiz.R
 import com.example.polyquiz.auth.domain.UserIdName
 import com.example.polyquiz.constants.PresetAvatar
 import com.example.polyquiz.ui.theme.BrightRed
@@ -53,7 +56,8 @@ fun FriendsListItem(
                 contentDescription = "Avatar",
                 modifier = Modifier
                     .size(40.dp)
-                    .clip(CircleShape)
+                    .clip(CircleShape),
+                contentScale = ContentScale.FillBounds
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(text = user.name)
@@ -68,7 +72,7 @@ fun FriendsListItem(
                         shape = RoundedCornerShape(3.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = LightGray)
                     ) {
-                        Text(text = "Friends")
+                        Text(text = "✅ ${stringResource(R.string.friends)}")
                     }
                     Spacer(modifier = Modifier.width(4.dp))
                     Button(
@@ -76,7 +80,7 @@ fun FriendsListItem(
                         colors = ButtonDefaults.buttonColors(containerColor = BrightRed, contentColor = Color.White),
                         shape = RoundedCornerShape(3.dp),
                     ) {
-                        Text(text = "Remove Friend")
+                        Text(text = stringResource(R.string.remove_friend))
                     }
                     Spacer(modifier = Modifier.width(4.dp))
                     Button(
@@ -84,7 +88,7 @@ fun FriendsListItem(
                         colors = ButtonDefaults.buttonColors(containerColor = HotPink),
                         shape = RoundedCornerShape(3.dp),
                     ) {
-                        Text(text = "Donate Money")
+                        Text(text = stringResource(R.string.donate_money))
                     }
                 }
             }
@@ -96,7 +100,7 @@ fun FriendsListItem(
                         colors = ButtonDefaults.buttonColors(containerColor = HotPink),
                         shape = RoundedCornerShape(3.dp),
                     ) {
-                        Text(text = "Accept")
+                        Text(text = stringResource(R.string.accept))
                     }
                     Spacer(modifier = Modifier.width(4.dp))
                     Button(
@@ -104,7 +108,7 @@ fun FriendsListItem(
                         colors = ButtonDefaults.buttonColors(containerColor = BrightRed),
                         shape = RoundedCornerShape(3.dp),
                     ) {
-                        Text(text = "Decline")
+                        Text(text = stringResource(R.string.decline))
                     }
                 }
             }
@@ -117,7 +121,7 @@ fun FriendsListItem(
                         colors = ButtonDefaults.buttonColors(containerColor = LightGray),
                         shape = RoundedCornerShape(3.dp),
                     ) {
-                        Text(text = "Request Sent")
+                        Text(text = stringResource(R.string.request_sent))
                     }
                     Spacer(modifier = Modifier.width(4.dp))
                     Button(
@@ -125,14 +129,14 @@ fun FriendsListItem(
                         colors = ButtonDefaults.buttonColors(containerColor = HotPink),
                         shape = RoundedCornerShape(3.dp),
                     ) {
-                        Text(text = "Cancel")
+                        Text(text = stringResource(R.string.cancel))
                     }
                 }
             }
 
             else -> {
                 Button(onClick = { onSendRequest(user.id) }, shape = RoundedCornerShape(3.dp)) {
-                    Text(text = "Add Friend")
+                    Text(text = stringResource(R.string.add_friend))
                 }
             }
         }
