@@ -169,3 +169,22 @@ Hoot-Hoot-QuizGame/
 ├── client-mobile/   # Jetpack Compose frontend for Android Client
 └── README.md
 ```
+
+---
+
+## 👥 Contributors
+
+- **[Rayan Ajakane](https://github.com/rayanajakane)**
+- **[Victoria-Mae Carrière](https://github.com/Verocayden)**
+- **[Hiba Chaarani](https://github.com/Hib00boo)**
+- **[Sami Ait Ameur](https://github.com/Sami-Ait-Ameur)**
+- **[Ikram Arroud](https://github.com/Ikramarroud)**
+- **[Nada Benelfellah](https://github.com/nadabfh)**
+
+Thanks to all our contributors! 🙌
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
